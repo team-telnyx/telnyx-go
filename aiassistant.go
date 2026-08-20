@@ -2674,6 +2674,145 @@ const (
 	AuthenticationMethodCertificate AuthenticationMethod = "certificate"
 )
 
+// Conversation flow as returned by the API.
+type ConversationFlow struct {
+	// All nodes in the flow.
+	Nodes []ConversationFlowNodesUnion `json:"nodes" api:"required"`
+	// ID of the node where the conversation begins.
+	StartNodeID string `json:"start_node_id" api:"required"`
+	// Directed transitions between nodes.
+	Edges []FlowEdge `json:"edges"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Nodes       respjson.Field
+		StartNodeID respjson.Field
+		Edges       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConversationFlow) RawJSON() string { return r.JSON.raw }
+func (r *ConversationFlow) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ConversationFlowNodesUnion contains all possible properties and values from
+// [FlowNode], [ToolNode], [SpeakNode].
+//
+// Use the [ConversationFlowNodesUnion.AsAny] method to switch on the variant.
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type ConversationFlowNodesUnion struct {
+	ID string `json:"id"`
+	// This field is from variant [FlowNode].
+	Instructions string `json:"instructions"`
+	// This field is from variant [FlowNode].
+	ExternalLlm ExternalLlm `json:"external_llm"`
+	// This field is from variant [FlowNode].
+	InstructionsMode FlowNodeInstructionsMode `json:"instructions_mode"`
+	// This field is from variant [FlowNode].
+	LlmAPIKeyRef string `json:"llm_api_key_ref"`
+	// This field is from variant [FlowNode].
+	Model string `json:"model"`
+	Name  string `json:"name"`
+	// This field is from variant [FlowNode].
+	Position NodePosition `json:"position"`
+	// This field is from variant [FlowNode].
+	SharedToolIDs []string `json:"shared_tool_ids"`
+	// This field is from variant [FlowNode].
+	Tools [][]AssistantToolUnion `json:"tools"`
+	// This field is from variant [FlowNode].
+	ToolsMode FlowNodeToolsMode `json:"tools_mode"`
+	// This field is from variant [FlowNode].
+	Transcription TranscriptionSettings `json:"transcription"`
+	// Any of "prompt", "tool", "speak".
+	Type string `json:"type"`
+	// This field is from variant [FlowNode].
+	VoiceSettings VoiceSettings `json:"voice_settings"`
+	// This field is from variant [ToolNode].
+	SharedToolID string `json:"shared_tool_id"`
+	// This field is from variant [ToolNode].
+	Tool []AssistantToolUnion `json:"tool"`
+	// This field is from variant [SpeakNode].
+	Message string `json:"message"`
+	JSON    struct {
+		ID               respjson.Field
+		Instructions     respjson.Field
+		ExternalLlm      respjson.Field
+		InstructionsMode respjson.Field
+		LlmAPIKeyRef     respjson.Field
+		Model            respjson.Field
+		Name             respjson.Field
+		Position         respjson.Field
+		SharedToolIDs    respjson.Field
+		Tools            respjson.Field
+		ToolsMode        respjson.Field
+		Transcription    respjson.Field
+		Type             respjson.Field
+		VoiceSettings    respjson.Field
+		SharedToolID     respjson.Field
+		Tool             respjson.Field
+		Message          respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// anyConversationFlowNode is implemented by each variant of
+// [ConversationFlowNodesUnion] to add type safety for the return type of
+// [ConversationFlowNodesUnion.AsAny]
+type anyConversationFlowNode interface {
+	implConversationFlowNodesUnion()
+}
+
+func (FlowNode) implConversationFlowNodesUnion()  {}
+func (ToolNode) implConversationFlowNodesUnion()  {}
+func (SpeakNode) implConversationFlowNodesUnion() {}
+
+// Use the following switch statement to find the correct variant
+//
+//	switch variant := ConversationFlowNodesUnion.AsAny().(type) {
+//	case telnyx.FlowNode:
+//	case telnyx.ToolNode:
+//	case telnyx.SpeakNode:
+//	default:
+//	  fmt.Errorf("no variant present")
+//	}
+func (u ConversationFlowNodesUnion) AsAny() anyConversationFlowNode {
+	switch u.Type {
+	case "prompt":
+		return u.AsPrompt()
+	case "tool":
+		return u.AsTool()
+	case "speak":
+		return u.AsSpeak()
+	}
+	return nil
+}
+
+func (u ConversationFlowNodesUnion) AsPrompt() (v FlowNode) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u ConversationFlowNodesUnion) AsTool() (v ToolNode) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u ConversationFlowNodesUnion) AsSpeak() (v SpeakNode) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u ConversationFlowNodesUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *ConversationFlowNodesUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // Conversation flow as supplied by API clients (create / update).
 //
 // A directed graph of `FlowNodeReq` connected by `FlowEdge`s. Validation enforces
@@ -2704,9 +2843,9 @@ func (r *ConversationFlowReqParam) UnmarshalJSON(data []byte) error {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type ConversationFlowReqNodesUnionParam struct {
-	OfPrompt *ConversationFlowReqNodesPromptParam `json:",omitzero,inline"`
-	OfTool   *ConversationFlowReqNodesToolParam   `json:",omitzero,inline"`
-	OfSpeak  *ConversationFlowReqNodesSpeakParam  `json:",omitzero,inline"`
+	OfPrompt *FlowNodeReqParam  `json:",omitzero,inline"`
+	OfTool   *ToolNodeReqParam  `json:",omitzero,inline"`
+	OfSpeak  *SpeakNodeReqParam `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -2747,7 +2886,7 @@ func (u ConversationFlowReqNodesUnionParam) GetExternalLlm() *ExternalLlmReqPara
 // Returns a pointer to the underlying variant's property, if present.
 func (u ConversationFlowReqNodesUnionParam) GetInstructionsMode() *string {
 	if vt := u.OfPrompt; vt != nil {
-		return &vt.InstructionsMode
+		return (*string)(&vt.InstructionsMode)
 	}
 	return nil
 }
@@ -2779,7 +2918,7 @@ func (u ConversationFlowReqNodesUnionParam) GetSharedToolIDs() []string {
 // Returns a pointer to the underlying variant's property, if present.
 func (u ConversationFlowReqNodesUnionParam) GetToolsMode() *string {
 	if vt := u.OfPrompt; vt != nil {
-		return &vt.ToolsMode
+		return (*string)(&vt.ToolsMode)
 	}
 	return nil
 }
@@ -2867,180 +3006,9 @@ func (u ConversationFlowReqNodesUnionParam) GetPosition() *NodePositionParam {
 func init() {
 	apijson.RegisterUnion[ConversationFlowReqNodesUnionParam](
 		"type",
-		apijson.Discriminator[ConversationFlowReqNodesPromptParam]("prompt"),
-		apijson.Discriminator[ConversationFlowReqNodesToolParam]("tool"),
-		apijson.Discriminator[ConversationFlowReqNodesSpeakParam]("speak"),
-	)
-}
-
-// One step in a conversation flow, as supplied by API clients.
-//
-// Each node carries the prompt, tool scope, and optional overrides for
-// model/voice/transcription. Unset overrides cascade from the assistant.
-//
-// The properties ID, Instructions are required.
-type ConversationFlowReqNodesPromptParam struct {
-	// Caller-supplied unique identifier for this node within the flow.
-	ID string `json:"id" api:"required"`
-	// Prompt that drives the LLM while this node is active. Required.
-	Instructions string `json:"instructions" api:"required"`
-	// Override for `Assistant.llm_api_key_ref` while this node is active. Part of the
-	// LLM bundle — see `model` for cascade semantics.
-	LlmAPIKeyRef param.Opt[string] `json:"llm_api_key_ref,omitzero"`
-	// Override for `Assistant.model` while this node is active. Part of the LLM bundle
-	// (`model` + `llm_api_key_ref` + `external_llm`): when any of the three is set on
-	// the node, all three are taken from the node and the assistant-level LLM identity
-	// is not consulted. When none of the three is set, the assistant's bundle cascades
-	// unchanged.
-	Model param.Opt[string] `json:"model,omitzero"`
-	// Optional human-readable label, displayed in authoring UIs.
-	Name param.Opt[string] `json:"name,omitzero"`
-	// Override for `Assistant.external_llm` while this node is active. Use this to
-	// route a node's turns to a different external LLM (different `model`, `base_url`,
-	// credentials). Part of the LLM bundle — see `model` for cascade semantics.
-	// Mutually exclusive with `model` on the node (a single LLM identity per node).
-	ExternalLlm ExternalLlmReqParam `json:"external_llm,omitzero"`
-	// How `instructions` combine with the assistant-level instructions. `replace`
-	// (default): the node's instructions are used alone. `append`: the node's
-	// instructions are concatenated after the assistant's instructions.
-	//
-	// Any of "replace", "append".
-	InstructionsMode string `json:"instructions_mode,omitzero"`
-	// Optional canvas coordinates used by authoring UIs to lay out the graph. Ignored
-	// by the runtime; round-trips so frontends can persist graph layout across
-	// reloads.
-	Position NodePositionParam `json:"position,omitzero"`
-	// IDs of shared (org-level) tools available at this node. Knowledge bases are
-	// attached the same way — via a shared retrieval tool. Tools not listed here are
-	// not callable while this node is active.
-	SharedToolIDs []string `json:"shared_tool_ids,omitzero"`
-	// How `shared_tool_ids` combine with the assistant-level tool set. `replace`
-	// (default): only the node's tools are callable. `append`: the node's tools are
-	// added to the assistant's tools. Ignored when `shared_tool_ids` is null.
-	//
-	// Any of "replace", "append".
-	ToolsMode string `json:"tools_mode,omitzero"`
-	// Per-node transcription override (model/language/region). Unset fields cascade
-	// from the assistant-level transcription.
-	Transcription TranscriptionSettingsParam `json:"transcription,omitzero"`
-	// Node kind discriminator. `prompt` (default) is an LLM-driven step; `tool` is a
-	// standalone tool execution (see `ToolNodeReq`).
-	//
-	// Any of "prompt".
-	Type string `json:"type,omitzero"`
-	// Per-node voice override. Only fields set here override the assistant-level voice
-	// settings; unset fields cascade.
-	VoiceSettings VoiceSettingsParam `json:"voice_settings,omitzero"`
-	paramObj
-}
-
-func (r ConversationFlowReqNodesPromptParam) MarshalJSON() (data []byte, err error) {
-	type shadow ConversationFlowReqNodesPromptParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ConversationFlowReqNodesPromptParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[ConversationFlowReqNodesPromptParam](
-		"instructions_mode", "replace", "append",
-	)
-	apijson.RegisterFieldValidator[ConversationFlowReqNodesPromptParam](
-		"tools_mode", "replace", "append",
-	)
-	apijson.RegisterFieldValidator[ConversationFlowReqNodesPromptParam](
-		"type", "prompt",
-	)
-}
-
-// A standalone tool step in a conversation flow, as supplied by clients.
-//
-// Unlike a prompt node, a tool node has no instructions or model — it isn't an LLM
-// turn. Reaching it deterministically runs one shared tool (arguments filled from
-// matching dynamic variables by name), then routes on the result via outgoing
-// `tool_result` edges.
-//
-// The properties ID, SharedToolID are required.
-type ConversationFlowReqNodesToolParam struct {
-	// Caller-supplied unique identifier for this node within the flow.
-	ID string `json:"id" api:"required"`
-	// ID of the single shared (org-level) tool this node executes. When the flow
-	// reaches this node the tool runs as a deliberate step (no LLM turn); its outgoing
-	// `tool_result` edges then route on the outcome. Arguments are filled from the
-	// conversation's dynamic variables by name — a dynamic variable whose name matches
-	// one of the tool's parameters supplies that argument. Cross-validated against the
-	// org's shared tools on write.
-	SharedToolID string `json:"shared_tool_id" api:"required"`
-	// Optional human-readable label, displayed in authoring UIs.
-	Name param.Opt[string] `json:"name,omitzero"`
-	// Optional canvas coordinates used by authoring UIs to lay out the graph. Ignored
-	// by the runtime; round-trips so frontends can persist graph layout across
-	// reloads.
-	Position NodePositionParam `json:"position,omitzero"`
-	// Node kind discriminator. Always `tool` for a tool node.
-	//
-	// Any of "tool".
-	Type string `json:"type,omitzero"`
-	paramObj
-}
-
-func (r ConversationFlowReqNodesToolParam) MarshalJSON() (data []byte, err error) {
-	type shadow ConversationFlowReqNodesToolParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ConversationFlowReqNodesToolParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[ConversationFlowReqNodesToolParam](
-		"type", "tool",
-	)
-}
-
-// A standalone scripted-message step in a flow, as supplied by clients.
-//
-// Unlike a prompt node, a speak node has no instructions or model — it isn't an
-// LLM turn. Reaching it delivers `message` to the user verbatim (with
-// `{{variable}}` interpolation), then routes via outgoing `llm` / `expression`
-// edges.
-//
-// The properties ID, Message are required.
-type ConversationFlowReqNodesSpeakParam struct {
-	// Caller-supplied unique identifier for this node within the flow.
-	ID string `json:"id" api:"required"`
-	// Message delivered to the user verbatim when the flow reaches this node. No LLM
-	// turn — the text is spoken/sent exactly as written. `{{variable}}` placeholders
-	// are interpolated from the conversation's dynamic variables; an unresolved
-	// placeholder renders as an empty string. After delivering, the flow routes via
-	// the node's outgoing `llm` / `expression` edges (commonly a single unconditional
-	// edge).
-	Message string `json:"message" api:"required"`
-	// Optional human-readable label, displayed in authoring UIs.
-	Name param.Opt[string] `json:"name,omitzero"`
-	// Optional canvas coordinates used by authoring UIs to lay out the graph. Ignored
-	// by the runtime; round-trips so frontends can persist graph layout across
-	// reloads.
-	Position NodePositionParam `json:"position,omitzero"`
-	// Node kind discriminator. Always `speak` for a speak node.
-	//
-	// Any of "speak".
-	Type string `json:"type,omitzero"`
-	paramObj
-}
-
-func (r ConversationFlowReqNodesSpeakParam) MarshalJSON() (data []byte, err error) {
-	type shadow ConversationFlowReqNodesSpeakParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ConversationFlowReqNodesSpeakParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[ConversationFlowReqNodesSpeakParam](
-		"type", "speak",
+		apijson.Discriminator[FlowNodeReqParam]("prompt"),
+		apijson.Discriminator[ToolNodeReqParam]("tool"),
+		apijson.Discriminator[SpeakNodeReqParam]("speak"),
 	)
 }
 
@@ -3818,6 +3786,212 @@ func init() {
 	)
 }
 
+// One step in a conversation flow, as returned by the API.
+type FlowNode struct {
+	// Caller-supplied unique identifier for this node within the flow.
+	ID string `json:"id" api:"required"`
+	// Prompt that drives the LLM while this node is active. Required.
+	Instructions string `json:"instructions" api:"required"`
+	// Override for `Assistant.external_llm` while this node is active. Use this to
+	// route a node's turns to a different external LLM (different `model`, `base_url`,
+	// credentials). Part of the LLM bundle — see `model` for cascade semantics.
+	// Mutually exclusive with `model` on the node (a single LLM identity per node).
+	ExternalLlm ExternalLlm `json:"external_llm"`
+	// How `instructions` combine with the assistant-level instructions. `replace`
+	// (default): the node's instructions are used alone. `append`: the node's
+	// instructions are concatenated after the assistant's instructions.
+	//
+	// Any of "replace", "append".
+	InstructionsMode FlowNodeInstructionsMode `json:"instructions_mode"`
+	// Override for `Assistant.llm_api_key_ref` while this node is active. Part of the
+	// LLM bundle — see `model` for cascade semantics.
+	LlmAPIKeyRef string `json:"llm_api_key_ref"`
+	// Override for `Assistant.model` while this node is active. Part of the LLM bundle
+	// (`model` + `llm_api_key_ref` + `external_llm`): when any of the three is set on
+	// the node, all three are taken from the node and the assistant-level LLM identity
+	// is not consulted. When none of the three is set, the assistant's bundle cascades
+	// unchanged.
+	Model string `json:"model"`
+	// Optional human-readable label, displayed in authoring UIs.
+	Name string `json:"name"`
+	// Optional canvas coordinates used by authoring UIs to lay out the graph. Ignored
+	// by the runtime; round-trips so frontends can persist graph layout across
+	// reloads.
+	Position NodePosition `json:"position"`
+	// IDs of shared (org-level) tools available at this node. Knowledge bases are
+	// attached the same way — via a shared retrieval tool. Tools not listed here are
+	// not callable while this node is active.
+	SharedToolIDs []string `json:"shared_tool_ids"`
+	// Full tool definitions for this node, resolved from `shared_tool_ids`
+	// server-side. Populated on responses so clients can render the flow without a
+	// follow-up fetch per shared tool. Ignored on input — set `shared_tool_ids` to
+	// configure a node's tools.
+	Tools [][]AssistantToolUnion `json:"tools"`
+	// How `shared_tool_ids` combine with the assistant-level tool set. `replace`
+	// (default): only the node's tools are callable. `append`: the node's tools are
+	// added to the assistant's tools. Ignored when `shared_tool_ids` is null.
+	//
+	// Any of "replace", "append".
+	ToolsMode FlowNodeToolsMode `json:"tools_mode"`
+	// Per-node transcription override (response form).
+	Transcription TranscriptionSettings `json:"transcription"`
+	// Node kind discriminator. `prompt` is an LLM-driven step.
+	//
+	// Any of "prompt".
+	Type FlowNodeType `json:"type"`
+	// Per-node voice override (response form).
+	VoiceSettings VoiceSettings `json:"voice_settings"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID               respjson.Field
+		Instructions     respjson.Field
+		ExternalLlm      respjson.Field
+		InstructionsMode respjson.Field
+		LlmAPIKeyRef     respjson.Field
+		Model            respjson.Field
+		Name             respjson.Field
+		Position         respjson.Field
+		SharedToolIDs    respjson.Field
+		Tools            respjson.Field
+		ToolsMode        respjson.Field
+		Transcription    respjson.Field
+		Type             respjson.Field
+		VoiceSettings    respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r FlowNode) RawJSON() string { return r.JSON.raw }
+func (r *FlowNode) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// How `instructions` combine with the assistant-level instructions. `replace`
+// (default): the node's instructions are used alone. `append`: the node's
+// instructions are concatenated after the assistant's instructions.
+type FlowNodeInstructionsMode string
+
+const (
+	FlowNodeInstructionsModeReplace FlowNodeInstructionsMode = "replace"
+	FlowNodeInstructionsModeAppend  FlowNodeInstructionsMode = "append"
+)
+
+// How `shared_tool_ids` combine with the assistant-level tool set. `replace`
+// (default): only the node's tools are callable. `append`: the node's tools are
+// added to the assistant's tools. Ignored when `shared_tool_ids` is null.
+type FlowNodeToolsMode string
+
+const (
+	FlowNodeToolsModeReplace FlowNodeToolsMode = "replace"
+	FlowNodeToolsModeAppend  FlowNodeToolsMode = "append"
+)
+
+// Node kind discriminator. `prompt` is an LLM-driven step.
+type FlowNodeType string
+
+const (
+	FlowNodeTypePrompt FlowNodeType = "prompt"
+)
+
+// One step in a conversation flow, as supplied by API clients.
+//
+// Each node carries the prompt, tool scope, and optional overrides for
+// model/voice/transcription. Unset overrides cascade from the assistant.
+//
+// The properties ID, Instructions are required.
+type FlowNodeReqParam struct {
+	// Caller-supplied unique identifier for this node within the flow.
+	ID string `json:"id" api:"required"`
+	// Prompt that drives the LLM while this node is active. Required.
+	Instructions string `json:"instructions" api:"required"`
+	// Override for `Assistant.llm_api_key_ref` while this node is active. Part of the
+	// LLM bundle — see `model` for cascade semantics.
+	LlmAPIKeyRef param.Opt[string] `json:"llm_api_key_ref,omitzero"`
+	// Override for `Assistant.model` while this node is active. Part of the LLM bundle
+	// (`model` + `llm_api_key_ref` + `external_llm`): when any of the three is set on
+	// the node, all three are taken from the node and the assistant-level LLM identity
+	// is not consulted. When none of the three is set, the assistant's bundle cascades
+	// unchanged.
+	Model param.Opt[string] `json:"model,omitzero"`
+	// Optional human-readable label, displayed in authoring UIs.
+	Name param.Opt[string] `json:"name,omitzero"`
+	// Override for `Assistant.external_llm` while this node is active. Use this to
+	// route a node's turns to a different external LLM (different `model`, `base_url`,
+	// credentials). Part of the LLM bundle — see `model` for cascade semantics.
+	// Mutually exclusive with `model` on the node (a single LLM identity per node).
+	ExternalLlm ExternalLlmReqParam `json:"external_llm,omitzero"`
+	// How `instructions` combine with the assistant-level instructions. `replace`
+	// (default): the node's instructions are used alone. `append`: the node's
+	// instructions are concatenated after the assistant's instructions.
+	//
+	// Any of "replace", "append".
+	InstructionsMode FlowNodeReqInstructionsMode `json:"instructions_mode,omitzero"`
+	// Optional canvas coordinates used by authoring UIs to lay out the graph. Ignored
+	// by the runtime; round-trips so frontends can persist graph layout across
+	// reloads.
+	Position NodePositionParam `json:"position,omitzero"`
+	// IDs of shared (org-level) tools available at this node. Knowledge bases are
+	// attached the same way — via a shared retrieval tool. Tools not listed here are
+	// not callable while this node is active.
+	SharedToolIDs []string `json:"shared_tool_ids,omitzero"`
+	// How `shared_tool_ids` combine with the assistant-level tool set. `replace`
+	// (default): only the node's tools are callable. `append`: the node's tools are
+	// added to the assistant's tools. Ignored when `shared_tool_ids` is null.
+	//
+	// Any of "replace", "append".
+	ToolsMode FlowNodeReqToolsMode `json:"tools_mode,omitzero"`
+	// Per-node transcription override (model/language/region). Unset fields cascade
+	// from the assistant-level transcription.
+	Transcription TranscriptionSettingsParam `json:"transcription,omitzero"`
+	// Node kind discriminator. `prompt` (default) is an LLM-driven step; `tool` is a
+	// standalone tool execution (see `ToolNodeReq`).
+	//
+	// Any of "prompt".
+	Type FlowNodeReqType `json:"type,omitzero"`
+	// Per-node voice override. Only fields set here override the assistant-level voice
+	// settings; unset fields cascade.
+	VoiceSettings VoiceSettingsParam `json:"voice_settings,omitzero"`
+	paramObj
+}
+
+func (r FlowNodeReqParam) MarshalJSON() (data []byte, err error) {
+	type shadow FlowNodeReqParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *FlowNodeReqParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// How `instructions` combine with the assistant-level instructions. `replace`
+// (default): the node's instructions are used alone. `append`: the node's
+// instructions are concatenated after the assistant's instructions.
+type FlowNodeReqInstructionsMode string
+
+const (
+	FlowNodeReqInstructionsModeReplace FlowNodeReqInstructionsMode = "replace"
+	FlowNodeReqInstructionsModeAppend  FlowNodeReqInstructionsMode = "append"
+)
+
+// How `shared_tool_ids` combine with the assistant-level tool set. `replace`
+// (default): only the node's tools are callable. `append`: the node's tools are
+// added to the assistant's tools. Ignored when `shared_tool_ids` is null.
+type FlowNodeReqToolsMode string
+
+const (
+	FlowNodeReqToolsModeReplace FlowNodeReqToolsMode = "replace"
+	FlowNodeReqToolsModeAppend  FlowNodeReqToolsMode = "append"
+)
+
+// Node kind discriminator. `prompt` (default) is an LLM-driven step; `tool` is a
+// standalone tool execution (see `ToolNodeReq`).
+type FlowNodeReqType string
+
+const (
+	FlowNodeReqTypePrompt FlowNodeReqType = "prompt"
+)
+
 type HangupTool struct {
 	Hangup HangupToolParamsResp `json:"hangup" api:"required"`
 	// Any of "hangup".
@@ -3953,8 +4127,8 @@ type InferenceEmbedding struct {
 	Model string `json:"model" api:"required"`
 	Name  string `json:"name" api:"required"`
 	// Conversation flow as returned by the API.
-	ConversationFlow InferenceEmbeddingConversationFlow `json:"conversation_flow"`
-	Description      string                             `json:"description"`
+	ConversationFlow ConversationFlow `json:"conversation_flow"`
+	Description      string           `json:"description"`
 	// Map of dynamic variables and their values
 	DynamicVariables map[string]any `json:"dynamic_variables"`
 	// Timeout in milliseconds for the dynamic variables webhook. Must be between 1 and
@@ -4080,316 +4254,6 @@ type InferenceEmbedding struct {
 // Returns the unmodified JSON received from the API
 func (r InferenceEmbedding) RawJSON() string { return r.JSON.raw }
 func (r *InferenceEmbedding) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Conversation flow as returned by the API.
-type InferenceEmbeddingConversationFlow struct {
-	// All nodes in the flow.
-	Nodes []InferenceEmbeddingConversationFlowNodesUnion `json:"nodes" api:"required"`
-	// ID of the node where the conversation begins.
-	StartNodeID string `json:"start_node_id" api:"required"`
-	// Directed transitions between nodes.
-	Edges []FlowEdge `json:"edges"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Nodes       respjson.Field
-		StartNodeID respjson.Field
-		Edges       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r InferenceEmbeddingConversationFlow) RawJSON() string { return r.JSON.raw }
-func (r *InferenceEmbeddingConversationFlow) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// InferenceEmbeddingConversationFlowNodesUnion contains all possible properties
-// and values from [InferenceEmbeddingConversationFlowNodesPrompt],
-// [InferenceEmbeddingConversationFlowNodesTool],
-// [InferenceEmbeddingConversationFlowNodesSpeak].
-//
-// Use the [InferenceEmbeddingConversationFlowNodesUnion.AsAny] method to switch on
-// the variant.
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-type InferenceEmbeddingConversationFlowNodesUnion struct {
-	ID string `json:"id"`
-	// This field is from variant [InferenceEmbeddingConversationFlowNodesPrompt].
-	Instructions string `json:"instructions"`
-	// This field is from variant [InferenceEmbeddingConversationFlowNodesPrompt].
-	ExternalLlm ExternalLlm `json:"external_llm"`
-	// This field is from variant [InferenceEmbeddingConversationFlowNodesPrompt].
-	InstructionsMode string `json:"instructions_mode"`
-	// This field is from variant [InferenceEmbeddingConversationFlowNodesPrompt].
-	LlmAPIKeyRef string `json:"llm_api_key_ref"`
-	// This field is from variant [InferenceEmbeddingConversationFlowNodesPrompt].
-	Model string `json:"model"`
-	Name  string `json:"name"`
-	// This field is from variant [InferenceEmbeddingConversationFlowNodesPrompt].
-	Position NodePosition `json:"position"`
-	// This field is from variant [InferenceEmbeddingConversationFlowNodesPrompt].
-	SharedToolIDs []string `json:"shared_tool_ids"`
-	// This field is from variant [InferenceEmbeddingConversationFlowNodesPrompt].
-	Tools [][]AssistantToolUnion `json:"tools"`
-	// This field is from variant [InferenceEmbeddingConversationFlowNodesPrompt].
-	ToolsMode string `json:"tools_mode"`
-	// This field is from variant [InferenceEmbeddingConversationFlowNodesPrompt].
-	Transcription TranscriptionSettings `json:"transcription"`
-	// Any of "prompt", "tool", "speak".
-	Type string `json:"type"`
-	// This field is from variant [InferenceEmbeddingConversationFlowNodesPrompt].
-	VoiceSettings VoiceSettings `json:"voice_settings"`
-	// This field is from variant [InferenceEmbeddingConversationFlowNodesTool].
-	SharedToolID string `json:"shared_tool_id"`
-	// This field is from variant [InferenceEmbeddingConversationFlowNodesTool].
-	Tool []AssistantToolUnion `json:"tool"`
-	// This field is from variant [InferenceEmbeddingConversationFlowNodesSpeak].
-	Message string `json:"message"`
-	JSON    struct {
-		ID               respjson.Field
-		Instructions     respjson.Field
-		ExternalLlm      respjson.Field
-		InstructionsMode respjson.Field
-		LlmAPIKeyRef     respjson.Field
-		Model            respjson.Field
-		Name             respjson.Field
-		Position         respjson.Field
-		SharedToolIDs    respjson.Field
-		Tools            respjson.Field
-		ToolsMode        respjson.Field
-		Transcription    respjson.Field
-		Type             respjson.Field
-		VoiceSettings    respjson.Field
-		SharedToolID     respjson.Field
-		Tool             respjson.Field
-		Message          respjson.Field
-		raw              string
-	} `json:"-"`
-}
-
-// anyInferenceEmbeddingConversationFlowNode is implemented by each variant of
-// [InferenceEmbeddingConversationFlowNodesUnion] to add type safety for the return
-// type of [InferenceEmbeddingConversationFlowNodesUnion.AsAny]
-type anyInferenceEmbeddingConversationFlowNode interface {
-	implInferenceEmbeddingConversationFlowNodesUnion()
-}
-
-func (InferenceEmbeddingConversationFlowNodesPrompt) implInferenceEmbeddingConversationFlowNodesUnion() {
-}
-func (InferenceEmbeddingConversationFlowNodesTool) implInferenceEmbeddingConversationFlowNodesUnion() {
-}
-func (InferenceEmbeddingConversationFlowNodesSpeak) implInferenceEmbeddingConversationFlowNodesUnion() {
-}
-
-// Use the following switch statement to find the correct variant
-//
-//	switch variant := InferenceEmbeddingConversationFlowNodesUnion.AsAny().(type) {
-//	case telnyx.InferenceEmbeddingConversationFlowNodesPrompt:
-//	case telnyx.InferenceEmbeddingConversationFlowNodesTool:
-//	case telnyx.InferenceEmbeddingConversationFlowNodesSpeak:
-//	default:
-//	  fmt.Errorf("no variant present")
-//	}
-func (u InferenceEmbeddingConversationFlowNodesUnion) AsAny() anyInferenceEmbeddingConversationFlowNode {
-	switch u.Type {
-	case "prompt":
-		return u.AsPrompt()
-	case "tool":
-		return u.AsTool()
-	case "speak":
-		return u.AsSpeak()
-	}
-	return nil
-}
-
-func (u InferenceEmbeddingConversationFlowNodesUnion) AsPrompt() (v InferenceEmbeddingConversationFlowNodesPrompt) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u InferenceEmbeddingConversationFlowNodesUnion) AsTool() (v InferenceEmbeddingConversationFlowNodesTool) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u InferenceEmbeddingConversationFlowNodesUnion) AsSpeak() (v InferenceEmbeddingConversationFlowNodesSpeak) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u InferenceEmbeddingConversationFlowNodesUnion) RawJSON() string { return u.JSON.raw }
-
-func (r *InferenceEmbeddingConversationFlowNodesUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// One step in a conversation flow, as returned by the API.
-type InferenceEmbeddingConversationFlowNodesPrompt struct {
-	// Caller-supplied unique identifier for this node within the flow.
-	ID string `json:"id" api:"required"`
-	// Prompt that drives the LLM while this node is active. Required.
-	Instructions string `json:"instructions" api:"required"`
-	// Override for `Assistant.external_llm` while this node is active. Use this to
-	// route a node's turns to a different external LLM (different `model`, `base_url`,
-	// credentials). Part of the LLM bundle — see `model` for cascade semantics.
-	// Mutually exclusive with `model` on the node (a single LLM identity per node).
-	ExternalLlm ExternalLlm `json:"external_llm"`
-	// How `instructions` combine with the assistant-level instructions. `replace`
-	// (default): the node's instructions are used alone. `append`: the node's
-	// instructions are concatenated after the assistant's instructions.
-	//
-	// Any of "replace", "append".
-	InstructionsMode string `json:"instructions_mode"`
-	// Override for `Assistant.llm_api_key_ref` while this node is active. Part of the
-	// LLM bundle — see `model` for cascade semantics.
-	LlmAPIKeyRef string `json:"llm_api_key_ref"`
-	// Override for `Assistant.model` while this node is active. Part of the LLM bundle
-	// (`model` + `llm_api_key_ref` + `external_llm`): when any of the three is set on
-	// the node, all three are taken from the node and the assistant-level LLM identity
-	// is not consulted. When none of the three is set, the assistant's bundle cascades
-	// unchanged.
-	Model string `json:"model"`
-	// Optional human-readable label, displayed in authoring UIs.
-	Name string `json:"name"`
-	// Optional canvas coordinates used by authoring UIs to lay out the graph. Ignored
-	// by the runtime; round-trips so frontends can persist graph layout across
-	// reloads.
-	Position NodePosition `json:"position"`
-	// IDs of shared (org-level) tools available at this node. Knowledge bases are
-	// attached the same way — via a shared retrieval tool. Tools not listed here are
-	// not callable while this node is active.
-	SharedToolIDs []string `json:"shared_tool_ids"`
-	// Full tool definitions for this node, resolved from `shared_tool_ids`
-	// server-side. Populated on responses so clients can render the flow without a
-	// follow-up fetch per shared tool. Ignored on input — set `shared_tool_ids` to
-	// configure a node's tools.
-	Tools [][]AssistantToolUnion `json:"tools"`
-	// How `shared_tool_ids` combine with the assistant-level tool set. `replace`
-	// (default): only the node's tools are callable. `append`: the node's tools are
-	// added to the assistant's tools. Ignored when `shared_tool_ids` is null.
-	//
-	// Any of "replace", "append".
-	ToolsMode string `json:"tools_mode"`
-	// Per-node transcription override (response form).
-	Transcription TranscriptionSettings `json:"transcription"`
-	// Node kind discriminator. `prompt` is an LLM-driven step.
-	//
-	// Any of "prompt".
-	Type string `json:"type"`
-	// Per-node voice override (response form).
-	VoiceSettings VoiceSettings `json:"voice_settings"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID               respjson.Field
-		Instructions     respjson.Field
-		ExternalLlm      respjson.Field
-		InstructionsMode respjson.Field
-		LlmAPIKeyRef     respjson.Field
-		Model            respjson.Field
-		Name             respjson.Field
-		Position         respjson.Field
-		SharedToolIDs    respjson.Field
-		Tools            respjson.Field
-		ToolsMode        respjson.Field
-		Transcription    respjson.Field
-		Type             respjson.Field
-		VoiceSettings    respjson.Field
-		ExtraFields      map[string]respjson.Field
-		raw              string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r InferenceEmbeddingConversationFlowNodesPrompt) RawJSON() string { return r.JSON.raw }
-func (r *InferenceEmbeddingConversationFlowNodesPrompt) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// A standalone tool step in a conversation flow, as returned by the API.
-type InferenceEmbeddingConversationFlowNodesTool struct {
-	// Caller-supplied unique identifier for this node within the flow.
-	ID string `json:"id" api:"required"`
-	// ID of the single shared (org-level) tool this node executes. When the flow
-	// reaches this node the tool runs as a deliberate step (no LLM turn); its outgoing
-	// `tool_result` edges then route on the outcome. Arguments are filled from the
-	// conversation's dynamic variables by name — a dynamic variable whose name matches
-	// one of the tool's parameters supplies that argument. Cross-validated against the
-	// org's shared tools on write.
-	SharedToolID string `json:"shared_tool_id" api:"required"`
-	// Optional human-readable label, displayed in authoring UIs.
-	Name string `json:"name"`
-	// Optional canvas coordinates used by authoring UIs to lay out the graph. Ignored
-	// by the runtime; round-trips so frontends can persist graph layout across
-	// reloads.
-	Position NodePosition `json:"position"`
-	// Full tool definition resolved from `shared_tool_id` server-side. Populated on
-	// responses so clients can render the node without a follow-up fetch. Ignored on
-	// input — set `shared_tool_id`.
-	Tool []AssistantToolUnion `json:"tool"`
-	// Node kind discriminator. Always `tool` for a tool node.
-	//
-	// Any of "tool".
-	Type string `json:"type"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID           respjson.Field
-		SharedToolID respjson.Field
-		Name         respjson.Field
-		Position     respjson.Field
-		Tool         respjson.Field
-		Type         respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r InferenceEmbeddingConversationFlowNodesTool) RawJSON() string { return r.JSON.raw }
-func (r *InferenceEmbeddingConversationFlowNodesTool) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// A standalone scripted-message step in a flow, as returned by the API.
-type InferenceEmbeddingConversationFlowNodesSpeak struct {
-	// Caller-supplied unique identifier for this node within the flow.
-	ID string `json:"id" api:"required"`
-	// Message delivered to the user verbatim when the flow reaches this node. No LLM
-	// turn — the text is spoken/sent exactly as written. `{{variable}}` placeholders
-	// are interpolated from the conversation's dynamic variables; an unresolved
-	// placeholder renders as an empty string. After delivering, the flow routes via
-	// the node's outgoing `llm` / `expression` edges (commonly a single unconditional
-	// edge).
-	Message string `json:"message" api:"required"`
-	// Optional human-readable label, displayed in authoring UIs.
-	Name string `json:"name"`
-	// Optional canvas coordinates used by authoring UIs to lay out the graph. Ignored
-	// by the runtime; round-trips so frontends can persist graph layout across
-	// reloads.
-	Position NodePosition `json:"position"`
-	// Node kind discriminator. Always `speak` for a speak node.
-	//
-	// Any of "speak".
-	Type string `json:"type"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		Message     respjson.Field
-		Name        respjson.Field
-		Position    respjson.Field
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r InferenceEmbeddingConversationFlowNodesSpeak) RawJSON() string { return r.JSON.raw }
-func (r *InferenceEmbeddingConversationFlowNodesSpeak) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -5497,6 +5361,98 @@ func (r *RetrievalToolParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// A standalone scripted-message step in a flow, as returned by the API.
+type SpeakNode struct {
+	// Caller-supplied unique identifier for this node within the flow.
+	ID string `json:"id" api:"required"`
+	// Message delivered to the user verbatim when the flow reaches this node. No LLM
+	// turn — the text is spoken/sent exactly as written. `{{variable}}` placeholders
+	// are interpolated from the conversation's dynamic variables; an unresolved
+	// placeholder renders as an empty string. After delivering, the flow routes via
+	// the node's outgoing `llm` / `expression` edges (commonly a single unconditional
+	// edge).
+	Message string `json:"message" api:"required"`
+	// Optional human-readable label, displayed in authoring UIs.
+	Name string `json:"name"`
+	// Optional canvas coordinates used by authoring UIs to lay out the graph. Ignored
+	// by the runtime; round-trips so frontends can persist graph layout across
+	// reloads.
+	Position NodePosition `json:"position"`
+	// Node kind discriminator. Always `speak` for a speak node.
+	//
+	// Any of "speak".
+	Type SpeakNodeType `json:"type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Message     respjson.Field
+		Name        respjson.Field
+		Position    respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SpeakNode) RawJSON() string { return r.JSON.raw }
+func (r *SpeakNode) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Node kind discriminator. Always `speak` for a speak node.
+type SpeakNodeType string
+
+const (
+	SpeakNodeTypeSpeak SpeakNodeType = "speak"
+)
+
+// A standalone scripted-message step in a flow, as supplied by clients.
+//
+// Unlike a prompt node, a speak node has no instructions or model — it isn't an
+// LLM turn. Reaching it delivers `message` to the user verbatim (with
+// `{{variable}}` interpolation), then routes via outgoing `llm` / `expression`
+// edges.
+//
+// The properties ID, Message are required.
+type SpeakNodeReqParam struct {
+	// Caller-supplied unique identifier for this node within the flow.
+	ID string `json:"id" api:"required"`
+	// Message delivered to the user verbatim when the flow reaches this node. No LLM
+	// turn — the text is spoken/sent exactly as written. `{{variable}}` placeholders
+	// are interpolated from the conversation's dynamic variables; an unresolved
+	// placeholder renders as an empty string. After delivering, the flow routes via
+	// the node's outgoing `llm` / `expression` edges (commonly a single unconditional
+	// edge).
+	Message string `json:"message" api:"required"`
+	// Optional human-readable label, displayed in authoring UIs.
+	Name param.Opt[string] `json:"name,omitzero"`
+	// Optional canvas coordinates used by authoring UIs to lay out the graph. Ignored
+	// by the runtime; round-trips so frontends can persist graph layout across
+	// reloads.
+	Position NodePositionParam `json:"position,omitzero"`
+	// Node kind discriminator. Always `speak` for a speak node.
+	//
+	// Any of "speak".
+	Type SpeakNodeReqType `json:"type,omitzero"`
+	paramObj
+}
+
+func (r SpeakNodeReqParam) MarshalJSON() (data []byte, err error) {
+	type shadow SpeakNodeReqParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *SpeakNodeReqParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Node kind discriminator. Always `speak` for a speak node.
+type SpeakNodeReqType string
+
+const (
+	SpeakNodeReqTypeSpeak SpeakNodeReqType = "speak"
+)
+
 // Controls when the assistant starts speaking after the user stops. These
 // thresholds primarily apply to non turn-taking transcription models. For
 // turn-taking models like `deepgram/flux`, end-of-turn detection is driven by the
@@ -5973,6 +5929,103 @@ func init() {
 		"type", "prompt", "message",
 	)
 }
+
+// A standalone tool step in a conversation flow, as returned by the API.
+type ToolNode struct {
+	// Caller-supplied unique identifier for this node within the flow.
+	ID string `json:"id" api:"required"`
+	// ID of the single shared (org-level) tool this node executes. When the flow
+	// reaches this node the tool runs as a deliberate step (no LLM turn); its outgoing
+	// `tool_result` edges then route on the outcome. Arguments are filled from the
+	// conversation's dynamic variables by name — a dynamic variable whose name matches
+	// one of the tool's parameters supplies that argument. Cross-validated against the
+	// org's shared tools on write.
+	SharedToolID string `json:"shared_tool_id" api:"required"`
+	// Optional human-readable label, displayed in authoring UIs.
+	Name string `json:"name"`
+	// Optional canvas coordinates used by authoring UIs to lay out the graph. Ignored
+	// by the runtime; round-trips so frontends can persist graph layout across
+	// reloads.
+	Position NodePosition `json:"position"`
+	// Full tool definition resolved from `shared_tool_id` server-side. Populated on
+	// responses so clients can render the node without a follow-up fetch. Ignored on
+	// input — set `shared_tool_id`.
+	Tool []AssistantToolUnion `json:"tool"`
+	// Node kind discriminator. Always `tool` for a tool node.
+	//
+	// Any of "tool".
+	Type ToolNodeType `json:"type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		SharedToolID respjson.Field
+		Name         respjson.Field
+		Position     respjson.Field
+		Tool         respjson.Field
+		Type         respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ToolNode) RawJSON() string { return r.JSON.raw }
+func (r *ToolNode) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Node kind discriminator. Always `tool` for a tool node.
+type ToolNodeType string
+
+const (
+	ToolNodeTypeTool ToolNodeType = "tool"
+)
+
+// A standalone tool step in a conversation flow, as supplied by clients.
+//
+// Unlike a prompt node, a tool node has no instructions or model — it isn't an LLM
+// turn. Reaching it deterministically runs one shared tool (arguments filled from
+// matching dynamic variables by name), then routes on the result via outgoing
+// `tool_result` edges.
+//
+// The properties ID, SharedToolID are required.
+type ToolNodeReqParam struct {
+	// Caller-supplied unique identifier for this node within the flow.
+	ID string `json:"id" api:"required"`
+	// ID of the single shared (org-level) tool this node executes. When the flow
+	// reaches this node the tool runs as a deliberate step (no LLM turn); its outgoing
+	// `tool_result` edges then route on the outcome. Arguments are filled from the
+	// conversation's dynamic variables by name — a dynamic variable whose name matches
+	// one of the tool's parameters supplies that argument. Cross-validated against the
+	// org's shared tools on write.
+	SharedToolID string `json:"shared_tool_id" api:"required"`
+	// Optional human-readable label, displayed in authoring UIs.
+	Name param.Opt[string] `json:"name,omitzero"`
+	// Optional canvas coordinates used by authoring UIs to lay out the graph. Ignored
+	// by the runtime; round-trips so frontends can persist graph layout across
+	// reloads.
+	Position NodePositionParam `json:"position,omitzero"`
+	// Node kind discriminator. Always `tool` for a tool node.
+	//
+	// Any of "tool".
+	Type ToolNodeReqType `json:"type,omitzero"`
+	paramObj
+}
+
+func (r ToolNodeReqParam) MarshalJSON() (data []byte, err error) {
+	type shadow ToolNodeReqParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ToolNodeReqParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Node kind discriminator. Always `tool` for a tool node.
+type ToolNodeReqType string
+
+const (
+	ToolNodeReqTypeTool ToolNodeReqType = "tool"
+)
 
 // Endpointing thresholds used to decide when the user has finished speaking.
 // Applies to non turn-taking transcription models. For `deepgram/flux`, use

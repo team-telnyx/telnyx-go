@@ -2099,6 +2099,56 @@ const (
 	TranscriptionEngineGoogleConfigTranscriptionEngineGoogle TranscriptionEngineGoogleConfigTranscriptionEngine = "Google"
 )
 
+type TranscriptionEngineHumainConfigParam struct {
+	// The language of the audio to be transcribed. `codeswitch` enables Arabic/English
+	// code-switching. `auto` resolves server-side to code-switching.
+	//
+	// Any of "ar", "en", "codeswitch", "auto".
+	Language TranscriptionEngineHumainConfigLanguage `json:"language,omitzero"`
+	// Engine identifier for Humain transcription service
+	//
+	// Any of "Humain".
+	TranscriptionEngine TranscriptionEngineHumainConfigTranscriptionEngine `json:"transcription_engine,omitzero"`
+	// The model to use for transcription.
+	//
+	// Any of "humain/realtime".
+	TranscriptionModel TranscriptionEngineHumainConfigTranscriptionModel `json:"transcription_model,omitzero"`
+	paramObj
+}
+
+func (r TranscriptionEngineHumainConfigParam) MarshalJSON() (data []byte, err error) {
+	type shadow TranscriptionEngineHumainConfigParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TranscriptionEngineHumainConfigParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The language of the audio to be transcribed. `codeswitch` enables Arabic/English
+// code-switching. `auto` resolves server-side to code-switching.
+type TranscriptionEngineHumainConfigLanguage string
+
+const (
+	TranscriptionEngineHumainConfigLanguageAr         TranscriptionEngineHumainConfigLanguage = "ar"
+	TranscriptionEngineHumainConfigLanguageEn         TranscriptionEngineHumainConfigLanguage = "en"
+	TranscriptionEngineHumainConfigLanguageCodeswitch TranscriptionEngineHumainConfigLanguage = "codeswitch"
+	TranscriptionEngineHumainConfigLanguageAuto       TranscriptionEngineHumainConfigLanguage = "auto"
+)
+
+// Engine identifier for Humain transcription service
+type TranscriptionEngineHumainConfigTranscriptionEngine string
+
+const (
+	TranscriptionEngineHumainConfigTranscriptionEngineHumain TranscriptionEngineHumainConfigTranscriptionEngine = "Humain"
+)
+
+// The model to use for transcription.
+type TranscriptionEngineHumainConfigTranscriptionModel string
+
+const (
+	TranscriptionEngineHumainConfigTranscriptionModelHumainRealtime TranscriptionEngineHumainConfigTranscriptionModel = "humain/realtime"
+)
+
 type TranscriptionEngineParakeetConfigParam struct {
 	// Whether to send also interim results. If set to false, only final results will
 	// be sent.
@@ -2428,7 +2478,7 @@ type TranscriptionStartRequestTranscriptionEngineConfigUnionParam struct {
 	OfSpeechmatics  *TranscriptionEngineSpeechmaticsConfigParam                    `json:",omitzero,inline"`
 	OfSoniox        *TranscriptionEngineSonioxConfigParam                          `json:",omitzero,inline"`
 	OfParakeet      *TranscriptionEngineParakeetConfigParam                        `json:",omitzero,inline"`
-	OfHumain        *TranscriptionStartRequestTranscriptionEngineConfigHumainParam `json:",omitzero,inline"`
+	OfHumain        *TranscriptionEngineHumainConfigParam                          `json:",omitzero,inline"`
 	OfReson8        *TranscriptionStartRequestTranscriptionEngineConfigReson8Param `json:",omitzero,inline"`
 	OfA             *TranscriptionEngineAConfigParam                               `json:",omitzero,inline"`
 	OfB             *TranscriptionEngineBConfigParam                               `json:",omitzero,inline"`
@@ -2789,49 +2839,12 @@ func init() {
 		apijson.Discriminator[TranscriptionEngineSpeechmaticsConfigParam]("Speechmatics"),
 		apijson.Discriminator[TranscriptionEngineSonioxConfigParam]("Soniox"),
 		apijson.Discriminator[TranscriptionEngineParakeetConfigParam]("Parakeet"),
-		apijson.Discriminator[TranscriptionStartRequestTranscriptionEngineConfigHumainParam]("Humain"),
+		apijson.Discriminator[TranscriptionEngineHumainConfigParam]("Humain"),
 		apijson.Discriminator[TranscriptionStartRequestTranscriptionEngineConfigReson8Param]("Reson8"),
 		apijson.Discriminator[TranscriptionEngineAConfigParam]("A"),
 		apijson.Discriminator[TranscriptionEngineBConfigParam]("B"),
 		apijson.Discriminator[DeepgramNova2ConfigParam]("deepgram/nova-2"),
 		apijson.Discriminator[DeepgramNova3ConfigParam]("deepgram/nova-3"),
-	)
-}
-
-type TranscriptionStartRequestTranscriptionEngineConfigHumainParam struct {
-	// The language of the audio to be transcribed. `codeswitch` enables Arabic/English
-	// code-switching. `auto` resolves server-side to code-switching.
-	//
-	// Any of "ar", "en", "codeswitch", "auto".
-	Language string `json:"language,omitzero"`
-	// Engine identifier for Humain transcription service
-	//
-	// Any of "Humain".
-	TranscriptionEngine string `json:"transcription_engine,omitzero"`
-	// The model to use for transcription.
-	//
-	// Any of "humain/realtime".
-	TranscriptionModel string `json:"transcription_model,omitzero"`
-	paramObj
-}
-
-func (r TranscriptionStartRequestTranscriptionEngineConfigHumainParam) MarshalJSON() (data []byte, err error) {
-	type shadow TranscriptionStartRequestTranscriptionEngineConfigHumainParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *TranscriptionStartRequestTranscriptionEngineConfigHumainParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigHumainParam](
-		"language", "ar", "en", "codeswitch", "auto",
-	)
-	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigHumainParam](
-		"transcription_engine", "Humain",
-	)
-	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigHumainParam](
-		"transcription_model", "humain/realtime",
 	)
 }
 

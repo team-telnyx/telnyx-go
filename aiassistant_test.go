@@ -31,7 +31,7 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 		Name:         "name",
 		ConversationFlow: telnyx.ConversationFlowReqParam{
 			Nodes: []telnyx.ConversationFlowReqNodesUnionParam{{
-				OfPrompt: &telnyx.ConversationFlowReqNodesPromptParam{
+				OfPrompt: &telnyx.FlowNodeReqParam{
 					ID:           "n_intake",
 					Instructions: "Greet the caller and ask what they're calling about.",
 					ExternalLlm: telnyx.ExternalLlmReqParam{
@@ -43,7 +43,7 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 						LlmAPIKeyRef:         telnyx.String("llm_api_key_ref"),
 						TokenRetrievalURL:    telnyx.String("token_retrieval_url"),
 					},
-					InstructionsMode: "replace",
+					InstructionsMode: telnyx.FlowNodeReqInstructionsModeReplace,
 					LlmAPIKeyRef:     telnyx.String("my-key-ref"),
 					Model:            telnyx.String("moonshotai/Kimi-K2.6"),
 					Name:             telnyx.String("Intake"),
@@ -52,7 +52,7 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 						Y: 80,
 					},
 					SharedToolIDs: []string{"tool-faq-kb"},
-					ToolsMode:     "replace",
+					ToolsMode:     telnyx.FlowNodeReqToolsModeReplace,
 					Transcription: telnyx.TranscriptionSettingsParam{
 						APIKeyRef: telnyx.String("api_key_ref"),
 						Language:  telnyx.String("language"),
@@ -73,7 +73,7 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 							SmartFormat:                  telnyx.Bool(true),
 						},
 					},
-					Type: "prompt",
+					Type: telnyx.FlowNodeReqTypePrompt,
 					VoiceSettings: telnyx.VoiceSettingsParam{
 						Voice:     "voice",
 						APIKeyRef: telnyx.String("api_key_ref"),
@@ -94,7 +94,7 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 					},
 				},
 			}, {
-				OfPrompt: &telnyx.ConversationFlowReqNodesPromptParam{
+				OfPrompt: &telnyx.FlowNodeReqParam{
 					ID:           "n_billing",
 					Instructions: "Focus on billing questions. Look up the caller's latest invoice with the billing tool before answering.",
 					ExternalLlm: telnyx.ExternalLlmReqParam{
@@ -106,7 +106,7 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 						LlmAPIKeyRef:         telnyx.String("llm_api_key_ref"),
 						TokenRetrievalURL:    telnyx.String("token_retrieval_url"),
 					},
-					InstructionsMode: "append",
+					InstructionsMode: telnyx.FlowNodeReqInstructionsModeAppend,
 					LlmAPIKeyRef:     telnyx.String("my-key-ref"),
 					Model:            telnyx.String("moonshotai/Kimi-K2.6"),
 					Name:             telnyx.String("Billing"),
@@ -115,7 +115,7 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 						Y: 80,
 					},
 					SharedToolIDs: []string{"tool-billing-lookup"},
-					ToolsMode:     "append",
+					ToolsMode:     telnyx.FlowNodeReqToolsModeAppend,
 					Transcription: telnyx.TranscriptionSettingsParam{
 						APIKeyRef: telnyx.String("api_key_ref"),
 						Language:  telnyx.String("language"),
@@ -136,7 +136,7 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 							SmartFormat:                  telnyx.Bool(true),
 						},
 					},
-					Type: "prompt",
+					Type: telnyx.FlowNodeReqTypePrompt,
 					VoiceSettings: telnyx.VoiceSettingsParam{
 						Voice:     "voice",
 						APIKeyRef: telnyx.String("api_key_ref"),
@@ -469,7 +469,7 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 		telnyx.AIAssistantUpdateParams{
 			ConversationFlow: telnyx.ConversationFlowReqParam{
 				Nodes: []telnyx.ConversationFlowReqNodesUnionParam{{
-					OfPrompt: &telnyx.ConversationFlowReqNodesPromptParam{
+					OfPrompt: &telnyx.FlowNodeReqParam{
 						ID:           "n_intake",
 						Instructions: "Greet the caller and ask what they're calling about.",
 						ExternalLlm: telnyx.ExternalLlmReqParam{
@@ -481,7 +481,7 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 							LlmAPIKeyRef:         telnyx.String("llm_api_key_ref"),
 							TokenRetrievalURL:    telnyx.String("token_retrieval_url"),
 						},
-						InstructionsMode: "replace",
+						InstructionsMode: telnyx.FlowNodeReqInstructionsModeReplace,
 						LlmAPIKeyRef:     telnyx.String("my-key-ref"),
 						Model:            telnyx.String("moonshotai/Kimi-K2.6"),
 						Name:             telnyx.String("Intake"),
@@ -490,7 +490,7 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 							Y: 80,
 						},
 						SharedToolIDs: []string{"tool-faq-kb"},
-						ToolsMode:     "replace",
+						ToolsMode:     telnyx.FlowNodeReqToolsModeReplace,
 						Transcription: telnyx.TranscriptionSettingsParam{
 							APIKeyRef: telnyx.String("api_key_ref"),
 							Language:  telnyx.String("language"),
@@ -511,7 +511,7 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 								SmartFormat:                  telnyx.Bool(true),
 							},
 						},
-						Type: "prompt",
+						Type: telnyx.FlowNodeReqTypePrompt,
 						VoiceSettings: telnyx.VoiceSettingsParam{
 							Voice:     "voice",
 							APIKeyRef: telnyx.String("api_key_ref"),
@@ -532,7 +532,7 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 						},
 					},
 				}, {
-					OfPrompt: &telnyx.ConversationFlowReqNodesPromptParam{
+					OfPrompt: &telnyx.FlowNodeReqParam{
 						ID:           "n_billing",
 						Instructions: "Focus on billing questions. Look up the caller's latest invoice with the billing tool before answering.",
 						ExternalLlm: telnyx.ExternalLlmReqParam{
@@ -544,7 +544,7 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 							LlmAPIKeyRef:         telnyx.String("llm_api_key_ref"),
 							TokenRetrievalURL:    telnyx.String("token_retrieval_url"),
 						},
-						InstructionsMode: "append",
+						InstructionsMode: telnyx.FlowNodeReqInstructionsModeAppend,
 						LlmAPIKeyRef:     telnyx.String("my-key-ref"),
 						Model:            telnyx.String("moonshotai/Kimi-K2.6"),
 						Name:             telnyx.String("Billing"),
@@ -553,7 +553,7 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 							Y: 80,
 						},
 						SharedToolIDs: []string{"tool-billing-lookup"},
-						ToolsMode:     "append",
+						ToolsMode:     telnyx.FlowNodeReqToolsModeAppend,
 						Transcription: telnyx.TranscriptionSettingsParam{
 							APIKeyRef: telnyx.String("api_key_ref"),
 							Language:  telnyx.String("language"),
@@ -574,7 +574,7 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 								SmartFormat:                  telnyx.Bool(true),
 							},
 						},
-						Type: "prompt",
+						Type: telnyx.FlowNodeReqTypePrompt,
 						VoiceSettings: telnyx.VoiceSettingsParam{
 							Voice:     "voice",
 							APIKeyRef: telnyx.String("api_key_ref"),
