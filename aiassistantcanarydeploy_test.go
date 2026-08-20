@@ -46,6 +46,7 @@ func TestAIAssistantCanaryDeployNewWithOptionalParams(t *testing.T) {
 					}},
 				}},
 			},
+			IdempotencyKey: telnyx.String("8e03978e-40d5-43e8-bc93-6894a57f9326"),
 		},
 	)
 	if err != nil {

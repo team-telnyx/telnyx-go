@@ -407,6 +407,7 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 			Theme:                telnyx.WidgetSettingsThemeLight,
 			ViewHistoryURL:       telnyx.String("view_history_url"),
 		},
+		IdempotencyKey: telnyx.String("8e03978e-40d5-43e8-bc93-6894a57f9326"),
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -937,7 +938,7 @@ func TestAIAssistantChatWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestAIAssistantClone(t *testing.T) {
+func TestAIAssistantCloneWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -950,7 +951,13 @@ func TestAIAssistantClone(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.AI.Assistants.Clone(context.TODO(), "assistant_id")
+	_, err := client.AI.Assistants.Clone(
+		context.TODO(),
+		"assistant_id",
+		telnyx.AIAssistantCloneParams{
+			IdempotencyKey: telnyx.String("8e03978e-40d5-43e8-bc93-6894a57f9326"),
+		},
+	)
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
@@ -997,9 +1004,10 @@ func TestAIAssistantImportsWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.AI.Assistants.Imports(context.TODO(), telnyx.AIAssistantImportsParams{
-		APIKeyRef: "string",
-		Provider:  telnyx.AIAssistantImportsParamsProviderElevenlabs,
-		ImportIDs: []string{"string"},
+		APIKeyRef:      "string",
+		Provider:       telnyx.AIAssistantImportsParamsProviderElevenlabs,
+		ImportIDs:      []string{"string"},
+		IdempotencyKey: telnyx.String("8e03978e-40d5-43e8-bc93-6894a57f9326"),
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -1036,6 +1044,7 @@ func TestAIAssistantSendSMSWithOptionalParams(t *testing.T) {
 			},
 			ShouldCreateConversation: telnyx.Bool(false),
 			Text:                     telnyx.String("Text"),
+			IdempotencyKey:           telnyx.String("8e03978e-40d5-43e8-bc93-6894a57f9326"),
 		},
 	)
 	if err != nil {

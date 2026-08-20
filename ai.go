@@ -4,6 +4,7 @@ package telnyx
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"net/url"
 	"slices"
@@ -138,10 +139,13 @@ func (r *AIService) GetConversationHistories(ctx context.Context, query AIGetCon
 //
 // - flac, mp3, mp4, mpeg, mpga, m4a, ogg, wav, or webm
 // - Up to 100 MB
-func (r *AIService) Summarize(ctx context.Context, body AISummarizeParams, opts ...option.RequestOption) (res *AISummarizeResponse, err error) {
+func (r *AIService) Summarize(ctx context.Context, params AISummarizeParams, opts ...option.RequestOption) (res *AISummarizeResponse, err error) {
+	if !param.IsOmitted(params.IdempotencyKey) {
+		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/summarize"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
 
@@ -488,7 +492,8 @@ type AISummarizeParams struct {
 	// The name of the file to be summarized.
 	Filename string `json:"filename" api:"required"`
 	// A system prompt to guide the summary generation.
-	SystemPrompt param.Opt[string] `json:"system_prompt,omitzero"`
+	SystemPrompt   param.Opt[string] `json:"system_prompt,omitzero"`
+	IdempotencyKey param.Opt[string] `header:"Idempotency-Key,omitzero" json:"-"`
 	paramObj
 }
 

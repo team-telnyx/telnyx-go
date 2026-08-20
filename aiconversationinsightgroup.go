@@ -84,10 +84,13 @@ func (r *AIConversationInsightGroupService) Delete(ctx context.Context, groupID 
 
 // Creates a new insight template group for organizing related insight templates,
 // and returns the created group.
-func (r *AIConversationInsightGroupService) InsightGroups(ctx context.Context, body AIConversationInsightGroupInsightGroupsParams, opts ...option.RequestOption) (res *InsightTemplateGroupDetail, err error) {
+func (r *AIConversationInsightGroupService) InsightGroups(ctx context.Context, params AIConversationInsightGroupInsightGroupsParams, opts ...option.RequestOption) (res *InsightTemplateGroupDetail, err error) {
+	if !param.IsOmitted(params.IdempotencyKey) {
+		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/conversations/insight-groups"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
 
@@ -176,9 +179,10 @@ func (r *AIConversationInsightGroupUpdateParams) UnmarshalJSON(data []byte) erro
 }
 
 type AIConversationInsightGroupInsightGroupsParams struct {
-	Name        string            `json:"name" api:"required"`
-	Description param.Opt[string] `json:"description,omitzero"`
-	Webhook     param.Opt[string] `json:"webhook,omitzero"`
+	Name           string            `json:"name" api:"required"`
+	Description    param.Opt[string] `json:"description,omitzero"`
+	Webhook        param.Opt[string] `json:"webhook,omitzero"`
+	IdempotencyKey param.Opt[string] `header:"Idempotency-Key,omitzero" json:"-"`
 	paramObj
 }
 

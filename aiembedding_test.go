@@ -32,6 +32,7 @@ func TestAIEmbeddingNewWithOptionalParams(t *testing.T) {
 		DocumentChunkSize:        telnyx.Int(1024),
 		EmbeddingModel:           telnyx.AIEmbeddingNewParamsEmbeddingModelThenlperGteLarge,
 		Loader:                   telnyx.AIEmbeddingNewParamsLoaderDefault,
+		IdempotencyKey:           telnyx.String("8e03978e-40d5-43e8-bc93-6894a57f9326"),
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -117,7 +118,7 @@ func TestAIEmbeddingSimilaritySearchWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestAIEmbeddingURL(t *testing.T) {
+func TestAIEmbeddingURLWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -131,8 +132,9 @@ func TestAIEmbeddingURL(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.AI.Embeddings.URL(context.TODO(), telnyx.AIEmbeddingURLParams{
-		BucketName: "Bucket Name",
-		URL:        "URL",
+		BucketName:     "Bucket Name",
+		URL:            "URL",
+		IdempotencyKey: telnyx.String("8e03978e-40d5-43e8-bc93-6894a57f9326"),
 	})
 	if err != nil {
 		var apierr *telnyx.Error

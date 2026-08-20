@@ -44,14 +44,17 @@ func NewAIAssistantCanaryDeployService(opts ...option.RequestOption) (r AIAssist
 //
 // Creates a new canary deploy configuration with multiple version IDs and their
 // traffic percentages for A/B testing or gradual rollouts of assistant versions.
-func (r *AIAssistantCanaryDeployService) New(ctx context.Context, assistantID string, body AIAssistantCanaryDeployNewParams, opts ...option.RequestOption) (res *CanaryDeployResponse, err error) {
+func (r *AIAssistantCanaryDeployService) New(ctx context.Context, assistantID string, params AIAssistantCanaryDeployNewParams, opts ...option.RequestOption) (res *CanaryDeployResponse, err error) {
+	if !param.IsOmitted(params.IdempotencyKey) {
+		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	if assistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
 		return nil, err
 	}
 	path := fmt.Sprintf("ai/assistants/%s/canary-deploys", assistantID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
 
@@ -371,7 +374,8 @@ type AIAssistantCanaryDeployNewParams struct {
 	// Create/update request body. Accepts:
 	//
 	// - `rules` — canonical ordered list of routing rules
-	CanaryDeploy CanaryDeployParam
+	CanaryDeploy   CanaryDeployParam
+	IdempotencyKey param.Opt[string] `header:"Idempotency-Key,omitzero" json:"-"`
 	paramObj
 }
 

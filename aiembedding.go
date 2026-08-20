@@ -72,10 +72,13 @@ func NewAIEmbeddingService(opts ...option.RequestOption) (r AIEmbeddingService) 
 // parameters relevant to Intercom docs, such as `article_url` and `heading`. These
 // values will be returned by the `/v2/ai/embeddings/similarity-search` endpoint in
 // the `loader_metadata` field.
-func (r *AIEmbeddingService) New(ctx context.Context, body AIEmbeddingNewParams, opts ...option.RequestOption) (res *EmbeddingResponse, err error) {
+func (r *AIEmbeddingService) New(ctx context.Context, params AIEmbeddingNewParams, opts ...option.RequestOption) (res *EmbeddingResponse, err error) {
+	if !param.IsOmitted(params.IdempotencyKey) {
+		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/embeddings"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
 
@@ -135,10 +138,13 @@ func (r *AIEmbeddingService) SimilaritySearch(ctx context.Context, body AIEmbedd
 // embeddings, that can be used for
 // [similarity search](https://developers.telnyx.com/api-reference/embeddings/search-for-documents)
 // and [clustering](https://developers.telnyx.com/docs/inference/clusters).
-func (r *AIEmbeddingService) URL(ctx context.Context, body AIEmbeddingURLParams, opts ...option.RequestOption) (res *EmbeddingResponse, err error) {
+func (r *AIEmbeddingService) URL(ctx context.Context, params AIEmbeddingURLParams, opts ...option.RequestOption) (res *EmbeddingResponse, err error) {
+	if !param.IsOmitted(params.IdempotencyKey) {
+		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/embeddings/url"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
 
@@ -354,9 +360,10 @@ func (r *AIEmbeddingSimilaritySearchResponseDataMetadata) UnmarshalJSON(data []b
 }
 
 type AIEmbeddingNewParams struct {
-	BucketName               string           `json:"bucket_name" api:"required"`
-	DocumentChunkOverlapSize param.Opt[int64] `json:"document_chunk_overlap_size,omitzero"`
-	DocumentChunkSize        param.Opt[int64] `json:"document_chunk_size,omitzero"`
+	BucketName               string            `json:"bucket_name" api:"required"`
+	DocumentChunkOverlapSize param.Opt[int64]  `json:"document_chunk_overlap_size,omitzero"`
+	DocumentChunkSize        param.Opt[int64]  `json:"document_chunk_size,omitzero"`
+	IdempotencyKey           param.Opt[string] `header:"Idempotency-Key,omitzero" json:"-"`
 	// Supported models to vectorize and embed documents.
 	//
 	// Any of "thenlper/gte-large", "intfloat/multilingual-e5-large".
@@ -425,7 +432,8 @@ type AIEmbeddingURLParams struct {
 	// Name of the bucket to store the embeddings. This bucket must already exist.
 	BucketName string `json:"bucket_name" api:"required"`
 	// The URL of the webpage to embed
-	URL string `json:"url" api:"required"`
+	URL            string            `json:"url" api:"required"`
+	IdempotencyKey param.Opt[string] `header:"Idempotency-Key,omitzero" json:"-"`
 	paramObj
 }
 

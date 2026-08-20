@@ -28,11 +28,12 @@ func TestAIMcpServerNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.AI.McpServers.New(context.TODO(), telnyx.AIMcpServerNewParams{
-		Name:         "Name",
-		Type:         "Type",
-		URL:          "Url",
-		AllowedTools: []string{"string"},
-		APIKeyRef:    telnyx.String("api_key_ref"),
+		Name:           "Name",
+		Type:           "Type",
+		URL:            "Url",
+		AllowedTools:   []string{"string"},
+		APIKeyRef:      telnyx.String("api_key_ref"),
+		IdempotencyKey: telnyx.String("8e03978e-40d5-43e8-bc93-6894a57f9326"),
 	})
 	if err != nil {
 		var apierr *telnyx.Error

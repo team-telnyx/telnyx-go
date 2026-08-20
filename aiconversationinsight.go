@@ -44,10 +44,13 @@ func NewAIConversationInsightService(opts ...option.RequestOption) (r AIConversa
 
 // Creates a new insight template defining an analysis to run over conversations,
 // and returns the created template.
-func (r *AIConversationInsightService) New(ctx context.Context, body AIConversationInsightNewParams, opts ...option.RequestOption) (res *InsightTemplateDetail, err error) {
+func (r *AIConversationInsightService) New(ctx context.Context, params AIConversationInsightNewParams, opts ...option.RequestOption) (res *InsightTemplateDetail, err error) {
+	if !param.IsOmitted(params.IdempotencyKey) {
+		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/conversations/insights"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
 
@@ -204,9 +207,10 @@ func (r *InsightTemplateDetail) UnmarshalJSON(data []byte) error {
 }
 
 type AIConversationInsightNewParams struct {
-	Instructions string            `json:"instructions" api:"required"`
-	Name         string            `json:"name" api:"required"`
-	Webhook      param.Opt[string] `json:"webhook,omitzero"`
+	Instructions   string            `json:"instructions" api:"required"`
+	Name           string            `json:"name" api:"required"`
+	Webhook        param.Opt[string] `json:"webhook,omitzero"`
+	IdempotencyKey param.Opt[string] `header:"Idempotency-Key,omitzero" json:"-"`
 	// If specified, the output will follow the JSON schema.
 	JsonSchema AIConversationInsightNewParamsJsonSchemaUnion `json:"json_schema,omitzero"`
 	paramObj

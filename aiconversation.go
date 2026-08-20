@@ -54,10 +54,13 @@ func NewAIConversationService(opts ...option.RequestOption) (r AIConversationSer
 
 // Creates a new AI conversation, the container for messages exchanged with an
 // assistant, and returns the created conversation.
-func (r *AIConversationService) New(ctx context.Context, body AIConversationNewParams, opts ...option.RequestOption) (res *Conversation, err error) {
+func (r *AIConversationService) New(ctx context.Context, params AIConversationNewParams, opts ...option.RequestOption) (res *Conversation, err error) {
+	if !param.IsOmitted(params.IdempotencyKey) {
+		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/conversations"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
 
@@ -112,7 +115,10 @@ func (r *AIConversationService) Delete(ctx context.Context, conversationID strin
 
 // Add a new message to the conversation. Used to insert a new messages to a
 // conversation manually ( without using chat endpoint )
-func (r *AIConversationService) AddMessage(ctx context.Context, conversationID string, body AIConversationAddMessageParams, opts ...option.RequestOption) (err error) {
+func (r *AIConversationService) AddMessage(ctx context.Context, conversationID string, params AIConversationAddMessageParams, opts ...option.RequestOption) (err error) {
+	if !param.IsOmitted(params.IdempotencyKey) {
+		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if conversationID == "" {
@@ -120,7 +126,7 @@ func (r *AIConversationService) AddMessage(ctx context.Context, conversationID s
 		return err
 	}
 	path := fmt.Sprintf("ai/conversations/%s/message", conversationID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, nil, opts...)
 	return err
 }
 
@@ -287,7 +293,8 @@ func (r *AIConversationGetConversationsInsightsResponseDataConversationInsight) 
 }
 
 type AIConversationNewParams struct {
-	Name param.Opt[string] `json:"name,omitzero"`
+	Name           param.Opt[string] `json:"name,omitzero"`
+	IdempotencyKey param.Opt[string] `header:"Idempotency-Key,omitzero" json:"-"`
 	// Metadata associated with the conversation. Set `ai_disabled` to `true` to create
 	// the conversation with AI message responses disabled.
 	Metadata map[string]string `json:"metadata,omitzero"`
@@ -361,14 +368,15 @@ func (r AIConversationListParams) URLQuery() (v url.Values, err error) {
 }
 
 type AIConversationAddMessageParams struct {
-	Role       string                                                 `json:"role" api:"required"`
-	Content    param.Opt[string]                                      `json:"content,omitzero"`
-	Name       param.Opt[string]                                      `json:"name,omitzero"`
-	SentAt     param.Opt[time.Time]                                   `json:"sent_at,omitzero" format:"date-time"`
-	ToolCallID param.Opt[string]                                      `json:"tool_call_id,omitzero"`
-	Metadata   map[string]AIConversationAddMessageParamsMetadataUnion `json:"metadata,omitzero"`
-	ToolCalls  []map[string]any                                       `json:"tool_calls,omitzero"`
-	ToolChoice AIConversationAddMessageParamsToolChoiceUnion          `json:"tool_choice,omitzero"`
+	Role           string                                                 `json:"role" api:"required"`
+	Content        param.Opt[string]                                      `json:"content,omitzero"`
+	Name           param.Opt[string]                                      `json:"name,omitzero"`
+	SentAt         param.Opt[time.Time]                                   `json:"sent_at,omitzero" format:"date-time"`
+	ToolCallID     param.Opt[string]                                      `json:"tool_call_id,omitzero"`
+	IdempotencyKey param.Opt[string]                                      `header:"Idempotency-Key,omitzero" json:"-"`
+	Metadata       map[string]AIConversationAddMessageParamsMetadataUnion `json:"metadata,omitzero"`
+	ToolCalls      []map[string]any                                       `json:"tool_calls,omitzero"`
+	ToolChoice     AIConversationAddMessageParamsToolChoiceUnion          `json:"tool_choice,omitzero"`
 	paramObj
 }
 

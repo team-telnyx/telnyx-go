@@ -66,10 +66,13 @@ func NewAIAssistantService(opts ...option.RequestOption) (r AIAssistantService) 
 
 // Creates a new AI assistant from the provided configuration, including its model,
 // instructions, and attached tools, and returns the created assistant.
-func (r *AIAssistantService) New(ctx context.Context, body AIAssistantNewParams, opts ...option.RequestOption) (res *InferenceEmbedding, err error) {
+func (r *AIAssistantService) New(ctx context.Context, params AIAssistantNewParams, opts ...option.RequestOption) (res *InferenceEmbedding, err error) {
+	if !param.IsOmitted(params.IdempotencyKey) {
+		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/assistants"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
 
@@ -139,7 +142,10 @@ func (r *AIAssistantService) Chat(ctx context.Context, assistantID string, body 
 }
 
 // Clone an existing assistant, excluding telephony and messaging settings.
-func (r *AIAssistantService) Clone(ctx context.Context, assistantID string, opts ...option.RequestOption) (res *InferenceEmbedding, err error) {
+func (r *AIAssistantService) Clone(ctx context.Context, assistantID string, body AIAssistantCloneParams, opts ...option.RequestOption) (res *InferenceEmbedding, err error) {
+	if !param.IsOmitted(body.IdempotencyKey) {
+		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", body.IdempotencyKey.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	if assistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
@@ -165,10 +171,13 @@ func (r *AIAssistantService) GetTexml(ctx context.Context, assistantID string, o
 // Import assistants from external providers. Any assistant that has already been
 // imported will be overwritten with its latest version from the importing
 // provider.
-func (r *AIAssistantService) Imports(ctx context.Context, body AIAssistantImportsParams, opts ...option.RequestOption) (res *AssistantsList, err error) {
+func (r *AIAssistantService) Imports(ctx context.Context, params AIAssistantImportsParams, opts ...option.RequestOption) (res *AssistantsList, err error) {
+	if !param.IsOmitted(params.IdempotencyKey) {
+		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/assistants/import"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
 
@@ -183,14 +192,17 @@ func (r *AIAssistantService) Imports(ctx context.Context, body AIAssistantImport
 //     generate the text to send.)
 //  4. Updates conversation metadata if provided
 //  5. Returns the conversation ID
-func (r *AIAssistantService) SendSMS(ctx context.Context, assistantID string, body AIAssistantSendSMSParams, opts ...option.RequestOption) (res *AIAssistantSendSMSResponse, err error) {
+func (r *AIAssistantService) SendSMS(ctx context.Context, assistantID string, params AIAssistantSendSMSParams, opts ...option.RequestOption) (res *AIAssistantSendSMSResponse, err error) {
+	if !param.IsOmitted(params.IdempotencyKey) {
+		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	if assistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
 		return nil, err
 	}
 	path := fmt.Sprintf("ai/assistants/%s/chat/sms", assistantID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
 
@@ -7292,7 +7304,8 @@ type AIAssistantNewParams struct {
 	// to see available models. If `external_llm` is provided, the assistant uses
 	// `external_llm` instead of this field. If neither `model` nor `external_llm` is
 	// provided, Telnyx applies the default model.
-	Model param.Opt[string] `json:"model,omitzero"`
+	Model          param.Opt[string] `json:"model,omitzero"`
+	IdempotencyKey param.Opt[string] `header:"Idempotency-Key,omitzero" json:"-"`
 	// Conversation flow as supplied by API clients (create / update).
 	//
 	// A directed graph of `FlowNodeReq` connected by `FlowEdge`s. Validation enforces
@@ -7508,6 +7521,11 @@ func (r *AIAssistantChatParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type AIAssistantCloneParams struct {
+	IdempotencyKey param.Opt[string] `header:"Idempotency-Key,omitzero" json:"-"`
+	paramObj
+}
+
 type AIAssistantImportsParams struct {
 	// Integration secret pointer that refers to the API key for the external provider.
 	// This should be an identifier for an integration secret created via
@@ -7516,7 +7534,8 @@ type AIAssistantImportsParams struct {
 	// The external provider to import assistants from.
 	//
 	// Any of "elevenlabs", "vapi", "retell".
-	Provider AIAssistantImportsParamsProvider `json:"provider,omitzero" api:"required"`
+	Provider       AIAssistantImportsParamsProvider `json:"provider,omitzero" api:"required"`
+	IdempotencyKey param.Opt[string]                `header:"Idempotency-Key,omitzero" json:"-"`
 	// Optional list of assistant IDs to import from the external provider. If not
 	// provided, all assistants will be imported.
 	ImportIDs []string `json:"import_ids,omitzero"`
@@ -7545,6 +7564,7 @@ type AIAssistantSendSMSParams struct {
 	To                       string                                                       `json:"to" api:"required"`
 	ShouldCreateConversation param.Opt[bool]                                              `json:"should_create_conversation,omitzero"`
 	Text                     param.Opt[string]                                            `json:"text,omitzero"`
+	IdempotencyKey           param.Opt[string]                                            `header:"Idempotency-Key,omitzero" json:"-"`
 	ConversationMetadata     map[string]AIAssistantSendSMSParamsConversationMetadataUnion `json:"conversation_metadata,omitzero"`
 	paramObj
 }

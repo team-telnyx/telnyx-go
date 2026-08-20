@@ -41,10 +41,13 @@ func NewAIMcpServerService(opts ...option.RequestOption) (r AIMcpServerService) 
 
 // Creates a new MCP server configuration on your account and returns the created
 // server.
-func (r *AIMcpServerService) New(ctx context.Context, body AIMcpServerNewParams, opts ...option.RequestOption) (res *McpServer, err error) {
+func (r *AIMcpServerService) New(ctx context.Context, params AIMcpServerNewParams, opts ...option.RequestOption) (res *McpServer, err error) {
+	if !param.IsOmitted(params.IdempotencyKey) {
+		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/mcp_servers"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
 
@@ -139,11 +142,12 @@ func (r *McpServer) UnmarshalJSON(data []byte) error {
 }
 
 type AIMcpServerNewParams struct {
-	Name         string            `json:"name" api:"required"`
-	Type         string            `json:"type" api:"required"`
-	URL          string            `json:"url" api:"required"`
-	APIKeyRef    param.Opt[string] `json:"api_key_ref,omitzero"`
-	AllowedTools []string          `json:"allowed_tools,omitzero"`
+	Name           string            `json:"name" api:"required"`
+	Type           string            `json:"type" api:"required"`
+	URL            string            `json:"url" api:"required"`
+	APIKeyRef      param.Opt[string] `json:"api_key_ref,omitzero"`
+	IdempotencyKey param.Opt[string] `header:"Idempotency-Key,omitzero" json:"-"`
+	AllowedTools   []string          `json:"allowed_tools,omitzero"`
 	paramObj
 }
 
