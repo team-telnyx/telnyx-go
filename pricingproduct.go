@@ -46,15 +46,34 @@ func NewPricingProductService(opts ...option.RequestOption) (r PricingProductSer
 // Inference products return model-specific fields (model, input_rate, output_rate,
 // cached_input_rate) with tiered pricing. Some products use rate decks
 // (pricing_type: rate_deck) where rates are determined dynamically.
-func (r *PricingProductService) Get(ctx context.Context, slug string, query PricingProductGetParams, opts ...option.RequestOption) (res *PricingProductGetResponse, err error) {
+func (r *PricingProductService) Get(ctx context.Context, slug string, query PricingProductGetParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[PricingProductGetResponse], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if slug == "" {
 		err = errors.New("missing required slug parameter")
 		return nil, err
 	}
 	path := fmt.Sprintf("pricing/products/%s", slug)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Returns pricing entries for a single product. Most products return standard rate
+// entries with fields like rate, unit, country_iso, direction, and tiers.
+// Inference products return model-specific fields (model, input_rate, output_rate,
+// cached_input_rate) with tiered pricing. Some products use rate decks
+// (pricing_type: rate_deck) where rates are determined dynamically.
+func (r *PricingProductService) GetAutoPaging(ctx context.Context, slug string, query PricingProductGetParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[PricingProductGetResponse] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.Get(ctx, slug, query, opts...))
 }
 
 // Returns the full product catalog with pagination. Each entry contains a slug,
@@ -166,29 +185,11 @@ func (r *PricingTierRateUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type PricingProductGetResponse struct {
-	Data []PricingProductGetResponseData `json:"data" api:"required"`
-	Meta PricingPaginationMeta           `json:"meta" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PricingProductGetResponse) RawJSON() string { return r.JSON.raw }
-func (r *PricingProductGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // A single pricing entry. Standard products include rate, unit, currency, type,
 // country_iso, direction, and tiers. Inference products include model, input_rate,
 // output_rate, cached_input_rate, and their respective tier arrays. Rate-deck
 // products include pricing_type and note fields with null rate and empty tiers.
-type PricingProductGetResponseData struct {
+type PricingProductGetResponse struct {
 	// Cached input token rate. Present only on inference product entries.
 	CachedInputRate string `json:"cached_input_rate"`
 	// Cached input token tiered pricing. Present only on inference product entries.
@@ -219,7 +220,7 @@ type PricingProductGetResponseData struct {
 	PricingType string `json:"pricing_type" api:"nullable"`
 	// Per-unit rate. Numeric for standard products, string for inference products.
 	// Null for rate-deck products.
-	Rate PricingProductGetResponseDataRateUnion `json:"rate" api:"nullable"`
+	Rate PricingProductGetResponseRateUnion `json:"rate" api:"nullable"`
 	// Volume-based tiered pricing. Empty for rate-deck products.
 	Tiers []PricingTier `json:"tiers"`
 	// Pricing type (e.g., usage).
@@ -251,19 +252,19 @@ type PricingProductGetResponseData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r PricingProductGetResponseData) RawJSON() string { return r.JSON.raw }
-func (r *PricingProductGetResponseData) UnmarshalJSON(data []byte) error {
+func (r PricingProductGetResponse) RawJSON() string { return r.JSON.raw }
+func (r *PricingProductGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// PricingProductGetResponseDataRateUnion contains all possible properties and
-// values from [float64], [string].
+// PricingProductGetResponseRateUnion contains all possible properties and values
+// from [float64], [string].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 //
 // If the underlying value is not a json object, one of the following properties
 // will be valid: OfFloat OfString]
-type PricingProductGetResponseDataRateUnion struct {
+type PricingProductGetResponseRateUnion struct {
 	// This field will be present if the value is a [float64] instead of an object.
 	OfFloat float64 `json:",inline"`
 	// This field will be present if the value is a [string] instead of an object.
@@ -275,20 +276,20 @@ type PricingProductGetResponseDataRateUnion struct {
 	} `json:"-"`
 }
 
-func (u PricingProductGetResponseDataRateUnion) AsFloat() (v float64) {
+func (u PricingProductGetResponseRateUnion) AsFloat() (v float64) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u PricingProductGetResponseDataRateUnion) AsString() (v string) {
+func (u PricingProductGetResponseRateUnion) AsString() (v string) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
 // Returns the unmodified JSON received from the API
-func (u PricingProductGetResponseDataRateUnion) RawJSON() string { return u.JSON.raw }
+func (u PricingProductGetResponseRateUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *PricingProductGetResponseDataRateUnion) UnmarshalJSON(data []byte) error {
+func (r *PricingProductGetResponseRateUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

@@ -17,6 +17,7 @@ import (
 	shimjson "github.com/team-telnyx/telnyx-go/v4/internal/encoding/json"
 	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
@@ -101,15 +102,31 @@ func (r *EmailInboxDraftService) Update(ctx context.Context, draftID string, par
 
 // Lists drafts newest first using stable cursor pagination. All access is scoped
 // to the authenticated account and the given inbox.
-func (r *EmailInboxDraftService) List(ctx context.Context, inboxID string, query EmailInboxDraftListParams, opts ...option.RequestOption) (res *EmailInboxDraftListResponse, err error) {
+func (r *EmailInboxDraftService) List(ctx context.Context, inboxID string, query EmailInboxDraftListParams, opts ...option.RequestOption) (res *pagination.EmailBracketCursorPagination[EmailDraft], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if inboxID == "" {
 		err = errors.New("missing required inbox_id parameter")
 		return nil, err
 	}
 	path := fmt.Sprintf("email_inboxes/%s/drafts", inboxID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Lists drafts newest first using stable cursor pagination. All access is scoped
+// to the authenticated account and the given inbox.
+func (r *EmailInboxDraftService) ListAutoPaging(ctx context.Context, inboxID string, query EmailInboxDraftListParams, opts ...option.RequestOption) *pagination.EmailBracketCursorPaginationAutoPager[EmailDraft] {
+	return pagination.NewEmailBracketCursorPaginationAutoPager(r.List(ctx, inboxID, query, opts...))
 }
 
 // Permanently deletes an unsent draft. Drafts that are being sent or have been
@@ -503,24 +520,6 @@ type EmailMessageResponse struct {
 // Returns the unmodified JSON received from the API
 func (r EmailMessageResponse) RawJSON() string { return r.JSON.raw }
 func (r *EmailMessageResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type EmailInboxDraftListResponse struct {
-	Data []EmailDraft        `json:"data" api:"required"`
-	Meta EmailPaginationMeta `json:"meta" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r EmailInboxDraftListResponse) RawJSON() string { return r.JSON.raw }
-func (r *EmailInboxDraftListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

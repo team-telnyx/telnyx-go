@@ -15,6 +15,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
@@ -79,11 +80,28 @@ func (r *EmailMessageService) Get(ctx context.Context, id string, opts ...option
 // Lists messages sorted newest first by `created_at desc, id desc`. No filters
 // other than cursor pagination are implemented. The legacy `/v2/emails` GET route
 // is a backward-compatible alias for this operation.
-func (r *EmailMessageService) List(ctx context.Context, query EmailMessageListParams, opts ...option.RequestOption) (res *EmailMessageListResponse, err error) {
+func (r *EmailMessageService) List(ctx context.Context, query EmailMessageListParams, opts ...option.RequestOption) (res *pagination.EmailCursorPagination[EmailMessage], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "email_messages"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Lists messages sorted newest first by `created_at desc, id desc`. No filters
+// other than cursor pagination are implemented. The legacy `/v2/emails` GET route
+// is a backward-compatible alias for this operation.
+func (r *EmailMessageService) ListAutoPaging(ctx context.Context, query EmailMessageListParams, opts ...option.RequestOption) *pagination.EmailCursorPaginationAutoPager[EmailMessage] {
+	return pagination.NewEmailCursorPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Permanently deletes an account-scoped email message, its events, its durable
@@ -142,15 +160,32 @@ func (r *EmailMessageService) DeleteSchedule(ctx context.Context, emailID string
 // Lists events for a single message sorted oldest first by
 // `occurred_at asc, id asc`. The legacy `/v2/emails/{id}/events` GET route is a
 // backward-compatible alias.
-func (r *EmailMessageService) GetEvents(ctx context.Context, emailID string, query EmailMessageGetEventsParams, opts ...option.RequestOption) (res *EmailMessageGetEventsResponse, err error) {
+func (r *EmailMessageService) GetEvents(ctx context.Context, emailID string, query EmailMessageGetEventsParams, opts ...option.RequestOption) (res *pagination.EmailCursorPagination[MessageEvent], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if emailID == "" {
 		err = errors.New("missing required email_id parameter")
 		return nil, err
 	}
 	path := fmt.Sprintf("email_messages/%s/events", emailID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Lists events for a single message sorted oldest first by
+// `occurred_at asc, id asc`. The legacy `/v2/emails/{id}/events` GET route is a
+// backward-compatible alias.
+func (r *EmailMessageService) GetEventsAutoPaging(ctx context.Context, emailID string, query EmailMessageGetEventsParams, opts ...option.RequestOption) *pagination.EmailCursorPaginationAutoPager[MessageEvent] {
+	return pagination.NewEmailCursorPaginationAutoPager(r.GetEvents(ctx, emailID, query, opts...))
 }
 
 type AttachmentRequestParam struct {
@@ -311,24 +346,6 @@ func (r *EmailMessageGetResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type EmailMessageListResponse struct {
-	Data []EmailMessage      `json:"data" api:"required"`
-	Meta EmailPaginationMeta `json:"meta" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r EmailMessageListResponse) RawJSON() string { return r.JSON.raw }
-func (r *EmailMessageListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type EmailMessageBatchResponse struct {
 	Data   []EmailMessage                   `json:"data" api:"required"`
 	Errors []EmailMessageBatchResponseError `json:"errors" api:"required"`
@@ -391,24 +408,6 @@ type EmailMessageBatchResponseMeta struct {
 // Returns the unmodified JSON received from the API
 func (r EmailMessageBatchResponseMeta) RawJSON() string { return r.JSON.raw }
 func (r *EmailMessageBatchResponseMeta) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type EmailMessageGetEventsResponse struct {
-	Data []MessageEvent      `json:"data" api:"required"`
-	Meta EmailPaginationMeta `json:"meta" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r EmailMessageGetEventsResponse) RawJSON() string { return r.JSON.raw }
-func (r *EmailMessageGetEventsResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

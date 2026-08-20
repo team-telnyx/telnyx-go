@@ -14,6 +14,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
@@ -121,11 +122,74 @@ func NewAIService(opts ...option.RequestOption) (r AIService) {
 // - `GET /v2/ai/conversation_histories?q=refund&filter[record_created_at][gte]=2026-01-01T00:00:00Z`
 // - `GET /v2/ai/conversation_histories?q=outage&filter[region][in]=USA,DEU`
 // - `GET /v2/ai/conversation_histories?q=hold+time&filter[language]=en`
-func (r *AIService) GetConversationHistories(ctx context.Context, query AIGetConversationHistoriesParams, opts ...option.RequestOption) (res *AIGetConversationHistoriesResponse, err error) {
+func (r *AIService) GetConversationHistories(ctx context.Context, query AIGetConversationHistoriesParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[AIGetConversationHistoriesResponse], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "ai/conversation_histories"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Performs semantic vector search across conversation history records.
+//
+// **How it works:**
+//
+//  1. The query text is embedded into a 1024-dimensional vector using the
+//     multilingual-e5-large model.
+//  2. The vector is compared against indexed record chunks using semantic
+//     similarity search.
+//  3. When no region is specified, all regions are queried in parallel (fan-out)
+//     and results are merged by score.
+//  4. Results are ranked by similarity score (descending) and paginated via
+//     `page[number]` / `page[size]`.
+//
+// **Authentication:** Requires a Telnyx API key via `Authorization: Bearer <key>`.
+// Results are automatically scoped to the caller's organization —
+// `organization_id` is injected from the auth token and cannot be overridden.
+//
+// **Chunking:** Records are split into chunks of up to 480 tokens with 64-token
+// overlap at ingestion time. Each search result represents a single chunk, with
+// `chunk_index` and `chunk_total` indicating its position within the original
+// record.
+//
+// **Filtering:** Use `filter[field][operator]=value` query parameters to narrow
+// results before vector search.
+//
+// Top-level filterable fields: `user_id`, `region`, `record_id`,
+// `record_created_at`, `ingested_at`, `retention`
+//
+// Note: `retention` is filter-only — it can be used to narrow results but is not
+// returned in the response body.
+//
+// Metadata fields: any field not in the list above is resolved to
+// `data.metadata.<field>` (e.g., `filter[language]=en` →
+// `data.metadata.language`).
+//
+// Supported filter operators:
+//
+// - `eq` — exact match (default when no operator specified)
+// - `in` — match any of comma-separated values
+// - `gte`, `gt`, `lte`, `lt` — range comparisons (useful for date filtering)
+// - `contains` — wildcard substring match
+//
+// **Examples:**
+//
+// - `GET /v2/ai/conversation_histories?q=billing+issue&page[size]=10`
+// - `GET /v2/ai/conversation_histories?q=setup+guide&region=USA&min_score=0.5`
+// - `GET /v2/ai/conversation_histories?q=refund&filter[record_created_at][gte]=2026-01-01T00:00:00Z`
+// - `GET /v2/ai/conversation_histories?q=outage&filter[region][in]=USA,DEU`
+// - `GET /v2/ai/conversation_histories?q=hold+time&filter[language]=en`
+func (r *AIService) GetConversationHistoriesAutoPaging(ctx context.Context, query AIGetConversationHistoriesParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[AIGetConversationHistoriesResponse] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.GetConversationHistories(ctx, query, opts...))
 }
 
 // Generate a summary of a file's contents.
@@ -285,32 +349,10 @@ func (r *ModelsResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Search response following the standard Telnyx V2 API format.
-type AIGetConversationHistoriesResponse struct {
-	// Ranked list of matching text chunks, sorted by cosine similarity score
-	// descending.
-	Data []AIGetConversationHistoriesResponseData `json:"data" api:"required"`
-	// Pagination metadata following the standard Telnyx V2 API format.
-	Meta AIGetConversationHistoriesResponseMeta `json:"meta" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AIGetConversationHistoriesResponse) RawJSON() string { return r.JSON.raw }
-func (r *AIGetConversationHistoriesResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // A single search result representing one chunk of a conversation history record.
 // Records are split into chunks of up to 480 tokens with 64-token overlap at
 // ingestion time.
-type AIGetConversationHistoriesResponseData struct {
+type AIGetConversationHistoriesResponse struct {
 	// Unique chunk identifier.
 	ID string `json:"id" api:"required"`
 	// Zero-based index of this chunk within the parent record.
@@ -329,7 +371,7 @@ type AIGetConversationHistoriesResponseData struct {
 	// The region where this record is stored.
 	//
 	// Any of "USA", "DEU", "AUS", "UAE".
-	Region string `json:"region" api:"required"`
+	Region AIGetConversationHistoriesResponseRegion `json:"region" api:"required"`
 	// Cosine similarity score between the query vector and this chunk's vector. Higher
 	// values indicate greater semantic relevance.
 	Score float64 `json:"score" api:"required"`
@@ -360,37 +402,20 @@ type AIGetConversationHistoriesResponseData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AIGetConversationHistoriesResponseData) RawJSON() string { return r.JSON.raw }
-func (r *AIGetConversationHistoriesResponseData) UnmarshalJSON(data []byte) error {
+func (r AIGetConversationHistoriesResponse) RawJSON() string { return r.JSON.raw }
+func (r *AIGetConversationHistoriesResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Pagination metadata following the standard Telnyx V2 API format.
-type AIGetConversationHistoriesResponseMeta struct {
-	// Current page number (1-based), matching the requested page[number].
-	PageNumber int64 `json:"page_number" api:"required"`
-	// Number of results per page, matching the requested page[size].
-	PageSize int64 `json:"page_size" api:"required"`
-	// Total number of pages.
-	TotalPages int64 `json:"total_pages" api:"required"`
-	// Total number of matching results across all queried regions.
-	TotalResults int64 `json:"total_results" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		PageNumber   respjson.Field
-		PageSize     respjson.Field
-		TotalPages   respjson.Field
-		TotalResults respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
+// The region where this record is stored.
+type AIGetConversationHistoriesResponseRegion string
 
-// Returns the unmodified JSON received from the API
-func (r AIGetConversationHistoriesResponseMeta) RawJSON() string { return r.JSON.raw }
-func (r *AIGetConversationHistoriesResponseMeta) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
+const (
+	AIGetConversationHistoriesResponseRegionUsa AIGetConversationHistoriesResponseRegion = "USA"
+	AIGetConversationHistoriesResponseRegionDeu AIGetConversationHistoriesResponseRegion = "DEU"
+	AIGetConversationHistoriesResponseRegionAus AIGetConversationHistoriesResponseRegion = "AUS"
+	AIGetConversationHistoriesResponseRegionUae AIGetConversationHistoriesResponseRegion = "UAE"
+)
 
 type AISummarizeResponse struct {
 	Data AISummarizeResponseData `json:"data" api:"required"`

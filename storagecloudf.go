@@ -15,6 +15,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
@@ -96,11 +97,28 @@ func (r *StorageCloudfService) Update(ctx context.Context, id string, body Stora
 // Lists the CloudFS filesystems for the authenticated user's organization. Results
 // use cursor-based pagination: fetch the next page by passing `meta.cursors.after`
 // as `page[after]`, or follow the `meta.next` URL.
-func (r *StorageCloudfService) List(ctx context.Context, query StorageCloudfListParams, opts ...option.RequestOption) (res *StorageCloudfListResponse, err error) {
+func (r *StorageCloudfService) List(ctx context.Context, query StorageCloudfListParams, opts ...option.RequestOption) (res *pagination.CloudfsCursorPagination[StorageCloudfListResponse], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "storage/cloudfs"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Lists the CloudFS filesystems for the authenticated user's organization. Results
+// use cursor-based pagination: fetch the next page by passing `meta.cursors.after`
+// as `page[after]`, or follow the `meta.next` URL.
+func (r *StorageCloudfService) ListAutoPaging(ctx context.Context, query StorageCloudfListParams, opts ...option.RequestOption) *pagination.CloudfsCursorPaginationAutoPager[StorageCloudfListResponse] {
+	return pagination.NewCloudfsCursorPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Permanently deletes a CloudFS filesystem, removing its S3 bucket and its
@@ -289,28 +307,10 @@ const (
 	CloudfsFilesystemStatusDeleted      CloudfsFilesystemStatus = "deleted"
 )
 
-type StorageCloudfListResponse struct {
-	Data []StorageCloudfListResponseData `json:"data"`
-	Meta StorageCloudfListResponseMeta   `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r StorageCloudfListResponse) RawJSON() string { return r.JSON.raw }
-func (r *StorageCloudfListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // A CloudFS filesystem as returned in list results. Connection details
 // (`meta_url`, `meta_token`) are omitted — retrieve the filesystem by ID for its
 // redacted `meta_url`.
-type StorageCloudfListResponseData struct {
+type StorageCloudfListResponse struct {
 	ID         string    `json:"id" format:"uuid"`
 	CreatedAt  time.Time `json:"created_at" format:"date-time"`
 	Name       string    `json:"name"`
@@ -349,54 +349,8 @@ type StorageCloudfListResponseData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r StorageCloudfListResponseData) RawJSON() string { return r.JSON.raw }
-func (r *StorageCloudfListResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type StorageCloudfListResponseMeta struct {
-	// Opaque cursors for the adjacent pages. Empty when there are no adjacent pages.
-	Cursors StorageCloudfListResponseMetaCursors `json:"cursors"`
-	// Relative URL (path and query) of the next page. Omitted when there are no
-	// further results.
-	Next string `json:"next"`
-	// Relative URL (path and query) of the previous page. Omitted on the first page.
-	Previous string `json:"previous"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Cursors     respjson.Field
-		Next        respjson.Field
-		Previous    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r StorageCloudfListResponseMeta) RawJSON() string { return r.JSON.raw }
-func (r *StorageCloudfListResponseMeta) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Opaque cursors for the adjacent pages. Empty when there are no adjacent pages.
-type StorageCloudfListResponseMetaCursors struct {
-	// Cursor for the next page; pass it as `page[after]`. Omitted on the last page.
-	After string `json:"after"`
-	// Cursor for the previous page; pass it as `page[before]`. Omitted on the first
-	// page.
-	Before string `json:"before"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		After       respjson.Field
-		Before      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r StorageCloudfListResponseMetaCursors) RawJSON() string { return r.JSON.raw }
-func (r *StorageCloudfListResponseMetaCursors) UnmarshalJSON(data []byte) error {
+func (r StorageCloudfListResponse) RawJSON() string { return r.JSON.raw }
+func (r *StorageCloudfListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

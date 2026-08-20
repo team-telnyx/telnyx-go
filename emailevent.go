@@ -13,6 +13,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
@@ -40,11 +41,27 @@ func NewEmailEventService(opts ...option.RequestOption) (r EmailEventService) {
 
 // Lists account-level email events sorted oldest first by
 // `occurred_at asc, id asc`.
-func (r *EmailEventService) List(ctx context.Context, query EmailEventListParams, opts ...option.RequestOption) (res *EmailEventListResponse, err error) {
+func (r *EmailEventService) List(ctx context.Context, query EmailEventListParams, opts ...option.RequestOption) (res *pagination.EmailCursorPagination[EmailEventListResponse], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "email_events"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Lists account-level email events sorted oldest first by
+// `occurred_at asc, id asc`.
+func (r *EmailEventService) ListAutoPaging(ctx context.Context, query EmailEventListParams, opts ...option.RequestOption) *pagination.EmailCursorPaginationAutoPager[EmailEventListResponse] {
+	return pagination.NewEmailCursorPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Returns counts and rates for email events over a time range. The default start
@@ -96,37 +113,19 @@ func (r *TimeRange) UnmarshalJSON(data []byte) error {
 }
 
 type EmailEventListResponse struct {
-	Data []EmailEventListResponseData `json:"data" api:"required"`
-	Meta EmailEventListResponseMeta   `json:"meta" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r EmailEventListResponse) RawJSON() string { return r.JSON.raw }
-func (r *EmailEventListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type EmailEventListResponseData struct {
 	ID         string    `json:"id" api:"required" format:"uuid"`
 	EmailID    string    `json:"email_id" api:"required" format:"uuid"`
 	OccurredAt time.Time `json:"occurred_at" api:"required" format:"date-time"`
 	// Any of "email_event".
-	RecordType string `json:"record_type" api:"required"`
+	RecordType EmailEventListResponseRecordType `json:"record_type" api:"required"`
 	// Any of "queued", "deferred", "scheduled", "cancelled", "sandbox", "sending",
 	// "sent", "failed", "delivered", "bounced", "complained", "rejected", "opened",
 	// "clicked", "unsubscribed", "daily_limit_exceeded".
 	Type EmailEventType `json:"type" api:"required"`
 	// Summary of the associated email message. Present when the email_message preload
 	// is available.
-	Email   EmailEventListResponseDataEmail `json:"email"`
-	Payload map[string]any                  `json:"payload"`
+	Email   EmailEventListResponseEmail `json:"email"`
+	Payload map[string]any              `json:"payload"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -142,14 +141,20 @@ type EmailEventListResponseData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r EmailEventListResponseData) RawJSON() string { return r.JSON.raw }
-func (r *EmailEventListResponseData) UnmarshalJSON(data []byte) error {
+func (r EmailEventListResponse) RawJSON() string { return r.JSON.raw }
+func (r *EmailEventListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type EmailEventListResponseRecordType string
+
+const (
+	EmailEventListResponseRecordTypeEmailEvent EmailEventListResponseRecordType = "email_event"
+)
+
 // Summary of the associated email message. Present when the email_message preload
 // is available.
-type EmailEventListResponseDataEmail struct {
+type EmailEventListResponseEmail struct {
 	Cc      []EmailAddress `json:"cc" api:"required"`
 	From    EmailAddress   `json:"from" api:"required"`
 	Subject string         `json:"subject" api:"required"`
@@ -166,29 +171,8 @@ type EmailEventListResponseDataEmail struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r EmailEventListResponseDataEmail) RawJSON() string { return r.JSON.raw }
-func (r *EmailEventListResponseDataEmail) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type EmailEventListResponseMeta struct {
-	PageSize  int64     `json:"page_size" api:"required"`
-	TimeRange TimeRange `json:"time_range" api:"required"`
-	// Cursor for the next page, when more results are available.
-	PageCursor string `json:"page_cursor"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		PageSize    respjson.Field
-		TimeRange   respjson.Field
-		PageCursor  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r EmailEventListResponseMeta) RawJSON() string { return r.JSON.raw }
-func (r *EmailEventListResponseMeta) UnmarshalJSON(data []byte) error {
+func (r EmailEventListResponseEmail) RawJSON() string { return r.JSON.raw }
+func (r *EmailEventListResponseEmail) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

@@ -14,6 +14,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
@@ -62,11 +63,31 @@ func (r *EmailThreadService) Get(ctx context.Context, threadID string, query Ema
 // can be routed back to the right inbox. Use `filter[inbox_id]` (repeatable) to
 // narrow the result to specific inboxes. Because a thread ID can be delivered to
 // multiple inboxes, each result is identified by its `(inbox_id, id)` pair.
-func (r *EmailThreadService) List(ctx context.Context, query EmailThreadListParams, opts ...option.RequestOption) (res *InboundThreadListResponse, err error) {
+func (r *EmailThreadService) List(ctx context.Context, query EmailThreadListParams, opts ...option.RequestOption) (res *pagination.EmailBracketCursorPagination[InboundThread], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "email_threads"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Lists thread summaries for the whole account, newest first, using stable cursor
+// pagination. An agent operating many inboxes gets every conversation in one call
+// instead of one call per inbox. Each thread carries its own `inbox_id` so a reply
+// can be routed back to the right inbox. Use `filter[inbox_id]` (repeatable) to
+// narrow the result to specific inboxes. Because a thread ID can be delivered to
+// multiple inboxes, each result is identified by its `(inbox_id, id)` pair.
+func (r *EmailThreadService) ListAutoPaging(ctx context.Context, query EmailThreadListParams, opts ...option.RequestOption) *pagination.EmailBracketCursorPaginationAutoPager[InboundThread] {
+	return pagination.NewEmailBracketCursorPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 type EmailThreadGetResponse struct {

@@ -135,15 +135,33 @@ func (r *EmailBlockService) Delete(ctx context.Context, id string, opts ...optio
 // max 100). No `sort`, no `filter`, no cursor — ordering is fixed
 // `desc occurred_at, desc id`. Verifies the block belongs to the account first
 // (cross-account → 404).
-func (r *EmailBlockService) GetEvents(ctx context.Context, id string, query EmailBlockGetEventsParams, opts ...option.RequestOption) (res *EmailBlockGetEventsResponse, err error) {
+func (r *EmailBlockService) GetEvents(ctx context.Context, id string, query EmailBlockGetEventsParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[EmailBlockGetEventsResponse], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
 	path := fmt.Sprintf("email_blocks/%s/events", id)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Offset pagination only (`page[number]` default 1, `page[size]` default **50**,
+// max 100). No `sort`, no `filter`, no cursor — ordering is fixed
+// `desc occurred_at, desc id`. Verifies the block belongs to the account first
+// (cross-account → 404).
+func (r *EmailBlockService) GetEventsAutoPaging(ctx context.Context, id string, query EmailBlockGetEventsParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[EmailBlockGetEventsResponse] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.GetEvents(ctx, id, query, opts...))
 }
 
 // Streams the account's suppressions as a chunked CSV (server-side cursor; never
@@ -307,36 +325,18 @@ func (r *OffsetMeta) UnmarshalJSON(data []byte) error {
 }
 
 type EmailBlockGetEventsResponse struct {
-	Data []EmailBlockGetEventsResponseData `json:"data" api:"required"`
-	Meta OffsetMeta                        `json:"meta" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r EmailBlockGetEventsResponse) RawJSON() string { return r.JSON.raw }
-func (r *EmailBlockGetEventsResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type EmailBlockGetEventsResponseData struct {
 	ID string `json:"id" api:"required" format:"uuid"`
 	// Free-text (`user_id`/`org_id`/`api_key`/`dev_bypass`/`system`/`manual`).
 	Actor string `json:"actor" api:"required"`
 	// Any of "created", "removed", "expired", "override_used".
-	EventType  string    `json:"event_type" api:"required"`
-	OccurredAt time.Time `json:"occurred_at" api:"required" format:"date-time"`
+	EventType  EmailBlockGetEventsResponseEventType `json:"event_type" api:"required"`
+	OccurredAt time.Time                            `json:"occurred_at" api:"required" format:"date-time"`
 	// Free-text snapshot of the block's reason at event time.
 	Reason string `json:"reason" api:"required"`
 	// View-only.
 	//
 	// Any of "email_block_event".
-	RecordType string `json:"record_type" api:"required"`
+	RecordType EmailBlockGetEventsResponseRecordType `json:"record_type" api:"required"`
 	// Free-text snapshot of the block's source at event time.
 	Source string `json:"source" api:"required"`
 	// `null` when the schema field is nil (the context usually sets it to `{}`).
@@ -357,10 +357,26 @@ type EmailBlockGetEventsResponseData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r EmailBlockGetEventsResponseData) RawJSON() string { return r.JSON.raw }
-func (r *EmailBlockGetEventsResponseData) UnmarshalJSON(data []byte) error {
+func (r EmailBlockGetEventsResponse) RawJSON() string { return r.JSON.raw }
+func (r *EmailBlockGetEventsResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+type EmailBlockGetEventsResponseEventType string
+
+const (
+	EmailBlockGetEventsResponseEventTypeCreated      EmailBlockGetEventsResponseEventType = "created"
+	EmailBlockGetEventsResponseEventTypeRemoved      EmailBlockGetEventsResponseEventType = "removed"
+	EmailBlockGetEventsResponseEventTypeExpired      EmailBlockGetEventsResponseEventType = "expired"
+	EmailBlockGetEventsResponseEventTypeOverrideUsed EmailBlockGetEventsResponseEventType = "override_used"
+)
+
+// View-only.
+type EmailBlockGetEventsResponseRecordType string
+
+const (
+	EmailBlockGetEventsResponseRecordTypeEmailBlockEvent EmailBlockGetEventsResponseRecordType = "email_block_event"
+)
 
 type EmailBlockNewParams struct {
 	// Recipient address (normalized: trim + lower-case).

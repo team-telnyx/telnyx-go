@@ -1006,3 +1006,367 @@ func (r *CursorFlatPaginationAutoPager[T]) Err() error {
 func (r *CursorFlatPaginationAutoPager[T]) Index() int {
 	return r.run
 }
+
+type EmailCursorPaginationMeta struct {
+	PageCursor string `json:"page_cursor"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PageCursor  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EmailCursorPaginationMeta) RawJSON() string { return r.JSON.raw }
+func (r *EmailCursorPaginationMeta) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type EmailCursorPagination[T any] struct {
+	Data []T                       `json:"data"`
+	Meta EmailCursorPaginationMeta `json:"meta"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+	cfg *requestconfig.RequestConfig
+	res *http.Response
+}
+
+// Returns the unmodified JSON received from the API
+func (r EmailCursorPagination[T]) RawJSON() string { return r.JSON.raw }
+func (r *EmailCursorPagination[T]) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// GetNextPage returns the next page as defined by this pagination style. When
+// there is no next page, this function will return a 'nil' for the page value, but
+// will not return an error
+func (r *EmailCursorPagination[T]) GetNextPage() (res *EmailCursorPagination[T], err error) {
+	if len(r.Data) == 0 {
+		return nil, nil
+	}
+	next := r.Meta.PageCursor
+	if len(next) == 0 {
+		return nil, nil
+	}
+	cfg := r.cfg.Clone(r.cfg.Context)
+	err = cfg.Apply(option.WithQuery("page_cursor", next))
+	if err != nil {
+		return nil, err
+	}
+	var raw *http.Response
+	cfg.ResponseInto = &raw
+	cfg.ResponseBodyInto = &res
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+func (r *EmailCursorPagination[T]) SetPageConfig(cfg *requestconfig.RequestConfig, res *http.Response) {
+	if r == nil {
+		r = &EmailCursorPagination[T]{}
+	}
+	r.cfg = cfg
+	r.res = res
+}
+
+type EmailCursorPaginationAutoPager[T any] struct {
+	page *EmailCursorPagination[T]
+	cur  T
+	idx  int
+	run  int
+	err  error
+	paramObj
+}
+
+func NewEmailCursorPaginationAutoPager[T any](page *EmailCursorPagination[T], err error) *EmailCursorPaginationAutoPager[T] {
+	return &EmailCursorPaginationAutoPager[T]{
+		page: page,
+		err:  err,
+	}
+}
+
+func (r *EmailCursorPaginationAutoPager[T]) Next() bool {
+	if r.page == nil || len(r.page.Data) == 0 {
+		return false
+	}
+	if r.idx >= len(r.page.Data) {
+		r.idx = 0
+		r.page, r.err = r.page.GetNextPage()
+		if r.err != nil || r.page == nil || len(r.page.Data) == 0 {
+			return false
+		}
+	}
+	r.cur = r.page.Data[r.idx]
+	r.run += 1
+	r.idx += 1
+	return true
+}
+
+func (r *EmailCursorPaginationAutoPager[T]) Current() T {
+	return r.cur
+}
+
+func (r *EmailCursorPaginationAutoPager[T]) Err() error {
+	return r.err
+}
+
+func (r *EmailCursorPaginationAutoPager[T]) Index() int {
+	return r.run
+}
+
+type EmailBracketCursorPaginationMeta struct {
+	PageCursor string `json:"page_cursor"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PageCursor  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EmailBracketCursorPaginationMeta) RawJSON() string { return r.JSON.raw }
+func (r *EmailBracketCursorPaginationMeta) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type EmailBracketCursorPagination[T any] struct {
+	Data []T                              `json:"data"`
+	Meta EmailBracketCursorPaginationMeta `json:"meta"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+	cfg *requestconfig.RequestConfig
+	res *http.Response
+}
+
+// Returns the unmodified JSON received from the API
+func (r EmailBracketCursorPagination[T]) RawJSON() string { return r.JSON.raw }
+func (r *EmailBracketCursorPagination[T]) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// GetNextPage returns the next page as defined by this pagination style. When
+// there is no next page, this function will return a 'nil' for the page value, but
+// will not return an error
+func (r *EmailBracketCursorPagination[T]) GetNextPage() (res *EmailBracketCursorPagination[T], err error) {
+	if len(r.Data) == 0 {
+		return nil, nil
+	}
+	next := r.Meta.PageCursor
+	if len(next) == 0 {
+		return nil, nil
+	}
+	cfg := r.cfg.Clone(r.cfg.Context)
+	err = cfg.Apply(option.WithQuery("page[after]", next))
+	if err != nil {
+		return nil, err
+	}
+	var raw *http.Response
+	cfg.ResponseInto = &raw
+	cfg.ResponseBodyInto = &res
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+func (r *EmailBracketCursorPagination[T]) SetPageConfig(cfg *requestconfig.RequestConfig, res *http.Response) {
+	if r == nil {
+		r = &EmailBracketCursorPagination[T]{}
+	}
+	r.cfg = cfg
+	r.res = res
+}
+
+type EmailBracketCursorPaginationAutoPager[T any] struct {
+	page *EmailBracketCursorPagination[T]
+	cur  T
+	idx  int
+	run  int
+	err  error
+	paramObj
+}
+
+func NewEmailBracketCursorPaginationAutoPager[T any](page *EmailBracketCursorPagination[T], err error) *EmailBracketCursorPaginationAutoPager[T] {
+	return &EmailBracketCursorPaginationAutoPager[T]{
+		page: page,
+		err:  err,
+	}
+}
+
+func (r *EmailBracketCursorPaginationAutoPager[T]) Next() bool {
+	if r.page == nil || len(r.page.Data) == 0 {
+		return false
+	}
+	if r.idx >= len(r.page.Data) {
+		r.idx = 0
+		r.page, r.err = r.page.GetNextPage()
+		if r.err != nil || r.page == nil || len(r.page.Data) == 0 {
+			return false
+		}
+	}
+	r.cur = r.page.Data[r.idx]
+	r.run += 1
+	r.idx += 1
+	return true
+}
+
+func (r *EmailBracketCursorPaginationAutoPager[T]) Current() T {
+	return r.cur
+}
+
+func (r *EmailBracketCursorPaginationAutoPager[T]) Err() error {
+	return r.err
+}
+
+func (r *EmailBracketCursorPaginationAutoPager[T]) Index() int {
+	return r.run
+}
+
+type CloudfsCursorPaginationMeta struct {
+	Cursors CloudfsCursorPaginationMetaCursors `json:"cursors"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Cursors     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CloudfsCursorPaginationMeta) RawJSON() string { return r.JSON.raw }
+func (r *CloudfsCursorPaginationMeta) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CloudfsCursorPaginationMetaCursors struct {
+	After string `json:"after"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		After       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CloudfsCursorPaginationMetaCursors) RawJSON() string { return r.JSON.raw }
+func (r *CloudfsCursorPaginationMetaCursors) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CloudfsCursorPagination[T any] struct {
+	Data []T                         `json:"data"`
+	Meta CloudfsCursorPaginationMeta `json:"meta"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+	cfg *requestconfig.RequestConfig
+	res *http.Response
+}
+
+// Returns the unmodified JSON received from the API
+func (r CloudfsCursorPagination[T]) RawJSON() string { return r.JSON.raw }
+func (r *CloudfsCursorPagination[T]) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// GetNextPage returns the next page as defined by this pagination style. When
+// there is no next page, this function will return a 'nil' for the page value, but
+// will not return an error
+func (r *CloudfsCursorPagination[T]) GetNextPage() (res *CloudfsCursorPagination[T], err error) {
+	if len(r.Data) == 0 {
+		return nil, nil
+	}
+	next := r.Meta.Cursors.After
+	if len(next) == 0 {
+		return nil, nil
+	}
+	cfg := r.cfg.Clone(r.cfg.Context)
+	err = cfg.Apply(option.WithQuery("page[after]", next))
+	if err != nil {
+		return nil, err
+	}
+	var raw *http.Response
+	cfg.ResponseInto = &raw
+	cfg.ResponseBodyInto = &res
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+func (r *CloudfsCursorPagination[T]) SetPageConfig(cfg *requestconfig.RequestConfig, res *http.Response) {
+	if r == nil {
+		r = &CloudfsCursorPagination[T]{}
+	}
+	r.cfg = cfg
+	r.res = res
+}
+
+type CloudfsCursorPaginationAutoPager[T any] struct {
+	page *CloudfsCursorPagination[T]
+	cur  T
+	idx  int
+	run  int
+	err  error
+	paramObj
+}
+
+func NewCloudfsCursorPaginationAutoPager[T any](page *CloudfsCursorPagination[T], err error) *CloudfsCursorPaginationAutoPager[T] {
+	return &CloudfsCursorPaginationAutoPager[T]{
+		page: page,
+		err:  err,
+	}
+}
+
+func (r *CloudfsCursorPaginationAutoPager[T]) Next() bool {
+	if r.page == nil || len(r.page.Data) == 0 {
+		return false
+	}
+	if r.idx >= len(r.page.Data) {
+		r.idx = 0
+		r.page, r.err = r.page.GetNextPage()
+		if r.err != nil || r.page == nil || len(r.page.Data) == 0 {
+			return false
+		}
+	}
+	r.cur = r.page.Data[r.idx]
+	r.run += 1
+	r.idx += 1
+	return true
+}
+
+func (r *CloudfsCursorPaginationAutoPager[T]) Current() T {
+	return r.cur
+}
+
+func (r *CloudfsCursorPaginationAutoPager[T]) Err() error {
+	return r.err
+}
+
+func (r *CloudfsCursorPaginationAutoPager[T]) Index() int {
+	return r.run
+}
