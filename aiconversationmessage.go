@@ -117,13 +117,12 @@ const (
 
 // AIConversationMessageListResponseMetadataUnion contains all possible properties
 // and values from [string], [int64], [bool],
-// [[]AIConversationMessageListResponseMetadataArrayUnionItem].
+// [[]AIConversationMessageListResponseMetadataConversationMetadataListValueUnionItem].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 //
 // If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfInt OfBool
-// OfAIConversationMessageListResponseMetadataArray]
+// will be valid: OfString OfInt OfBool OfConversationMetadataListValue]
 type AIConversationMessageListResponseMetadataUnion struct {
 	// This field will be present if the value is a [string] instead of an object.
 	OfString string `json:",inline"`
@@ -132,15 +131,15 @@ type AIConversationMessageListResponseMetadataUnion struct {
 	// This field will be present if the value is a [bool] instead of an object.
 	OfBool bool `json:",inline"`
 	// This field will be present if the value is a
-	// [[]AIConversationMessageListResponseMetadataArrayUnionItem] instead of an
-	// object.
-	OfAIConversationMessageListResponseMetadataArray []AIConversationMessageListResponseMetadataArrayUnionItem `json:",inline"`
-	JSON                                             struct {
-		OfString                                         respjson.Field
-		OfInt                                            respjson.Field
-		OfBool                                           respjson.Field
-		OfAIConversationMessageListResponseMetadataArray respjson.Field
-		raw                                              string
+	// [[]AIConversationMessageListResponseMetadataConversationMetadataListValueUnionItem]
+	// instead of an object.
+	OfConversationMetadataListValue []AIConversationMessageListResponseMetadataConversationMetadataListValueUnionItem `json:",inline"`
+	JSON                            struct {
+		OfString                        respjson.Field
+		OfInt                           respjson.Field
+		OfBool                          respjson.Field
+		OfConversationMetadataListValue respjson.Field
+		raw                             string
 	} `json:"-"`
 }
 
@@ -159,7 +158,7 @@ func (u AIConversationMessageListResponseMetadataUnion) AsBool() (v bool) {
 	return
 }
 
-func (u AIConversationMessageListResponseMetadataUnion) AsAIConversationMessageListResponseMetadataArray() (v []AIConversationMessageListResponseMetadataArrayUnionItem) {
+func (u AIConversationMessageListResponseMetadataUnion) AsConversationMetadataListValue() (v []AIConversationMessageListResponseMetadataConversationMetadataListValueUnionItem) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -171,14 +170,14 @@ func (r *AIConversationMessageListResponseMetadataUnion) UnmarshalJSON(data []by
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// AIConversationMessageListResponseMetadataArrayUnionItem contains all possible
-// properties and values from [string], [int64], [bool].
+// AIConversationMessageListResponseMetadataConversationMetadataListValueUnionItem
+// contains all possible properties and values from [string], [int64], [bool].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 //
 // If the underlying value is not a json object, one of the following properties
 // will be valid: OfString OfInt OfBool]
-type AIConversationMessageListResponseMetadataArrayUnionItem struct {
+type AIConversationMessageListResponseMetadataConversationMetadataListValueUnionItem struct {
 	// This field will be present if the value is a [string] instead of an object.
 	OfString string `json:",inline"`
 	// This field will be present if the value is a [int64] instead of an object.
@@ -193,25 +192,27 @@ type AIConversationMessageListResponseMetadataArrayUnionItem struct {
 	} `json:"-"`
 }
 
-func (u AIConversationMessageListResponseMetadataArrayUnionItem) AsString() (v string) {
+func (u AIConversationMessageListResponseMetadataConversationMetadataListValueUnionItem) AsString() (v string) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u AIConversationMessageListResponseMetadataArrayUnionItem) AsInt() (v int64) {
+func (u AIConversationMessageListResponseMetadataConversationMetadataListValueUnionItem) AsInt() (v int64) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u AIConversationMessageListResponseMetadataArrayUnionItem) AsBool() (v bool) {
+func (u AIConversationMessageListResponseMetadataConversationMetadataListValueUnionItem) AsBool() (v bool) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
 // Returns the unmodified JSON received from the API
-func (u AIConversationMessageListResponseMetadataArrayUnionItem) RawJSON() string { return u.JSON.raw }
+func (u AIConversationMessageListResponseMetadataConversationMetadataListValueUnionItem) RawJSON() string {
+	return u.JSON.raw
+}
 
-func (r *AIConversationMessageListResponseMetadataArrayUnionItem) UnmarshalJSON(data []byte) error {
+func (r *AIConversationMessageListResponseMetadataConversationMetadataListValueUnionItem) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

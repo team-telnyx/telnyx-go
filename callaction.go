@@ -1323,13 +1323,13 @@ func (u *LoopcountUnionParam) asAny() any {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type PayPromptValueUnionParam struct {
-	OfString              param.Opt[string]              `json:",omitzero,inline"`
-	OfPayPromptValueArray []PayPromptValueArrayItemParam `json:",omitzero,inline"`
+	OfString        param.Opt[string]                      `json:",omitzero,inline"`
+	OfPayPromptList []PayPromptValuePayPromptListItemParam `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u PayPromptValueUnionParam) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfString, u.OfPayPromptValueArray)
+	return param.MarshalUnion(u, u.OfString, u.OfPayPromptList)
 }
 func (u *PayPromptValueUnionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -1338,8 +1338,8 @@ func (u *PayPromptValueUnionParam) UnmarshalJSON(data []byte) error {
 func (u *PayPromptValueUnionParam) asAny() any {
 	if !param.IsOmitted(u.OfString) {
 		return &u.OfString.Value
-	} else if !param.IsOmitted(u.OfPayPromptValueArray) {
-		return &u.OfPayPromptValueArray
+	} else if !param.IsOmitted(u.OfPayPromptList) {
+		return &u.OfPayPromptList
 	}
 	return nil
 }
@@ -1347,7 +1347,7 @@ func (u *PayPromptValueUnionParam) asAny() any {
 // A text-to-speech prompt with optional matching qualifiers.
 //
 // The property Text is required.
-type PayPromptValueArrayItemParam struct {
+type PayPromptValuePayPromptListItemParam struct {
 	// Text spoken for the payment collection step.
 	Text string `json:"text" api:"required"`
 	// Space-separated 1-based attempt numbers for which this prompt applies.
@@ -1367,19 +1367,19 @@ type PayPromptValueArrayItemParam struct {
 	paramObj
 }
 
-func (r PayPromptValueArrayItemParam) MarshalJSON() (data []byte, err error) {
-	type shadow PayPromptValueArrayItemParam
+func (r PayPromptValuePayPromptListItemParam) MarshalJSON() (data []byte, err error) {
+	type shadow PayPromptValuePayPromptListItemParam
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *PayPromptValueArrayItemParam) UnmarshalJSON(data []byte) error {
+func (r *PayPromptValuePayPromptListItemParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[PayPromptValueArrayItemParam](
+	apijson.RegisterFieldValidator[PayPromptValuePayPromptListItemParam](
 		"card_type", "visa", "mastercard", "amex", "discover", "diners-club", "jcb",
 	)
-	apijson.RegisterFieldValidator[PayPromptValueArrayItemParam](
+	apijson.RegisterFieldValidator[PayPromptValuePayPromptListItemParam](
 		"error_type", "timeout", "invalid-card-number", "invalid-date", "invalid-security-code", "invalid-postal-code", "invalid-bank-routing-number", "invalid-bank-account-number", "input-matching-failed",
 	)
 }

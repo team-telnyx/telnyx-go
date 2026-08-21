@@ -228,7 +228,7 @@ func (r *VoiceSDKCallReportLogsEntries) UnmarshalJSON(data []byte) error {
 }
 
 // VoiceSDKCallReportStatsUnion contains all possible properties and values from
-// [[]map[string]any], [VoiceSDKCallReportStatsUnionMember1].
+// [[]map[string]any], [VoiceSDKCallReportStatsVoiceSDKCallReportStatsObject].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 //
@@ -238,13 +238,17 @@ type VoiceSDKCallReportStatsUnion struct {
 	// This field will be present if the value is a [[]map[string]any] instead of an
 	// object.
 	OfMapOfAnyMap []map[string]any `json:",inline"`
-	// This field is from variant [VoiceSDKCallReportStatsUnionMember1].
+	// This field is from variant
+	// [VoiceSDKCallReportStatsVoiceSDKCallReportStatsObject].
 	Audio map[string]any `json:"audio"`
-	// This field is from variant [VoiceSDKCallReportStatsUnionMember1].
+	// This field is from variant
+	// [VoiceSDKCallReportStatsVoiceSDKCallReportStatsObject].
 	Connection map[string]any `json:"connection"`
-	// This field is from variant [VoiceSDKCallReportStatsUnionMember1].
+	// This field is from variant
+	// [VoiceSDKCallReportStatsVoiceSDKCallReportStatsObject].
 	Ice map[string]any `json:"ice"`
-	// This field is from variant [VoiceSDKCallReportStatsUnionMember1].
+	// This field is from variant
+	// [VoiceSDKCallReportStatsVoiceSDKCallReportStatsObject].
 	Transport map[string]any `json:"transport"`
 	JSON      struct {
 		OfMapOfAnyMap respjson.Field
@@ -261,7 +265,7 @@ func (u VoiceSDKCallReportStatsUnion) AsMapOfAnyMap() (v []map[string]any) {
 	return
 }
 
-func (u VoiceSDKCallReportStatsUnion) AsVoiceSDKCallReportStatsUnionMember1() (v VoiceSDKCallReportStatsUnionMember1) {
+func (u VoiceSDKCallReportStatsUnion) AsVoiceSDKCallReportStatsObject() (v VoiceSDKCallReportStatsVoiceSDKCallReportStatsObject) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -274,7 +278,7 @@ func (r *VoiceSDKCallReportStatsUnion) UnmarshalJSON(data []byte) error {
 }
 
 // Raw stats object emitted by the Voice SDK.
-type VoiceSDKCallReportStatsUnionMember1 struct {
+type VoiceSDKCallReportStatsVoiceSDKCallReportStatsObject struct {
 	// Raw audio stats such as inbound/outbound packet, byte, jitter, packet-loss,
 	// bitrate, and audio-level metrics.
 	Audio map[string]any `json:"audio"`
@@ -300,8 +304,8 @@ type VoiceSDKCallReportStatsUnionMember1 struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r VoiceSDKCallReportStatsUnionMember1) RawJSON() string { return r.JSON.raw }
-func (r *VoiceSDKCallReportStatsUnionMember1) UnmarshalJSON(data []byte) error {
+func (r VoiceSDKCallReportStatsVoiceSDKCallReportStatsObject) RawJSON() string { return r.JSON.raw }
+func (r *VoiceSDKCallReportStatsVoiceSDKCallReportStatsObject) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

@@ -752,7 +752,7 @@ func TestCallActionPayWithOptionalParams(t *testing.T) {
 					OfString: telnyx.String("x"),
 				},
 				PaymentCardNumber: telnyx.PayPromptValueUnionParam{
-					OfPayPromptValueArray: []telnyx.PayPromptValueArrayItemParam{{
+					OfPayPromptList: []telnyx.PayPromptValuePayPromptListItemParam{{
 						Text:      "Please enter your card number.",
 						Attempt:   telnyx.String("2 3"),
 						CardType:  "amex",

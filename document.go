@@ -160,8 +160,6 @@ type DocServiceDocument struct {
 	CustomerReference string `json:"customer_reference"`
 	// The filename of the document.
 	Filename string `json:"filename"`
-	// Identifies the type of the resource.
-	RecordType string `json:"record_type"`
 	// The document's SHA256 hash provided for optional verification purposes.
 	Sha256 string `json:"sha256"`
 	// Indicates the document's filesize
@@ -176,7 +174,6 @@ type DocServiceDocument struct {
 		ContentType       respjson.Field
 		CustomerReference respjson.Field
 		Filename          respjson.Field
-		RecordType        respjson.Field
 		Sha256            respjson.Field
 		Size              respjson.Field
 		Status            respjson.Field

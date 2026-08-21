@@ -13,7 +13,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
-func TestWireguardInterfaceNewWithOptionalParams(t *testing.T) {
+func TestWireguardInterfaceNew(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -32,9 +32,7 @@ func TestWireguardInterfaceNewWithOptionalParams(t *testing.T) {
 				RecordParam:           telnyx.RecordParam{},
 				NetworkInterfaceParam: telnyx.NetworkInterfaceParam{},
 			},
-			NetworkInterfaceRegionParam: telnyx.NetworkInterfaceRegionParam{
-				RegionCode: telnyx.String("ashburn-va"),
-			},
+			RegionCode: "ashburn-va",
 		},
 	})
 	if err != nil {

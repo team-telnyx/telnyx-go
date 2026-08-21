@@ -35,13 +35,13 @@ func TestEmailInboxMessageActionForwardWithOptionalParams(t *testing.T) {
 				OfString: telnyx.String("new@example.com"),
 			},
 			Bcc: telnyx.InboxActionRecipientInputUnionParam{
-				OfInboxActionEmailAddressInputArray: []telnyx.InboxActionEmailAddressInputUnionParam{{
+				OfInboxRecipientList: []telnyx.InboxActionEmailAddressInputUnionParam{{
 					OfString: telnyx.String("blind@example.com"),
 				}},
 			},
 			Cc: telnyx.InboxActionRecipientInputUnionParam{
-				OfInboxActionEmailAddressInputArray: []telnyx.InboxActionEmailAddressInputUnionParam{{
-					OfInboxActionEmailAddressInputUnionMember1: &telnyx.InboxActionEmailAddressInputUnionMember1Param{
+				OfInboxRecipientList: []telnyx.InboxActionEmailAddressInputUnionParam{{
+					OfInboxRecipientAddress: &telnyx.InboxActionEmailAddressInputInboxRecipientAddressParam{
 						Email: "copy@example.com",
 						Name:  telnyx.String("name"),
 					},

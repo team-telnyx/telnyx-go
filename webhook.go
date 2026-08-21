@@ -6585,16 +6585,16 @@ func (r *CallPaymentCompletedWebhookEventDataPayload) UnmarshalJSON(data []byte)
 //
 // If the underlying value is not a json object, one of the following properties
 // will be valid: OfString
-// OfCallPaymentCompletedWebhookEventDataPayloadConnectorErrorUnionMember1]
+// OfCallPaymentCompletedWebhookEventDataPayloadConnectorErrorConnectorErrorDetail]
 type CallPaymentCompletedWebhookEventDataPayloadConnectorErrorUnion struct {
 	// This field will be present if the value is a [string] instead of an object.
 	OfString string `json:",inline"`
 	// This field will be present if the value is a [any] instead of an object.
-	OfCallPaymentCompletedWebhookEventDataPayloadConnectorErrorUnionMember1 any `json:",inline"`
-	JSON                                                                    struct {
-		OfString                                                                respjson.Field
-		OfCallPaymentCompletedWebhookEventDataPayloadConnectorErrorUnionMember1 respjson.Field
-		raw                                                                     string
+	OfCallPaymentCompletedWebhookEventDataPayloadConnectorErrorConnectorErrorDetail any `json:",inline"`
+	JSON                                                                            struct {
+		OfString                                                                        respjson.Field
+		OfCallPaymentCompletedWebhookEventDataPayloadConnectorErrorConnectorErrorDetail respjson.Field
+		raw                                                                             string
 	} `json:"-"`
 }
 
@@ -6603,7 +6603,7 @@ func (u CallPaymentCompletedWebhookEventDataPayloadConnectorErrorUnion) AsString
 	return
 }
 
-func (u CallPaymentCompletedWebhookEventDataPayloadConnectorErrorUnion) AsAnyMap() (v map[string]any) {
+func (u CallPaymentCompletedWebhookEventDataPayloadConnectorErrorUnion) AsConnectorErrorDetails() (v map[string]any) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }

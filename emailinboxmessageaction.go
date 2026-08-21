@@ -110,23 +110,23 @@ func (r *EmailInboxMessageActionService) ReplyAll(ctx context.Context, messageID
 	return res, err
 }
 
-func InboxActionEmailAddressInputParamOfInboxActionEmailAddressInputUnionMember1(email string) InboxActionEmailAddressInputUnionParam {
-	var variant InboxActionEmailAddressInputUnionMember1Param
+func InboxActionEmailAddressInputParamOfInboxRecipientAddress(email string) InboxActionEmailAddressInputUnionParam {
+	var variant InboxActionEmailAddressInputInboxRecipientAddressParam
 	variant.Email = email
-	return InboxActionEmailAddressInputUnionParam{OfInboxActionEmailAddressInputUnionMember1: &variant}
+	return InboxActionEmailAddressInputUnionParam{OfInboxRecipientAddress: &variant}
 }
 
 // Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type InboxActionEmailAddressInputUnionParam struct {
-	OfString                                   param.Opt[string]                              `json:",omitzero,inline"`
-	OfInboxActionEmailAddressInputUnionMember1 *InboxActionEmailAddressInputUnionMember1Param `json:",omitzero,inline"`
+	OfString                param.Opt[string]                                       `json:",omitzero,inline"`
+	OfInboxRecipientAddress *InboxActionEmailAddressInputInboxRecipientAddressParam `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u InboxActionEmailAddressInputUnionParam) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfString, u.OfInboxActionEmailAddressInputUnionMember1)
+	return param.MarshalUnion(u, u.OfString, u.OfInboxRecipientAddress)
 }
 func (u *InboxActionEmailAddressInputUnionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -135,45 +135,45 @@ func (u *InboxActionEmailAddressInputUnionParam) UnmarshalJSON(data []byte) erro
 func (u *InboxActionEmailAddressInputUnionParam) asAny() any {
 	if !param.IsOmitted(u.OfString) {
 		return &u.OfString.Value
-	} else if !param.IsOmitted(u.OfInboxActionEmailAddressInputUnionMember1) {
-		return u.OfInboxActionEmailAddressInputUnionMember1
+	} else if !param.IsOmitted(u.OfInboxRecipientAddress) {
+		return u.OfInboxRecipientAddress
 	}
 	return nil
 }
 
 // The property Email is required.
-type InboxActionEmailAddressInputUnionMember1Param struct {
+type InboxActionEmailAddressInputInboxRecipientAddressParam struct {
 	Email string            `json:"email" api:"required"`
 	Name  param.Opt[string] `json:"name,omitzero"`
 	paramObj
 }
 
-func (r InboxActionEmailAddressInputUnionMember1Param) MarshalJSON() (data []byte, err error) {
-	type shadow InboxActionEmailAddressInputUnionMember1Param
+func (r InboxActionEmailAddressInputInboxRecipientAddressParam) MarshalJSON() (data []byte, err error) {
+	type shadow InboxActionEmailAddressInputInboxRecipientAddressParam
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *InboxActionEmailAddressInputUnionMember1Param) UnmarshalJSON(data []byte) error {
+func (r *InboxActionEmailAddressInputInboxRecipientAddressParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func InboxActionRecipientInputParamOfInboxActionRecipientInputUnionMember1(email string) InboxActionRecipientInputUnionParam {
-	var variant InboxActionRecipientInputUnionMember1Param
+func InboxActionRecipientInputParamOfInboxRecipientAddress(email string) InboxActionRecipientInputUnionParam {
+	var variant InboxActionRecipientInputInboxRecipientAddressParam
 	variant.Email = email
-	return InboxActionRecipientInputUnionParam{OfInboxActionRecipientInputUnionMember1: &variant}
+	return InboxActionRecipientInputUnionParam{OfInboxRecipientAddress: &variant}
 }
 
 // Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type InboxActionRecipientInputUnionParam struct {
-	OfString                                param.Opt[string]                           `json:",omitzero,inline"`
-	OfInboxActionRecipientInputUnionMember1 *InboxActionRecipientInputUnionMember1Param `json:",omitzero,inline"`
-	OfInboxActionEmailAddressInputArray     []InboxActionEmailAddressInputUnionParam    `json:",omitzero,inline"`
+	OfString                param.Opt[string]                                    `json:",omitzero,inline"`
+	OfInboxRecipientAddress *InboxActionRecipientInputInboxRecipientAddressParam `json:",omitzero,inline"`
+	OfInboxRecipientList    []InboxActionEmailAddressInputUnionParam             `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u InboxActionRecipientInputUnionParam) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfString, u.OfInboxActionRecipientInputUnionMember1, u.OfInboxActionEmailAddressInputArray)
+	return param.MarshalUnion(u, u.OfString, u.OfInboxRecipientAddress, u.OfInboxRecipientList)
 }
 func (u *InboxActionRecipientInputUnionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -182,26 +182,26 @@ func (u *InboxActionRecipientInputUnionParam) UnmarshalJSON(data []byte) error {
 func (u *InboxActionRecipientInputUnionParam) asAny() any {
 	if !param.IsOmitted(u.OfString) {
 		return &u.OfString.Value
-	} else if !param.IsOmitted(u.OfInboxActionRecipientInputUnionMember1) {
-		return u.OfInboxActionRecipientInputUnionMember1
-	} else if !param.IsOmitted(u.OfInboxActionEmailAddressInputArray) {
-		return &u.OfInboxActionEmailAddressInputArray
+	} else if !param.IsOmitted(u.OfInboxRecipientAddress) {
+		return u.OfInboxRecipientAddress
+	} else if !param.IsOmitted(u.OfInboxRecipientList) {
+		return &u.OfInboxRecipientList
 	}
 	return nil
 }
 
 // The property Email is required.
-type InboxActionRecipientInputUnionMember1Param struct {
+type InboxActionRecipientInputInboxRecipientAddressParam struct {
 	Email string            `json:"email" api:"required"`
 	Name  param.Opt[string] `json:"name,omitzero"`
 	paramObj
 }
 
-func (r InboxActionRecipientInputUnionMember1Param) MarshalJSON() (data []byte, err error) {
-	type shadow InboxActionRecipientInputUnionMember1Param
+func (r InboxActionRecipientInputInboxRecipientAddressParam) MarshalJSON() (data []byte, err error) {
+	type shadow InboxActionRecipientInputInboxRecipientAddressParam
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *InboxActionRecipientInputUnionMember1Param) UnmarshalJSON(data []byte) error {
+func (r *InboxActionRecipientInputInboxRecipientAddressParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -256,14 +256,14 @@ func (r *EmailInboxMessageActionForwardParams) UnmarshalJSON(data []byte) error 
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type EmailInboxMessageActionForwardParamsToUnion struct {
-	OfString                                        param.Opt[string]                                   `json:",omitzero,inline"`
-	OfEmailInboxMessageActionForwardsToUnionMember1 *EmailInboxMessageActionForwardParamsToUnionMember1 `json:",omitzero,inline"`
-	OfInboxActionEmailAddressInputArray             []InboxActionEmailAddressInputUnionParam            `json:",omitzero,inline"`
+	OfString                     param.Opt[string]                                            `json:",omitzero,inline"`
+	OfInboxRecipientAddress      *EmailInboxMessageActionForwardParamsToInboxRecipientAddress `json:",omitzero,inline"`
+	OfRequiredInboxRecipientList []InboxActionEmailAddressInputUnionParam                     `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u EmailInboxMessageActionForwardParamsToUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfString, u.OfEmailInboxMessageActionForwardsToUnionMember1, u.OfInboxActionEmailAddressInputArray)
+	return param.MarshalUnion(u, u.OfString, u.OfInboxRecipientAddress, u.OfRequiredInboxRecipientList)
 }
 func (u *EmailInboxMessageActionForwardParamsToUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -272,26 +272,26 @@ func (u *EmailInboxMessageActionForwardParamsToUnion) UnmarshalJSON(data []byte)
 func (u *EmailInboxMessageActionForwardParamsToUnion) asAny() any {
 	if !param.IsOmitted(u.OfString) {
 		return &u.OfString.Value
-	} else if !param.IsOmitted(u.OfEmailInboxMessageActionForwardsToUnionMember1) {
-		return u.OfEmailInboxMessageActionForwardsToUnionMember1
-	} else if !param.IsOmitted(u.OfInboxActionEmailAddressInputArray) {
-		return &u.OfInboxActionEmailAddressInputArray
+	} else if !param.IsOmitted(u.OfInboxRecipientAddress) {
+		return u.OfInboxRecipientAddress
+	} else if !param.IsOmitted(u.OfRequiredInboxRecipientList) {
+		return &u.OfRequiredInboxRecipientList
 	}
 	return nil
 }
 
 // The property Email is required.
-type EmailInboxMessageActionForwardParamsToUnionMember1 struct {
+type EmailInboxMessageActionForwardParamsToInboxRecipientAddress struct {
 	Email string            `json:"email" api:"required"`
 	Name  param.Opt[string] `json:"name,omitzero"`
 	paramObj
 }
 
-func (r EmailInboxMessageActionForwardParamsToUnionMember1) MarshalJSON() (data []byte, err error) {
-	type shadow EmailInboxMessageActionForwardParamsToUnionMember1
+func (r EmailInboxMessageActionForwardParamsToInboxRecipientAddress) MarshalJSON() (data []byte, err error) {
+	type shadow EmailInboxMessageActionForwardParamsToInboxRecipientAddress
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *EmailInboxMessageActionForwardParamsToUnionMember1) UnmarshalJSON(data []byte) error {
+func (r *EmailInboxMessageActionForwardParamsToInboxRecipientAddress) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

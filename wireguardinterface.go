@@ -250,9 +250,9 @@ func (r *WireguardInterfaceNewParams) UnmarshalJSON(data []byte) error {
 }
 
 type WireguardInterfaceNewParamsBody struct {
+	// The region the interface should be deployed to.
+	RegionCode string `json:"region_code" api:"required"`
 	WireguardInterfaceParam
-	NetworkInterfaceRegionParam
-	paramObj
 }
 
 func (r WireguardInterfaceNewParamsBody) MarshalJSON() (data []byte, err error) {

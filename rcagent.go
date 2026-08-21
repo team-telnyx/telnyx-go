@@ -221,22 +221,26 @@ func (r AgentConfiguration) ToParam() AgentConfigurationParam {
 }
 
 // AgentConfigurationBasicsUnion contains all possible properties and values from
-// [AgentConfigurationBasicsUnionMember0], [AgentConfigurationBasicsUnionMember1],
-// [AgentConfigurationBasicsUnionMember2].
+// [AgentConfigurationBasicsAgentPhoneContactRequirement],
+// [AgentConfigurationBasicsAgentWebhookContactRequirement],
+// [AgentConfigurationBasicsAgentProfileContactRequirement].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type AgentConfigurationBasicsUnion struct {
-	// This field is from variant [AgentConfigurationBasicsUnionMember0].
+	// This field is from variant
+	// [AgentConfigurationBasicsAgentPhoneContactRequirement].
 	PhoneNumber AgentPhoneContact `json:"phone_number"`
 	BrandColor  string            `json:"brand_color"`
 	Description string            `json:"description"`
-	// This field is from variant [AgentConfigurationBasicsUnionMember0].
+	// This field is from variant
+	// [AgentConfigurationBasicsAgentPhoneContactRequirement].
 	Email                 AgentEmailContact `json:"email"`
 	HeroURL               string            `json:"hero_url"`
 	LogoURL               string            `json:"logo_url"`
 	PrivacyPolicyURL      string            `json:"privacy_policy_url"`
 	TermsAndConditionsURL string            `json:"terms_and_conditions_url"`
-	// This field is from variant [AgentConfigurationBasicsUnionMember0].
+	// This field is from variant
+	// [AgentConfigurationBasicsAgentPhoneContactRequirement].
 	Website AgentWebsiteContact `json:"website"`
 	JSON    struct {
 		PhoneNumber           respjson.Field
@@ -252,17 +256,17 @@ type AgentConfigurationBasicsUnion struct {
 	} `json:"-"`
 }
 
-func (u AgentConfigurationBasicsUnion) AsAgentConfigurationBasicsUnionMember0() (v AgentConfigurationBasicsUnionMember0) {
+func (u AgentConfigurationBasicsUnion) AsAgentPhoneContactRequirement() (v AgentConfigurationBasicsAgentPhoneContactRequirement) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u AgentConfigurationBasicsUnion) AsAgentConfigurationBasicsUnionMember1() (v AgentConfigurationBasicsUnionMember1) {
+func (u AgentConfigurationBasicsUnion) AsAgentWebhookContactRequirement() (v AgentConfigurationBasicsAgentWebhookContactRequirement) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u AgentConfigurationBasicsUnion) AsAgentConfigurationBasicsUnionMember2() (v AgentConfigurationBasicsUnionMember2) {
+func (u AgentConfigurationBasicsUnion) AsAgentProfileContactRequirement() (v AgentConfigurationBasicsAgentProfileContactRequirement) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -274,7 +278,7 @@ func (r *AgentConfigurationBasicsUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AgentConfigurationBasicsUnionMember0 struct {
+type AgentConfigurationBasicsAgentPhoneContactRequirement struct {
 	PhoneNumber           AgentPhoneContact   `json:"phone_number" api:"required"`
 	BrandColor            string              `json:"brand_color"`
 	Description           string              `json:"description"`
@@ -301,12 +305,12 @@ type AgentConfigurationBasicsUnionMember0 struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AgentConfigurationBasicsUnionMember0) RawJSON() string { return r.JSON.raw }
-func (r *AgentConfigurationBasicsUnionMember0) UnmarshalJSON(data []byte) error {
+func (r AgentConfigurationBasicsAgentPhoneContactRequirement) RawJSON() string { return r.JSON.raw }
+func (r *AgentConfigurationBasicsAgentPhoneContactRequirement) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AgentConfigurationBasicsUnionMember1 struct {
+type AgentConfigurationBasicsAgentWebhookContactRequirement struct {
 	Website               AgentWebsiteContact `json:"website" api:"required"`
 	BrandColor            string              `json:"brand_color"`
 	Description           string              `json:"description"`
@@ -333,12 +337,12 @@ type AgentConfigurationBasicsUnionMember1 struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AgentConfigurationBasicsUnionMember1) RawJSON() string { return r.JSON.raw }
-func (r *AgentConfigurationBasicsUnionMember1) UnmarshalJSON(data []byte) error {
+func (r AgentConfigurationBasicsAgentWebhookContactRequirement) RawJSON() string { return r.JSON.raw }
+func (r *AgentConfigurationBasicsAgentWebhookContactRequirement) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AgentConfigurationBasicsUnionMember2 struct {
+type AgentConfigurationBasicsAgentProfileContactRequirement struct {
 	Email                 AgentEmailContact   `json:"email" api:"required"`
 	BrandColor            string              `json:"brand_color"`
 	Description           string              `json:"description"`
@@ -365,8 +369,8 @@ type AgentConfigurationBasicsUnionMember2 struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AgentConfigurationBasicsUnionMember2) RawJSON() string { return r.JSON.raw }
-func (r *AgentConfigurationBasicsUnionMember2) UnmarshalJSON(data []byte) error {
+func (r AgentConfigurationBasicsAgentProfileContactRequirement) RawJSON() string { return r.JSON.raw }
+func (r *AgentConfigurationBasicsAgentProfileContactRequirement) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -392,37 +396,37 @@ func (r *AgentConfigurationParam) UnmarshalJSON(data []byte) error {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type AgentConfigurationBasicsUnionParam struct {
-	OfAgentConfigurationBasicsUnionMember0 *AgentConfigurationBasicsUnionMember0Param `json:",omitzero,inline"`
-	OfAgentConfigurationBasicsUnionMember1 *AgentConfigurationBasicsUnionMember1Param `json:",omitzero,inline"`
-	OfAgentConfigurationBasicsUnionMember2 *AgentConfigurationBasicsUnionMember2Param `json:",omitzero,inline"`
+	OfAgentPhoneContactRequirement   *AgentConfigurationBasicsAgentPhoneContactRequirementParam   `json:",omitzero,inline"`
+	OfAgentWebhookContactRequirement *AgentConfigurationBasicsAgentWebhookContactRequirementParam `json:",omitzero,inline"`
+	OfAgentProfileContactRequirement *AgentConfigurationBasicsAgentProfileContactRequirementParam `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u AgentConfigurationBasicsUnionParam) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfAgentConfigurationBasicsUnionMember0, u.OfAgentConfigurationBasicsUnionMember1, u.OfAgentConfigurationBasicsUnionMember2)
+	return param.MarshalUnion(u, u.OfAgentPhoneContactRequirement, u.OfAgentWebhookContactRequirement, u.OfAgentProfileContactRequirement)
 }
 func (u *AgentConfigurationBasicsUnionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *AgentConfigurationBasicsUnionParam) asAny() any {
-	if !param.IsOmitted(u.OfAgentConfigurationBasicsUnionMember0) {
-		return u.OfAgentConfigurationBasicsUnionMember0
-	} else if !param.IsOmitted(u.OfAgentConfigurationBasicsUnionMember1) {
-		return u.OfAgentConfigurationBasicsUnionMember1
-	} else if !param.IsOmitted(u.OfAgentConfigurationBasicsUnionMember2) {
-		return u.OfAgentConfigurationBasicsUnionMember2
+	if !param.IsOmitted(u.OfAgentPhoneContactRequirement) {
+		return u.OfAgentPhoneContactRequirement
+	} else if !param.IsOmitted(u.OfAgentWebhookContactRequirement) {
+		return u.OfAgentWebhookContactRequirement
+	} else if !param.IsOmitted(u.OfAgentProfileContactRequirement) {
+		return u.OfAgentProfileContactRequirement
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u AgentConfigurationBasicsUnionParam) GetBrandColor() *string {
-	if vt := u.OfAgentConfigurationBasicsUnionMember0; vt != nil && vt.BrandColor.Valid() {
+	if vt := u.OfAgentPhoneContactRequirement; vt != nil && vt.BrandColor.Valid() {
 		return &vt.BrandColor.Value
-	} else if vt := u.OfAgentConfigurationBasicsUnionMember1; vt != nil && vt.BrandColor.Valid() {
+	} else if vt := u.OfAgentWebhookContactRequirement; vt != nil && vt.BrandColor.Valid() {
 		return &vt.BrandColor.Value
-	} else if vt := u.OfAgentConfigurationBasicsUnionMember2; vt != nil && vt.BrandColor.Valid() {
+	} else if vt := u.OfAgentProfileContactRequirement; vt != nil && vt.BrandColor.Valid() {
 		return &vt.BrandColor.Value
 	}
 	return nil
@@ -430,11 +434,11 @@ func (u AgentConfigurationBasicsUnionParam) GetBrandColor() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u AgentConfigurationBasicsUnionParam) GetDescription() *string {
-	if vt := u.OfAgentConfigurationBasicsUnionMember0; vt != nil && vt.Description.Valid() {
+	if vt := u.OfAgentPhoneContactRequirement; vt != nil && vt.Description.Valid() {
 		return &vt.Description.Value
-	} else if vt := u.OfAgentConfigurationBasicsUnionMember1; vt != nil && vt.Description.Valid() {
+	} else if vt := u.OfAgentWebhookContactRequirement; vt != nil && vt.Description.Valid() {
 		return &vt.Description.Value
-	} else if vt := u.OfAgentConfigurationBasicsUnionMember2; vt != nil && vt.Description.Valid() {
+	} else if vt := u.OfAgentProfileContactRequirement; vt != nil && vt.Description.Valid() {
 		return &vt.Description.Value
 	}
 	return nil
@@ -442,11 +446,11 @@ func (u AgentConfigurationBasicsUnionParam) GetDescription() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u AgentConfigurationBasicsUnionParam) GetHeroURL() *string {
-	if vt := u.OfAgentConfigurationBasicsUnionMember0; vt != nil && vt.HeroURL.Valid() {
+	if vt := u.OfAgentPhoneContactRequirement; vt != nil && vt.HeroURL.Valid() {
 		return &vt.HeroURL.Value
-	} else if vt := u.OfAgentConfigurationBasicsUnionMember1; vt != nil && vt.HeroURL.Valid() {
+	} else if vt := u.OfAgentWebhookContactRequirement; vt != nil && vt.HeroURL.Valid() {
 		return &vt.HeroURL.Value
-	} else if vt := u.OfAgentConfigurationBasicsUnionMember2; vt != nil && vt.HeroURL.Valid() {
+	} else if vt := u.OfAgentProfileContactRequirement; vt != nil && vt.HeroURL.Valid() {
 		return &vt.HeroURL.Value
 	}
 	return nil
@@ -454,11 +458,11 @@ func (u AgentConfigurationBasicsUnionParam) GetHeroURL() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u AgentConfigurationBasicsUnionParam) GetLogoURL() *string {
-	if vt := u.OfAgentConfigurationBasicsUnionMember0; vt != nil && vt.LogoURL.Valid() {
+	if vt := u.OfAgentPhoneContactRequirement; vt != nil && vt.LogoURL.Valid() {
 		return &vt.LogoURL.Value
-	} else if vt := u.OfAgentConfigurationBasicsUnionMember1; vt != nil && vt.LogoURL.Valid() {
+	} else if vt := u.OfAgentWebhookContactRequirement; vt != nil && vt.LogoURL.Valid() {
 		return &vt.LogoURL.Value
-	} else if vt := u.OfAgentConfigurationBasicsUnionMember2; vt != nil && vt.LogoURL.Valid() {
+	} else if vt := u.OfAgentProfileContactRequirement; vt != nil && vt.LogoURL.Valid() {
 		return &vt.LogoURL.Value
 	}
 	return nil
@@ -466,11 +470,11 @@ func (u AgentConfigurationBasicsUnionParam) GetLogoURL() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u AgentConfigurationBasicsUnionParam) GetPrivacyPolicyURL() *string {
-	if vt := u.OfAgentConfigurationBasicsUnionMember0; vt != nil && vt.PrivacyPolicyURL.Valid() {
+	if vt := u.OfAgentPhoneContactRequirement; vt != nil && vt.PrivacyPolicyURL.Valid() {
 		return &vt.PrivacyPolicyURL.Value
-	} else if vt := u.OfAgentConfigurationBasicsUnionMember1; vt != nil && vt.PrivacyPolicyURL.Valid() {
+	} else if vt := u.OfAgentWebhookContactRequirement; vt != nil && vt.PrivacyPolicyURL.Valid() {
 		return &vt.PrivacyPolicyURL.Value
-	} else if vt := u.OfAgentConfigurationBasicsUnionMember2; vt != nil && vt.PrivacyPolicyURL.Valid() {
+	} else if vt := u.OfAgentProfileContactRequirement; vt != nil && vt.PrivacyPolicyURL.Valid() {
 		return &vt.PrivacyPolicyURL.Value
 	}
 	return nil
@@ -478,11 +482,11 @@ func (u AgentConfigurationBasicsUnionParam) GetPrivacyPolicyURL() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u AgentConfigurationBasicsUnionParam) GetTermsAndConditionsURL() *string {
-	if vt := u.OfAgentConfigurationBasicsUnionMember0; vt != nil && vt.TermsAndConditionsURL.Valid() {
+	if vt := u.OfAgentPhoneContactRequirement; vt != nil && vt.TermsAndConditionsURL.Valid() {
 		return &vt.TermsAndConditionsURL.Value
-	} else if vt := u.OfAgentConfigurationBasicsUnionMember1; vt != nil && vt.TermsAndConditionsURL.Valid() {
+	} else if vt := u.OfAgentWebhookContactRequirement; vt != nil && vt.TermsAndConditionsURL.Valid() {
 		return &vt.TermsAndConditionsURL.Value
-	} else if vt := u.OfAgentConfigurationBasicsUnionMember2; vt != nil && vt.TermsAndConditionsURL.Valid() {
+	} else if vt := u.OfAgentProfileContactRequirement; vt != nil && vt.TermsAndConditionsURL.Valid() {
 		return &vt.TermsAndConditionsURL.Value
 	}
 	return nil
@@ -490,11 +494,11 @@ func (u AgentConfigurationBasicsUnionParam) GetTermsAndConditionsURL() *string {
 
 // Returns a pointer to the underlying variant's PhoneNumber property, if present.
 func (u AgentConfigurationBasicsUnionParam) GetPhoneNumber() *AgentPhoneContactParam {
-	if vt := u.OfAgentConfigurationBasicsUnionMember0; vt != nil {
+	if vt := u.OfAgentPhoneContactRequirement; vt != nil {
 		return &vt.PhoneNumber
-	} else if vt := u.OfAgentConfigurationBasicsUnionMember1; vt != nil {
+	} else if vt := u.OfAgentWebhookContactRequirement; vt != nil {
 		return &vt.PhoneNumber
-	} else if vt := u.OfAgentConfigurationBasicsUnionMember2; vt != nil {
+	} else if vt := u.OfAgentProfileContactRequirement; vt != nil {
 		return &vt.PhoneNumber
 	}
 	return nil
@@ -502,11 +506,11 @@ func (u AgentConfigurationBasicsUnionParam) GetPhoneNumber() *AgentPhoneContactP
 
 // Returns a pointer to the underlying variant's Email property, if present.
 func (u AgentConfigurationBasicsUnionParam) GetEmail() *AgentEmailContactParam {
-	if vt := u.OfAgentConfigurationBasicsUnionMember0; vt != nil {
+	if vt := u.OfAgentPhoneContactRequirement; vt != nil {
 		return &vt.Email
-	} else if vt := u.OfAgentConfigurationBasicsUnionMember1; vt != nil {
+	} else if vt := u.OfAgentWebhookContactRequirement; vt != nil {
 		return &vt.Email
-	} else if vt := u.OfAgentConfigurationBasicsUnionMember2; vt != nil {
+	} else if vt := u.OfAgentProfileContactRequirement; vt != nil {
 		return &vt.Email
 	}
 	return nil
@@ -514,18 +518,18 @@ func (u AgentConfigurationBasicsUnionParam) GetEmail() *AgentEmailContactParam {
 
 // Returns a pointer to the underlying variant's Website property, if present.
 func (u AgentConfigurationBasicsUnionParam) GetWebsite() *AgentWebsiteContactParam {
-	if vt := u.OfAgentConfigurationBasicsUnionMember0; vt != nil {
+	if vt := u.OfAgentPhoneContactRequirement; vt != nil {
 		return &vt.Website
-	} else if vt := u.OfAgentConfigurationBasicsUnionMember1; vt != nil {
+	} else if vt := u.OfAgentWebhookContactRequirement; vt != nil {
 		return &vt.Website
-	} else if vt := u.OfAgentConfigurationBasicsUnionMember2; vt != nil {
+	} else if vt := u.OfAgentProfileContactRequirement; vt != nil {
 		return &vt.Website
 	}
 	return nil
 }
 
 // The property PhoneNumber is required.
-type AgentConfigurationBasicsUnionMember0Param struct {
+type AgentConfigurationBasicsAgentPhoneContactRequirementParam struct {
 	PhoneNumber           AgentPhoneContactParam   `json:"phone_number,omitzero" api:"required"`
 	BrandColor            param.Opt[string]        `json:"brand_color,omitzero"`
 	Description           param.Opt[string]        `json:"description,omitzero"`
@@ -538,16 +542,16 @@ type AgentConfigurationBasicsUnionMember0Param struct {
 	paramObj
 }
 
-func (r AgentConfigurationBasicsUnionMember0Param) MarshalJSON() (data []byte, err error) {
-	type shadow AgentConfigurationBasicsUnionMember0Param
+func (r AgentConfigurationBasicsAgentPhoneContactRequirementParam) MarshalJSON() (data []byte, err error) {
+	type shadow AgentConfigurationBasicsAgentPhoneContactRequirementParam
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *AgentConfigurationBasicsUnionMember0Param) UnmarshalJSON(data []byte) error {
+func (r *AgentConfigurationBasicsAgentPhoneContactRequirementParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The property Website is required.
-type AgentConfigurationBasicsUnionMember1Param struct {
+type AgentConfigurationBasicsAgentWebhookContactRequirementParam struct {
 	Website               AgentWebsiteContactParam `json:"website,omitzero" api:"required"`
 	BrandColor            param.Opt[string]        `json:"brand_color,omitzero"`
 	Description           param.Opt[string]        `json:"description,omitzero"`
@@ -560,16 +564,16 @@ type AgentConfigurationBasicsUnionMember1Param struct {
 	paramObj
 }
 
-func (r AgentConfigurationBasicsUnionMember1Param) MarshalJSON() (data []byte, err error) {
-	type shadow AgentConfigurationBasicsUnionMember1Param
+func (r AgentConfigurationBasicsAgentWebhookContactRequirementParam) MarshalJSON() (data []byte, err error) {
+	type shadow AgentConfigurationBasicsAgentWebhookContactRequirementParam
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *AgentConfigurationBasicsUnionMember1Param) UnmarshalJSON(data []byte) error {
+func (r *AgentConfigurationBasicsAgentWebhookContactRequirementParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The property Email is required.
-type AgentConfigurationBasicsUnionMember2Param struct {
+type AgentConfigurationBasicsAgentProfileContactRequirementParam struct {
 	Email                 AgentEmailContactParam   `json:"email,omitzero" api:"required"`
 	BrandColor            param.Opt[string]        `json:"brand_color,omitzero"`
 	Description           param.Opt[string]        `json:"description,omitzero"`
@@ -582,11 +586,11 @@ type AgentConfigurationBasicsUnionMember2Param struct {
 	paramObj
 }
 
-func (r AgentConfigurationBasicsUnionMember2Param) MarshalJSON() (data []byte, err error) {
-	type shadow AgentConfigurationBasicsUnionMember2Param
+func (r AgentConfigurationBasicsAgentProfileContactRequirementParam) MarshalJSON() (data []byte, err error) {
+	type shadow AgentConfigurationBasicsAgentProfileContactRequirementParam
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *AgentConfigurationBasicsUnionMember2Param) UnmarshalJSON(data []byte) error {
+func (r *AgentConfigurationBasicsAgentProfileContactRequirementParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

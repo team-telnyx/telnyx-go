@@ -117,20 +117,6 @@ func (r *NetworkInterfaceParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type NetworkInterfaceRegionParam struct {
-	// The region the interface should be deployed to.
-	RegionCode param.Opt[string] `json:"region_code,omitzero"`
-	paramObj
-}
-
-func (r NetworkInterfaceRegionParam) MarshalJSON() (data []byte, err error) {
-	type shadow NetworkInterfaceRegionParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *NetworkInterfaceRegionParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type PublicInternetGatewayParam struct {
 	// The region interface is deployed to.
 	RegionCode param.Opt[string] `json:"region_code,omitzero"`

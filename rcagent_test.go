@@ -30,7 +30,7 @@ func TestRcAgentNewWithOptionalParams(t *testing.T) {
 		BrandID: "11111111-1111-4111-8111-111111111111",
 		Configuration: telnyx.AgentConfigurationParam{
 			Basics: telnyx.AgentConfigurationBasicsUnionParam{
-				OfAgentConfigurationBasicsUnionMember0: &telnyx.AgentConfigurationBasicsUnionMember0Param{
+				OfAgentPhoneContactRequirement: &telnyx.AgentConfigurationBasicsAgentPhoneContactRequirementParam{
 					Email: telnyx.AgentEmailContactParam{
 						Address: "support@example.com",
 						Label:   "Support",
@@ -138,7 +138,7 @@ func TestRcAgentUpdateWithOptionalParams(t *testing.T) {
 		telnyx.RcAgentUpdateParams{
 			Configuration: telnyx.AgentConfigurationParam{
 				Basics: telnyx.AgentConfigurationBasicsUnionParam{
-					OfAgentConfigurationBasicsUnionMember0: &telnyx.AgentConfigurationBasicsUnionMember0Param{
+					OfAgentPhoneContactRequirement: &telnyx.AgentConfigurationBasicsAgentPhoneContactRequirementParam{
 						PhoneNumber: telnyx.AgentPhoneContactParam{
 							Label:  "x",
 							Number: "+49605132",
