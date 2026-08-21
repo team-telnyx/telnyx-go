@@ -18,6 +18,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
+	"github.com/tidwall/gjson"
 )
 
 // Send and manage email messages. Legacy `/v2/emails` routes are aliases for these
@@ -240,6 +241,10 @@ func (u *EmailAddressInputUnionParam) asAny() any {
 		return u.OfEmailAddress
 	}
 	return nil
+}
+
+func init() {
+	apijson.RegisterUnion[EmailAddressInputUnionParam]("", apijson.Variant[EmailAddressParam](gjson.JSON))
 }
 
 type MessageEvent struct {

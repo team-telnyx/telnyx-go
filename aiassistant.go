@@ -20,6 +20,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 	"github.com/team-telnyx/telnyx-go/v4/shared"
 	"github.com/team-telnyx/telnyx-go/v4/shared/constant"
+	"github.com/tidwall/gjson"
 )
 
 // Configure AI assistant specifications
@@ -4852,6 +4853,14 @@ func (u InferenceEmbeddingWebhookToolParamsWebhookMessagesUnion) GetTimingMs() *
 		return (*int64)(&vt.TimingMs)
 	}
 	return nil
+}
+
+func init() {
+	apijson.RegisterUnion[InferenceEmbeddingWebhookToolParamsWebhookMessagesUnion](
+		"",
+		apijson.Variant[InferenceEmbeddingWebhookToolParamsWebhookMessagesWebhookToolRequestStartMessage](gjson.JSON),
+		apijson.Variant[InferenceEmbeddingWebhookToolParamsWebhookMessagesWebhookToolRequestResponseDelayedMessage](gjson.JSON),
+	)
 }
 
 // The properties Content, Type are required.

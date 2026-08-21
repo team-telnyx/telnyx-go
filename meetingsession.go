@@ -18,6 +18,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 	"github.com/team-telnyx/telnyx-go/v4/shared/constant"
+	"github.com/tidwall/gjson"
 )
 
 // MeetingSessionService contains methods and other services that help with
@@ -779,6 +780,14 @@ func (u MeetingSessionNewParamsCameraImageUnion) GetFormat() *string {
 		return (*string)(&vt.Format)
 	}
 	return nil
+}
+
+func init() {
+	apijson.RegisterUnion[MeetingSessionNewParamsCameraImageUnion](
+		"",
+		apijson.Variant[MeetingSessionNewParamsCameraImageMeetingSessionCameraImageBase64Source](gjson.JSON),
+		apijson.Variant[MeetingSessionNewParamsCameraImageMeetingSessionCameraImageURLSource](gjson.JSON),
+	)
 }
 
 // The properties Base64Data, Format are required.

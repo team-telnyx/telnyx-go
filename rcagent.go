@@ -18,6 +18,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/option"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
+	"github.com/tidwall/gjson"
 )
 
 // Manage RCS agent registration, testing, verification, and launch.
@@ -526,6 +527,15 @@ func (u AgentConfigurationBasicsUnionParam) GetWebsite() *AgentWebsiteContactPar
 		return &vt.Website
 	}
 	return nil
+}
+
+func init() {
+	apijson.RegisterUnion[AgentConfigurationBasicsUnionParam](
+		"",
+		apijson.Variant[AgentConfigurationBasicsAgentPhoneContactRequirementParam](gjson.JSON),
+		apijson.Variant[AgentConfigurationBasicsAgentWebhookContactRequirementParam](gjson.JSON),
+		apijson.Variant[AgentConfigurationBasicsAgentProfileContactRequirementParam](gjson.JSON),
+	)
 }
 
 // The property PhoneNumber is required.

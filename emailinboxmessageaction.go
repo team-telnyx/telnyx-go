@@ -14,6 +14,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v4/option"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
+	"github.com/tidwall/gjson"
 )
 
 // Create and manage agent inboxes, retrieve inbound messages and threads, and
@@ -141,6 +142,10 @@ func (u *InboxActionEmailAddressInputUnionParam) asAny() any {
 	return nil
 }
 
+func init() {
+	apijson.RegisterUnion[InboxActionEmailAddressInputUnionParam]("", apijson.Variant[InboxActionEmailAddressInputInboxRecipientAddressParam](gjson.JSON))
+}
+
 // The property Email is required.
 type InboxActionEmailAddressInputInboxRecipientAddressParam struct {
 	Email string            `json:"email" api:"required"`
@@ -188,6 +193,10 @@ func (u *InboxActionRecipientInputUnionParam) asAny() any {
 		return &u.OfInboxRecipientList
 	}
 	return nil
+}
+
+func init() {
+	apijson.RegisterUnion[InboxActionRecipientInputUnionParam]("", apijson.Variant[InboxActionRecipientInputInboxRecipientAddressParam](gjson.JSON))
 }
 
 // The property Email is required.
@@ -278,6 +287,10 @@ func (u *EmailInboxMessageActionForwardParamsToUnion) asAny() any {
 		return &u.OfRequiredInboxRecipientList
 	}
 	return nil
+}
+
+func init() {
+	apijson.RegisterUnion[EmailInboxMessageActionForwardParamsToUnion]("", apijson.Variant[EmailInboxMessageActionForwardParamsToInboxRecipientAddress](gjson.JSON))
 }
 
 // The property Email is required.

@@ -15,6 +15,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/option"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
+	"github.com/tidwall/gjson"
 )
 
 // Global IPs
@@ -224,6 +225,10 @@ func (u *GlobalIPAssignmentHealthGetParamsFilterGlobalIPAssignmentIDUnion) asAny
 	return nil
 }
 
+func init() {
+	apijson.RegisterUnion[GlobalIPAssignmentHealthGetParamsFilterGlobalIPAssignmentIDUnion]("", apijson.Variant[GlobalIPAssignmentHealthGetParamsFilterGlobalIPAssignmentIDIn](gjson.JSON))
+}
+
 // Filtering operations
 type GlobalIPAssignmentHealthGetParamsFilterGlobalIPAssignmentIDIn struct {
 	// Filter by Global IP Assignment ID(s) separated by commas
@@ -257,6 +262,10 @@ func (u *GlobalIPAssignmentHealthGetParamsFilterGlobalIPIDUnion) asAny() any {
 		return u.OfGlobalIPAssignmentHealthGetsFilterGlobalIPIDIn
 	}
 	return nil
+}
+
+func init() {
+	apijson.RegisterUnion[GlobalIPAssignmentHealthGetParamsFilterGlobalIPIDUnion]("", apijson.Variant[GlobalIPAssignmentHealthGetParamsFilterGlobalIPIDIn](gjson.JSON))
 }
 
 // Filtering operations

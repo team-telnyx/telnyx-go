@@ -17,6 +17,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
+	"github.com/tidwall/gjson"
 )
 
 // Operations to work with Address records. Address records are emergency-validated
@@ -408,6 +409,10 @@ func (u *AddressListParamsFilterCustomerReferenceUnion) asAny() any {
 		return u.OfCustomerReferenceMatcher
 	}
 	return nil
+}
+
+func init() {
+	apijson.RegisterUnion[AddressListParamsFilterCustomerReferenceUnion]("", apijson.Variant[AddressListParamsFilterCustomerReferenceCustomerReferenceMatcher](gjson.JSON))
 }
 
 type AddressListParamsFilterCustomerReferenceCustomerReferenceMatcher struct {
