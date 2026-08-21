@@ -80,7 +80,8 @@ func (r *RoomRecordingService) ListAutoPaging(ctx context.Context, query RoomRec
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Synchronously delete a Room Recording.
+// Synchronously deletes the specified video room recording. The recording's media
+// is removed permanently.
 func (r *RoomRecordingService) Delete(ctx context.Context, roomRecordingID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)

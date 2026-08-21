@@ -29,7 +29,6 @@ type Comparative string            // Always "comparative"
 type Comparison string             // Always "comparison"
 type Default string                // Always "default"
 type Ein string                    // Always "EIN"
-type Error string                  // Always "error"
 type Expression string             // Always "expression"
 type Function string               // Always "function"
 type Handoff string                // Always "handoff"
@@ -46,15 +45,15 @@ type PredefinedMedia string        // Always "predefined_media"
 type ProviderRecordingMedia string // Always "provider_recording_media"
 type Recall string                 // Always "recall"
 type Refer string                  // Always "refer"
+type RequestResponseDelayed string // Always "request_response_delayed"
+type RequestStart string           // Always "request_start"
 type Retrieval string              // Always "retrieval"
-type S3Generic string              // Always "s3-generic"
 type SendDtmf string               // Always "send_dtmf"
 type SendMessage string            // Always "send_message"
 type Simple string                 // Always "simple"
 type SkipTurn string               // Always "skip_turn"
 type StockSymbol string            // Always "STOCK_SYMBOL"
 type StringLiteral string          // Always "string_literal"
-type Transcript string             // Always "transcript"
 type Transfer string               // Always "transfer"
 type UpdateDynamicVariables string // Always "update_dynamic_variables"
 type Variable string               // Always "variable"
@@ -70,7 +69,6 @@ func (c Comparative) Default() Comparative                       { return "compa
 func (c Comparison) Default() Comparison                         { return "comparison" }
 func (c Default) Default() Default                               { return "default" }
 func (c Ein) Default() Ein                                       { return "EIN" }
-func (c Error) Default() Error                                   { return "error" }
 func (c Expression) Default() Expression                         { return "expression" }
 func (c Function) Default() Function                             { return "function" }
 func (c Handoff) Default() Handoff                               { return "handoff" }
@@ -87,15 +85,15 @@ func (c PredefinedMedia) Default() PredefinedMedia               { return "prede
 func (c ProviderRecordingMedia) Default() ProviderRecordingMedia { return "provider_recording_media" }
 func (c Recall) Default() Recall                                 { return "recall" }
 func (c Refer) Default() Refer                                   { return "refer" }
+func (c RequestResponseDelayed) Default() RequestResponseDelayed { return "request_response_delayed" }
+func (c RequestStart) Default() RequestStart                     { return "request_start" }
 func (c Retrieval) Default() Retrieval                           { return "retrieval" }
-func (c S3Generic) Default() S3Generic                           { return "s3-generic" }
 func (c SendDtmf) Default() SendDtmf                             { return "send_dtmf" }
 func (c SendMessage) Default() SendMessage                       { return "send_message" }
 func (c Simple) Default() Simple                                 { return "simple" }
 func (c SkipTurn) Default() SkipTurn                             { return "skip_turn" }
 func (c StockSymbol) Default() StockSymbol                       { return "STOCK_SYMBOL" }
 func (c StringLiteral) Default() StringLiteral                   { return "string_literal" }
-func (c Transcript) Default() Transcript                         { return "transcript" }
 func (c Transfer) Default() Transfer                             { return "transfer" }
 func (c UpdateDynamicVariables) Default() UpdateDynamicVariables { return "update_dynamic_variables" }
 func (c Variable) Default() Variable                             { return "variable" }
@@ -111,7 +109,6 @@ func (c Comparative) MarshalJSON() ([]byte, error)            { return marshalSt
 func (c Comparison) MarshalJSON() ([]byte, error)             { return marshalString(c) }
 func (c Default) MarshalJSON() ([]byte, error)                { return marshalString(c) }
 func (c Ein) MarshalJSON() ([]byte, error)                    { return marshalString(c) }
-func (c Error) MarshalJSON() ([]byte, error)                  { return marshalString(c) }
 func (c Expression) MarshalJSON() ([]byte, error)             { return marshalString(c) }
 func (c Function) MarshalJSON() ([]byte, error)               { return marshalString(c) }
 func (c Handoff) MarshalJSON() ([]byte, error)                { return marshalString(c) }
@@ -128,15 +125,15 @@ func (c PredefinedMedia) MarshalJSON() ([]byte, error)        { return marshalSt
 func (c ProviderRecordingMedia) MarshalJSON() ([]byte, error) { return marshalString(c) }
 func (c Recall) MarshalJSON() ([]byte, error)                 { return marshalString(c) }
 func (c Refer) MarshalJSON() ([]byte, error)                  { return marshalString(c) }
+func (c RequestResponseDelayed) MarshalJSON() ([]byte, error) { return marshalString(c) }
+func (c RequestStart) MarshalJSON() ([]byte, error)           { return marshalString(c) }
 func (c Retrieval) MarshalJSON() ([]byte, error)              { return marshalString(c) }
-func (c S3Generic) MarshalJSON() ([]byte, error)              { return marshalString(c) }
 func (c SendDtmf) MarshalJSON() ([]byte, error)               { return marshalString(c) }
 func (c SendMessage) MarshalJSON() ([]byte, error)            { return marshalString(c) }
 func (c Simple) MarshalJSON() ([]byte, error)                 { return marshalString(c) }
 func (c SkipTurn) MarshalJSON() ([]byte, error)               { return marshalString(c) }
 func (c StockSymbol) MarshalJSON() ([]byte, error)            { return marshalString(c) }
 func (c StringLiteral) MarshalJSON() ([]byte, error)          { return marshalString(c) }
-func (c Transcript) MarshalJSON() ([]byte, error)             { return marshalString(c) }
 func (c Transfer) MarshalJSON() ([]byte, error)               { return marshalString(c) }
 func (c UpdateDynamicVariables) MarshalJSON() ([]byte, error) { return marshalString(c) }
 func (c Variable) MarshalJSON() ([]byte, error)               { return marshalString(c) }

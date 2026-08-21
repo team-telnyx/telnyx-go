@@ -16,6 +16,7 @@ import (
 	shimjson "github.com/team-telnyx/telnyx-go/v4/internal/encoding/json"
 	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
@@ -69,15 +70,32 @@ func (r *EmailInboxMessageService) Update(ctx context.Context, messageID string,
 // Lists inbound messages newest first. All access is scoped to the authenticated
 // account. `filter[search]` performs PostgreSQL full-text search over the subject,
 // plain-text body, and HTML body. Filters compose with stable cursor pagination.
-func (r *EmailInboxMessageService) List(ctx context.Context, inboxID string, query EmailInboxMessageListParams, opts ...option.RequestOption) (res *EmailInboxMessageListResponse, err error) {
+func (r *EmailInboxMessageService) List(ctx context.Context, inboxID string, query EmailInboxMessageListParams, opts ...option.RequestOption) (res *pagination.EmailBracketCursorPagination[InboundMessage], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if inboxID == "" {
 		err = errors.New("missing required inbox_id parameter")
 		return nil, err
 	}
 	path := fmt.Sprintf("email_inboxes/%s/messages", inboxID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Lists inbound messages newest first. All access is scoped to the authenticated
+// account. `filter[search]` performs PostgreSQL full-text search over the subject,
+// plain-text body, and HTML body. Filters compose with stable cursor pagination.
+func (r *EmailInboxMessageService) ListAutoPaging(ctx context.Context, inboxID string, query EmailInboxMessageListParams, opts ...option.RequestOption) *pagination.EmailBracketCursorPaginationAutoPager[InboundMessage] {
+	return pagination.NewEmailBracketCursorPaginationAutoPager(r.List(ctx, inboxID, query, opts...))
 }
 
 // Creates an unsent reply draft for an inbound message. Unlike the
@@ -120,29 +138,9 @@ func (r *EmailInboxMessageUpdateResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type EmailInboxMessageListResponse struct {
-	Data []InboundMessage    `json:"data" api:"required"`
-	Meta EmailPaginationMeta `json:"meta" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r EmailInboxMessageListResponse) RawJSON() string { return r.JSON.raw }
-func (r *EmailInboxMessageListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type EmailInboxMessageUpdateParams struct {
-	InboxID string `path:"inbox_id" api:"required" format:"uuid" json:"-"`
-	// Set to `true` for server time, an ISO 8601 timestamp for an explicit read time,
-	// or `null` to mark unread.
-	ReadAt EmailInboxMessageUpdateParamsReadAtUnion `json:"read_at,omitzero" api:"required" format:"date-time"`
+	InboxID string                                   `path:"inbox_id" api:"required" format:"uuid" json:"-"`
+	ReadAt  EmailInboxMessageUpdateParamsReadAtUnion `json:"read_at,omitzero" api:"required" format:"date-time"`
 	paramObj
 }
 
@@ -158,33 +156,32 @@ func (r *EmailInboxMessageUpdateParams) UnmarshalJSON(data []byte) error {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type EmailInboxMessageUpdateParamsReadAtUnion struct {
-	// Check if union is this variant with
-	// !param.IsOmitted(union.OfEmailInboxMessageUpdatesReadAtBoolean)
-	OfEmailInboxMessageUpdatesReadAtBoolean param.Opt[bool]      `json:",omitzero,inline"`
-	OfTime                                  param.Opt[time.Time] `json:",omitzero,inline"`
+	// Check if union is this variant with !param.IsOmitted(union.OfServerReadTime)
+	OfServerReadTime param.Opt[bool]      `json:",omitzero,inline"`
+	OfTime           param.Opt[time.Time] `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u EmailInboxMessageUpdateParamsReadAtUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfEmailInboxMessageUpdatesReadAtBoolean, u.OfTime)
+	return param.MarshalUnion(u, u.OfServerReadTime, u.OfTime)
 }
 func (u *EmailInboxMessageUpdateParamsReadAtUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *EmailInboxMessageUpdateParamsReadAtUnion) asAny() any {
-	if !param.IsOmitted(u.OfEmailInboxMessageUpdatesReadAtBoolean) {
-		return &u.OfEmailInboxMessageUpdatesReadAtBoolean
+	if !param.IsOmitted(u.OfServerReadTime) {
+		return &u.OfServerReadTime
 	} else if !param.IsOmitted(u.OfTime) {
 		return &u.OfTime.Value
 	}
 	return nil
 }
 
-type EmailInboxMessageUpdateParamsReadAtBoolean bool
+type EmailInboxMessageUpdateParamsReadAtServerReadTime bool
 
 const (
-	EmailInboxMessageUpdateParamsReadAtBooleanTrue EmailInboxMessageUpdateParamsReadAtBoolean = true
+	EmailInboxMessageUpdateParamsReadAtServerReadTimeTrue EmailInboxMessageUpdateParamsReadAtServerReadTime = true
 )
 
 type EmailInboxMessageListParams struct {

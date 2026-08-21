@@ -49,7 +49,8 @@ func (r *OAuthService) Get(ctx context.Context, consentToken string, opts ...opt
 	return res, err
 }
 
-// Create an OAuth authorization grant
+// Creates an OAuth authorization grant and returns the grant response for
+// completing the authorization flow.
 func (r *OAuthService) Grants(ctx context.Context, body OAuthGrantsParams, opts ...option.RequestOption) (res *OAuthGrantsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "oauth/grants"
@@ -74,12 +75,12 @@ func (r *OAuthService) Register(ctx context.Context, body OAuthRegisterParams, o
 }
 
 // OAuth 2.0 authorization endpoint for the authorization code flow
-func (r *OAuthService) GetAuthorize(ctx context.Context, query OAuthGetAuthorizeParams, opts ...option.RequestOption) (err error) {
+func (r *OAuthService) GetAuthorize(ctx context.Context, query OAuthGetAuthorizeParams, opts ...option.RequestOption) (res *string, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "text/html")}, opts...)
 	path := "oauth/authorize"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, nil, opts...)
-	return err
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
 }
 
 // Retrieve the JSON Web Key Set for token verification

@@ -41,7 +41,8 @@ func NewPortingOrderActivationJobService(opts ...option.RequestOption) (r Portin
 	return
 }
 
-// Returns a porting activation job.
+// Returns the details of a single activation job for the porting order, including
+// its current status.
 func (r *PortingOrderActivationJobService) Get(ctx context.Context, activationJobID string, query PortingOrderActivationJobGetParams, opts ...option.RequestOption) (res *PortingOrderActivationJobGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if query.ID == "" {

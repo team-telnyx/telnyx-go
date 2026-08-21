@@ -40,7 +40,8 @@ func NewTexmlAccountQueueService(opts ...option.RequestOption) (r TexmlAccountQu
 	return
 }
 
-// Creates a new queue resource.
+// Creates a new queue resource for the account with the provided settings and
+// returns it.
 func (r *TexmlAccountQueueService) New(ctx context.Context, accountSid string, body TexmlAccountQueueNewParams, opts ...option.RequestOption) (res *QueueResource, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if accountSid == "" {
@@ -52,7 +53,7 @@ func (r *TexmlAccountQueueService) New(ctx context.Context, accountSid string, b
 	return res, err
 }
 
-// Returns a queue resource.
+// Returns a single queue resource for the account by its QueueSid.
 func (r *TexmlAccountQueueService) Get(ctx context.Context, queueSid string, query TexmlAccountQueueGetParams, opts ...option.RequestOption) (res *QueueResource, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if query.AccountSid == "" {
@@ -68,7 +69,7 @@ func (r *TexmlAccountQueueService) Get(ctx context.Context, queueSid string, que
 	return res, err
 }
 
-// Updates a queue resource.
+// Updates the specified queue resource's settings and returns the updated queue.
 func (r *TexmlAccountQueueService) Update(ctx context.Context, queueSid string, params TexmlAccountQueueUpdateParams, opts ...option.RequestOption) (res *QueueResource, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if params.AccountSid == "" {
@@ -84,7 +85,8 @@ func (r *TexmlAccountQueueService) Update(ctx context.Context, queueSid string, 
 	return res, err
 }
 
-// Lists queue resources.
+// Returns a paginated list of queue resources for the account, with support for
+// filtering by creation or update dates.
 func (r *TexmlAccountQueueService) List(ctx context.Context, accountSid string, query TexmlAccountQueueListParams, opts ...option.RequestOption) (res *pagination.DefaultPaginationForQueues[QueueResource], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -106,12 +108,13 @@ func (r *TexmlAccountQueueService) List(ctx context.Context, accountSid string, 
 	return res, nil
 }
 
-// Lists queue resources.
+// Returns a paginated list of queue resources for the account, with support for
+// filtering by creation or update dates.
 func (r *TexmlAccountQueueService) ListAutoPaging(ctx context.Context, accountSid string, query TexmlAccountQueueListParams, opts ...option.RequestOption) *pagination.DefaultPaginationForQueuesAutoPager[QueueResource] {
 	return pagination.NewDefaultPaginationForQueuesAutoPager(r.List(ctx, accountSid, query, opts...))
 }
 
-// Delete a queue resource.
+// Permanently deletes the specified queue resource from the account.
 func (r *TexmlAccountQueueService) Delete(ctx context.Context, queueSid string, body TexmlAccountQueueDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)

@@ -42,10 +42,13 @@ func NewAIToolService(opts ...option.RequestOption) (r AIToolService) {
 }
 
 // Create a new custom AI tool that can be attached to AI assistants.
-func (r *AIToolService) New(ctx context.Context, body AIToolNewParams, opts ...option.RequestOption) (res *SharedToolResponse, err error) {
+func (r *AIToolService) New(ctx context.Context, params AIToolNewParams, opts ...option.RequestOption) (res *SharedToolResponse, err error) {
+	if !param.IsOmitted(params.IdempotencyKey) {
+		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/tools"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
 
@@ -96,7 +99,7 @@ func (r *AIToolService) ListAutoPaging(ctx context.Context, query AIToolListPara
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Delete a custom AI tool.
+// Permanently deletes the specified custom AI tool from your account.
 func (r *AIToolService) Delete(ctx context.Context, toolID string, opts ...option.RequestOption) (res *AIToolDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if toolID == "" {
@@ -306,15 +309,16 @@ func (r *UpdateDynamicVariablesToolParamsUpdatableVariable) UnmarshalJSON(data [
 type AIToolDeleteResponse = any
 
 type AIToolNewParams struct {
-	DisplayName    string           `json:"display_name" api:"required"`
-	Type           string           `json:"type" api:"required"`
-	TimeoutMs      param.Opt[int64] `json:"timeout_ms,omitzero"`
-	ClientSideTool map[string]any   `json:"client_side_tool,omitzero"`
-	Function       map[string]any   `json:"function,omitzero"`
-	Handoff        map[string]any   `json:"handoff,omitzero"`
-	Invite         map[string]any   `json:"invite,omitzero"`
-	Pay            PayToolParams    `json:"pay,omitzero"`
-	Retrieval      map[string]any   `json:"retrieval,omitzero"`
+	DisplayName    string            `json:"display_name" api:"required"`
+	Type           string            `json:"type" api:"required"`
+	TimeoutMs      param.Opt[int64]  `json:"timeout_ms,omitzero"`
+	IdempotencyKey param.Opt[string] `header:"Idempotency-Key,omitzero" json:"-"`
+	ClientSideTool map[string]any    `json:"client_side_tool,omitzero"`
+	Function       map[string]any    `json:"function,omitzero"`
+	Handoff        map[string]any    `json:"handoff,omitzero"`
+	Invite         map[string]any    `json:"invite,omitzero"`
+	Pay            PayToolParams     `json:"pay,omitzero"`
+	Retrieval      map[string]any    `json:"retrieval,omitzero"`
 	// Configuration for an update_dynamic_variables tool.
 	UpdateDynamicVariables UpdateDynamicVariablesToolParams `json:"update_dynamic_variables,omitzero"`
 	Webhook                map[string]any                   `json:"webhook,omitzero"`

@@ -15,6 +15,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
@@ -63,15 +64,33 @@ func (r *EmailMessageRecipientService) Get(ctx context.Context, recipientID stri
 // Each recipient has an independent status, billable flag, and lifecycle
 // timestamps. BCC recipient addresses are redacted (returned as null) to protect
 // BCC privacy. Default page size is 25, maximum is 100.
-func (r *EmailMessageRecipientService) List(ctx context.Context, emailID string, query EmailMessageRecipientListParams, opts ...option.RequestOption) (res *EmailMessageRecipientListResponse, err error) {
+func (r *EmailMessageRecipientService) List(ctx context.Context, emailID string, query EmailMessageRecipientListParams, opts ...option.RequestOption) (res *pagination.EmailCursorPagination[EmailRecipient], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if emailID == "" {
 		err = errors.New("missing required email_id parameter")
 		return nil, err
 	}
 	path := fmt.Sprintf("email_messages/%s/recipients", emailID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Lists per-recipient delivery states for a single message with cursor pagination.
+// Each recipient has an independent status, billable flag, and lifecycle
+// timestamps. BCC recipient addresses are redacted (returned as null) to protect
+// BCC privacy. Default page size is 25, maximum is 100.
+func (r *EmailMessageRecipientService) ListAutoPaging(ctx context.Context, emailID string, query EmailMessageRecipientListParams, opts ...option.RequestOption) *pagination.EmailCursorPaginationAutoPager[EmailRecipient] {
+	return pagination.NewEmailCursorPaginationAutoPager(r.List(ctx, emailID, query, opts...))
 }
 
 type EmailRecipient struct {
@@ -166,43 +185,6 @@ type EmailMessageRecipientGetResponse struct {
 // Returns the unmodified JSON received from the API
 func (r EmailMessageRecipientGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *EmailMessageRecipientGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type EmailMessageRecipientListResponse struct {
-	Data []EmailRecipient                      `json:"data" api:"required"`
-	Meta EmailMessageRecipientListResponseMeta `json:"meta" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r EmailMessageRecipientListResponse) RawJSON() string { return r.JSON.raw }
-func (r *EmailMessageRecipientListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type EmailMessageRecipientListResponseMeta struct {
-	PageSize int64 `json:"page_size" api:"required"`
-	// Cursor for the next page. Absent when there are no more results.
-	PageCursor string `json:"page_cursor" api:"nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		PageSize    respjson.Field
-		PageCursor  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r EmailMessageRecipientListResponseMeta) RawJSON() string { return r.JSON.raw }
-func (r *EmailMessageRecipientListResponseMeta) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

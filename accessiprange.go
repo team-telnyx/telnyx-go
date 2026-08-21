@@ -18,6 +18,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
+	"github.com/tidwall/gjson"
 )
 
 // IP Range Operations
@@ -189,6 +190,10 @@ func (u *AccessIPRangeListParamsFilterCidrBlockUnion) asAny() any {
 	return nil
 }
 
+func init() {
+	apijson.RegisterUnion[AccessIPRangeListParamsFilterCidrBlockUnion]("", apijson.Variant[AccessIPRangeListParamsFilterCidrBlockCidrBlockPatternFilter](gjson.JSON))
+}
+
 // CIDR block pattern matching operations
 type AccessIPRangeListParamsFilterCidrBlockCidrBlockPatternFilter struct {
 	// Filter CIDR blocks containing the specified string
@@ -226,6 +231,10 @@ func (u *AccessIPRangeListParamsFilterCreatedAtUnion) asAny() any {
 		return u.OfDateRangeFilter
 	}
 	return nil
+}
+
+func init() {
+	apijson.RegisterUnion[AccessIPRangeListParamsFilterCreatedAtUnion]("", apijson.Variant[AccessIPRangeListParamsFilterCreatedAtDateRangeFilter](gjson.JSON))
 }
 
 // Date range filtering operations

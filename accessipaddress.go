@@ -18,6 +18,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
+	"github.com/tidwall/gjson"
 )
 
 // IP Address Operations
@@ -231,6 +232,10 @@ func (u *AccessIPAddressListParamsFilterCreatedAtUnion) asAny() any {
 		return u.OfDateRangeFilter
 	}
 	return nil
+}
+
+func init() {
+	apijson.RegisterUnion[AccessIPAddressListParamsFilterCreatedAtUnion]("", apijson.Variant[AccessIPAddressListParamsFilterCreatedAtDateRangeFilter](gjson.JSON))
 }
 
 // Date range filtering operations

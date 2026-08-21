@@ -28,7 +28,7 @@ func TestEmailBlockImportNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.EmailBlocks.Import.New(context.TODO(), telnyx.EmailBlockImportNewParams{
+	_, err := client.EmailBlocks.Imports.New(context.TODO(), telnyx.EmailBlockImportNewParams{
 		File:         io.Reader(bytes.NewBuffer([]byte("Example data"))),
 		BlockTtlDays: telnyx.Int(30),
 	})
@@ -54,7 +54,7 @@ func TestEmailBlockImportGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.EmailBlocks.Import.Get(context.TODO(), "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+	_, err := client.EmailBlocks.Imports.Get(context.TODO(), "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {

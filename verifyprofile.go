@@ -48,7 +48,8 @@ func (r *VerifyProfileService) New(ctx context.Context, body VerifyProfileNewPar
 	return res, err
 }
 
-// Gets a single Verify profile.
+// Returns the details of a single Verify profile by its ID, including its
+// verification channel configuration.
 func (r *VerifyProfileService) Get(ctx context.Context, verifyProfileID string, opts ...option.RequestOption) (res *VerifyProfileData, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if verifyProfileID == "" {

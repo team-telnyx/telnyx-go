@@ -27,7 +27,7 @@ func TestEnterpriseNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Enterprises.New(context.TODO(), telnyx.EnterpriseNewParams{
-		BillingAddress: telnyx.BillingAddressParam{
+		BillingAddress: telnyx.PhysicalAddressParam{
 			AdministrativeArea: "IL",
 			City:               "Chicago",
 			Country:            "US",
@@ -122,7 +122,7 @@ func TestEnterpriseUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"4a6192a4-573d-446d-b3ce-aff9117272a6",
 		telnyx.EnterpriseUpdateParams{
-			BillingAddress: telnyx.BillingAddressParam{
+			BillingAddress: telnyx.PhysicalAddressParam{
 				AdministrativeArea: "IL",
 				City:               "Chicago",
 				Country:            "US",

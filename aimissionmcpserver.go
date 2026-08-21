@@ -32,7 +32,8 @@ func NewAIMissionMcpServerService(opts ...option.RequestOption) (r AIMissionMcpS
 	return
 }
 
-// Create a new MCP server for a mission
+// Adds an MCP server to the specified mission, making the server's tools available
+// to agents during runs of this mission.
 func (r *AIMissionMcpServerService) NewMcpServer(ctx context.Context, missionID string, opts ...option.RequestOption) (res *AIMissionMcpServerNewMcpServerResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if missionID == "" {
@@ -44,7 +45,8 @@ func (r *AIMissionMcpServerService) NewMcpServer(ctx context.Context, missionID 
 	return res, err
 }
 
-// Delete an MCP server from a mission
+// Removes the specified MCP server from the mission, revoking agent access to its
+// tools in subsequent runs.
 func (r *AIMissionMcpServerService) DeleteMcpServer(ctx context.Context, mcpServerID string, body AIMissionMcpServerDeleteMcpServerParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
@@ -61,7 +63,8 @@ func (r *AIMissionMcpServerService) DeleteMcpServer(ctx context.Context, mcpServ
 	return err
 }
 
-// Get a specific MCP server by ID
+// Returns the configuration of a single MCP server attached to the specified
+// mission.
 func (r *AIMissionMcpServerService) GetMcpServer(ctx context.Context, mcpServerID string, query AIMissionMcpServerGetMcpServerParams, opts ...option.RequestOption) (res *AIMissionMcpServerGetMcpServerResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if query.MissionID == "" {
@@ -77,7 +80,8 @@ func (r *AIMissionMcpServerService) GetMcpServer(ctx context.Context, mcpServerI
 	return res, err
 }
 
-// List all MCP servers for a mission
+// Returns the MCP servers configured on the specified mission. MCP servers expose
+// external tools and data sources agents can use during runs.
 func (r *AIMissionMcpServerService) ListMcpServers(ctx context.Context, missionID string, opts ...option.RequestOption) (res *AIMissionMcpServerListMcpServersResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if missionID == "" {
@@ -89,7 +93,7 @@ func (r *AIMissionMcpServerService) ListMcpServers(ctx context.Context, missionI
 	return res, err
 }
 
-// Update an MCP server definition
+// Replaces the configuration of the specified MCP server on this mission.
 func (r *AIMissionMcpServerService) UpdateMcpServer(ctx context.Context, mcpServerID string, body AIMissionMcpServerUpdateMcpServerParams, opts ...option.RequestOption) (res *AIMissionMcpServerUpdateMcpServerResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if body.MissionID == "" {

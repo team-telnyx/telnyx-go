@@ -17,6 +17,7 @@ import (
 	shimjson "github.com/team-telnyx/telnyx-go/v4/internal/encoding/json"
 	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
@@ -101,15 +102,31 @@ func (r *EmailInboxDraftService) Update(ctx context.Context, draftID string, par
 
 // Lists drafts newest first using stable cursor pagination. All access is scoped
 // to the authenticated account and the given inbox.
-func (r *EmailInboxDraftService) List(ctx context.Context, inboxID string, query EmailInboxDraftListParams, opts ...option.RequestOption) (res *EmailInboxDraftListResponse, err error) {
+func (r *EmailInboxDraftService) List(ctx context.Context, inboxID string, query EmailInboxDraftListParams, opts ...option.RequestOption) (res *pagination.EmailBracketCursorPagination[EmailDraft], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if inboxID == "" {
 		err = errors.New("missing required inbox_id parameter")
 		return nil, err
 	}
 	path := fmt.Sprintf("email_inboxes/%s/drafts", inboxID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Lists drafts newest first using stable cursor pagination. All access is scoped
+// to the authenticated account and the given inbox.
+func (r *EmailInboxDraftService) ListAutoPaging(ctx context.Context, inboxID string, query EmailInboxDraftListParams, opts ...option.RequestOption) *pagination.EmailBracketCursorPaginationAutoPager[EmailDraft] {
+	return pagination.NewEmailBracketCursorPaginationAutoPager(r.List(ctx, inboxID, query, opts...))
 }
 
 // Permanently deletes an unsent draft. Drafts that are being sent or have been
@@ -224,7 +241,7 @@ type EmailDraft struct {
 	//
 	// Any of "draft", "sending", "sent".
 	Status      EmailDraftStatus `json:"status" api:"required"`
-	Attachments []any            `json:"attachments"`
+	Attachments []map[string]any `json:"attachments"`
 	Bcc         []EmailAddress   `json:"bcc"`
 	Cc          []EmailAddress   `json:"cc"`
 	CreatedAt   time.Time        `json:"created_at" format:"date-time"`
@@ -237,8 +254,8 @@ type EmailDraft struct {
 	// Mutable mailbox-state labels. Not propagated to Email Detail Records.
 	Labels []string `json:"labels"`
 	// Arbitrary customer-defined metadata.
-	Metadata any    `json:"metadata"`
-	ReplyTo  string `json:"reply_to" api:"nullable"`
+	Metadata map[string]any `json:"metadata"`
+	ReplyTo  string         `json:"reply_to" api:"nullable"`
 	// Inbound message this draft replies to. Server-owned; set only on reply drafts.
 	ReplyToMessageID string    `json:"reply_to_message_id" api:"nullable" format:"uuid"`
 	SentAt           time.Time `json:"sent_at" api:"nullable" format:"date-time"`
@@ -320,12 +337,12 @@ type EmailDraftRequestParam struct {
 	// Alias for `text_body`, matching the send endpoint.
 	Text        param.Opt[string]             `json:"text,omitzero"`
 	TextBody    param.Opt[string]             `json:"text_body,omitzero"`
-	Attachments []any                         `json:"attachments,omitzero"`
+	Attachments []map[string]any              `json:"attachments,omitzero"`
 	Bcc         []EmailAddressInputUnionParam `json:"bcc,omitzero"`
 	Cc          []EmailAddressInputUnionParam `json:"cc,omitzero"`
 	Headers     map[string]string             `json:"headers,omitzero"`
 	Labels      []string                      `json:"labels,omitzero"`
-	Metadata    any                           `json:"metadata,omitzero"`
+	Metadata    map[string]any                `json:"metadata,omitzero"`
 	Tags        []string                      `json:"tags,omitzero"`
 	To          []EmailAddressInputUnionParam `json:"to,omitzero"`
 	paramObj
@@ -490,7 +507,7 @@ type EmailMessageResponse struct {
 	Data EmailMessage `json:"data" api:"required"`
 	// Recipients removed by suppression checks when at least one recipient remains and
 	// the message is accepted.
-	Suppressed []EmailMessageResponseSuppressed `json:"suppressed"`
+	Suppressed []SuppressedRecipient `json:"suppressed"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -503,50 +520,6 @@ type EmailMessageResponse struct {
 // Returns the unmodified JSON received from the API
 func (r EmailMessageResponse) RawJSON() string { return r.JSON.raw }
 func (r *EmailMessageResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type EmailMessageResponseSuppressed struct {
-	// Whether an authorized send may override this suppression.
-	OverrideAllowed bool `json:"override_allowed" api:"required"`
-	// Suppression reason returned by the recipient suppression service.
-	Reason string `json:"reason" api:"required"`
-	// Scope at which the suppression applies.
-	Scope string `json:"scope" api:"required"`
-	// Suppressed recipient email address.
-	To string `json:"to" api:"required" format:"email"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		OverrideAllowed respjson.Field
-		Reason          respjson.Field
-		Scope           respjson.Field
-		To              respjson.Field
-		ExtraFields     map[string]respjson.Field
-		raw             string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r EmailMessageResponseSuppressed) RawJSON() string { return r.JSON.raw }
-func (r *EmailMessageResponseSuppressed) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type EmailInboxDraftListResponse struct {
-	Data []EmailDraft        `json:"data" api:"required"`
-	Meta EmailPaginationMeta `json:"meta" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r EmailInboxDraftListResponse) RawJSON() string { return r.JSON.raw }
-func (r *EmailInboxDraftListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

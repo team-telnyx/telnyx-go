@@ -65,9 +65,10 @@ func TestAISummarizeWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.AI.Summarize(context.TODO(), telnyx.AISummarizeParams{
-		Bucket:       "string",
-		Filename:     "string",
-		SystemPrompt: telnyx.String("string"),
+		Bucket:         "string",
+		Filename:       "string",
+		SystemPrompt:   telnyx.String("string"),
+		IdempotencyKey: telnyx.String("8e03978e-40d5-43e8-bc93-6894a57f9326"),
 	})
 	if err != nil {
 		var apierr *telnyx.Error

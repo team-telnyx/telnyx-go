@@ -45,7 +45,8 @@ func NewNetworkService(opts ...option.RequestOption) (r NetworkService) {
 	return
 }
 
-// Create a new Network.
+// Creates a new private network, the container that links your WireGuard
+// interfaces, gateways, and cross connects.
 func (r *NetworkService) New(ctx context.Context, body NetworkNewParams, opts ...option.RequestOption) (res *NetworkNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "networks"
@@ -53,7 +54,7 @@ func (r *NetworkService) New(ctx context.Context, body NetworkNewParams, opts ..
 	return res, err
 }
 
-// Retrieve a Network.
+// Returns the details of a single network by its identifier.
 func (r *NetworkService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *NetworkGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -65,7 +66,7 @@ func (r *NetworkService) Get(ctx context.Context, id string, opts ...option.Requ
 	return res, err
 }
 
-// Update a Network.
+// Updates the specified network's attributes and returns the updated network.
 func (r *NetworkService) Update(ctx context.Context, networkID string, body NetworkUpdateParams, opts ...option.RequestOption) (res *NetworkUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if networkID == "" {
@@ -77,7 +78,8 @@ func (r *NetworkService) Update(ctx context.Context, networkID string, body Netw
 	return res, err
 }
 
-// List all Networks.
+// Returns a paginated list of the private networks on your account, with support
+// for filtering.
 func (r *NetworkService) List(ctx context.Context, query NetworkListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[Network], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -95,12 +97,13 @@ func (r *NetworkService) List(ctx context.Context, query NetworkListParams, opts
 	return res, nil
 }
 
-// List all Networks.
+// Returns a paginated list of the private networks on your account, with support
+// for filtering.
 func (r *NetworkService) ListAutoPaging(ctx context.Context, query NetworkListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[Network] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Delete a Network.
+// Permanently deletes the specified network from your account.
 func (r *NetworkService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *NetworkDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -112,7 +115,8 @@ func (r *NetworkService) Delete(ctx context.Context, id string, opts ...option.R
 	return res, err
 }
 
-// List all Interfaces for a Network.
+// Returns a paginated list of the interfaces attached to the specified network,
+// with support for filtering.
 func (r *NetworkService) ListInterfaces(ctx context.Context, id string, query NetworkListInterfacesParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[NetworkListInterfacesResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -134,7 +138,8 @@ func (r *NetworkService) ListInterfaces(ctx context.Context, id string, query Ne
 	return res, nil
 }
 
-// List all Interfaces for a Network.
+// Returns a paginated list of the interfaces attached to the specified network,
+// with support for filtering.
 func (r *NetworkService) ListInterfacesAutoPaging(ctx context.Context, id string, query NetworkListInterfacesParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[NetworkListInterfacesResponse] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.ListInterfaces(ctx, id, query, opts...))
 }

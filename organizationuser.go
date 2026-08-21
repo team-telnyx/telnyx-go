@@ -43,7 +43,8 @@ func NewOrganizationUserService(opts ...option.RequestOption) (r OrganizationUse
 	return
 }
 
-// Returns a user in your organization.
+// Returns the details of a user in your organization, optionally including the
+// groups the user belongs to.
 func (r *OrganizationUserService) Get(ctx context.Context, id string, query OrganizationUserGetParams, opts ...option.RequestOption) (res *OrganizationUserGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

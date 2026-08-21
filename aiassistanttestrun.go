@@ -87,14 +87,17 @@ func (r *AIAssistantTestRunService) ListAutoPaging(ctx context.Context, testID s
 }
 
 // Initiates immediate execution of a specific assistant test
-func (r *AIAssistantTestRunService) Trigger(ctx context.Context, testID string, body AIAssistantTestRunTriggerParams, opts ...option.RequestOption) (res *TestRunResponse, err error) {
+func (r *AIAssistantTestRunService) Trigger(ctx context.Context, testID string, params AIAssistantTestRunTriggerParams, opts ...option.RequestOption) (res *TestRunResponse, err error) {
+	if !param.IsOmitted(params.IdempotencyKey) {
+		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	if testID == "" {
 		err = errors.New("missing required test_id parameter")
 		return nil, err
 	}
 	path := fmt.Sprintf("ai/assistants/tests/%s/runs", testID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
 
@@ -237,6 +240,7 @@ type AIAssistantTestRunTriggerParams struct {
 	// must exist or a 400 error will be returned. If not provided, test will run on
 	// main version
 	DestinationVersionID param.Opt[string] `json:"destination_version_id,omitzero"`
+	IdempotencyKey       param.Opt[string] `header:"Idempotency-Key,omitzero" json:"-"`
 	paramObj
 }
 

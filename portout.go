@@ -100,7 +100,8 @@ func (r *PortoutService) ListRejectionCodes(ctx context.Context, portoutID strin
 	return res, err
 }
 
-// Authorize or reject portout request
+// Updates the status of the specified port-out request, using the status path
+// segment to authorize or reject the port-out.
 func (r *PortoutService) UpdateStatus(ctx context.Context, status PortoutUpdateStatusParamsStatus, params PortoutUpdateStatusParams, opts ...option.RequestOption) (res *PortoutUpdateStatusResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if params.ID == "" {

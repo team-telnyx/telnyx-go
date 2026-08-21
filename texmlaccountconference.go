@@ -42,7 +42,7 @@ func NewTexmlAccountConferenceService(opts ...option.RequestOption) (r TexmlAcco
 	return
 }
 
-// Returns a conference resource.
+// Returns a single conference resource for the account by its ConferenceSid.
 func (r *TexmlAccountConferenceService) Get(ctx context.Context, conferenceSid string, query TexmlAccountConferenceGetParams, opts ...option.RequestOption) (res *ConferenceResource, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if query.AccountSid == "" {
@@ -58,7 +58,8 @@ func (r *TexmlAccountConferenceService) Get(ctx context.Context, conferenceSid s
 	return res, err
 }
 
-// Updates a conference resource.
+// Updates the specified conference resource, for example to modify its status, and
+// returns the updated conference.
 func (r *TexmlAccountConferenceService) Update(ctx context.Context, conferenceSid string, params TexmlAccountConferenceUpdateParams, opts ...option.RequestOption) (res *ConferenceResource, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if params.AccountSid == "" {
@@ -74,7 +75,8 @@ func (r *TexmlAccountConferenceService) Update(ctx context.Context, conferenceSi
 	return res, err
 }
 
-// Lists conference resources.
+// Returns a paginated list of conference resources for the account, with support
+// for filtering by friendly name, status, and creation or update dates.
 func (r *TexmlAccountConferenceService) GetConferences(ctx context.Context, accountSid string, query TexmlAccountConferenceGetConferencesParams, opts ...option.RequestOption) (res *TexmlAccountConferenceGetConferencesResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if accountSid == "" {
@@ -86,7 +88,7 @@ func (r *TexmlAccountConferenceService) GetConferences(ctx context.Context, acco
 	return res, err
 }
 
-// Lists conference recordings
+// Returns the list of recordings made for the specified conference.
 func (r *TexmlAccountConferenceService) GetRecordings(ctx context.Context, conferenceSid string, query TexmlAccountConferenceGetRecordingsParams, opts ...option.RequestOption) (res *TexmlAccountConferenceGetRecordingsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if query.AccountSid == "" {

@@ -40,7 +40,8 @@ func NewIPService(opts ...option.RequestOption) (r IPService) {
 	return
 }
 
-// Create a new IP object.
+// Creates a new IP record for use with IP-based connections, associating an IP
+// address with the specified connection.
 func (r *IPService) New(ctx context.Context, body IPNewParams, opts ...option.RequestOption) (res *IPNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "ips"
@@ -60,7 +61,7 @@ func (r *IPService) Get(ctx context.Context, id string, opts ...option.RequestOp
 	return res, err
 }
 
-// Update the details of a specific IP.
+// Updates the details of the specified IP record and returns the updated IP.
 func (r *IPService) Update(ctx context.Context, id string, body IPUpdateParams, opts ...option.RequestOption) (res *IPUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -95,7 +96,7 @@ func (r *IPService) ListAutoPaging(ctx context.Context, query IPListParams, opts
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Delete an IP.
+// Permanently deletes the specified IP record from its connection.
 func (r *IPService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *IPDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

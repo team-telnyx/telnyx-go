@@ -36,7 +36,8 @@ func NewAIIntegrationService(opts ...option.RequestOption) (r AIIntegrationServi
 	return
 }
 
-// Retrieve integration details
+// Returns the details of a single available integration, including its
+// configuration details.
 func (r *AIIntegrationService) Get(ctx context.Context, integrationID string, opts ...option.RequestOption) (res *Integration, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if integrationID == "" {
@@ -48,7 +49,8 @@ func (r *AIIntegrationService) Get(ctx context.Context, integrationID string, op
 	return res, err
 }
 
-// List all available integrations.
+// Returns the list of third-party integrations available to connect to your AI
+// assistants and workflows.
 func (r *AIIntegrationService) List(ctx context.Context, opts ...option.RequestOption) (res *AIIntegrationListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/integrations"

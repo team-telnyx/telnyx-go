@@ -34,7 +34,7 @@ func NewAIIntegrationConnectionService(opts ...option.RequestOption) (r AIIntegr
 	return
 }
 
-// Get user setup integrations
+// Returns the details of a single integration connection by its ID.
 func (r *AIIntegrationConnectionService) Get(ctx context.Context, userConnectionID string, opts ...option.RequestOption) (res *AIIntegrationConnectionGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if userConnectionID == "" {
@@ -46,7 +46,8 @@ func (r *AIIntegrationConnectionService) Get(ctx context.Context, userConnection
 	return res, err
 }
 
-// List user setup integrations
+// Returns the list of integration connections you have set up, linking your
+// account to third-party services.
 func (r *AIIntegrationConnectionService) List(ctx context.Context, opts ...option.RequestOption) (res *AIIntegrationConnectionListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/integrations/connections"

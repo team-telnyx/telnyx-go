@@ -43,7 +43,7 @@ func NewPortingEventService(opts ...option.RequestOption) (r PortingEventService
 	return
 }
 
-// Show a specific porting event.
+// Returns the details of a single porting event, including its type and payload.
 func (r *PortingEventService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *PortingEventGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -55,7 +55,9 @@ func (r *PortingEventService) Get(ctx context.Context, id string, opts ...option
 	return res, err
 }
 
-// Returns a list of all porting events.
+// Returns a paginated list of porting-related events on your account, such as
+// status changes on porting orders. Supports filtering and is useful for auditing
+// or reconciling webhook deliveries.
 func (r *PortingEventService) List(ctx context.Context, query PortingEventListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[PortingEventUnion], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -73,12 +75,15 @@ func (r *PortingEventService) List(ctx context.Context, query PortingEventListPa
 	return res, nil
 }
 
-// Returns a list of all porting events.
+// Returns a paginated list of porting-related events on your account, such as
+// status changes on porting orders. Supports filtering and is useful for auditing
+// or reconciling webhook deliveries.
 func (r *PortingEventService) ListAutoPaging(ctx context.Context, query PortingEventListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[PortingEventUnion] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Republish a specific porting event.
+// Republishes the specified porting event, triggering re-delivery of the
+// corresponding webhook to your account.
 func (r *PortingEventService) Republish(ctx context.Context, id string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)

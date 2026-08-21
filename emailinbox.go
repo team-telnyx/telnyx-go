@@ -15,6 +15,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
@@ -81,11 +82,27 @@ func (r *EmailInboxService) Get(ctx context.Context, id string, opts ...option.R
 
 // Lists the account's non-deleted inboxes newest first using stable cursor
 // pagination.
-func (r *EmailInboxService) List(ctx context.Context, query EmailInboxListParams, opts ...option.RequestOption) (res *EmailInboxListResponse, err error) {
+func (r *EmailInboxService) List(ctx context.Context, query EmailInboxListParams, opts ...option.RequestOption) (res *pagination.EmailCursorPagination[EmailInbox], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "email_inboxes"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Lists the account's non-deleted inboxes newest first using stable cursor
+// pagination.
+func (r *EmailInboxService) ListAutoPaging(ctx context.Context, query EmailInboxListParams, opts ...option.RequestOption) *pagination.EmailCursorPaginationAutoPager[EmailInbox] {
+	return pagination.NewEmailCursorPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Soft-deletes an account-scoped inbox. Its address remains reserved and the inbox
@@ -163,43 +180,6 @@ type EmailInboxResponse struct {
 // Returns the unmodified JSON received from the API
 func (r EmailInboxResponse) RawJSON() string { return r.JSON.raw }
 func (r *EmailInboxResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type EmailInboxListResponse struct {
-	Data []EmailInbox               `json:"data" api:"required"`
-	Meta EmailInboxListResponseMeta `json:"meta" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r EmailInboxListResponse) RawJSON() string { return r.JSON.raw }
-func (r *EmailInboxListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type EmailInboxListResponseMeta struct {
-	PageSize int64 `json:"page_size" api:"required"`
-	// Cursor for the next inbox page, when more results are available.
-	PageCursor string `json:"page_cursor"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		PageSize    respjson.Field
-		PageCursor  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r EmailInboxListResponseMeta) RawJSON() string { return r.JSON.raw }
-func (r *EmailInboxListResponseMeta) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

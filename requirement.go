@@ -42,7 +42,9 @@ func NewRequirementService(opts ...option.RequestOption) (r RequirementService) 
 	return
 }
 
-// Retrieve a document requirement record
+// Returns a single document requirement record by its identifier, describing the
+// documentation needed for number-related actions. A specific requirement version
+// can be requested.
 func (r *RequirementService) Get(ctx context.Context, id string, query RequirementGetParams, opts ...option.RequestOption) (res *RequirementGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

@@ -57,7 +57,8 @@ func (r *AIAssistantTagService) Add(ctx context.Context, assistantID string, bod
 	return res, err
 }
 
-// Remove a tag from an AI assistant.
+// Removes the specified tag from the AI assistant and returns the assistant's
+// updated tag list.
 func (r *AIAssistantTagService) Remove(ctx context.Context, tag string, body AIAssistantTagRemoveParams, opts ...option.RequestOption) (res *TagsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if body.AssistantID == "" {

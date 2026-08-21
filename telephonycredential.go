@@ -38,7 +38,8 @@ func NewTelephonyCredentialService(opts ...option.RequestOption) (r TelephonyCre
 	return
 }
 
-// Create a credential.
+// Creates a new on-demand telephony credential for the specified connection. The
+// credential can then be used to generate access tokens for SIP or WebRTC clients.
 func (r *TelephonyCredentialService) New(ctx context.Context, body TelephonyCredentialNewParams, opts ...option.RequestOption) (res *TelephonyCredentialNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "telephony_credentials"
@@ -58,7 +59,7 @@ func (r *TelephonyCredentialService) Get(ctx context.Context, id string, opts ..
 	return res, err
 }
 
-// Update an existing credential.
+// Updates the specified telephony credential and returns the updated credential.
 func (r *TelephonyCredentialService) Update(ctx context.Context, id string, body TelephonyCredentialUpdateParams, opts ...option.RequestOption) (res *TelephonyCredentialUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -70,7 +71,8 @@ func (r *TelephonyCredentialService) Update(ctx context.Context, id string, body
 	return res, err
 }
 
-// List all On-demand Credentials.
+// Returns a paginated list of the on-demand telephony credentials on your account,
+// with support for filtering.
 func (r *TelephonyCredentialService) List(ctx context.Context, query TelephonyCredentialListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[TelephonyCredential], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -88,12 +90,14 @@ func (r *TelephonyCredentialService) List(ctx context.Context, query TelephonyCr
 	return res, nil
 }
 
-// List all On-demand Credentials.
+// Returns a paginated list of the on-demand telephony credentials on your account,
+// with support for filtering.
 func (r *TelephonyCredentialService) ListAutoPaging(ctx context.Context, query TelephonyCredentialListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[TelephonyCredential] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Delete an existing credential.
+// Permanently deletes the specified telephony credential, revoking any access it
+// provided.
 func (r *TelephonyCredentialService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *TelephonyCredentialDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

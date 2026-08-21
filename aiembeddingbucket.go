@@ -50,7 +50,8 @@ func (r *AIEmbeddingBucketService) Get(ctx context.Context, bucketName string, o
 	return res, err
 }
 
-// Get all embedding buckets for a user.
+// Returns the list of storage buckets that have been embedded for your account,
+// for use with similarity search.
 func (r *AIEmbeddingBucketService) List(ctx context.Context, opts ...option.RequestOption) (res *AIEmbeddingBucketListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/embeddings/buckets"

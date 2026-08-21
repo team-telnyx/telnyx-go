@@ -15,6 +15,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
+	"github.com/tidwall/gjson"
 )
 
 // NetworkCoverageService contains methods and other services that help with
@@ -198,6 +199,10 @@ func (u *NetworkCoverageListParamsFiltersAvailableServicesUnion) asAny() any {
 		return u.OfNetworkCoverageListsFiltersAvailableServicesContains
 	}
 	return nil
+}
+
+func init() {
+	apijson.RegisterUnion[NetworkCoverageListParamsFiltersAvailableServicesUnion]("", apijson.Variant[NetworkCoverageListParamsFiltersAvailableServicesContains](gjson.JSON))
 }
 
 // Available service filtering operations

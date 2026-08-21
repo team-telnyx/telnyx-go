@@ -45,7 +45,8 @@ func NewFqdnConnectionService(opts ...option.RequestOption) (r FqdnConnectionSer
 	return
 }
 
-// Creates a FQDN connection.
+// Creates a new FQDN-based SIP connection. FQDN connections authenticate by your
+// registered domain names rather than static IP addresses.
 func (r *FqdnConnectionService) New(ctx context.Context, body FqdnConnectionNewParams, opts ...option.RequestOption) (res *FqdnConnectionNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "fqdn_connections"
@@ -100,7 +101,7 @@ func (r *FqdnConnectionService) ListAutoPaging(ctx context.Context, query FqdnCo
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Deletes an FQDN connection.
+// Permanently deletes the specified FQDN connection from your account.
 func (r *FqdnConnectionService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *FqdnConnectionDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

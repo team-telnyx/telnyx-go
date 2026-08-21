@@ -42,7 +42,7 @@ func NewPortoutEventService(opts ...option.RequestOption) (r PortoutEventService
 	return
 }
 
-// Show a specific port-out event.
+// Returns the details of a single port-out event, including its type and payload.
 func (r *PortoutEventService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *PortoutEventGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -54,7 +54,8 @@ func (r *PortoutEventService) Get(ctx context.Context, id string, opts ...option
 	return res, err
 }
 
-// Returns a list of all port-out events.
+// Returns a paginated list of port-out events on your account, such as status
+// changes on port-out requests, with support for filtering.
 func (r *PortoutEventService) List(ctx context.Context, query PortoutEventListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[PortoutEventUnion], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -72,12 +73,14 @@ func (r *PortoutEventService) List(ctx context.Context, query PortoutEventListPa
 	return res, nil
 }
 
-// Returns a list of all port-out events.
+// Returns a paginated list of port-out events on your account, such as status
+// changes on port-out requests, with support for filtering.
 func (r *PortoutEventService) ListAutoPaging(ctx context.Context, query PortoutEventListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[PortoutEventUnion] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Republish a specific port-out event.
+// Republishes the specified port-out event, triggering re-delivery of the
+// corresponding webhook to your account.
 func (r *PortoutEventService) Republish(ctx context.Context, id string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)

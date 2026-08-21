@@ -34,7 +34,8 @@ func NewGlobalIPAllowedPortService(opts ...option.RequestOption) (r GlobalIPAllo
 	return
 }
 
-// List all Global IP Allowed Ports
+// Returns the ports allowed for Global IP traffic, for use when configuring Global
+// IP resources.
 func (r *GlobalIPAllowedPortService) List(ctx context.Context, opts ...option.RequestOption) (res *GlobalIPAllowedPortListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "global_ip_allowed_ports"

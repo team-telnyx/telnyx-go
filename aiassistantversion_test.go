@@ -64,7 +64,7 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 			UpdateAssistant: telnyx.UpdateAssistantParam{
 				ConversationFlow: telnyx.ConversationFlowReqParam{
 					Nodes: []telnyx.ConversationFlowReqNodesUnionParam{{
-						OfPrompt: &telnyx.ConversationFlowReqNodesPromptParam{
+						OfPrompt: &telnyx.FlowNodeReqParam{
 							ID:           "n_intake",
 							Instructions: "Greet the caller and ask what they're calling about.",
 							ExternalLlm: telnyx.ExternalLlmReqParam{
@@ -76,7 +76,7 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 								LlmAPIKeyRef:         telnyx.String("llm_api_key_ref"),
 								TokenRetrievalURL:    telnyx.String("token_retrieval_url"),
 							},
-							InstructionsMode: "replace",
+							InstructionsMode: telnyx.FlowNodeReqInstructionsModeReplace,
 							LlmAPIKeyRef:     telnyx.String("my-key-ref"),
 							Model:            telnyx.String("moonshotai/Kimi-K2.6"),
 							Name:             telnyx.String("Intake"),
@@ -85,7 +85,7 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 								Y: 80,
 							},
 							SharedToolIDs: []string{"tool-faq-kb"},
-							ToolsMode:     "replace",
+							ToolsMode:     telnyx.FlowNodeReqToolsModeReplace,
 							Transcription: telnyx.TranscriptionSettingsParam{
 								APIKeyRef: telnyx.String("api_key_ref"),
 								Language:  telnyx.String("language"),
@@ -106,7 +106,7 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 									SmartFormat:                  telnyx.Bool(true),
 								},
 							},
-							Type: "prompt",
+							Type: telnyx.FlowNodeReqTypePrompt,
 							VoiceSettings: telnyx.VoiceSettingsParam{
 								Voice:     "voice",
 								APIKeyRef: telnyx.String("api_key_ref"),
@@ -127,7 +127,7 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 							},
 						},
 					}, {
-						OfPrompt: &telnyx.ConversationFlowReqNodesPromptParam{
+						OfPrompt: &telnyx.FlowNodeReqParam{
 							ID:           "n_billing",
 							Instructions: "Focus on billing questions. Look up the caller's latest invoice with the billing tool before answering.",
 							ExternalLlm: telnyx.ExternalLlmReqParam{
@@ -139,7 +139,7 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 								LlmAPIKeyRef:         telnyx.String("llm_api_key_ref"),
 								TokenRetrievalURL:    telnyx.String("token_retrieval_url"),
 							},
-							InstructionsMode: "append",
+							InstructionsMode: telnyx.FlowNodeReqInstructionsModeAppend,
 							LlmAPIKeyRef:     telnyx.String("my-key-ref"),
 							Model:            telnyx.String("moonshotai/Kimi-K2.6"),
 							Name:             telnyx.String("Billing"),
@@ -148,7 +148,7 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 								Y: 80,
 							},
 							SharedToolIDs: []string{"tool-billing-lookup"},
-							ToolsMode:     "append",
+							ToolsMode:     telnyx.FlowNodeReqToolsModeAppend,
 							Transcription: telnyx.TranscriptionSettingsParam{
 								APIKeyRef: telnyx.String("api_key_ref"),
 								Language:  telnyx.String("language"),
@@ -169,7 +169,7 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 									SmartFormat:                  telnyx.Bool(true),
 								},
 							},
-							Type: "prompt",
+							Type: telnyx.FlowNodeReqTypePrompt,
 							VoiceSettings: telnyx.VoiceSettingsParam{
 								Voice:     "voice",
 								APIKeyRef: telnyx.String("api_key_ref"),
@@ -353,6 +353,17 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 							Headers: []telnyx.InferenceEmbeddingWebhookToolParamsWebhookHeader{{
 								Name:  telnyx.String("name"),
 								Value: telnyx.String("value"),
+							}},
+							Messages: []telnyx.InferenceEmbeddingWebhookToolParamsWebhookMessagesUnion{{
+								OfWebhookToolRequestStartMessage: &telnyx.InferenceEmbeddingWebhookToolParamsWebhookMessagesWebhookToolRequestStartMessage{
+									Content:  "Let me look that up for you.",
+									TimingMs: telnyx.Int(100),
+								},
+							}, {
+								OfWebhookToolRequestResponseDelayedMessage: &telnyx.InferenceEmbeddingWebhookToolParamsWebhookMessagesWebhookToolRequestResponseDelayedMessage{
+									Content:  "Still working on that.",
+									TimingMs: 5000,
+								},
 							}},
 							Method: "GET",
 							PathParameters: telnyx.InferenceEmbeddingWebhookToolParamsWebhookPathParameters{

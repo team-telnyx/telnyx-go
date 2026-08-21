@@ -32,7 +32,8 @@ func NewAIMissionToolService(opts ...option.RequestOption) (r AIMissionToolServi
 	return
 }
 
-// Create a new tool for a mission
+// Adds a new tool to the specified mission, defining an action agents can invoke
+// during runs of this mission.
 func (r *AIMissionToolService) NewTool(ctx context.Context, missionID string, opts ...option.RequestOption) (res *AIMissionToolNewToolResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if missionID == "" {
@@ -44,7 +45,8 @@ func (r *AIMissionToolService) NewTool(ctx context.Context, missionID string, op
 	return res, err
 }
 
-// Delete a tool from a mission
+// Removes the specified tool from the mission so agents can no longer invoke it in
+// subsequent runs.
 func (r *AIMissionToolService) DeleteTool(ctx context.Context, toolID string, body AIMissionToolDeleteToolParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
@@ -61,7 +63,7 @@ func (r *AIMissionToolService) DeleteTool(ctx context.Context, toolID string, bo
 	return err
 }
 
-// Get a specific tool by ID
+// Returns the definition of a single tool configured on the specified mission.
 func (r *AIMissionToolService) GetTool(ctx context.Context, toolID string, query AIMissionToolGetToolParams, opts ...option.RequestOption) (res *AIMissionToolGetToolResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if query.MissionID == "" {
@@ -77,7 +79,8 @@ func (r *AIMissionToolService) GetTool(ctx context.Context, toolID string, query
 	return res, err
 }
 
-// List all tools for a mission
+// Returns the tools configured on the specified mission. Tools define the actions
+// agents may invoke while executing the mission's runs.
 func (r *AIMissionToolService) ListTools(ctx context.Context, missionID string, opts ...option.RequestOption) (res *AIMissionToolListToolsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if missionID == "" {
@@ -89,7 +92,7 @@ func (r *AIMissionToolService) ListTools(ctx context.Context, missionID string, 
 	return res, err
 }
 
-// Update a tool definition
+// Replaces the definition of the specified tool on this mission.
 func (r *AIMissionToolService) UpdateTool(ctx context.Context, toolID string, body AIMissionToolUpdateToolParams, opts ...option.RequestOption) (res *AIMissionToolUpdateToolResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if body.MissionID == "" {

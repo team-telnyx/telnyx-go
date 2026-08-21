@@ -69,6 +69,48 @@ func (r *EmailValidationCheck) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type EmailValidationChecks struct {
+	Disposable EmailValidationCheck      `json:"disposable" api:"required"`
+	Mx         EmailValidationCheck      `json:"mx" api:"required"`
+	RoleBased  EmailValidationCheck      `json:"role_based" api:"required"`
+	Syntax     EmailValidationCheck      `json:"syntax" api:"required"`
+	Typo       EmailValidationChecksTypo `json:"typo" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Disposable  respjson.Field
+		Mx          respjson.Field
+		RoleBased   respjson.Field
+		Syntax      respjson.Field
+		Typo        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EmailValidationChecks) RawJSON() string { return r.JSON.raw }
+func (r *EmailValidationChecks) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type EmailValidationChecksTypo struct {
+	// Suggested correction for common typos. Omitted when nil.
+	Suggestion string `json:"suggestion"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Suggestion  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+	EmailValidationCheck
+}
+
+// Returns the unmodified JSON received from the API
+func (r EmailValidationChecksTypo) RawJSON() string { return r.JSON.raw }
+func (r *EmailValidationChecksTypo) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type EmailValidationNewResponse struct {
 	Data EmailValidationNewResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -86,8 +128,8 @@ func (r *EmailValidationNewResponse) UnmarshalJSON(data []byte) error {
 }
 
 type EmailValidationNewResponseData struct {
-	Checks EmailValidationNewResponseDataChecks `json:"checks" api:"required"`
-	Email  string                               `json:"email" api:"required"`
+	Checks EmailValidationChecks `json:"checks" api:"required"`
+	Email  string                `json:"email" api:"required"`
 	// Any of "email_validation".
 	RecordType string  `json:"record_type" api:"required"`
 	RiskScore  float64 `json:"risk_score" api:"required"`
@@ -110,48 +152,6 @@ type EmailValidationNewResponseData struct {
 // Returns the unmodified JSON received from the API
 func (r EmailValidationNewResponseData) RawJSON() string { return r.JSON.raw }
 func (r *EmailValidationNewResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type EmailValidationNewResponseDataChecks struct {
-	Disposable EmailValidationCheck                     `json:"disposable" api:"required"`
-	Mx         EmailValidationCheck                     `json:"mx" api:"required"`
-	RoleBased  EmailValidationCheck                     `json:"role_based" api:"required"`
-	Syntax     EmailValidationCheck                     `json:"syntax" api:"required"`
-	Typo       EmailValidationNewResponseDataChecksTypo `json:"typo" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Disposable  respjson.Field
-		Mx          respjson.Field
-		RoleBased   respjson.Field
-		Syntax      respjson.Field
-		Typo        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r EmailValidationNewResponseDataChecks) RawJSON() string { return r.JSON.raw }
-func (r *EmailValidationNewResponseDataChecks) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type EmailValidationNewResponseDataChecksTypo struct {
-	// Suggested correction for common typos. Omitted when nil.
-	Suggestion string `json:"suggestion"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Suggestion  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-	EmailValidationCheck
-}
-
-// Returns the unmodified JSON received from the API
-func (r EmailValidationNewResponseDataChecksTypo) RawJSON() string { return r.JSON.raw }
-func (r *EmailValidationNewResponseDataChecksTypo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

@@ -15,6 +15,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/option"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
+	"github.com/tidwall/gjson"
 )
 
 // Global IPs
@@ -193,6 +194,10 @@ func (u *GlobalIPUsageGetParamsFilterGlobalIPIDUnion) asAny() any {
 		return u.OfGlobalIPUsageGetsFilterGlobalIPIDIn
 	}
 	return nil
+}
+
+func init() {
+	apijson.RegisterUnion[GlobalIPUsageGetParamsFilterGlobalIPIDUnion]("", apijson.Variant[GlobalIPUsageGetParamsFilterGlobalIPIDIn](gjson.JSON))
 }
 
 // Filtering operations

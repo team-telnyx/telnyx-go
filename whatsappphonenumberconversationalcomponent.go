@@ -64,8 +64,51 @@ func (r *WhatsappPhoneNumberConversationalComponentService) PatchAll(ctx context
 	return res, err
 }
 
+type WhatsappConversationalComponent struct {
+	// List of commands
+	Commands []WhatsappConversationalComponentCommand `json:"commands"`
+	// List of ice breakers
+	IceBreakers []string `json:"ice_breakers"`
+	// Phone number in E164 format
+	PhoneNumber string `json:"phone_number"`
+	RecordType  string `json:"record_type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Commands    respjson.Field
+		IceBreakers respjson.Field
+		PhoneNumber respjson.Field
+		RecordType  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappConversationalComponent) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappConversationalComponent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappConversationalComponentCommand struct {
+	Command     string `json:"command"`
+	Description string `json:"description"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Command     respjson.Field
+		Description respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappConversationalComponentCommand) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappConversationalComponentCommand) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type WhatsappPhoneNumberConversationalComponentListResponse struct {
-	Data WhatsappPhoneNumberConversationalComponentListResponseData `json:"data"`
+	Data WhatsappConversationalComponent `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -80,55 +123,8 @@ func (r *WhatsappPhoneNumberConversationalComponentListResponse) UnmarshalJSON(d
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type WhatsappPhoneNumberConversationalComponentListResponseData struct {
-	// List of commands
-	Commands []WhatsappPhoneNumberConversationalComponentListResponseDataCommand `json:"commands"`
-	// List of ice breakers
-	IceBreakers []string `json:"ice_breakers"`
-	// Phone number in E164 format
-	PhoneNumber string `json:"phone_number"`
-	RecordType  string `json:"record_type"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Commands    respjson.Field
-		IceBreakers respjson.Field
-		PhoneNumber respjson.Field
-		RecordType  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r WhatsappPhoneNumberConversationalComponentListResponseData) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *WhatsappPhoneNumberConversationalComponentListResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type WhatsappPhoneNumberConversationalComponentListResponseDataCommand struct {
-	Command     string `json:"command"`
-	Description string `json:"description"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Command     respjson.Field
-		Description respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r WhatsappPhoneNumberConversationalComponentListResponseDataCommand) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *WhatsappPhoneNumberConversationalComponentListResponseDataCommand) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type WhatsappPhoneNumberConversationalComponentPatchAllResponse struct {
-	Data WhatsappPhoneNumberConversationalComponentPatchAllResponseData `json:"data"`
+	Data WhatsappConversationalComponent `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -142,53 +138,6 @@ func (r WhatsappPhoneNumberConversationalComponentPatchAllResponse) RawJSON() st
 	return r.JSON.raw
 }
 func (r *WhatsappPhoneNumberConversationalComponentPatchAllResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type WhatsappPhoneNumberConversationalComponentPatchAllResponseData struct {
-	// List of commands
-	Commands []WhatsappPhoneNumberConversationalComponentPatchAllResponseDataCommand `json:"commands"`
-	// List of ice breakers
-	IceBreakers []string `json:"ice_breakers"`
-	// Phone number in E164 format
-	PhoneNumber string `json:"phone_number"`
-	RecordType  string `json:"record_type"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Commands    respjson.Field
-		IceBreakers respjson.Field
-		PhoneNumber respjson.Field
-		RecordType  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r WhatsappPhoneNumberConversationalComponentPatchAllResponseData) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *WhatsappPhoneNumberConversationalComponentPatchAllResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type WhatsappPhoneNumberConversationalComponentPatchAllResponseDataCommand struct {
-	Command     string `json:"command"`
-	Description string `json:"description"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Command     respjson.Field
-		Description respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r WhatsappPhoneNumberConversationalComponentPatchAllResponseDataCommand) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *WhatsappPhoneNumberConversationalComponentPatchAllResponseDataCommand) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

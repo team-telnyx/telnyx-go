@@ -37,7 +37,8 @@ func NewTexmlAccountConferenceParticipantService(opts ...option.RequestOption) (
 	return
 }
 
-// Gets conference participant resource
+// Returns a single conference participant resource by call SID or participant
+// label.
 func (r *TexmlAccountConferenceParticipantService) Get(ctx context.Context, callSidOrParticipantLabel string, query TexmlAccountConferenceParticipantGetParams, opts ...option.RequestOption) (res *ParticipantResource, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if query.AccountSid == "" {
@@ -57,7 +58,8 @@ func (r *TexmlAccountConferenceParticipantService) Get(ctx context.Context, call
 	return res, err
 }
 
-// Updates a conference participant
+// Updates the specified conference participant, for example muting or holding
+// them, and returns the updated participant.
 func (r *TexmlAccountConferenceParticipantService) Update(ctx context.Context, callSidOrParticipantLabel string, params TexmlAccountConferenceParticipantUpdateParams, opts ...option.RequestOption) (res *ParticipantResource, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if params.AccountSid == "" {
@@ -77,7 +79,8 @@ func (r *TexmlAccountConferenceParticipantService) Update(ctx context.Context, c
 	return res, err
 }
 
-// Deletes a conference participant
+// Removes the specified participant from the conference, ending their leg of the
+// call.
 func (r *TexmlAccountConferenceParticipantService) Delete(ctx context.Context, callSidOrParticipantLabel string, body TexmlAccountConferenceParticipantDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
@@ -98,7 +101,8 @@ func (r *TexmlAccountConferenceParticipantService) Delete(ctx context.Context, c
 	return err
 }
 
-// Dials a new conference participant
+// Dials a new participant into the specified conference and returns the created
+// participant resource.
 func (r *TexmlAccountConferenceParticipantService) Participants(ctx context.Context, conferenceSid string, params TexmlAccountConferenceParticipantParticipantsParams, opts ...option.RequestOption) (res *TexmlAccountConferenceParticipantParticipantsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if params.AccountSid == "" {
@@ -114,7 +118,7 @@ func (r *TexmlAccountConferenceParticipantService) Participants(ctx context.Cont
 	return res, err
 }
 
-// Lists conference participants
+// Returns the list of participants currently in the specified conference.
 func (r *TexmlAccountConferenceParticipantService) GetParticipants(ctx context.Context, conferenceSid string, query TexmlAccountConferenceParticipantGetParticipantsParams, opts ...option.RequestOption) (res *TexmlAccountConferenceParticipantGetParticipantsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if query.AccountSid == "" {

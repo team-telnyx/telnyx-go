@@ -42,7 +42,8 @@ func NewMobilePushCredentialService(opts ...option.RequestOption) (r MobilePushC
 	return
 }
 
-// Creates a new mobile push credential
+// Creates a new mobile push credential for delivering push notifications to iOS or
+// Android apps, and returns the created credential.
 func (r *MobilePushCredentialService) New(ctx context.Context, body MobilePushCredentialNewParams, opts ...option.RequestOption) (res *PushCredentialResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "mobile_push_credentials"
@@ -62,7 +63,8 @@ func (r *MobilePushCredentialService) Get(ctx context.Context, pushCredentialID 
 	return res, err
 }
 
-// List mobile push credentials
+// Returns a paginated list of the mobile push credentials on your account, with
+// support for filtering.
 func (r *MobilePushCredentialService) List(ctx context.Context, query MobilePushCredentialListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[PushCredential], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -80,7 +82,8 @@ func (r *MobilePushCredentialService) List(ctx context.Context, query MobilePush
 	return res, nil
 }
 
-// List mobile push credentials
+// Returns a paginated list of the mobile push credentials on your account, with
+// support for filtering.
 func (r *MobilePushCredentialService) ListAutoPaging(ctx context.Context, query MobilePushCredentialListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[PushCredential] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }

@@ -51,7 +51,7 @@ func (r *PortingOrderActionService) Activate(ctx context.Context, id string, opt
 	return res, err
 }
 
-// Cancel a porting order
+// Requests cancellation of the porting order and returns the updated order.
 func (r *PortingOrderActionService) Cancel(ctx context.Context, id string, opts ...option.RequestOption) (res *PortingOrderActionCancelResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -63,7 +63,8 @@ func (r *PortingOrderActionService) Cancel(ctx context.Context, id string, opts 
 	return res, err
 }
 
-// Confirm and submit your porting order.
+// Confirms the porting order and submits it for processing. Make sure all required
+// information and documents are attached before confirming.
 func (r *PortingOrderActionService) Confirm(ctx context.Context, id string, opts ...option.RequestOption) (res *PortingOrderActionConfirmResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

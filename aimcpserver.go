@@ -39,11 +39,15 @@ func NewAIMcpServerService(opts ...option.RequestOption) (r AIMcpServerService) 
 	return
 }
 
-// Create a new MCP server.
-func (r *AIMcpServerService) New(ctx context.Context, body AIMcpServerNewParams, opts ...option.RequestOption) (res *McpServer, err error) {
+// Creates a new MCP server configuration on your account and returns the created
+// server.
+func (r *AIMcpServerService) New(ctx context.Context, params AIMcpServerNewParams, opts ...option.RequestOption) (res *McpServer, err error) {
+	if !param.IsOmitted(params.IdempotencyKey) {
+		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/mcp_servers"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
 
@@ -59,7 +63,7 @@ func (r *AIMcpServerService) Get(ctx context.Context, mcpServerID string, opts .
 	return res, err
 }
 
-// Update an existing MCP server.
+// Updates the specified MCP server's configuration and returns the updated server.
 func (r *AIMcpServerService) Update(ctx context.Context, mcpServerID string, body AIMcpServerUpdateParams, opts ...option.RequestOption) (res *McpServer, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if mcpServerID == "" {
@@ -71,7 +75,8 @@ func (r *AIMcpServerService) Update(ctx context.Context, mcpServerID string, bod
 	return res, err
 }
 
-// Retrieve a list of MCP servers.
+// Returns a paginated list of the MCP servers configured on your account, with
+// optional filtering by type or URL.
 func (r *AIMcpServerService) List(ctx context.Context, query AIMcpServerListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPaginationTopLevelArray[McpServer], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -89,12 +94,13 @@ func (r *AIMcpServerService) List(ctx context.Context, query AIMcpServerListPara
 	return res, nil
 }
 
-// Retrieve a list of MCP servers.
+// Returns a paginated list of the MCP servers configured on your account, with
+// optional filtering by type or URL.
 func (r *AIMcpServerService) ListAutoPaging(ctx context.Context, query AIMcpServerListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationTopLevelArrayAutoPager[McpServer] {
 	return pagination.NewDefaultFlatPaginationTopLevelArrayAutoPager(r.List(ctx, query, opts...))
 }
 
-// Delete a specific MCP server.
+// Permanently deletes the specified MCP server configuration from your account.
 func (r *AIMcpServerService) Delete(ctx context.Context, mcpServerID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
@@ -136,11 +142,12 @@ func (r *McpServer) UnmarshalJSON(data []byte) error {
 }
 
 type AIMcpServerNewParams struct {
-	Name         string            `json:"name" api:"required"`
-	Type         string            `json:"type" api:"required"`
-	URL          string            `json:"url" api:"required"`
-	APIKeyRef    param.Opt[string] `json:"api_key_ref,omitzero"`
-	AllowedTools []string          `json:"allowed_tools,omitzero"`
+	Name           string            `json:"name" api:"required"`
+	Type           string            `json:"type" api:"required"`
+	URL            string            `json:"url" api:"required"`
+	APIKeyRef      param.Opt[string] `json:"api_key_ref,omitzero"`
+	IdempotencyKey param.Opt[string] `header:"Idempotency-Key,omitzero" json:"-"`
+	AllowedTools   []string          `json:"allowed_tools,omitzero"`
 	paramObj
 }
 

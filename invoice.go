@@ -51,7 +51,7 @@ func (r *InvoiceService) Get(ctx context.Context, id string, query InvoiceGetPar
 	return res, err
 }
 
-// Retrieve a paginated list of invoices.
+// Returns a paginated list of your invoices, with support for sorting.
 func (r *InvoiceService) List(ctx context.Context, query InvoiceListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[InvoiceListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -69,7 +69,7 @@ func (r *InvoiceService) List(ctx context.Context, query InvoiceListParams, opts
 	return res, nil
 }
 
-// Retrieve a paginated list of invoices.
+// Returns a paginated list of your invoices, with support for sorting.
 func (r *InvoiceService) ListAutoPaging(ctx context.Context, query InvoiceListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[InvoiceListResponse] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }

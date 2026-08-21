@@ -41,7 +41,8 @@ func NewMobileVoiceConnectionService(opts ...option.RequestOption) (r MobileVoic
 	return
 }
 
-// Create a new mobile voice connection.
+// Creates a new mobile voice connection with the provided configuration and
+// returns the created connection.
 func (r *MobileVoiceConnectionService) New(ctx context.Context, body MobileVoiceConnectionNewParams, opts ...option.RequestOption) (res *MobileVoiceConnectionNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "v2/mobile_voice_connections"

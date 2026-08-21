@@ -95,6 +95,63 @@ func (r *RcBrandService) Submit(ctx context.Context, id string, opts ...option.R
 	return res, err
 }
 
+type BrandAddress struct {
+	AdministrativeArea string `json:"administrative_area" api:"required"`
+	City               string `json:"city" api:"required"`
+	// The two-letter ISO 3166-1 country code.
+	CountryCode string `json:"country_code" api:"required"`
+	Line1       string `json:"line_1" api:"required"`
+	PostalCode  string `json:"postal_code" api:"required"`
+	Line2       string `json:"line_2" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AdministrativeArea respjson.Field
+		City               respjson.Field
+		CountryCode        respjson.Field
+		Line1              respjson.Field
+		PostalCode         respjson.Field
+		Line2              respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r BrandAddress) RawJSON() string { return r.JSON.raw }
+func (r *BrandAddress) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this BrandAddress to a BrandAddressParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// BrandAddressParam.Overrides()
+func (r BrandAddress) ToParam() BrandAddressParam {
+	return param.Override[BrandAddressParam](json.RawMessage(r.RawJSON()))
+}
+
+// The properties AdministrativeArea, City, CountryCode, Line1, PostalCode are
+// required.
+type BrandAddressParam struct {
+	AdministrativeArea string `json:"administrative_area" api:"required"`
+	City               string `json:"city" api:"required"`
+	// The two-letter ISO 3166-1 country code.
+	CountryCode string            `json:"country_code" api:"required"`
+	Line1       string            `json:"line_1" api:"required"`
+	PostalCode  string            `json:"postal_code" api:"required"`
+	Line2       param.Opt[string] `json:"line_2,omitzero"`
+	paramObj
+}
+
+func (r BrandAddressParam) MarshalJSON() (data []byte, err error) {
+	type shadow BrandAddressParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *BrandAddressParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type BrandContact struct {
 	// Any of "BRAND", "PRIMARY", "OFFICER", "AGENT", "RESPONSIBLE_PARTY", "BILLING",
 	// "UNKNOWN".
@@ -166,6 +223,141 @@ func (r *BrandContactParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// BrandIdentifierUnion contains all possible properties and values from
+// [EinBrandIdentifier], [StockSymbolBrandIdentifier].
+//
+// Use the [BrandIdentifierUnion.AsAny] method to switch on the variant.
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type BrandIdentifierUnion struct {
+	// Any of "EIN", "STOCK_SYMBOL".
+	IdentifierType string `json:"identifier_type"`
+	Value          string `json:"value"`
+	JSON           struct {
+		IdentifierType respjson.Field
+		Value          respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// anyBrandIdentifier is implemented by each variant of [BrandIdentifierUnion] to
+// add type safety for the return type of [BrandIdentifierUnion.AsAny]
+type anyBrandIdentifier interface {
+	implBrandIdentifierUnion()
+}
+
+func (EinBrandIdentifier) implBrandIdentifierUnion()         {}
+func (StockSymbolBrandIdentifier) implBrandIdentifierUnion() {}
+
+// Use the following switch statement to find the correct variant
+//
+//	switch variant := BrandIdentifierUnion.AsAny().(type) {
+//	case telnyx.EinBrandIdentifier:
+//	case telnyx.StockSymbolBrandIdentifier:
+//	default:
+//	  fmt.Errorf("no variant present")
+//	}
+func (u BrandIdentifierUnion) AsAny() anyBrandIdentifier {
+	switch u.IdentifierType {
+	case "EIN":
+		return u.AsEin()
+	case "STOCK_SYMBOL":
+		return u.AsStockSymbol()
+	}
+	return nil
+}
+
+func (u BrandIdentifierUnion) AsEin() (v EinBrandIdentifier) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u BrandIdentifierUnion) AsStockSymbol() (v StockSymbolBrandIdentifier) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u BrandIdentifierUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *BrandIdentifierUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this BrandIdentifierUnion to a BrandIdentifierUnionParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// BrandIdentifierUnionParam.Overrides()
+func (r BrandIdentifierUnion) ToParam() BrandIdentifierUnionParam {
+	return param.Override[BrandIdentifierUnionParam](json.RawMessage(r.RawJSON()))
+}
+
+func BrandIdentifierParamOfEin(value string) BrandIdentifierUnionParam {
+	var ein EinBrandIdentifierParam
+	ein.Value = value
+	return BrandIdentifierUnionParam{OfEin: &ein}
+}
+
+func BrandIdentifierParamOfStockSymbol(value string) BrandIdentifierUnionParam {
+	var stockSymbol StockSymbolBrandIdentifierParam
+	stockSymbol.Value = value
+	return BrandIdentifierUnionParam{OfStockSymbol: &stockSymbol}
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type BrandIdentifierUnionParam struct {
+	OfEin         *EinBrandIdentifierParam         `json:",omitzero,inline"`
+	OfStockSymbol *StockSymbolBrandIdentifierParam `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u BrandIdentifierUnionParam) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfEin, u.OfStockSymbol)
+}
+func (u *BrandIdentifierUnionParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *BrandIdentifierUnionParam) asAny() any {
+	if !param.IsOmitted(u.OfEin) {
+		return u.OfEin
+	} else if !param.IsOmitted(u.OfStockSymbol) {
+		return u.OfStockSymbol
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u BrandIdentifierUnionParam) GetIdentifierType() *string {
+	if vt := u.OfEin; vt != nil {
+		return (*string)(&vt.IdentifierType)
+	} else if vt := u.OfStockSymbol; vt != nil {
+		return (*string)(&vt.IdentifierType)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u BrandIdentifierUnionParam) GetValue() *string {
+	if vt := u.OfEin; vt != nil {
+		return (*string)(&vt.Value)
+	} else if vt := u.OfStockSymbol; vt != nil {
+		return (*string)(&vt.Value)
+	}
+	return nil
+}
+
+func init() {
+	apijson.RegisterUnion[BrandIdentifierUnionParam](
+		"identifier_type",
+		apijson.Discriminator[EinBrandIdentifierParam]("EIN"),
+		apijson.Discriminator[StockSymbolBrandIdentifierParam]("STOCK_SYMBOL"),
+	)
+}
+
 type BrandLegalEntityType string
 
 const (
@@ -187,16 +379,16 @@ const (
 )
 
 type BrandResponse struct {
-	Addresses        map[string]BrandResponseAddress          `json:"addresses" api:"required"`
-	BrandID          string                                   `json:"brand_id" api:"required" format:"uuid"`
-	Capabilities     CapabilitiesResponse                     `json:"capabilities" api:"required"`
-	Contacts         map[string]BrandContact                  `json:"contacts" api:"required"`
-	DisplayName      string                                   `json:"display_name" api:"required"`
-	Identifiers      map[string]BrandResponseIdentifiersUnion `json:"identifiers" api:"required"`
-	LegalEntityType  string                                   `json:"legal_entity_type" api:"required"`
-	LegalName        string                                   `json:"legal_name" api:"required"`
-	OrganizationType string                                   `json:"organization_type" api:"required"`
-	ProfileID        string                                   `json:"profile_id" api:"required"`
+	Addresses        map[string]BrandAddress         `json:"addresses" api:"required"`
+	BrandID          string                          `json:"brand_id" api:"required" format:"uuid"`
+	Capabilities     CapabilitiesResponse            `json:"capabilities" api:"required"`
+	Contacts         map[string]BrandContact         `json:"contacts" api:"required"`
+	DisplayName      string                          `json:"display_name" api:"required"`
+	Identifiers      map[string]BrandIdentifierUnion `json:"identifiers" api:"required"`
+	LegalEntityType  string                          `json:"legal_entity_type" api:"required"`
+	LegalName        string                          `json:"legal_name" api:"required"`
+	OrganizationType string                          `json:"organization_type" api:"required"`
+	ProfileID        string                          `json:"profile_id" api:"required"`
 	// Any of "CREATED", "CONFIGURED", "SUBMITTED", "REVIEWING", "VETTING", "VERIFIED",
 	// "REJECTED", "FAILED".
 	Status     BrandResponseStatus `json:"status" api:"required"`
@@ -223,64 +415,6 @@ type BrandResponse struct {
 // Returns the unmodified JSON received from the API
 func (r BrandResponse) RawJSON() string { return r.JSON.raw }
 func (r *BrandResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type BrandResponseAddress struct {
-	AdministrativeArea string `json:"administrative_area" api:"required"`
-	City               string `json:"city" api:"required"`
-	// The two-letter ISO 3166-1 country code.
-	CountryCode string `json:"country_code" api:"required"`
-	Line1       string `json:"line_1" api:"required"`
-	PostalCode  string `json:"postal_code" api:"required"`
-	Line2       string `json:"line_2" api:"nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		AdministrativeArea respjson.Field
-		City               respjson.Field
-		CountryCode        respjson.Field
-		Line1              respjson.Field
-		PostalCode         respjson.Field
-		Line2              respjson.Field
-		ExtraFields        map[string]respjson.Field
-		raw                string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r BrandResponseAddress) RawJSON() string { return r.JSON.raw }
-func (r *BrandResponseAddress) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// BrandResponseIdentifiersUnion contains all possible properties and values from
-// [EinBrandIdentifier], [StockSymbolBrandIdentifier].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-type BrandResponseIdentifiersUnion struct {
-	IdentifierType string `json:"identifier_type"`
-	Value          string `json:"value"`
-	JSON           struct {
-		IdentifierType respjson.Field
-		Value          respjson.Field
-		raw            string
-	} `json:"-"`
-}
-
-func (u BrandResponseIdentifiersUnion) AsEinBrandIdentifier() (v EinBrandIdentifier) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u BrandResponseIdentifiersUnion) AsStockSymbolBrandIdentifier() (v StockSymbolBrandIdentifier) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u BrandResponseIdentifiersUnion) RawJSON() string { return u.JSON.raw }
-
-func (r *BrandResponseIdentifiersUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -389,7 +523,7 @@ func (r *StockSymbolBrandIdentifierParam) UnmarshalJSON(data []byte) error {
 }
 
 type RcBrandNewParams struct {
-	Addresses map[string]RcBrandNewParamsAddresses `json:"addresses,omitzero" api:"required"`
+	Addresses map[string]BrandAddressParam `json:"addresses,omitzero" api:"required"`
 	// Named business contacts. Use the `brand` key for the required BRAND contact.
 	Contacts    RcBrandNewParamsContacts `json:"contacts,omitzero" api:"required"`
 	DisplayName string                   `json:"display_name" api:"required"`
@@ -414,27 +548,6 @@ func (r RcBrandNewParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *RcBrandNewParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The properties AdministrativeArea, City, CountryCode, Line1, PostalCode are
-// required.
-type RcBrandNewParamsAddresses struct {
-	AdministrativeArea string `json:"administrative_area" api:"required"`
-	City               string `json:"city" api:"required"`
-	// The two-letter ISO 3166-1 country code.
-	CountryCode string            `json:"country_code" api:"required"`
-	Line1       string            `json:"line_1" api:"required"`
-	PostalCode  string            `json:"postal_code" api:"required"`
-	Line2       param.Opt[string] `json:"line_2,omitzero"`
-	paramObj
-}
-
-func (r RcBrandNewParamsAddresses) MarshalJSON() (data []byte, err error) {
-	type shadow RcBrandNewParamsAddresses
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *RcBrandNewParamsAddresses) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -473,9 +586,9 @@ func (r RcBrandNewParamsContactsBrand) MarshalJSON() (data []byte, err error) {
 //
 // The property Ein is required.
 type RcBrandNewParamsIdentifiers struct {
-	Ein         EinBrandIdentifierParam                     `json:"ein,omitzero" api:"required"`
-	StockSymbol StockSymbolBrandIdentifierParam             `json:"stock_symbol,omitzero"`
-	ExtraFields map[string]RcBrandNewParamsIdentifiersUnion `json:"-"`
+	Ein         EinBrandIdentifierParam              `json:"ein,omitzero" api:"required"`
+	StockSymbol StockSymbolBrandIdentifierParam      `json:"stock_symbol,omitzero"`
+	ExtraFields map[string]BrandIdentifierUnionParam `json:"-"`
 	paramObj
 }
 
@@ -487,57 +600,12 @@ func (r *RcBrandNewParamsIdentifiers) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Only one field can be non-zero.
-//
-// Use [param.IsOmitted] to confirm if a field is set.
-type RcBrandNewParamsIdentifiersUnion struct {
-	OfEinBrandIdentifier         *EinBrandIdentifierParam         `json:",omitzero,inline"`
-	OfStockSymbolBrandIdentifier *StockSymbolBrandIdentifierParam `json:",omitzero,inline"`
-	paramUnion
-}
-
-func (u RcBrandNewParamsIdentifiersUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfEinBrandIdentifier, u.OfStockSymbolBrandIdentifier)
-}
-func (u *RcBrandNewParamsIdentifiersUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
-}
-
-func (u *RcBrandNewParamsIdentifiersUnion) asAny() any {
-	if !param.IsOmitted(u.OfEinBrandIdentifier) {
-		return u.OfEinBrandIdentifier
-	} else if !param.IsOmitted(u.OfStockSymbolBrandIdentifier) {
-		return u.OfStockSymbolBrandIdentifier
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u RcBrandNewParamsIdentifiersUnion) GetIdentifierType() *string {
-	if vt := u.OfEinBrandIdentifier; vt != nil {
-		return (*string)(&vt.IdentifierType)
-	} else if vt := u.OfStockSymbolBrandIdentifier; vt != nil {
-		return (*string)(&vt.IdentifierType)
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u RcBrandNewParamsIdentifiersUnion) GetValue() *string {
-	if vt := u.OfEinBrandIdentifier; vt != nil {
-		return (*string)(&vt.Value)
-	} else if vt := u.OfStockSymbolBrandIdentifier; vt != nil {
-		return (*string)(&vt.Value)
-	}
-	return nil
-}
-
 type RcBrandUpdateParams struct {
-	DisplayName param.Opt[string]                       `json:"display_name,omitzero"`
-	LegalName   param.Opt[string]                       `json:"legal_name,omitzero"`
-	ProfileID   param.Opt[string]                       `json:"profile_id,omitzero"`
-	WebsiteURL  param.Opt[string]                       `json:"website_url,omitzero" format:"uri"`
-	Addresses   map[string]RcBrandUpdateParamsAddresses `json:"addresses,omitzero"`
+	DisplayName param.Opt[string]            `json:"display_name,omitzero"`
+	LegalName   param.Opt[string]            `json:"legal_name,omitzero"`
+	ProfileID   param.Opt[string]            `json:"profile_id,omitzero"`
+	WebsiteURL  param.Opt[string]            `json:"website_url,omitzero" format:"uri"`
+	Addresses   map[string]BrandAddressParam `json:"addresses,omitzero"`
 	// Named business contacts. Use the `brand` key for the required BRAND contact.
 	Contacts RcBrandUpdateParamsContacts `json:"contacts,omitzero"`
 	// Named business identifiers. Use the `ein` key for the required EIN and
@@ -556,27 +624,6 @@ func (r RcBrandUpdateParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *RcBrandUpdateParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The properties AdministrativeArea, City, CountryCode, Line1, PostalCode are
-// required.
-type RcBrandUpdateParamsAddresses struct {
-	AdministrativeArea string `json:"administrative_area" api:"required"`
-	City               string `json:"city" api:"required"`
-	// The two-letter ISO 3166-1 country code.
-	CountryCode string            `json:"country_code" api:"required"`
-	Line1       string            `json:"line_1" api:"required"`
-	PostalCode  string            `json:"postal_code" api:"required"`
-	Line2       param.Opt[string] `json:"line_2,omitzero"`
-	paramObj
-}
-
-func (r RcBrandUpdateParamsAddresses) MarshalJSON() (data []byte, err error) {
-	type shadow RcBrandUpdateParamsAddresses
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *RcBrandUpdateParamsAddresses) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -615,9 +662,9 @@ func (r RcBrandUpdateParamsContactsBrand) MarshalJSON() (data []byte, err error)
 //
 // The property Ein is required.
 type RcBrandUpdateParamsIdentifiers struct {
-	Ein         EinBrandIdentifierParam                        `json:"ein,omitzero" api:"required"`
-	StockSymbol StockSymbolBrandIdentifierParam                `json:"stock_symbol,omitzero"`
-	ExtraFields map[string]RcBrandUpdateParamsIdentifiersUnion `json:"-"`
+	Ein         EinBrandIdentifierParam              `json:"ein,omitzero" api:"required"`
+	StockSymbol StockSymbolBrandIdentifierParam      `json:"stock_symbol,omitzero"`
+	ExtraFields map[string]BrandIdentifierUnionParam `json:"-"`
 	paramObj
 }
 
@@ -627,49 +674,4 @@ func (r RcBrandUpdateParamsIdentifiers) MarshalJSON() (data []byte, err error) {
 }
 func (r *RcBrandUpdateParamsIdentifiers) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-// Only one field can be non-zero.
-//
-// Use [param.IsOmitted] to confirm if a field is set.
-type RcBrandUpdateParamsIdentifiersUnion struct {
-	OfEinBrandIdentifier         *EinBrandIdentifierParam         `json:",omitzero,inline"`
-	OfStockSymbolBrandIdentifier *StockSymbolBrandIdentifierParam `json:",omitzero,inline"`
-	paramUnion
-}
-
-func (u RcBrandUpdateParamsIdentifiersUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfEinBrandIdentifier, u.OfStockSymbolBrandIdentifier)
-}
-func (u *RcBrandUpdateParamsIdentifiersUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
-}
-
-func (u *RcBrandUpdateParamsIdentifiersUnion) asAny() any {
-	if !param.IsOmitted(u.OfEinBrandIdentifier) {
-		return u.OfEinBrandIdentifier
-	} else if !param.IsOmitted(u.OfStockSymbolBrandIdentifier) {
-		return u.OfStockSymbolBrandIdentifier
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u RcBrandUpdateParamsIdentifiersUnion) GetIdentifierType() *string {
-	if vt := u.OfEinBrandIdentifier; vt != nil {
-		return (*string)(&vt.IdentifierType)
-	} else if vt := u.OfStockSymbolBrandIdentifier; vt != nil {
-		return (*string)(&vt.IdentifierType)
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u RcBrandUpdateParamsIdentifiersUnion) GetValue() *string {
-	if vt := u.OfEinBrandIdentifier; vt != nil {
-		return (*string)(&vt.Value)
-	} else if vt := u.OfStockSymbolBrandIdentifier; vt != nil {
-		return (*string)(&vt.Value)
-	}
-	return nil
 }

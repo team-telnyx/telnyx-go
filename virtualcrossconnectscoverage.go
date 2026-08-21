@@ -15,6 +15,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
+	"github.com/tidwall/gjson"
 )
 
 // Virtual Cross Connect operations
@@ -194,6 +195,10 @@ func (u *VirtualCrossConnectsCoverageListParamsFiltersAvailableBandwidthUnion) a
 		return u.OfVirtualCrossConnectsCoverageListsFiltersAvailableBandwidthContains
 	}
 	return nil
+}
+
+func init() {
+	apijson.RegisterUnion[VirtualCrossConnectsCoverageListParamsFiltersAvailableBandwidthUnion]("", apijson.Variant[VirtualCrossConnectsCoverageListParamsFiltersAvailableBandwidthContains](gjson.JSON))
 }
 
 // Available bandwidth filtering operations

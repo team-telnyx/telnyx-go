@@ -36,7 +36,8 @@ func NewStorageMigrationActionService(opts ...option.RequestOption) (r StorageMi
 	return
 }
 
-// Stop an in-progress storage migration.
+// Stops the specified in-progress storage migration and returns the updated
+// migration.
 func (r *StorageMigrationActionService) Stop(ctx context.Context, id string, opts ...option.RequestOption) (res *StorageMigrationActionStopResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

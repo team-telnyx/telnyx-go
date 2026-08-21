@@ -50,7 +50,8 @@ func (r *LegacyReportingUsageReportMessagingService) New(ctx context.Context, bo
 	return res, err
 }
 
-// Fetch single MDR usage report by id.
+// Returns a single MDR (Message Detail Record) usage report by its identifier,
+// including its parameters and current status.
 func (r *LegacyReportingUsageReportMessagingService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *LegacyReportingUsageReportMessagingGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

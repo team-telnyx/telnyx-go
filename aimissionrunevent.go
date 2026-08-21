@@ -39,7 +39,9 @@ func NewAIMissionRunEventService(opts ...option.RequestOption) (r AIMissionRunEv
 	return
 }
 
-// List events for a run (paginated)
+// Returns a paginated list of events logged for the specified run, filterable by
+// event type, plan step, and agent, so you can reconstruct exactly what happened
+// during execution.
 func (r *AIMissionRunEventService) List(ctx context.Context, runID string, params AIMissionRunEventListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[EventData], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -65,12 +67,15 @@ func (r *AIMissionRunEventService) List(ctx context.Context, runID string, param
 	return res, nil
 }
 
-// List events for a run (paginated)
+// Returns a paginated list of events logged for the specified run, filterable by
+// event type, plan step, and agent, so you can reconstruct exactly what happened
+// during execution.
 func (r *AIMissionRunEventService) ListAutoPaging(ctx context.Context, runID string, params AIMissionRunEventListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[EventData] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, runID, params, opts...))
 }
 
-// Get details of a specific event
+// Returns the details of a single event logged for the specified run, including
+// its type and payload.
 func (r *AIMissionRunEventService) GetEventDetails(ctx context.Context, eventID string, query AIMissionRunEventGetEventDetailsParams, opts ...option.RequestOption) (res *EventResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if query.MissionID == "" {
@@ -90,7 +95,8 @@ func (r *AIMissionRunEventService) GetEventDetails(ctx context.Context, eventID 
 	return res, err
 }
 
-// Log an event for a run
+// Logs a new event against the specified run and returns the created event. Events
+// form the run's audit trail and can reference a plan step or agent.
 func (r *AIMissionRunEventService) Log(ctx context.Context, runID string, params AIMissionRunEventLogParams, opts ...option.RequestOption) (res *EventResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if params.MissionID == "" {

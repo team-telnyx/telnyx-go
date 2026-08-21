@@ -267,25 +267,24 @@ func (r EmailUnsubscribeGroupDeleteParams) URLQuery() (v url.Values, err error) 
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type EmailUnsubscribeGroupDeleteParamsForceUnion struct {
-	// Check if union is this variant with
-	// !param.IsOmitted(union.OfEmailUnsubscribeGroupDeletesForceString)
-	OfEmailUnsubscribeGroupDeletesForceString param.Opt[string] `query:",omitzero,inline"`
-	OfBool                                    param.Opt[bool]   `query:",omitzero,inline"`
+	// Check if union is this variant with !param.IsOmitted(union.OfForceString)
+	OfForceString param.Opt[string] `query:",omitzero,inline"`
+	OfBool        param.Opt[bool]   `query:",omitzero,inline"`
 	paramUnion
 }
 
 func (u *EmailUnsubscribeGroupDeleteParamsForceUnion) asAny() any {
-	if !param.IsOmitted(u.OfEmailUnsubscribeGroupDeletesForceString) {
-		return &u.OfEmailUnsubscribeGroupDeletesForceString
+	if !param.IsOmitted(u.OfForceString) {
+		return &u.OfForceString
 	} else if !param.IsOmitted(u.OfBool) {
 		return &u.OfBool.Value
 	}
 	return nil
 }
 
-type EmailUnsubscribeGroupDeleteParamsForceString string
+type EmailUnsubscribeGroupDeleteParamsForceForceString string
 
 const (
-	EmailUnsubscribeGroupDeleteParamsForceStringTrue  EmailUnsubscribeGroupDeleteParamsForceString = "true"
-	EmailUnsubscribeGroupDeleteParamsForceStringFalse EmailUnsubscribeGroupDeleteParamsForceString = "false"
+	EmailUnsubscribeGroupDeleteParamsForceForceStringTrue  EmailUnsubscribeGroupDeleteParamsForceForceString = "true"
+	EmailUnsubscribeGroupDeleteParamsForceForceStringFalse EmailUnsubscribeGroupDeleteParamsForceForceString = "false"
 )

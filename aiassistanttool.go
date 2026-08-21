@@ -53,7 +53,8 @@ func (r *AIAssistantToolService) Add(ctx context.Context, toolID string, body AI
 	return res, err
 }
 
-// Detach a tool from an AI assistant.
+// Detaches the specified tool from the AI assistant so the assistant can no longer
+// invoke it.
 func (r *AIAssistantToolService) Remove(ctx context.Context, toolID string, body AIAssistantToolRemoveParams, opts ...option.RequestOption) (res *AIAssistantToolRemoveResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if body.AssistantID == "" {
@@ -69,7 +70,9 @@ func (r *AIAssistantToolService) Remove(ctx context.Context, toolID string, body
 	return res, err
 }
 
-// Test a webhook tool for an assistant
+// Executes a test invocation of the specified webhook tool for the assistant and
+// returns the outcome, so you can verify the webhook's behavior before relying on
+// it in conversations.
 func (r *AIAssistantToolService) Test(ctx context.Context, toolID string, params AIAssistantToolTestParams, opts ...option.RequestOption) (res *AIAssistantToolTestResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if params.AssistantID == "" {

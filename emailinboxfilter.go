@@ -93,6 +93,33 @@ func (r *EmailInboxFilterService) Replace(ctx context.Context, inboxID string, b
 	return res, err
 }
 
+type InboxFilters struct {
+	Allowlist []string `json:"allowlist" api:"required"`
+	Blocklist []string `json:"blocklist" api:"required"`
+	// Any of "email_inbox_filters".
+	RecordType InboxFiltersRecordType `json:"record_type" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Allowlist   respjson.Field
+		Blocklist   respjson.Field
+		RecordType  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InboxFilters) RawJSON() string { return r.JSON.raw }
+func (r *InboxFilters) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type InboxFiltersRecordType string
+
+const (
+	InboxFiltersRecordTypeEmailInboxFilters InboxFiltersRecordType = "email_inbox_filters"
+)
+
 // The properties Entries, Type are required.
 type MutateInboxFiltersRequestParam struct {
 	Entries []string `json:"entries,omitzero" api:"required"`
@@ -120,7 +147,7 @@ const (
 )
 
 type EmailInboxFilterListResponse struct {
-	Data EmailInboxFilterListResponseData `json:"data" api:"required"`
+	Data InboxFilters `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -135,29 +162,8 @@ func (r *EmailInboxFilterListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type EmailInboxFilterListResponseData struct {
-	Allowlist []string `json:"allowlist" api:"required"`
-	Blocklist []string `json:"blocklist" api:"required"`
-	// Any of "email_inbox_filters".
-	RecordType string `json:"record_type" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Allowlist   respjson.Field
-		Blocklist   respjson.Field
-		RecordType  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r EmailInboxFilterListResponseData) RawJSON() string { return r.JSON.raw }
-func (r *EmailInboxFilterListResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type EmailInboxFilterAddResponse struct {
-	Data EmailInboxFilterAddResponseData `json:"data" api:"required"`
+	Data InboxFilters `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -172,29 +178,8 @@ func (r *EmailInboxFilterAddResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type EmailInboxFilterAddResponseData struct {
-	Allowlist []string `json:"allowlist" api:"required"`
-	Blocklist []string `json:"blocklist" api:"required"`
-	// Any of "email_inbox_filters".
-	RecordType string `json:"record_type" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Allowlist   respjson.Field
-		Blocklist   respjson.Field
-		RecordType  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r EmailInboxFilterAddResponseData) RawJSON() string { return r.JSON.raw }
-func (r *EmailInboxFilterAddResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type EmailInboxFilterDeleteAllResponse struct {
-	Data EmailInboxFilterDeleteAllResponseData `json:"data" api:"required"`
+	Data InboxFilters `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -209,29 +194,8 @@ func (r *EmailInboxFilterDeleteAllResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type EmailInboxFilterDeleteAllResponseData struct {
-	Allowlist []string `json:"allowlist" api:"required"`
-	Blocklist []string `json:"blocklist" api:"required"`
-	// Any of "email_inbox_filters".
-	RecordType string `json:"record_type" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Allowlist   respjson.Field
-		Blocklist   respjson.Field
-		RecordType  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r EmailInboxFilterDeleteAllResponseData) RawJSON() string { return r.JSON.raw }
-func (r *EmailInboxFilterDeleteAllResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type EmailInboxFilterReplaceResponse struct {
-	Data EmailInboxFilterReplaceResponseData `json:"data" api:"required"`
+	Data InboxFilters `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -243,27 +207,6 @@ type EmailInboxFilterReplaceResponse struct {
 // Returns the unmodified JSON received from the API
 func (r EmailInboxFilterReplaceResponse) RawJSON() string { return r.JSON.raw }
 func (r *EmailInboxFilterReplaceResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type EmailInboxFilterReplaceResponseData struct {
-	Allowlist []string `json:"allowlist" api:"required"`
-	Blocklist []string `json:"blocklist" api:"required"`
-	// Any of "email_inbox_filters".
-	RecordType string `json:"record_type" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Allowlist   respjson.Field
-		Blocklist   respjson.Field
-		RecordType  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r EmailInboxFilterReplaceResponseData) RawJSON() string { return r.JSON.raw }
-func (r *EmailInboxFilterReplaceResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

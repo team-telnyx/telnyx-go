@@ -43,18 +43,22 @@ func NewAIAssistantScheduledEventService(opts ...option.RequestOption) (r AIAssi
 }
 
 // Create a scheduled event for an assistant
-func (r *AIAssistantScheduledEventService) New(ctx context.Context, assistantID string, body AIAssistantScheduledEventNewParams, opts ...option.RequestOption) (res *ScheduledEventResponseUnion, err error) {
+func (r *AIAssistantScheduledEventService) New(ctx context.Context, assistantID string, params AIAssistantScheduledEventNewParams, opts ...option.RequestOption) (res *ScheduledEventResponseUnion, err error) {
+	if !param.IsOmitted(params.IdempotencyKey) {
+		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	if assistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
 		return nil, err
 	}
 	path := fmt.Sprintf("ai/assistants/%s/scheduled_events", assistantID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
 
-// Retrieve a scheduled event by event ID
+// Returns the details of a single scheduled event configured for the specified
+// assistant.
 func (r *AIAssistantScheduledEventService) Get(ctx context.Context, eventID string, query AIAssistantScheduledEventGetParams, opts ...option.RequestOption) (res *ScheduledEventResponseUnion, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if query.AssistantID == "" {
@@ -673,7 +677,8 @@ type AIAssistantScheduledEventNewParams struct {
 	MaxRetriesClientErrors param.Opt[int64] `json:"max_retries_client_errors,omitzero"`
 	RetryIntervalSecs      param.Opt[int64] `json:"retry_interval_secs,omitzero"`
 	// Required for sms scheduled events. The text to be sent to the end user.
-	Text param.Opt[string] `json:"text,omitzero"`
+	Text           param.Opt[string] `json:"text,omitzero"`
+	IdempotencyKey param.Opt[string] `header:"Idempotency-Key,omitzero" json:"-"`
 	// Per-call telephony overrides applied when a scheduled phone-call event
 	// dispatches. Phone-call events only. New per-call dispatch options should be
 	// added here rather than as top-level event fields.

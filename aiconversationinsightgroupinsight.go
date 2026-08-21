@@ -34,7 +34,7 @@ func NewAIConversationInsightGroupInsightService(opts ...option.RequestOption) (
 	return
 }
 
-// Assign an insight to a group
+// Assigns the specified insight template to the specified insight template group.
 func (r *AIConversationInsightGroupInsightService) Assign(ctx context.Context, insightID string, body AIConversationInsightGroupInsightAssignParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
@@ -51,7 +51,8 @@ func (r *AIConversationInsightGroupInsightService) Assign(ctx context.Context, i
 	return err
 }
 
-// Remove an insight from a group
+// Removes the specified insight template from the specified group. The insight
+// template itself is not deleted.
 func (r *AIConversationInsightGroupInsightService) DeleteUnassign(ctx context.Context, insightID string, body AIConversationInsightGroupInsightDeleteUnassignParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)

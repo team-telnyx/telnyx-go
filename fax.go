@@ -74,7 +74,7 @@ func (r *FaxService) New(ctx context.Context, body FaxNewParams, opts ...option.
 	return res, err
 }
 
-// Retrieve the details of a single fax.
+// Returns the details of a single fax, including its current status.
 func (r *FaxService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *FaxGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
