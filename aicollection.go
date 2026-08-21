@@ -163,15 +163,58 @@ func (r *AICollectionService) GetByID(ctx context.Context, uuid string, opts ...
 // - `GET /v2/ai/collections/my-collection/documents?query=billing+issue&top_k=10`
 // - `GET /v2/ai/collections/my-collection/documents?query=refund&sources=voice,message`
 // - `GET /v2/ai/collections/my-collection/documents?query=outage&filter[record_created_at][gte]=2026-01-01T00:00:00Z`
-func (r *AICollectionService) GetDocuments(ctx context.Context, slug string, query AICollectionGetDocumentsParams, opts ...option.RequestOption) (res *AICollectionGetDocumentsResponse, err error) {
+func (r *AICollectionService) GetDocuments(ctx context.Context, slug string, query AICollectionGetDocumentsParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[AICollectionGetDocumentsResponse], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if slug == "" {
 		err = errors.New("missing required slug parameter")
 		return nil, err
 	}
 	path := fmt.Sprintf("ai/collections/%s/documents", slug)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Runs search over the documents in a collection, ranked by relevance to `query`.
+// The collection's `retrieval_type` setting selects the strategy: `vector`
+// (semantic similarity), `hybrid` (vector similarity fused with keyword matching),
+// or `keyword` (lexical BM25 matching). When `query` is omitted, returns a plain
+// catalog listing of the collection's documents.
+//
+// **How it works:**
+//
+//  1. For `vector` and `hybrid`, the `query` text is embedded into a
+//     1024-dimensional vector using the multilingual-e5-large model.
+//  2. For `vector`, the embedding is compared against the collection's indexed
+//     document chunks using semantic similarity; for `hybrid`, those similarity
+//     scores are fused with keyword-match scores; for `keyword`, only lexical BM25
+//     matching is applied.
+//  3. Results are ranked by `score` (descending) and paginated via `page[number]` /
+//     `page[size]`.
+//
+// **Authentication:** Requires a Telnyx API key via `Authorization: Bearer <key>`.
+// Results are automatically scoped to your organization and cannot be overridden.
+//
+// **Filtering:** Use `filter[field][operator]=value` query parameters to narrow
+// results before search. Supported operators: `eq` (default), `in`, `gte`, `gt`,
+// `lte`, `lt`, `contains`. Metadata fields resolve to `metadata.<field>`.
+//
+// **Examples:**
+//
+// - `GET /v2/ai/collections/my-collection/documents?query=billing+issue&top_k=10`
+// - `GET /v2/ai/collections/my-collection/documents?query=refund&sources=voice,message`
+// - `GET /v2/ai/collections/my-collection/documents?query=outage&filter[record_created_at][gte]=2026-01-01T00:00:00Z`
+func (r *AICollectionService) GetDocumentsAutoPaging(ctx context.Context, slug string, query AICollectionGetDocumentsParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[AICollectionGetDocumentsResponse] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.GetDocuments(ctx, slug, query, opts...))
 }
 
 type Collection struct {
@@ -226,24 +269,6 @@ func (r *CollectionEnvelope) UnmarshalJSON(data []byte) error {
 }
 
 type AICollectionGetDocumentsResponse struct {
-	Data []AICollectionGetDocumentsResponseData `json:"data"`
-	Meta AICollectionGetDocumentsResponseMeta   `json:"meta"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AICollectionGetDocumentsResponse) RawJSON() string { return r.JSON.raw }
-func (r *AICollectionGetDocumentsResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AICollectionGetDocumentsResponseData struct {
 	ID              string         `json:"id"`
 	ChunkIndex      int64          `json:"chunk_index"`
 	ChunkTotal      int64          `json:"chunk_total"`
@@ -282,38 +307,8 @@ type AICollectionGetDocumentsResponseData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AICollectionGetDocumentsResponseData) RawJSON() string { return r.JSON.raw }
-func (r *AICollectionGetDocumentsResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AICollectionGetDocumentsResponseMeta struct {
-	CollectionSlug  string   `json:"collection_slug"`
-	PageNumber      int64    `json:"page_number"`
-	PageSize        int64    `json:"page_size"`
-	RetrievalType   string   `json:"retrieval_type"`
-	SearchedSources []string `json:"searched_sources"`
-	TopK            int64    `json:"top_k"`
-	TotalPages      int64    `json:"total_pages"`
-	TotalResults    int64    `json:"total_results"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		CollectionSlug  respjson.Field
-		PageNumber      respjson.Field
-		PageSize        respjson.Field
-		RetrievalType   respjson.Field
-		SearchedSources respjson.Field
-		TopK            respjson.Field
-		TotalPages      respjson.Field
-		TotalResults    respjson.Field
-		ExtraFields     map[string]respjson.Field
-		raw             string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AICollectionGetDocumentsResponseMeta) RawJSON() string { return r.JSON.raw }
-func (r *AICollectionGetDocumentsResponseMeta) UnmarshalJSON(data []byte) error {
+func (r AICollectionGetDocumentsResponse) RawJSON() string { return r.JSON.raw }
+func (r *AICollectionGetDocumentsResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

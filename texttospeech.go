@@ -4,7 +4,6 @@ package telnyx
 
 import (
 	"context"
-	"encoding/json"
 	"net/http"
 	"net/url"
 	"slices"
@@ -46,11 +45,11 @@ func NewTextToSpeechService(opts ...option.RequestOption) (r TextToSpeechService
 // header.
 //
 // The `voice` parameter provides a convenient shorthand to specify provider,
-// model, and voice in a single string (e.g. `telnyx.NaturalHD.Alloy` or
-// `Telnyx.Ultra.<voice_id>`). Alternatively, specify `provider` explicitly along
-// with provider-specific parameters.
+// model, and voice in a single string (e.g. `Telnyx.Ultra.<voice_id>`).
+// Alternatively, specify `provider` explicitly along with provider-specific
+// parameters.
 //
-// Supported providers: `aws`, `telnyx`, `azure`, `elevenlabs`, `minimax`, `rime`,
+// Supported providers: `aws`, `telnyx`, `azure`, `elevenlabs`, `minimax`,
 // `resemble`, `xai`, `humain`.
 //
 // The Telnyx `Ultra` model supports 44 languages with emotion control, speed
@@ -80,8 +79,8 @@ func (r *TextToSpeechService) ListVoices(ctx context.Context, query TextToSpeech
 // `Authorization: Bearer <API_KEY>` header. Send JSON frames with text to
 // synthesize; receive JSON frames containing base64-encoded audio chunks.
 //
-// Supported providers: `aws`, `telnyx`, `azure`, `murfai`, `minimax`, `rime`,
-// `resemble`, `elevenlabs`, `xai`, `humain`.
+// Supported providers: `aws`, `telnyx`, `azure`, `murfai`, `minimax`, `resemble`,
+// `elevenlabs`, `xai`, `humain`.
 //
 // **Connection flow:**
 //
@@ -175,275 +174,6 @@ func (r *TextToSpeechListVoicesResponseVoice) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Client-to-server frame containing text to synthesize.
-type StreamClientEvent struct {
-	// Text to convert to speech. Send `" "` (single space) as an initial handshake
-	// with optional `voice_settings`. Subsequent messages contain the actual text to
-	// synthesize.
-	Text string `json:"text" api:"required"`
-	// When `true`, stops the current synthesis worker and starts a new one. Used to
-	// interrupt speech mid-stream and begin synthesizing new text.
-	Force bool `json:"force"`
-	// Provider-specific voice settings sent with the initial handshake. Contents vary
-	// by provider — e.g. `{"speed": 1.2}` for Minimax, `{"voice_speed": 1.5}` for
-	// Telnyx.
-	VoiceSettings map[string]any `json:"voice_settings"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Text          respjson.Field
-		Force         respjson.Field
-		VoiceSettings respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r StreamClientEvent) RawJSON() string { return r.JSON.raw }
-func (r *StreamClientEvent) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// ToParam converts this StreamClientEvent to a StreamClientEventParam.
-//
-// Warning: the fields of the param type will not be present. ToParam should only
-// be used at the last possible moment before sending a request. Test for this with
-// StreamClientEventParam.Overrides()
-func (r StreamClientEvent) ToParam() StreamClientEventParam {
-	return param.Override[StreamClientEventParam](json.RawMessage(r.RawJSON()))
-}
-
-// Client-to-server frame containing text to synthesize.
-//
-// The property Text is required.
-type StreamClientEventParam struct {
-	// Text to convert to speech. Send `" "` (single space) as an initial handshake
-	// with optional `voice_settings`. Subsequent messages contain the actual text to
-	// synthesize.
-	Text string `json:"text" api:"required"`
-	// When `true`, stops the current synthesis worker and starts a new one. Used to
-	// interrupt speech mid-stream and begin synthesizing new text.
-	Force param.Opt[bool] `json:"force,omitzero"`
-	// Provider-specific voice settings sent with the initial handshake. Contents vary
-	// by provider — e.g. `{"speed": 1.2}` for Minimax, `{"voice_speed": 1.5}` for
-	// Telnyx.
-	VoiceSettings map[string]any `json:"voice_settings,omitzero"`
-	paramObj
-}
-
-func (r StreamClientEventParam) MarshalJSON() (data []byte, err error) {
-	type shadow StreamClientEventParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *StreamClientEventParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// StreamServerEventUnion contains all possible properties and values from
-// [StreamServerEventAudioChunk], [StreamServerEventFinalFrameEvent],
-// [StreamServerEventError].
-//
-// Use the [StreamServerEventUnion.AsAny] method to switch on the variant.
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-type StreamServerEventUnion struct {
-	// This field is a union of [string], [any]
-	Audio StreamServerEventUnionAudio `json:"audio"`
-	// This field is from variant [StreamServerEventAudioChunk].
-	Cached                  bool   `json:"cached"`
-	IsFinal                 bool   `json:"isFinal"`
-	Text                    string `json:"text"`
-	TimeToFirstAudioFrameMs int64  `json:"timeToFirstAudioFrameMs"`
-	// Any of "audio_chunk", "final", "error".
-	Type string `json:"type"`
-	// This field is from variant [StreamServerEventError].
-	Error string `json:"error"`
-	JSON  struct {
-		Audio                   respjson.Field
-		Cached                  respjson.Field
-		IsFinal                 respjson.Field
-		Text                    respjson.Field
-		TimeToFirstAudioFrameMs respjson.Field
-		Type                    respjson.Field
-		Error                   respjson.Field
-		raw                     string
-	} `json:"-"`
-}
-
-// anyStreamServerEvent is implemented by each variant of [StreamServerEventUnion]
-// to add type safety for the return type of [StreamServerEventUnion.AsAny]
-type anyStreamServerEvent interface {
-	implStreamServerEventUnion()
-}
-
-func (StreamServerEventAudioChunk) implStreamServerEventUnion()      {}
-func (StreamServerEventFinalFrameEvent) implStreamServerEventUnion() {}
-func (StreamServerEventError) implStreamServerEventUnion()           {}
-
-// Use the following switch statement to find the correct variant
-//
-//	switch variant := StreamServerEventUnion.AsAny().(type) {
-//	case telnyx.StreamServerEventAudioChunk:
-//	case telnyx.StreamServerEventFinalFrameEvent:
-//	case telnyx.StreamServerEventError:
-//	default:
-//	  fmt.Errorf("no variant present")
-//	}
-func (u StreamServerEventUnion) AsAny() anyStreamServerEvent {
-	switch u.Type {
-	case "audio_chunk":
-		return u.AsAudioChunk()
-	case "final":
-		return u.AsFinalFrameEvent()
-	case "error":
-		return u.AsError()
-	}
-	return nil
-}
-
-func (u StreamServerEventUnion) AsAudioChunk() (v StreamServerEventAudioChunk) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u StreamServerEventUnion) AsFinalFrameEvent() (v StreamServerEventFinalFrameEvent) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u StreamServerEventUnion) AsError() (v StreamServerEventError) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u StreamServerEventUnion) RawJSON() string { return u.JSON.raw }
-
-func (r *StreamServerEventUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// StreamServerEventUnionAudio is an implicit subunion of [StreamServerEventUnion].
-// StreamServerEventUnionAudio provides convenient access to the sub-properties of
-// the union.
-//
-// For type safety it is recommended to directly use a variant of the
-// [StreamServerEventUnion].
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfStreamServerEventFinalFrameEventAudio]
-type StreamServerEventUnionAudio struct {
-	// This field will be present if the value is a [string] instead of an object.
-	OfString string `json:",inline"`
-	// This field will be present if the value is a [any] instead of an object.
-	OfStreamServerEventFinalFrameEventAudio any `json:",inline"`
-	JSON                                    struct {
-		OfString                                respjson.Field
-		OfStreamServerEventFinalFrameEventAudio respjson.Field
-		raw                                     string
-	} `json:"-"`
-}
-
-func (r *StreamServerEventUnionAudio) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Server-to-client frame containing a base64-encoded audio chunk.
-type StreamServerEventAudioChunk struct {
-	// Base64-encoded audio data. May be `null` for providers that use
-	// `drop_concatenated_audio` mode (Telnyx Natural/NaturalHD, Rime, Minimax, MurfAI,
-	// Resemble) — in that case only streamed chunks carry audio.
-	Audio string `json:"audio" api:"nullable"`
-	// Whether this audio was served from cache.
-	Cached bool `json:"cached"`
-	// Always `false` for audio chunk frames.
-	IsFinal bool `json:"isFinal"`
-	// The text segment that this audio chunk corresponds to.
-	Text string `json:"text" api:"nullable"`
-	// Milliseconds from the start-of-speech request to the first audio frame. Only
-	// present on the first audio chunk of a synthesis request.
-	TimeToFirstAudioFrameMs int64 `json:"timeToFirstAudioFrameMs"`
-	// Frame type identifier.
-	//
-	// Any of "audio_chunk".
-	Type string `json:"type"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Audio                   respjson.Field
-		Cached                  respjson.Field
-		IsFinal                 respjson.Field
-		Text                    respjson.Field
-		TimeToFirstAudioFrameMs respjson.Field
-		Type                    respjson.Field
-		ExtraFields             map[string]respjson.Field
-		raw                     string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r StreamServerEventAudioChunk) RawJSON() string { return r.JSON.raw }
-func (r *StreamServerEventAudioChunk) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Server-to-client frame indicating synthesis is complete for the current text.
-type StreamServerEventFinalFrameEvent struct {
-	// Always `null` for the final frame.
-	Audio any `json:"audio" api:"nullable"`
-	// Always `true`.
-	//
-	// Any of true.
-	IsFinal bool `json:"isFinal"`
-	// Empty string.
-	Text string `json:"text"`
-	// Present if this was the first response frame.
-	TimeToFirstAudioFrameMs int64 `json:"timeToFirstAudioFrameMs"`
-	// Frame type identifier.
-	//
-	// Any of "final".
-	Type string `json:"type"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Audio                   respjson.Field
-		IsFinal                 respjson.Field
-		Text                    respjson.Field
-		TimeToFirstAudioFrameMs respjson.Field
-		Type                    respjson.Field
-		ExtraFields             map[string]respjson.Field
-		raw                     string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r StreamServerEventFinalFrameEvent) RawJSON() string { return r.JSON.raw }
-func (r *StreamServerEventFinalFrameEvent) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Server-to-client frame indicating an error during synthesis. The connection is
-// closed shortly after.
-type StreamServerEventError struct {
-	// Error message describing what went wrong.
-	Error string `json:"error"`
-	// Frame type identifier.
-	//
-	// Any of "error".
-	Type string `json:"type"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Error       respjson.Field
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r StreamServerEventError) RawJSON() string { return r.JSON.raw }
-func (r *StreamServerEventError) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type TextToSpeechGenerateSpeechParams struct {
 	// When `true`, bypass the audio cache and generate fresh audio.
 	DisableCache param.Opt[bool] `json:"disable_cache,omitzero"`
@@ -452,11 +182,11 @@ type TextToSpeechGenerateSpeechParams struct {
 	// The text to convert to speech.
 	Text param.Opt[string] `json:"text,omitzero"`
 	// Voice identifier in the format `provider.model_id.voice_id` or
-	// `provider.voice_id`. Examples: `telnyx.NaturalHD.Alloy`,
-	// `Telnyx.Ultra.<voice_id>`, `Telnyx.Bayan.Ahmed`, `Telnyx.Sukhan.urdu-professor`,
-	// `azure.en-US-AvaMultilingualNeural`, `aws.Polly.Generative.Lucia`. When
-	// provided, `provider`, `model_id`, and `voice_id` are extracted automatically and
-	// take precedence over individual parameters.
+	// `provider.voice_id`. Examples: `Telnyx.Ultra.<voice_id>`, `Telnyx.Bayan.Ahmed`,
+	// `Telnyx.Sukhan.urdu-professor`, `azure.en-US-AvaMultilingualNeural`,
+	// `aws.Polly.Generative.Lucia`. When provided, `provider`, `model_id`, and
+	// `voice_id` are extracted automatically and take precedence over individual
+	// parameters.
 	Voice param.Opt[string] `json:"voice,omitzero"`
 	// AWS Polly provider-specific parameters.
 	Aws TextToSpeechGenerateSpeechParamsAws `json:"aws,omitzero"`
@@ -477,15 +207,12 @@ type TextToSpeechGenerateSpeechParams struct {
 	OutputType TextToSpeechGenerateSpeechParamsOutputType `json:"output_type,omitzero"`
 	// TTS provider. Required unless `voice` is provided.
 	//
-	// Any of "aws", "telnyx", "azure", "elevenlabs", "minimax", "rime", "resemble",
-	// "xai", "humain".
+	// Any of "aws", "telnyx", "azure", "elevenlabs", "minimax", "resemble", "xai",
+	// "humain".
 	Provider TextToSpeechGenerateSpeechParamsProvider `json:"provider,omitzero"`
 	// Resemble AI provider-specific parameters.
 	Resemble TextToSpeechGenerateSpeechParamsResemble `json:"resemble,omitzero"`
-	// Rime provider-specific parameters.
-	Rime TextToSpeechGenerateSpeechParamsRime `json:"rime,omitzero"`
-	// Telnyx provider-specific parameters. Use `voice_speed` and `temperature` for
-	// `Natural` and `NaturalHD` models. For the `Ultra` model, use `voice_speed`,
+	// Telnyx provider-specific parameters. For the `Ultra` model, use `voice_speed`,
 	// `volume`, and `emotion`. `Bayan` and `Sukhan` don't use `temperature`, `volume`,
 	// or `emotion`, and don't support `voice_speed`. `Sukhan`'s `response_format` is
 	// restricted to `mp3` or `pcm` (no `wav`).
@@ -668,7 +395,6 @@ const (
 	TextToSpeechGenerateSpeechParamsProviderAzure      TextToSpeechGenerateSpeechParamsProvider = "azure"
 	TextToSpeechGenerateSpeechParamsProviderElevenlabs TextToSpeechGenerateSpeechParamsProvider = "elevenlabs"
 	TextToSpeechGenerateSpeechParamsProviderMinimax    TextToSpeechGenerateSpeechParamsProvider = "minimax"
-	TextToSpeechGenerateSpeechParamsProviderRime       TextToSpeechGenerateSpeechParamsProvider = "rime"
 	TextToSpeechGenerateSpeechParamsProviderResemble   TextToSpeechGenerateSpeechParamsProvider = "resemble"
 	TextToSpeechGenerateSpeechParamsProviderXai        TextToSpeechGenerateSpeechParamsProvider = "xai"
 	TextToSpeechGenerateSpeechParamsProviderHumain     TextToSpeechGenerateSpeechParamsProvider = "humain"
@@ -695,27 +421,7 @@ func (r *TextToSpeechGenerateSpeechParamsResemble) UnmarshalJSON(data []byte) er
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Rime provider-specific parameters.
-type TextToSpeechGenerateSpeechParamsRime struct {
-	// Audio output format.
-	ResponseFormat param.Opt[string] `json:"response_format,omitzero"`
-	// Audio sampling rate in Hz.
-	SamplingRate param.Opt[int64] `json:"sampling_rate,omitzero"`
-	// Voice speed multiplier.
-	VoiceSpeed param.Opt[float64] `json:"voice_speed,omitzero"`
-	paramObj
-}
-
-func (r TextToSpeechGenerateSpeechParamsRime) MarshalJSON() (data []byte, err error) {
-	type shadow TextToSpeechGenerateSpeechParamsRime
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *TextToSpeechGenerateSpeechParamsRime) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Telnyx provider-specific parameters. Use `voice_speed` and `temperature` for
-// `Natural` and `NaturalHD` models. For the `Ultra` model, use `voice_speed`,
+// Telnyx provider-specific parameters. For the `Ultra` model, use `voice_speed`,
 // `volume`, and `emotion`. `Bayan` and `Sukhan` don't use `temperature`, `volume`,
 // or `emotion`, and don't support `voice_speed`. `Sukhan`'s `response_format` is
 // restricted to `mp3` or `pcm` (no `wav`).
@@ -724,8 +430,6 @@ type TextToSpeechGenerateSpeechParamsTelnyx struct {
 	ResponseFormat param.Opt[string] `json:"response_format,omitzero"`
 	// Audio sampling rate in Hz.
 	SamplingRate param.Opt[int64] `json:"sampling_rate,omitzero"`
-	// Sampling temperature. Applies to `Natural` and `NaturalHD` models only.
-	Temperature param.Opt[float64] `json:"temperature,omitzero"`
 	// Voice speed multiplier. Applies to all models except `Bayan` and `Sukhan`, which
 	// don't support it. Range: 0.5 to 2.0.
 	VoiceSpeed param.Opt[float64] `json:"voice_speed,omitzero"`
@@ -807,8 +511,8 @@ type TextToSpeechListVoicesParams struct {
 	APIKey param.Opt[string] `query:"api_key,omitzero" json:"-"`
 	// Filter voices by provider. If omitted, voices from all providers are returned.
 	//
-	// Any of "aws", "telnyx", "azure", "elevenlabs", "minimax", "rime", "resemble",
-	// "xai", "humain".
+	// Any of "aws", "telnyx", "azure", "elevenlabs", "minimax", "resemble", "xai",
+	// "humain".
 	Provider TextToSpeechListVoicesParamsProvider `query:"provider,omitzero" json:"-"`
 	paramObj
 }
@@ -831,7 +535,6 @@ const (
 	TextToSpeechListVoicesParamsProviderAzure      TextToSpeechListVoicesParamsProvider = "azure"
 	TextToSpeechListVoicesParamsProviderElevenlabs TextToSpeechListVoicesParamsProvider = "elevenlabs"
 	TextToSpeechListVoicesParamsProviderMinimax    TextToSpeechListVoicesParamsProvider = "minimax"
-	TextToSpeechListVoicesParamsProviderRime       TextToSpeechListVoicesParamsProvider = "rime"
 	TextToSpeechListVoicesParamsProviderResemble   TextToSpeechListVoicesParamsProvider = "resemble"
 	TextToSpeechListVoicesParamsProviderXai        TextToSpeechListVoicesParamsProvider = "xai"
 	TextToSpeechListVoicesParamsProviderHumain     TextToSpeechListVoicesParamsProvider = "humain"
@@ -840,32 +543,31 @@ const (
 type TextToSpeechGetSpeechParams struct {
 	// When `true`, bypass the audio cache and generate fresh audio.
 	DisableCache param.Opt[bool] `query:"disable_cache,omitzero" json:"-"`
-	// Model identifier for the chosen provider. Examples: `Natural`, `NaturalHD`,
-	// `Ultra` (Telnyx); `Polly.Generative` (AWS).
+	// Model identifier for the chosen provider. Examples: `Ultra`, `KokoroTTS`
+	// (Telnyx); `Polly.Generative` (AWS).
 	ModelID param.Opt[string] `query:"model_id,omitzero" json:"-"`
 	// Client-provided socket identifier for tracking. If not provided, one is
 	// generated server-side.
 	SocketID param.Opt[string] `query:"socket_id,omitzero" json:"-"`
 	// Voice identifier in the format `provider.model_id.voice_id` or
-	// `provider.voice_id` (e.g. `telnyx.NaturalHD.Telnyx_Alloy`,
-	// `Telnyx.Ultra.<voice_id>`, `Telnyx.Bayan.Ahmed`, `Telnyx.Sukhan.urdu-professor`,
-	// or `azure.en-US-AvaMultilingualNeural`). When provided, the `provider`,
-	// `model_id`, and `voice_id` are extracted automatically. Takes precedence over
-	// individual `provider`/`model_id`/`voice_id` parameters.
+	// `provider.voice_id` (e.g. `Telnyx.Ultra.<voice_id>`, `Telnyx.Bayan.Ahmed`,
+	// `Telnyx.Sukhan.urdu-professor`, or `azure.en-US-AvaMultilingualNeural`). When
+	// provided, the `provider`, `model_id`, and `voice_id` are extracted
+	// automatically. Takes precedence over individual `provider`/`model_id`/`voice_id`
+	// parameters.
 	Voice param.Opt[string] `query:"voice,omitzero" json:"-"`
 	// Voice identifier for the chosen provider.
 	VoiceID param.Opt[string] `query:"voice_id,omitzero" json:"-"`
-	// Audio output format override. Supported for Telnyx models. `pcm` and `wav` are
-	// available for `Natural`/`NaturalHD` models. The `Ultra` model outputs PCM at
-	// 24kHz s16le or MP3 at 128kbps 24kHz.
+	// Audio output format override. Supported for Telnyx models. The `Ultra` model
+	// outputs PCM at 24kHz s16le or MP3 at 128kbps 24kHz.
 	//
 	// Any of "pcm", "wav", "mp3".
 	AudioFormat TextToSpeechGetSpeechParamsAudioFormat `query:"audio_format,omitzero" json:"-"`
 	// TTS provider. Defaults to `telnyx` if not specified. Ignored when `voice` is
 	// provided.
 	//
-	// Any of "aws", "telnyx", "azure", "elevenlabs", "minimax", "murfai", "rime",
-	// "resemble", "xai", "humain".
+	// Any of "aws", "telnyx", "azure", "elevenlabs", "minimax", "murfai", "resemble",
+	// "xai", "humain".
 	Provider TextToSpeechGetSpeechParamsProvider `query:"provider,omitzero" json:"-"`
 	paramObj
 }
@@ -879,9 +581,8 @@ func (r TextToSpeechGetSpeechParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// Audio output format override. Supported for Telnyx models. `pcm` and `wav` are
-// available for `Natural`/`NaturalHD` models. The `Ultra` model outputs PCM at
-// 24kHz s16le or MP3 at 128kbps 24kHz.
+// Audio output format override. Supported for Telnyx models. The `Ultra` model
+// outputs PCM at 24kHz s16le or MP3 at 128kbps 24kHz.
 type TextToSpeechGetSpeechParamsAudioFormat string
 
 const (
@@ -901,7 +602,6 @@ const (
 	TextToSpeechGetSpeechParamsProviderElevenlabs TextToSpeechGetSpeechParamsProvider = "elevenlabs"
 	TextToSpeechGetSpeechParamsProviderMinimax    TextToSpeechGetSpeechParamsProvider = "minimax"
 	TextToSpeechGetSpeechParamsProviderMurfai     TextToSpeechGetSpeechParamsProvider = "murfai"
-	TextToSpeechGetSpeechParamsProviderRime       TextToSpeechGetSpeechParamsProvider = "rime"
 	TextToSpeechGetSpeechParamsProviderResemble   TextToSpeechGetSpeechParamsProvider = "resemble"
 	TextToSpeechGetSpeechParamsProviderXai        TextToSpeechGetSpeechParamsProvider = "xai"
 	TextToSpeechGetSpeechParamsProviderHumain     TextToSpeechGetSpeechParamsProvider = "humain"

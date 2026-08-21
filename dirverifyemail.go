@@ -84,36 +84,19 @@ func (r *DirVerifyEmailService) Confirm(ctx context.Context, dirID string, body 
 	return res, err
 }
 
-type EmailVerificationStatusWrapped struct {
-	// Verification state for a DIR's authorizer email.
-	Data EmailVerificationStatusWrappedData `json:"data" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r EmailVerificationStatusWrapped) RawJSON() string { return r.JSON.raw }
-func (r *EmailVerificationStatusWrapped) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // Verification state for a DIR's authorizer email.
-type EmailVerificationStatusWrappedData struct {
+type EmailVerificationStatus struct {
 	// Whether the DIR's authorizer email has been confirmed.
 	EmailVerified bool `json:"email_verified" api:"required"`
 	// Always `email_verification`.
 	//
 	// Any of "email_verification".
-	RecordType string `json:"record_type" api:"required"`
+	RecordType EmailVerificationStatusRecordType `json:"record_type" api:"required"`
 	// `sent` after a code is emailed; `verified` after a successful confirm;
 	// `unverified` when no verification is in progress.
 	//
 	// Any of "sent", "verified", "unverified".
-	Status string `json:"status" api:"required"`
+	Status EmailVerificationStatusStatus `json:"status" api:"required"`
 	// When the outstanding code stops being accepted. Null when no verification is in
 	// progress.
 	ExpiresAt time.Time `json:"expires_at" api:"nullable" format:"date-time"`
@@ -133,8 +116,42 @@ type EmailVerificationStatusWrappedData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r EmailVerificationStatusWrappedData) RawJSON() string { return r.JSON.raw }
-func (r *EmailVerificationStatusWrappedData) UnmarshalJSON(data []byte) error {
+func (r EmailVerificationStatus) RawJSON() string { return r.JSON.raw }
+func (r *EmailVerificationStatus) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Always `email_verification`.
+type EmailVerificationStatusRecordType string
+
+const (
+	EmailVerificationStatusRecordTypeEmailVerification EmailVerificationStatusRecordType = "email_verification"
+)
+
+// `sent` after a code is emailed; `verified` after a successful confirm;
+// `unverified` when no verification is in progress.
+type EmailVerificationStatusStatus string
+
+const (
+	EmailVerificationStatusStatusSent       EmailVerificationStatusStatus = "sent"
+	EmailVerificationStatusStatusVerified   EmailVerificationStatusStatus = "verified"
+	EmailVerificationStatusStatusUnverified EmailVerificationStatusStatus = "unverified"
+)
+
+type EmailVerificationStatusWrapped struct {
+	// Verification state for a DIR's authorizer email.
+	Data EmailVerificationStatus `json:"data" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EmailVerificationStatusWrapped) RawJSON() string { return r.JSON.raw }
+func (r *EmailVerificationStatusWrapped) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

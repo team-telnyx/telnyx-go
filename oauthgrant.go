@@ -39,7 +39,7 @@ func NewOAuthGrantService(opts ...option.RequestOption) (r OAuthGrantService) {
 	return
 }
 
-// Retrieve a single OAuth grant by ID
+// Returns the details of a single OAuth grant on your account by its ID.
 func (r *OAuthGrantService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *OAuthGrantGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -74,7 +74,8 @@ func (r *OAuthGrantService) ListAutoPaging(ctx context.Context, query OAuthGrant
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Revoke an OAuth grant
+// Revokes the specified OAuth grant, withdrawing the access previously granted to
+// the client.
 func (r *OAuthGrantService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *OAuthGrantDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

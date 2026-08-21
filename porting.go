@@ -44,7 +44,8 @@ func NewPortingService(opts ...option.RequestOption) (r PortingService) {
 	return
 }
 
-// List available carriers in the UK.
+// Returns the list of UK carriers available for porting, for use when preparing
+// porting orders for UK numbers.
 func (r *PortingService) ListUkCarriers(ctx context.Context, opts ...option.RequestOption) (res *PortingListUkCarriersResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "porting/uk_carriers"

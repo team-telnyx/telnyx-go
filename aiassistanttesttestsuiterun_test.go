@@ -63,6 +63,7 @@ func TestAIAssistantTestTestSuiteRunTriggerWithOptionalParams(t *testing.T) {
 		"suite_name",
 		telnyx.AIAssistantTestTestSuiteRunTriggerParams{
 			DestinationVersionID: telnyx.String("123e4567-e89b-12d3-a456-426614174000"),
+			IdempotencyKey:       telnyx.String("8e03978e-40d5-43e8-bc93-6894a57f9326"),
 		},
 	)
 	if err != nil {

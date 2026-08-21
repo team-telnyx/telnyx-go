@@ -91,11 +91,12 @@ func TestSubNumberOrderListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.SubNumberOrders.List(context.TODO(), telnyx.SubNumberOrderListParams{
 		Filter: telnyx.SubNumberOrderListParamsFilter{
-			CountryCode:       telnyx.String("US"),
-			OrderRequestID:    telnyx.String("12ade33a-21c0-473b-b055-b3c836e1c293"),
-			PhoneNumberType:   telnyx.String("local"),
-			PhoneNumbersCount: telnyx.Int(1),
-			Status:            telnyx.String("status"),
+			CountryCode:         telnyx.String("US"),
+			IncludePhoneNumbers: telnyx.Bool(true),
+			OrderRequestID:      telnyx.String("12ade33a-21c0-473b-b055-b3c836e1c293"),
+			PhoneNumberType:     telnyx.String("local"),
+			PhoneNumbersCount:   telnyx.Int(1),
+			Status:              telnyx.String("status"),
 		},
 	})
 	if err != nil {

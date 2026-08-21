@@ -110,25 +110,35 @@ func (r *EnterpriseReputationRemediationService) ListAutoPaging(ctx context.Cont
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, enterpriseID, query, opts...))
 }
 
-type RemediationRequestWrapped struct {
-	// Full detail of a remediation request, returned on submit and GET by id.
-	Data RemediationRequestWrappedData `json:"data" api:"required"`
+// Per-category buckets of phone numbers, populated once results are available.
+// Empty lists are kept (not omitted) so consumers can iterate without
+// null-checking each key.
+type RemediationPerNumberResults struct {
+	Ineligible     []string `json:"ineligible"`
+	NotFlagged     []string `json:"not_flagged"`
+	Refused        []string `json:"refused"`
+	Remediated     []string `json:"remediated"`
+	RequiresReview []string `json:"requires_review"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		Ineligible     respjson.Field
+		NotFlagged     respjson.Field
+		Refused        respjson.Field
+		Remediated     respjson.Field
+		RequiresReview respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r RemediationRequestWrapped) RawJSON() string { return r.JSON.raw }
-func (r *RemediationRequestWrapped) UnmarshalJSON(data []byte) error {
+func (r RemediationPerNumberResults) RawJSON() string { return r.JSON.raw }
+func (r *RemediationPerNumberResults) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Full detail of a remediation request, returned on submit and GET by id.
-type RemediationRequestWrappedData struct {
+type RemediationRequest struct {
 	ID          string    `json:"id" api:"required" format:"uuid"`
 	CallPurpose string    `json:"call_purpose" api:"required"`
 	CreatedAt   time.Time `json:"created_at" api:"required" format:"date-time"`
@@ -148,10 +158,10 @@ type RemediationRequestWrappedData struct {
 	ContactEmail string            `json:"contact_email" api:"nullable" format:"email"`
 	// Per-category buckets. Populated once results are available. Null while the
 	// request is still pending.
-	Results          RemediationRequestWrappedDataResults `json:"results" api:"nullable"`
-	Tier1CompletedAt time.Time                            `json:"tier1_completed_at" api:"nullable" format:"date-time"`
-	Tier2CompletedAt time.Time                            `json:"tier2_completed_at" api:"nullable" format:"date-time"`
-	WebhookURL       string                               `json:"webhook_url" api:"nullable" format:"uri"`
+	Results          RemediationPerNumberResults `json:"results" api:"nullable"`
+	Tier1CompletedAt time.Time                   `json:"tier1_completed_at" api:"nullable" format:"date-time"`
+	Tier2CompletedAt time.Time                   `json:"tier2_completed_at" api:"nullable" format:"date-time"`
+	WebhookURL       string                      `json:"webhook_url" api:"nullable" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                     respjson.Field
@@ -173,34 +183,25 @@ type RemediationRequestWrappedData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r RemediationRequestWrappedData) RawJSON() string { return r.JSON.raw }
-func (r *RemediationRequestWrappedData) UnmarshalJSON(data []byte) error {
+func (r RemediationRequest) RawJSON() string { return r.JSON.raw }
+func (r *RemediationRequest) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Per-category buckets. Populated once results are available. Null while the
-// request is still pending.
-type RemediationRequestWrappedDataResults struct {
-	Ineligible     []string `json:"ineligible"`
-	NotFlagged     []string `json:"not_flagged"`
-	Refused        []string `json:"refused"`
-	Remediated     []string `json:"remediated"`
-	RequiresReview []string `json:"requires_review"`
+type RemediationRequestWrapped struct {
+	// Full detail of a remediation request, returned on submit and GET by id.
+	Data RemediationRequest `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Ineligible     respjson.Field
-		NotFlagged     respjson.Field
-		Refused        respjson.Field
-		Remediated     respjson.Field
-		RequiresReview respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r RemediationRequestWrappedDataResults) RawJSON() string { return r.JSON.raw }
-func (r *RemediationRequestWrappedDataResults) UnmarshalJSON(data []byte) error {
+func (r RemediationRequestWrapped) RawJSON() string { return r.JSON.raw }
+func (r *RemediationRequestWrapped) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

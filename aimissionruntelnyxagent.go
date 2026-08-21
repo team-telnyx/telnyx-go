@@ -36,7 +36,8 @@ func NewAIMissionRunTelnyxAgentService(opts ...option.RequestOption) (r AIMissio
 	return
 }
 
-// List all Telnyx agents linked to a run
+// Returns the Telnyx agents currently linked to the specified run. Linked agents
+// participate in executing the run's plan.
 func (r *AIMissionRunTelnyxAgentService) List(ctx context.Context, runID string, query AIMissionRunTelnyxAgentListParams, opts ...option.RequestOption) (res *AIMissionRunTelnyxAgentListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if query.MissionID == "" {
@@ -68,7 +69,8 @@ func (r *AIMissionRunTelnyxAgentService) Link(ctx context.Context, runID string,
 	return res, err
 }
 
-// Unlink a Telnyx agent from a run
+// Unlinks the specified Telnyx agent from the run so it no longer participates in
+// execution. The run itself and its history are unaffected.
 func (r *AIMissionRunTelnyxAgentService) Unlink(ctx context.Context, telnyxAgentID string, body AIMissionRunTelnyxAgentUnlinkParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)

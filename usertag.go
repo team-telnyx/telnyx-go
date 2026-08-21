@@ -37,7 +37,8 @@ func NewUserTagService(opts ...option.RequestOption) (r UserTagService) {
 	return
 }
 
-// List all user tags.
+// Returns the user tags defined on your account, with support for filtering. Tags
+// help organize resources such as phone numbers.
 func (r *UserTagService) List(ctx context.Context, query UserTagListParams, opts ...option.RequestOption) (res *UserTagListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "user_tags"

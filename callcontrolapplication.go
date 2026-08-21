@@ -41,7 +41,8 @@ func NewCallControlApplicationService(opts ...option.RequestOption) (r CallContr
 	return
 }
 
-// Create a call control application.
+// Creates a call control application, which defines the webhook endpoints and
+// settings used to control calls on associated connections.
 func (r *CallControlApplicationService) New(ctx context.Context, body CallControlApplicationNewParams, opts ...option.RequestOption) (res *CallControlApplicationNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "call_control_applications"
@@ -96,7 +97,8 @@ func (r *CallControlApplicationService) ListAutoPaging(ctx context.Context, quer
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Deletes a call control application.
+// Permanently deletes the specified call control application and its webhook
+// configuration.
 func (r *CallControlApplicationService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *CallControlApplicationDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

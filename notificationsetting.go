@@ -43,7 +43,8 @@ func NewNotificationSettingService(opts ...option.RequestOption) (r Notification
 	return
 }
 
-// Add a notification setting.
+// Adds a notification setting that enables delivery of a notification event type
+// to a notification profile.
 func (r *NotificationSettingService) New(ctx context.Context, body NotificationSettingNewParams, opts ...option.RequestOption) (res *NotificationSettingNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "notification_settings"
@@ -51,7 +52,7 @@ func (r *NotificationSettingService) New(ctx context.Context, body NotificationS
 	return res, err
 }
 
-// Get a notification setting.
+// Returns the details of a single notification setting by its identifier.
 func (r *NotificationSettingService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *NotificationSettingGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -63,7 +64,8 @@ func (r *NotificationSettingService) Get(ctx context.Context, id string, opts ..
 	return res, err
 }
 
-// List notification settings.
+// Returns a paginated list of your notification settings, which map notification
+// event types to profiles and channels.
 func (r *NotificationSettingService) List(ctx context.Context, query NotificationSettingListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[NotificationSetting], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -81,12 +83,14 @@ func (r *NotificationSettingService) List(ctx context.Context, query Notificatio
 	return res, nil
 }
 
-// List notification settings.
+// Returns a paginated list of your notification settings, which map notification
+// event types to profiles and channels.
 func (r *NotificationSettingService) ListAutoPaging(ctx context.Context, query NotificationSettingListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[NotificationSetting] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Delete a notification setting.
+// Deletes the specified notification setting, disabling that notification
+// delivery.
 func (r *NotificationSettingService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *NotificationSettingDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

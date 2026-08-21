@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
+	shimjson "github.com/team-telnyx/telnyx-go/v4/internal/encoding/json"
 	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v4/option"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
@@ -106,15 +107,27 @@ func (r *StorageBucketNewPresignedURLResponseContent) UnmarshalJSON(data []byte)
 
 type StorageBucketNewPresignedURLParams struct {
 	BucketName string `path:"bucketName" api:"required" json:"-"`
+	Body       StorageBucketNewPresignedURLParamsBody
+	paramObj
+}
+
+func (r StorageBucketNewPresignedURLParams) MarshalJSON() (data []byte, err error) {
+	return shimjson.Marshal(r.Body)
+}
+func (r *StorageBucketNewPresignedURLParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type StorageBucketNewPresignedURLParamsBody struct {
 	// The time to live of the token in seconds
 	Ttl param.Opt[int64] `json:"ttl,omitzero"`
 	paramObj
 }
 
-func (r StorageBucketNewPresignedURLParams) MarshalJSON() (data []byte, err error) {
-	type shadow StorageBucketNewPresignedURLParams
+func (r StorageBucketNewPresignedURLParamsBody) MarshalJSON() (data []byte, err error) {
+	type shadow StorageBucketNewPresignedURLParamsBody
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *StorageBucketNewPresignedURLParams) UnmarshalJSON(data []byte) error {
+func (r *StorageBucketNewPresignedURLParamsBody) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }

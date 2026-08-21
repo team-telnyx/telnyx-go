@@ -39,7 +39,9 @@ func NewAICollectionSourceService(opts ...option.RequestOption) (r AICollectionS
 	return
 }
 
-// Attaches a new source to a collection.
+// Attaches a new content source to the specified collection and returns the
+// created source. The source's content is ingested and embedded so it becomes
+// searchable within the collection.
 func (r *AICollectionSourceService) New(ctx context.Context, uuid string, body AICollectionSourceNewParams, opts ...option.RequestOption) (res *AICollectionSourceNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if uuid == "" {

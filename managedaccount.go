@@ -64,7 +64,8 @@ func (r *ManagedAccountService) Get(ctx context.Context, id string, opts ...opti
 	return res, err
 }
 
-// Update a single managed account.
+// Updates the specified managed account's attributes and returns the updated
+// account.
 func (r *ManagedAccountService) Update(ctx context.Context, id string, body ManagedAccountUpdateParams, opts ...option.RequestOption) (res *ManagedAccountUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

@@ -36,7 +36,8 @@ func NewOrganizationUserActionService(opts ...option.RequestOption) (r Organizat
 	return
 }
 
-// Deletes a user in your organization.
+// Removes the specified user from your organization and returns the result of the
+// removal.
 func (r *OrganizationUserActionService) Remove(ctx context.Context, id string, opts ...option.RequestOption) (res *OrganizationUserActionRemoveResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

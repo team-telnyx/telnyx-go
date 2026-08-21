@@ -44,7 +44,8 @@ func NewAIConversationInsightGroupService(opts ...option.RequestOption) (r AICon
 	return
 }
 
-// Get insight group by ID
+// Returns the details of a single insight template group, including the insight
+// templates assigned to it.
 func (r *AIConversationInsightGroupService) Get(ctx context.Context, groupID string, opts ...option.RequestOption) (res *InsightTemplateGroupDetail, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if groupID == "" {
@@ -56,7 +57,7 @@ func (r *AIConversationInsightGroupService) Get(ctx context.Context, groupID str
 	return res, err
 }
 
-// Update an insight template group
+// Updates the specified insight template group and returns the updated group.
 func (r *AIConversationInsightGroupService) Update(ctx context.Context, groupID string, body AIConversationInsightGroupUpdateParams, opts ...option.RequestOption) (res *InsightTemplateGroupDetail, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if groupID == "" {
@@ -68,7 +69,7 @@ func (r *AIConversationInsightGroupService) Update(ctx context.Context, groupID 
 	return res, err
 }
 
-// Delete insight group by ID
+// Permanently deletes the specified insight template group by its ID.
 func (r *AIConversationInsightGroupService) Delete(ctx context.Context, groupID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
@@ -81,15 +82,21 @@ func (r *AIConversationInsightGroupService) Delete(ctx context.Context, groupID 
 	return err
 }
 
-// Create a new insight group
-func (r *AIConversationInsightGroupService) InsightGroups(ctx context.Context, body AIConversationInsightGroupInsightGroupsParams, opts ...option.RequestOption) (res *InsightTemplateGroupDetail, err error) {
+// Creates a new insight template group for organizing related insight templates,
+// and returns the created group.
+func (r *AIConversationInsightGroupService) InsightGroups(ctx context.Context, params AIConversationInsightGroupInsightGroupsParams, opts ...option.RequestOption) (res *InsightTemplateGroupDetail, err error) {
+	if !param.IsOmitted(params.IdempotencyKey) {
+		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/conversations/insight-groups"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
 
-// Get all insight groups
+// Returns a paginated list of your insight template groups. Groups organize
+// related insight templates that are applied together when analyzing
+// conversations.
 func (r *AIConversationInsightGroupService) GetInsightGroups(ctx context.Context, query AIConversationInsightGroupGetInsightGroupsParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[InsightTemplateGroup], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -107,7 +114,9 @@ func (r *AIConversationInsightGroupService) GetInsightGroups(ctx context.Context
 	return res, nil
 }
 
-// Get all insight groups
+// Returns a paginated list of your insight template groups. Groups organize
+// related insight templates that are applied together when analyzing
+// conversations.
 func (r *AIConversationInsightGroupService) GetInsightGroupsAutoPaging(ctx context.Context, query AIConversationInsightGroupGetInsightGroupsParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[InsightTemplateGroup] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.GetInsightGroups(ctx, query, opts...))
 }
@@ -170,9 +179,10 @@ func (r *AIConversationInsightGroupUpdateParams) UnmarshalJSON(data []byte) erro
 }
 
 type AIConversationInsightGroupInsightGroupsParams struct {
-	Name        string            `json:"name" api:"required"`
-	Description param.Opt[string] `json:"description,omitzero"`
-	Webhook     param.Opt[string] `json:"webhook,omitzero"`
+	Name           string            `json:"name" api:"required"`
+	Description    param.Opt[string] `json:"description,omitzero"`
+	Webhook        param.Opt[string] `json:"webhook,omitzero"`
+	IdempotencyKey param.Opt[string] `header:"Idempotency-Key,omitzero" json:"-"`
 	paramObj
 }
 

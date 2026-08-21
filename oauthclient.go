@@ -39,7 +39,8 @@ func NewOAuthClientService(opts ...option.RequestOption) (r OAuthClientService) 
 	return
 }
 
-// Create a new OAuth client
+// Creates a new OAuth client on your account for authenticating third-party
+// integrations, and returns the created client.
 func (r *OAuthClientService) New(ctx context.Context, body OAuthClientNewParams, opts ...option.RequestOption) (res *OAuthClientNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "oauth_clients"
@@ -47,7 +48,7 @@ func (r *OAuthClientService) New(ctx context.Context, body OAuthClientNewParams,
 	return res, err
 }
 
-// Retrieve a single OAuth client by ID
+// Returns the details of a single OAuth client on your account by its ID.
 func (r *OAuthClientService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *OAuthClientGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -59,7 +60,8 @@ func (r *OAuthClientService) Get(ctx context.Context, id string, opts ...option.
 	return res, err
 }
 
-// Update an existing OAuth client
+// Updates the specified OAuth client's configuration and returns the updated
+// client.
 func (r *OAuthClientService) Update(ctx context.Context, id string, body OAuthClientUpdateParams, opts ...option.RequestOption) (res *OAuthClientUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -94,7 +96,7 @@ func (r *OAuthClientService) ListAutoPaging(ctx context.Context, query OAuthClie
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Delete an OAuth client
+// Permanently deletes the specified OAuth client from your account.
 func (r *OAuthClientService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)

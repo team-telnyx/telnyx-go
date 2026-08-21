@@ -42,7 +42,9 @@ func NewGlobalIPHealthCheckService(opts ...option.RequestOption) (r GlobalIPHeal
 	return
 }
 
-// Create a Global IP health check.
+// Creates a health check for a Global IP to monitor the health of its assignments.
+// Creation is asynchronous, so the request is accepted and the health check
+// becomes active once provisioning completes.
 func (r *GlobalIPHealthCheckService) New(ctx context.Context, body GlobalIPHealthCheckNewParams, opts ...option.RequestOption) (res *GlobalIPHealthCheckNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "global_ip_health_checks"
@@ -50,7 +52,8 @@ func (r *GlobalIPHealthCheckService) New(ctx context.Context, body GlobalIPHealt
 	return res, err
 }
 
-// Retrieve a Global IP health check.
+// Returns the details of a single Global IP health check, including its type and
+// configuration.
 func (r *GlobalIPHealthCheckService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *GlobalIPHealthCheckGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -62,7 +65,8 @@ func (r *GlobalIPHealthCheckService) Get(ctx context.Context, id string, opts ..
 	return res, err
 }
 
-// List all Global IP health checks.
+// Returns a paginated list of the Global IP health checks configured on your
+// account.
 func (r *GlobalIPHealthCheckService) List(ctx context.Context, query GlobalIPHealthCheckListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[GlobalIPHealthCheck], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -80,12 +84,14 @@ func (r *GlobalIPHealthCheckService) List(ctx context.Context, query GlobalIPHea
 	return res, nil
 }
 
-// List all Global IP health checks.
+// Returns a paginated list of the Global IP health checks configured on your
+// account.
 func (r *GlobalIPHealthCheckService) ListAutoPaging(ctx context.Context, query GlobalIPHealthCheckListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[GlobalIPHealthCheck] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Delete a Global IP health check.
+// Deletes the specified Global IP health check so it no longer monitors the Global
+// IP's assignments.
 func (r *GlobalIPHealthCheckService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *GlobalIPHealthCheckDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

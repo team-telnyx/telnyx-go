@@ -42,7 +42,8 @@ func NewLegacyReportingUsageReportNumberLookupService(opts ...option.RequestOpti
 	return
 }
 
-// Submit a new telco data usage report
+// Submits a new telco data (number lookup) usage report request. The report is
+// generated asynchronously; retrieve it by its identifier once ready.
 func (r *LegacyReportingUsageReportNumberLookupService) New(ctx context.Context, body LegacyReportingUsageReportNumberLookupNewParams, opts ...option.RequestOption) (res *LegacyReportingUsageReportNumberLookupNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "legacy/reporting/usage_reports/number_lookup"

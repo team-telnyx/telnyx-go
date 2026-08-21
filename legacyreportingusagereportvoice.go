@@ -49,7 +49,8 @@ func (r *LegacyReportingUsageReportVoiceService) New(ctx context.Context, body L
 	return res, err
 }
 
-// Fetch single cdr usage report by id.
+// Returns a single CDR (Call Detail Record) usage report by its identifier,
+// including its parameters and current status.
 func (r *LegacyReportingUsageReportVoiceService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *LegacyReportingUsageReportVoiceGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

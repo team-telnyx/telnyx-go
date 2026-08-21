@@ -51,7 +51,7 @@ func (r *MediaService) Get(ctx context.Context, mediaName string, opts ...option
 	return res, err
 }
 
-// Updates a stored media file.
+// Updates the specified stored media file and returns the updated resource.
 func (r *MediaService) Update(ctx context.Context, mediaName string, body MediaUpdateParams, opts ...option.RequestOption) (res *MediaUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if mediaName == "" {
@@ -63,7 +63,8 @@ func (r *MediaService) Update(ctx context.Context, mediaName string, body MediaU
 	return res, err
 }
 
-// Returns a list of stored media files.
+// Returns a list of the media files stored on your account, with support for
+// filtering.
 func (r *MediaService) List(ctx context.Context, query MediaListParams, opts ...option.RequestOption) (res *MediaListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "media"
@@ -71,7 +72,7 @@ func (r *MediaService) List(ctx context.Context, query MediaListParams, opts ...
 	return res, err
 }
 
-// Deletes a stored media file.
+// Permanently deletes the specified media file from storage.
 func (r *MediaService) Delete(ctx context.Context, mediaName string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
@@ -84,7 +85,7 @@ func (r *MediaService) Delete(ctx context.Context, mediaName string, opts ...opt
 	return err
 }
 
-// Downloads a stored media file.
+// Downloads the raw content of the specified stored media file.
 func (r *MediaService) Download(ctx context.Context, mediaName string, opts ...option.RequestOption) (res *http.Response, err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "application/octet-stream")}, opts...)

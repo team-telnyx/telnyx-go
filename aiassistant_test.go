@@ -31,7 +31,7 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 		Name:         "name",
 		ConversationFlow: telnyx.ConversationFlowReqParam{
 			Nodes: []telnyx.ConversationFlowReqNodesUnionParam{{
-				OfPrompt: &telnyx.ConversationFlowReqNodesPromptParam{
+				OfPrompt: &telnyx.FlowNodeReqParam{
 					ID:           "n_intake",
 					Instructions: "Greet the caller and ask what they're calling about.",
 					ExternalLlm: telnyx.ExternalLlmReqParam{
@@ -43,7 +43,7 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 						LlmAPIKeyRef:         telnyx.String("llm_api_key_ref"),
 						TokenRetrievalURL:    telnyx.String("token_retrieval_url"),
 					},
-					InstructionsMode: "replace",
+					InstructionsMode: telnyx.FlowNodeReqInstructionsModeReplace,
 					LlmAPIKeyRef:     telnyx.String("my-key-ref"),
 					Model:            telnyx.String("moonshotai/Kimi-K2.6"),
 					Name:             telnyx.String("Intake"),
@@ -52,7 +52,7 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 						Y: 80,
 					},
 					SharedToolIDs: []string{"tool-faq-kb"},
-					ToolsMode:     "replace",
+					ToolsMode:     telnyx.FlowNodeReqToolsModeReplace,
 					Transcription: telnyx.TranscriptionSettingsParam{
 						APIKeyRef: telnyx.String("api_key_ref"),
 						Language:  telnyx.String("language"),
@@ -73,7 +73,7 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 							SmartFormat:                  telnyx.Bool(true),
 						},
 					},
-					Type: "prompt",
+					Type: telnyx.FlowNodeReqTypePrompt,
 					VoiceSettings: telnyx.VoiceSettingsParam{
 						Voice:     "voice",
 						APIKeyRef: telnyx.String("api_key_ref"),
@@ -94,7 +94,7 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 					},
 				},
 			}, {
-				OfPrompt: &telnyx.ConversationFlowReqNodesPromptParam{
+				OfPrompt: &telnyx.FlowNodeReqParam{
 					ID:           "n_billing",
 					Instructions: "Focus on billing questions. Look up the caller's latest invoice with the billing tool before answering.",
 					ExternalLlm: telnyx.ExternalLlmReqParam{
@@ -106,7 +106,7 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 						LlmAPIKeyRef:         telnyx.String("llm_api_key_ref"),
 						TokenRetrievalURL:    telnyx.String("token_retrieval_url"),
 					},
-					InstructionsMode: "append",
+					InstructionsMode: telnyx.FlowNodeReqInstructionsModeAppend,
 					LlmAPIKeyRef:     telnyx.String("my-key-ref"),
 					Model:            telnyx.String("moonshotai/Kimi-K2.6"),
 					Name:             telnyx.String("Billing"),
@@ -115,7 +115,7 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 						Y: 80,
 					},
 					SharedToolIDs: []string{"tool-billing-lookup"},
-					ToolsMode:     "append",
+					ToolsMode:     telnyx.FlowNodeReqToolsModeAppend,
 					Transcription: telnyx.TranscriptionSettingsParam{
 						APIKeyRef: telnyx.String("api_key_ref"),
 						Language:  telnyx.String("language"),
@@ -136,7 +136,7 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 							SmartFormat:                  telnyx.Bool(true),
 						},
 					},
-					Type: "prompt",
+					Type: telnyx.FlowNodeReqTypePrompt,
 					VoiceSettings: telnyx.VoiceSettingsParam{
 						Voice:     "voice",
 						APIKeyRef: telnyx.String("api_key_ref"),
@@ -319,6 +319,17 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 						Name:  telnyx.String("name"),
 						Value: telnyx.String("value"),
 					}},
+					Messages: []telnyx.InferenceEmbeddingWebhookToolParamsWebhookMessagesUnion{{
+						OfWebhookToolRequestStartMessage: &telnyx.InferenceEmbeddingWebhookToolParamsWebhookMessagesWebhookToolRequestStartMessage{
+							Content:  "Let me look that up for you.",
+							TimingMs: telnyx.Int(100),
+						},
+					}, {
+						OfWebhookToolRequestResponseDelayedMessage: &telnyx.InferenceEmbeddingWebhookToolParamsWebhookMessagesWebhookToolRequestResponseDelayedMessage{
+							Content:  "Still working on that.",
+							TimingMs: 5000,
+						},
+					}},
 					Method: "GET",
 					PathParameters: telnyx.InferenceEmbeddingWebhookToolParamsWebhookPathParameters{
 						Properties: map[string]any{
@@ -396,6 +407,7 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 			Theme:                telnyx.WidgetSettingsThemeLight,
 			ViewHistoryURL:       telnyx.String("view_history_url"),
 		},
+		IdempotencyKey: telnyx.String("8e03978e-40d5-43e8-bc93-6894a57f9326"),
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -457,7 +469,7 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 		telnyx.AIAssistantUpdateParams{
 			ConversationFlow: telnyx.ConversationFlowReqParam{
 				Nodes: []telnyx.ConversationFlowReqNodesUnionParam{{
-					OfPrompt: &telnyx.ConversationFlowReqNodesPromptParam{
+					OfPrompt: &telnyx.FlowNodeReqParam{
 						ID:           "n_intake",
 						Instructions: "Greet the caller and ask what they're calling about.",
 						ExternalLlm: telnyx.ExternalLlmReqParam{
@@ -469,7 +481,7 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 							LlmAPIKeyRef:         telnyx.String("llm_api_key_ref"),
 							TokenRetrievalURL:    telnyx.String("token_retrieval_url"),
 						},
-						InstructionsMode: "replace",
+						InstructionsMode: telnyx.FlowNodeReqInstructionsModeReplace,
 						LlmAPIKeyRef:     telnyx.String("my-key-ref"),
 						Model:            telnyx.String("moonshotai/Kimi-K2.6"),
 						Name:             telnyx.String("Intake"),
@@ -478,7 +490,7 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 							Y: 80,
 						},
 						SharedToolIDs: []string{"tool-faq-kb"},
-						ToolsMode:     "replace",
+						ToolsMode:     telnyx.FlowNodeReqToolsModeReplace,
 						Transcription: telnyx.TranscriptionSettingsParam{
 							APIKeyRef: telnyx.String("api_key_ref"),
 							Language:  telnyx.String("language"),
@@ -499,7 +511,7 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 								SmartFormat:                  telnyx.Bool(true),
 							},
 						},
-						Type: "prompt",
+						Type: telnyx.FlowNodeReqTypePrompt,
 						VoiceSettings: telnyx.VoiceSettingsParam{
 							Voice:     "voice",
 							APIKeyRef: telnyx.String("api_key_ref"),
@@ -520,7 +532,7 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 						},
 					},
 				}, {
-					OfPrompt: &telnyx.ConversationFlowReqNodesPromptParam{
+					OfPrompt: &telnyx.FlowNodeReqParam{
 						ID:           "n_billing",
 						Instructions: "Focus on billing questions. Look up the caller's latest invoice with the billing tool before answering.",
 						ExternalLlm: telnyx.ExternalLlmReqParam{
@@ -532,7 +544,7 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 							LlmAPIKeyRef:         telnyx.String("llm_api_key_ref"),
 							TokenRetrievalURL:    telnyx.String("token_retrieval_url"),
 						},
-						InstructionsMode: "append",
+						InstructionsMode: telnyx.FlowNodeReqInstructionsModeAppend,
 						LlmAPIKeyRef:     telnyx.String("my-key-ref"),
 						Model:            telnyx.String("moonshotai/Kimi-K2.6"),
 						Name:             telnyx.String("Billing"),
@@ -541,7 +553,7 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 							Y: 80,
 						},
 						SharedToolIDs: []string{"tool-billing-lookup"},
-						ToolsMode:     "append",
+						ToolsMode:     telnyx.FlowNodeReqToolsModeAppend,
 						Transcription: telnyx.TranscriptionSettingsParam{
 							APIKeyRef: telnyx.String("api_key_ref"),
 							Language:  telnyx.String("language"),
@@ -562,7 +574,7 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 								SmartFormat:                  telnyx.Bool(true),
 							},
 						},
-						Type: "prompt",
+						Type: telnyx.FlowNodeReqTypePrompt,
 						VoiceSettings: telnyx.VoiceSettingsParam{
 							Voice:     "voice",
 							APIKeyRef: telnyx.String("api_key_ref"),
@@ -748,6 +760,17 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 							Name:  telnyx.String("name"),
 							Value: telnyx.String("value"),
 						}},
+						Messages: []telnyx.InferenceEmbeddingWebhookToolParamsWebhookMessagesUnion{{
+							OfWebhookToolRequestStartMessage: &telnyx.InferenceEmbeddingWebhookToolParamsWebhookMessagesWebhookToolRequestStartMessage{
+								Content:  "Let me look that up for you.",
+								TimingMs: telnyx.Int(100),
+							},
+						}, {
+							OfWebhookToolRequestResponseDelayedMessage: &telnyx.InferenceEmbeddingWebhookToolParamsWebhookMessagesWebhookToolRequestResponseDelayedMessage{
+								Content:  "Still working on that.",
+								TimingMs: 5000,
+							},
+						}},
 						Method: "GET",
 						PathParameters: telnyx.InferenceEmbeddingWebhookToolParamsWebhookPathParameters{
 							Properties: map[string]any{
@@ -915,7 +938,7 @@ func TestAIAssistantChatWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestAIAssistantClone(t *testing.T) {
+func TestAIAssistantCloneWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -928,7 +951,13 @@ func TestAIAssistantClone(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.AI.Assistants.Clone(context.TODO(), "assistant_id")
+	_, err := client.AI.Assistants.Clone(
+		context.TODO(),
+		"assistant_id",
+		telnyx.AIAssistantCloneParams{
+			IdempotencyKey: telnyx.String("8e03978e-40d5-43e8-bc93-6894a57f9326"),
+		},
+	)
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
@@ -975,9 +1004,10 @@ func TestAIAssistantImportsWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.AI.Assistants.Imports(context.TODO(), telnyx.AIAssistantImportsParams{
-		APIKeyRef: "string",
-		Provider:  telnyx.AIAssistantImportsParamsProviderElevenlabs,
-		ImportIDs: []string{"string"},
+		APIKeyRef:      "string",
+		Provider:       telnyx.AIAssistantImportsParamsProviderElevenlabs,
+		ImportIDs:      []string{"string"},
+		IdempotencyKey: telnyx.String("8e03978e-40d5-43e8-bc93-6894a57f9326"),
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -1014,6 +1044,7 @@ func TestAIAssistantSendSMSWithOptionalParams(t *testing.T) {
 			},
 			ShouldCreateConversation: telnyx.Bool(false),
 			Text:                     telnyx.String("Text"),
+			IdempotencyKey:           telnyx.String("8e03978e-40d5-43e8-bc93-6894a57f9326"),
 		},
 	)
 	if err != nil {

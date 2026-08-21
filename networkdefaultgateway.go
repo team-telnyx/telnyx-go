@@ -39,7 +39,8 @@ func NewNetworkDefaultGatewayService(opts ...option.RequestOption) (r NetworkDef
 	return
 }
 
-// Create Default Gateway.
+// Creates a default gateway on the specified network, directing the network's
+// outbound traffic through the chosen gateway.
 func (r *NetworkDefaultGatewayService) New(ctx context.Context, networkIdentifier string, body NetworkDefaultGatewayNewParams, opts ...option.RequestOption) (res *NetworkDefaultGatewayNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if networkIdentifier == "" {
@@ -51,7 +52,7 @@ func (r *NetworkDefaultGatewayService) New(ctx context.Context, networkIdentifie
 	return res, err
 }
 
-// Get Default Gateway status.
+// Returns the status of the default gateway configured on the specified network.
 func (r *NetworkDefaultGatewayService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *NetworkDefaultGatewayGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -63,7 +64,7 @@ func (r *NetworkDefaultGatewayService) Get(ctx context.Context, id string, opts 
 	return res, err
 }
 
-// Delete Default Gateway.
+// Removes the default gateway from the specified network.
 func (r *NetworkDefaultGatewayService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *NetworkDefaultGatewayDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

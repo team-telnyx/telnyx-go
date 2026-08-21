@@ -39,7 +39,8 @@ func NewBundlePricingBillingBundleService(opts ...option.RequestOption) (r Bundl
 	return
 }
 
-// Get a single bundle by ID.
+// Returns the details of a single billing bundle by its ID, so you can inspect its
+// contents before purchasing a user bundle.
 func (r *BundlePricingBillingBundleService) Get(ctx context.Context, bundleID string, query BundlePricingBillingBundleGetParams, opts ...option.RequestOption) (res *BundlePricingBillingBundleGetResponse, err error) {
 	if !param.IsOmitted(query.AuthorizationBearer) {
 		opts = append(opts, option.WithHeader("authorization_bearer", fmt.Sprintf("%v", query.AuthorizationBearer.Value)))
@@ -54,7 +55,8 @@ func (r *BundlePricingBillingBundleService) Get(ctx context.Context, bundleID st
 	return res, err
 }
 
-// Get all allowed bundles.
+// Returns a paginated list of the billing bundles available to your account, with
+// support for filtering.
 func (r *BundlePricingBillingBundleService) List(ctx context.Context, params BundlePricingBillingBundleListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[BillingBundleSummary], err error) {
 	var raw *http.Response
 	if !param.IsOmitted(params.AuthorizationBearer) {
@@ -75,7 +77,8 @@ func (r *BundlePricingBillingBundleService) List(ctx context.Context, params Bun
 	return res, nil
 }
 
-// Get all allowed bundles.
+// Returns a paginated list of the billing bundles available to your account, with
+// support for filtering.
 func (r *BundlePricingBillingBundleService) ListAutoPaging(ctx context.Context, params BundlePricingBillingBundleListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[BillingBundleSummary] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, params, opts...))
 }

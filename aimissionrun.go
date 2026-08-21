@@ -45,7 +45,8 @@ func NewAIMissionRunService(opts ...option.RequestOption) (r AIMissionRunService
 	return
 }
 
-// Start a new run for a mission
+// Starts a new run of the specified mission and returns the created run object.
+// Track its progress through the run detail, plan, and events endpoints.
 func (r *AIMissionRunService) New(ctx context.Context, missionID string, body AIMissionRunNewParams, opts ...option.RequestOption) (res *MissionRunResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if missionID == "" {
@@ -57,7 +58,8 @@ func (r *AIMissionRunService) New(ctx context.Context, missionID string, body AI
 	return res, err
 }
 
-// Get details of a specific run
+// Returns the full details of a single run, including its current status. Use this
+// to poll an in-flight run or inspect the outcome of a completed one.
 func (r *AIMissionRunService) Get(ctx context.Context, runID string, query AIMissionRunGetParams, opts ...option.RequestOption) (res *MissionRunResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if query.MissionID == "" {
@@ -73,7 +75,9 @@ func (r *AIMissionRunService) Get(ctx context.Context, runID string, query AIMis
 	return res, err
 }
 
-// Update run status and/or result
+// Updates a run's status and/or result and returns the updated run object.
+// Typically used by executing agents to report progress or record the final
+// outcome.
 func (r *AIMissionRunService) Update(ctx context.Context, runID string, params AIMissionRunUpdateParams, opts ...option.RequestOption) (res *MissionRunResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if params.MissionID == "" {
@@ -89,7 +93,8 @@ func (r *AIMissionRunService) Update(ctx context.Context, runID string, params A
 	return res, err
 }
 
-// List all runs for a specific mission
+// Returns a paginated list of runs for the specified mission, optionally filtered
+// by run status, so you can track the mission's execution history over time.
 func (r *AIMissionRunService) List(ctx context.Context, missionID string, query AIMissionRunListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[MissionRunData], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -111,12 +116,14 @@ func (r *AIMissionRunService) List(ctx context.Context, missionID string, query 
 	return res, nil
 }
 
-// List all runs for a specific mission
+// Returns a paginated list of runs for the specified mission, optionally filtered
+// by run status, so you can track the mission's execution history over time.
 func (r *AIMissionRunService) ListAutoPaging(ctx context.Context, missionID string, query AIMissionRunListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[MissionRunData] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, missionID, query, opts...))
 }
 
-// Cancel a running or paused run
+// Cancels a running or paused run and returns the updated run object. A cancelled
+// run stops executing; start a new run to execute the mission again.
 func (r *AIMissionRunService) CancelRun(ctx context.Context, runID string, body AIMissionRunCancelRunParams, opts ...option.RequestOption) (res *MissionRunResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if body.MissionID == "" {
@@ -132,7 +139,9 @@ func (r *AIMissionRunService) CancelRun(ctx context.Context, runID string, body 
 	return res, err
 }
 
-// List recent runs across all missions
+// Returns a paginated list of recent runs across every mission in your
+// organization, optionally filtered by run status. Useful for monitoring overall
+// mission activity without querying each mission individually.
 func (r *AIMissionRunService) ListRuns(ctx context.Context, query AIMissionRunListRunsParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[MissionRunData], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -150,12 +159,15 @@ func (r *AIMissionRunService) ListRuns(ctx context.Context, query AIMissionRunLi
 	return res, nil
 }
 
-// List recent runs across all missions
+// Returns a paginated list of recent runs across every mission in your
+// organization, optionally filtered by run status. Useful for monitoring overall
+// mission activity without querying each mission individually.
 func (r *AIMissionRunService) ListRunsAutoPaging(ctx context.Context, query AIMissionRunListRunsParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[MissionRunData] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.ListRuns(ctx, query, opts...))
 }
 
-// Pause a running run
+// Pauses a currently running run and returns the updated run object. Execution
+// halts until the run is resumed.
 func (r *AIMissionRunService) PauseRun(ctx context.Context, runID string, body AIMissionRunPauseRunParams, opts ...option.RequestOption) (res *MissionRunResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if body.MissionID == "" {
@@ -171,7 +183,8 @@ func (r *AIMissionRunService) PauseRun(ctx context.Context, runID string, body A
 	return res, err
 }
 
-// Resume a paused run
+// Resumes a previously paused run and returns the updated run object, letting
+// execution continue from where it was paused.
 func (r *AIMissionRunService) ResumeRun(ctx context.Context, runID string, body AIMissionRunResumeRunParams, opts ...option.RequestOption) (res *MissionRunResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if body.MissionID == "" {

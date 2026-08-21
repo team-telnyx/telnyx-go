@@ -49,10 +49,13 @@ func NewAIAssistantTestService(opts ...option.RequestOption) (r AIAssistantTestS
 
 // Creates a comprehensive test configuration for evaluating AI assistant
 // performance
-func (r *AIAssistantTestService) New(ctx context.Context, body AIAssistantTestNewParams, opts ...option.RequestOption) (res *AssistantTest, err error) {
+func (r *AIAssistantTestService) New(ctx context.Context, params AIAssistantTestNewParams, opts ...option.RequestOption) (res *AssistantTest, err error) {
+	if !param.IsOmitted(params.IdempotencyKey) {
+		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/assistants/tests"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
 
@@ -220,7 +223,8 @@ type AIAssistantTestNewParams struct {
 	MaxDurationSeconds param.Opt[int64] `json:"max_duration_seconds,omitzero"`
 	// Optional test suite name to group related tests together. Useful for organizing
 	// tests by feature, team, or release cycle.
-	TestSuite param.Opt[string] `json:"test_suite,omitzero"`
+	TestSuite      param.Opt[string] `json:"test_suite,omitzero"`
+	IdempotencyKey param.Opt[string] `header:"Idempotency-Key,omitzero" json:"-"`
 	// The communication channel through which the test will be conducted. Determines
 	// how the assistant will receive and respond to test messages.
 	//

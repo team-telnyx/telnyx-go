@@ -48,7 +48,8 @@ func (r *WirelessDetailRecordsReportService) New(ctx context.Context, body Wirel
 	return res, err
 }
 
-// Returns one specific WDR report
+// Returns a single Wireless Detail Record (WDR) report by its identifier,
+// including its parameters and current status.
 func (r *WirelessDetailRecordsReportService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *WirelessDetailRecordsReportGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -68,7 +69,7 @@ func (r *WirelessDetailRecordsReportService) List(ctx context.Context, query Wir
 	return res, err
 }
 
-// Deletes one specific WDR report.
+// Permanently deletes the specified Wireless Detail Record (WDR) report.
 func (r *WirelessDetailRecordsReportService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *WirelessDetailRecordsReportDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

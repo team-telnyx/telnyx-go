@@ -39,7 +39,8 @@ func NewMessagingOptoutService(opts ...option.RequestOption) (r MessagingOptoutS
 	return
 }
 
-// Retrieve a list of opt-out blocks.
+// Returns a paginated list of opt-out blocks created when message recipients opt
+// out. Supports filtering and optional redaction of recipient numbers.
 func (r *MessagingOptoutService) List(ctx context.Context, query MessagingOptoutListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[MessagingOptoutListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -57,7 +58,8 @@ func (r *MessagingOptoutService) List(ctx context.Context, query MessagingOptout
 	return res, nil
 }
 
-// Retrieve a list of opt-out blocks.
+// Returns a paginated list of opt-out blocks created when message recipients opt
+// out. Supports filtering and optional redaction of recipient numbers.
 func (r *MessagingOptoutService) ListAutoPaging(ctx context.Context, query MessagingOptoutListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[MessagingOptoutListResponse] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }

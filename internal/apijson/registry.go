@@ -20,6 +20,14 @@ type unionEntry struct {
 	variants         []UnionVariant
 }
 
+func Variant[T any](typeFilter gjson.Type) UnionVariant {
+	var zero T
+	return UnionVariant{
+		TypeFilter: typeFilter,
+		Type:       reflect.TypeOf(zero),
+	}
+}
+
 func Discriminator[T any](value any) UnionVariant {
 	var zero T
 	return UnionVariant{

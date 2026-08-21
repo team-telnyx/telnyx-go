@@ -15,6 +15,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
@@ -63,15 +64,30 @@ func (r *EmailInboxThreadService) Get(ctx context.Context, threadID string, para
 }
 
 // Lists thread summaries newest first using stable cursor pagination.
-func (r *EmailInboxThreadService) List(ctx context.Context, inboxID string, query EmailInboxThreadListParams, opts ...option.RequestOption) (res *InboundThreadListResponse, err error) {
+func (r *EmailInboxThreadService) List(ctx context.Context, inboxID string, query EmailInboxThreadListParams, opts ...option.RequestOption) (res *pagination.EmailBracketCursorPagination[InboundThread], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if inboxID == "" {
 		err = errors.New("missing required inbox_id parameter")
 		return nil, err
 	}
 	path := fmt.Sprintf("email_inboxes/%s/threads", inboxID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Lists thread summaries newest first using stable cursor pagination.
+func (r *EmailInboxThreadService) ListAutoPaging(ctx context.Context, inboxID string, query EmailInboxThreadListParams, opts ...option.RequestOption) *pagination.EmailBracketCursorPaginationAutoPager[InboundThread] {
+	return pagination.NewEmailBracketCursorPaginationAutoPager(r.List(ctx, inboxID, query, opts...))
 }
 
 type EmailPaginationMeta struct {

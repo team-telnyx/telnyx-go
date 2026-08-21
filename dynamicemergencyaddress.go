@@ -42,7 +42,8 @@ func NewDynamicEmergencyAddressService(opts ...option.RequestOption) (r DynamicE
 	return
 }
 
-// Creates a dynamic emergency address.
+// Creates a dynamic emergency address, the validated physical location used when
+// provisioning dynamic emergency endpoints.
 func (r *DynamicEmergencyAddressService) New(ctx context.Context, body DynamicEmergencyAddressNewParams, opts ...option.RequestOption) (res *DynamicEmergencyAddressNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "dynamic_emergency_addresses"

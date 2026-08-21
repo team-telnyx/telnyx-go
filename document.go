@@ -43,7 +43,8 @@ func NewDocumentService(opts ...option.RequestOption) (r DocumentService) {
 	return
 }
 
-// Retrieve a document.
+// Returns the details of a single document on your account, including its
+// metadata.
 func (r *DocumentService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *DocumentGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -55,7 +56,7 @@ func (r *DocumentService) Get(ctx context.Context, id string, opts ...option.Req
 	return res, err
 }
 
-// Update a document.
+// Updates the specified document's attributes and returns the updated document.
 func (r *DocumentService) Update(ctx context.Context, documentID string, body DocumentUpdateParams, opts ...option.RequestOption) (res *DocumentUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if documentID == "" {
@@ -104,7 +105,7 @@ func (r *DocumentService) Delete(ctx context.Context, id string, opts ...option.
 	return res, err
 }
 
-// Download a document.
+// Downloads the raw file content of the specified document as originally uploaded.
 func (r *DocumentService) Download(ctx context.Context, id string, opts ...option.RequestOption) (res *http.Response, err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "application/octet-stream")}, opts...)
@@ -159,8 +160,6 @@ type DocServiceDocument struct {
 	CustomerReference string `json:"customer_reference"`
 	// The filename of the document.
 	Filename string `json:"filename"`
-	// Identifies the type of the resource.
-	RecordType string `json:"record_type"`
 	// The document's SHA256 hash provided for optional verification purposes.
 	Sha256 string `json:"sha256"`
 	// Indicates the document's filesize
@@ -175,7 +174,6 @@ type DocServiceDocument struct {
 		ContentType       respjson.Field
 		CustomerReference respjson.Field
 		Filename          respjson.Field
-		RecordType        respjson.Field
 		Sha256            respjson.Field
 		Size              respjson.Field
 		Status            respjson.Field

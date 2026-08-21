@@ -109,7 +109,7 @@ func (r *UacConnectionService) ListAutoPaging(ctx context.Context, query UacConn
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Deletes an existing UAC connection.
+// Permanently deletes the specified UAC connection from your account.
 func (r *UacConnectionService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *UacConnectionDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

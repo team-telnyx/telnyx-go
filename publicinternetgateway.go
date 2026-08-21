@@ -41,7 +41,9 @@ func NewPublicInternetGatewayService(opts ...option.RequestOption) (r PublicInte
 	return
 }
 
-// Create a new Public Internet Gateway.
+// Requests creation of a public internet gateway on the specified network, giving
+// the network internet egress. Creation is asynchronous, so the request is
+// accepted and completes in the background.
 func (r *PublicInternetGatewayService) New(ctx context.Context, body PublicInternetGatewayNewParams, opts ...option.RequestOption) (res *PublicInternetGatewayNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "public_internet_gateways"
@@ -49,7 +51,7 @@ func (r *PublicInternetGatewayService) New(ctx context.Context, body PublicInter
 	return res, err
 }
 
-// Retrieve a Public Internet Gateway.
+// Returns the details of a single public internet gateway by its identifier.
 func (r *PublicInternetGatewayService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *PublicInternetGatewayGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -61,7 +63,8 @@ func (r *PublicInternetGatewayService) Get(ctx context.Context, id string, opts 
 	return res, err
 }
 
-// List all Public Internet Gateways.
+// Returns a paginated list of the public internet gateways on your account, with
+// support for filtering.
 func (r *PublicInternetGatewayService) List(ctx context.Context, query PublicInternetGatewayListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[PublicInternetGatewayRead], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -79,12 +82,14 @@ func (r *PublicInternetGatewayService) List(ctx context.Context, query PublicInt
 	return res, nil
 }
 
-// List all Public Internet Gateways.
+// Returns a paginated list of the public internet gateways on your account, with
+// support for filtering.
 func (r *PublicInternetGatewayService) ListAutoPaging(ctx context.Context, query PublicInternetGatewayListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[PublicInternetGatewayRead] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Delete a Public Internet Gateway.
+// Deletes the specified public internet gateway, removing internet egress through
+// it.
 func (r *PublicInternetGatewayService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *PublicInternetGatewayDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -109,20 +114,6 @@ func (r NetworkInterfaceParam) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *NetworkInterfaceParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type NetworkInterfaceRegionParam struct {
-	// The region the interface should be deployed to.
-	RegionCode param.Opt[string] `json:"region_code,omitzero"`
-	paramObj
-}
-
-func (r NetworkInterfaceRegionParam) MarshalJSON() (data []byte, err error) {
-	type shadow NetworkInterfaceRegionParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *NetworkInterfaceRegionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

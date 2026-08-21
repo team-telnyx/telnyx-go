@@ -49,7 +49,8 @@ func (r *CustomerServiceRecordService) New(ctx context.Context, body CustomerSer
 	return res, err
 }
 
-// Get a specific customer service record.
+// Returns the details of a single customer service record (CSR) request, including
+// its status and any retrieved record data.
 func (r *CustomerServiceRecordService) Get(ctx context.Context, customerServiceRecordID string, opts ...option.RequestOption) (res *CustomerServiceRecordGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if customerServiceRecordID == "" {
@@ -61,7 +62,8 @@ func (r *CustomerServiceRecordService) Get(ctx context.Context, customerServiceR
 	return res, err
 }
 
-// List customer service records.
+// Returns a paginated list of your customer service record (CSR) requests, with
+// support for filtering and sorting.
 func (r *CustomerServiceRecordService) List(ctx context.Context, query CustomerServiceRecordListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[CustomerServiceRecord], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -79,7 +81,8 @@ func (r *CustomerServiceRecordService) List(ctx context.Context, query CustomerS
 	return res, nil
 }
 
-// List customer service records.
+// Returns a paginated list of your customer service record (CSR) requests, with
+// support for filtering and sorting.
 func (r *CustomerServiceRecordService) ListAutoPaging(ctx context.Context, query CustomerServiceRecordListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[CustomerServiceRecord] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }

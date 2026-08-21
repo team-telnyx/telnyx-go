@@ -135,7 +135,7 @@ func TestOAuthGetAuthorizeWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.OAuth.GetAuthorize(context.TODO(), telnyx.OAuthGetAuthorizeParams{
+	_, err := client.OAuth.GetAuthorize(context.TODO(), telnyx.OAuthGetAuthorizeParams{
 		ClientID:            "client_id",
 		RedirectUri:         "https://example.com",
 		ResponseType:        telnyx.OAuthGetAuthorizeParamsResponseTypeCode,

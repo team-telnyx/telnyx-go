@@ -722,17 +722,6 @@ const ResembleVoiceSettingsSampleRateSampleRate44100 = shared.ResembleVoiceSetti
 const ResembleVoiceSettingsSampleRateSampleRate48000 = shared.ResembleVoiceSettingsSampleRateSampleRate48000
 
 // This is an alias to an internal type.
-type RimeVoiceSettingsParam = shared.RimeVoiceSettingsParam
-
-// Voice settings provider type
-//
-// This is an alias to an internal type.
-type RimeVoiceSettingsType = shared.RimeVoiceSettingsType
-
-// Equals "rime"
-const RimeVoiceSettingsTypeRime = shared.RimeVoiceSettingsTypeRime
-
-// This is an alias to an internal type.
 type RoomParticipant = shared.RoomParticipant
 
 // This is an alias to an internal type.

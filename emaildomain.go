@@ -717,9 +717,11 @@ type EmailDomainListParams struct {
 	// Partial match on domain name (case-insensitive)
 	FilterDomain param.Opt[string] `query:"filter[domain],omitzero" json:"-"`
 	// Filter by profile UUID
-	FilterProfileID        param.Opt[string] `query:"filter[profile_id],omitzero" format:"uuid" json:"-"`
-	FilterUsableForInbound param.Opt[bool]   `query:"filter[usable_for_inbound],omitzero" json:"-"`
-	FilterUsableForSending param.Opt[bool]   `query:"filter[usable_for_sending],omitzero" json:"-"`
+	FilterProfileID param.Opt[string] `query:"filter[profile_id],omitzero" format:"uuid" json:"-"`
+	// Filter domains by whether they can currently receive inbound email.
+	FilterUsableForInbound param.Opt[bool] `query:"filter[usable_for_inbound],omitzero" json:"-"`
+	// Filter domains by whether they can currently be used to send email.
+	FilterUsableForSending param.Opt[bool] `query:"filter[usable_for_sending],omitzero" json:"-"`
 	// Cursor for records after the provided value (cursor pagination)
 	PageAfter param.Opt[string] `query:"page[after],omitzero" json:"-"`
 	// Cursor for records before the provided value (cursor pagination)
@@ -728,8 +730,13 @@ type EmailDomainListParams struct {
 	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
 	// Number of records per page
 	PageSize param.Opt[int64] `query:"page[size],omitzero" json:"-"`
+	// Filter domains by verification status: pending, verifying, verified, failed,
+	// degraded, or suspended.
+	//
 	// Any of "pending", "verifying", "verified", "failed", "degraded", "suspended".
 	FilterStatus EmailDomainStatus `query:"filter[status],omitzero" json:"-"`
+	// Filter domains by type: custom, shared, or shared_inbound.
+	//
 	// Any of "custom", "shared", "shared_inbound".
 	FilterType EmailDomainType `query:"filter[type],omitzero" json:"-"`
 	// Field to sort by. Prefix with `-` for descending order.

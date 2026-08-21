@@ -55,7 +55,8 @@ func (r *Messaging10dlcBrandService) New(ctx context.Context, body Messaging10dl
 	return res, err
 }
 
-// Retrieve a brand by `brandId`.
+// Returns the details of a 10DLC brand by its brandId, including the count of
+// campaigns associated with the brand.
 func (r *Messaging10dlcBrandService) Get(ctx context.Context, brandID string, opts ...option.RequestOption) (res *Messaging10dlcBrandGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if brandID == "" {

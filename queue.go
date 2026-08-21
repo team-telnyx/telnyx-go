@@ -43,7 +43,8 @@ func NewQueueService(opts ...option.RequestOption) (r QueueService) {
 	return
 }
 
-// Create a new call queue.
+// Creates a new call queue with the provided configuration and returns the created
+// queue.
 func (r *QueueService) New(ctx context.Context, body QueueNewParams, opts ...option.RequestOption) (res *QueueNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "queues"
@@ -51,7 +52,8 @@ func (r *QueueService) New(ctx context.Context, body QueueNewParams, opts ...opt
 	return res, err
 }
 
-// Retrieve an existing call queue
+// Returns the details of an existing call queue, including its current
+// configuration.
 func (r *QueueService) Get(ctx context.Context, queueName string, opts ...option.RequestOption) (res *QueueGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if queueName == "" {
@@ -98,7 +100,7 @@ func (r *QueueService) ListAutoPaging(ctx context.Context, query QueueListParams
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Delete an existing call queue.
+// Permanently deletes the specified call queue from your account.
 func (r *QueueService) Delete(ctx context.Context, queueName string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)

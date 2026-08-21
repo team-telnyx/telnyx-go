@@ -20,6 +20,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 	"github.com/team-telnyx/telnyx-go/v4/shared"
 	"github.com/team-telnyx/telnyx-go/v4/shared/constant"
+	"github.com/tidwall/gjson"
 )
 
 // Configure AI assistant specifications
@@ -64,11 +65,15 @@ func NewAIAssistantService(opts ...option.RequestOption) (r AIAssistantService) 
 	return
 }
 
-// Create a new AI Assistant.
-func (r *AIAssistantService) New(ctx context.Context, body AIAssistantNewParams, opts ...option.RequestOption) (res *InferenceEmbedding, err error) {
+// Creates a new AI assistant from the provided configuration, including its model,
+// instructions, and attached tools, and returns the created assistant.
+func (r *AIAssistantService) New(ctx context.Context, params AIAssistantNewParams, opts ...option.RequestOption) (res *InferenceEmbedding, err error) {
+	if !param.IsOmitted(params.IdempotencyKey) {
+		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/assistants"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
 
@@ -84,7 +89,9 @@ func (r *AIAssistantService) Get(ctx context.Context, assistantID string, query 
 	return res, err
 }
 
-// Update an AI Assistant's attributes.
+// Updates the specified AI assistant's attributes and returns the updated
+// assistant. The request can also control how the change is promoted across
+// assistant versions.
 func (r *AIAssistantService) Update(ctx context.Context, assistantID string, body AIAssistantUpdateParams, opts ...option.RequestOption) (res *InferenceEmbedding, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if assistantID == "" {
@@ -136,7 +143,10 @@ func (r *AIAssistantService) Chat(ctx context.Context, assistantID string, body 
 }
 
 // Clone an existing assistant, excluding telephony and messaging settings.
-func (r *AIAssistantService) Clone(ctx context.Context, assistantID string, opts ...option.RequestOption) (res *InferenceEmbedding, err error) {
+func (r *AIAssistantService) Clone(ctx context.Context, assistantID string, body AIAssistantCloneParams, opts ...option.RequestOption) (res *InferenceEmbedding, err error) {
+	if !param.IsOmitted(body.IdempotencyKey) {
+		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", body.IdempotencyKey.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	if assistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
@@ -162,10 +172,13 @@ func (r *AIAssistantService) GetTexml(ctx context.Context, assistantID string, o
 // Import assistants from external providers. Any assistant that has already been
 // imported will be overwritten with its latest version from the importing
 // provider.
-func (r *AIAssistantService) Imports(ctx context.Context, body AIAssistantImportsParams, opts ...option.RequestOption) (res *AssistantsList, err error) {
+func (r *AIAssistantService) Imports(ctx context.Context, params AIAssistantImportsParams, opts ...option.RequestOption) (res *AssistantsList, err error) {
+	if !param.IsOmitted(params.IdempotencyKey) {
+		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/assistants/import"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
 
@@ -180,14 +193,17 @@ func (r *AIAssistantService) Imports(ctx context.Context, body AIAssistantImport
 //     generate the text to send.)
 //  4. Updates conversation metadata if provided
 //  5. Returns the conversation ID
-func (r *AIAssistantService) SendSMS(ctx context.Context, assistantID string, body AIAssistantSendSMSParams, opts ...option.RequestOption) (res *AIAssistantSendSMSResponse, err error) {
+func (r *AIAssistantService) SendSMS(ctx context.Context, assistantID string, params AIAssistantSendSMSParams, opts ...option.RequestOption) (res *AIAssistantSendSMSResponse, err error) {
+	if !param.IsOmitted(params.IdempotencyKey) {
+		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	if assistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
 		return nil, err
 	}
 	path := fmt.Sprintf("ai/assistants/%s/chat/sms", assistantID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
 
@@ -2659,6 +2675,145 @@ const (
 	AuthenticationMethodCertificate AuthenticationMethod = "certificate"
 )
 
+// Conversation flow as returned by the API.
+type ConversationFlow struct {
+	// All nodes in the flow.
+	Nodes []ConversationFlowNodesUnion `json:"nodes" api:"required"`
+	// ID of the node where the conversation begins.
+	StartNodeID string `json:"start_node_id" api:"required"`
+	// Directed transitions between nodes.
+	Edges []FlowEdge `json:"edges"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Nodes       respjson.Field
+		StartNodeID respjson.Field
+		Edges       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConversationFlow) RawJSON() string { return r.JSON.raw }
+func (r *ConversationFlow) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ConversationFlowNodesUnion contains all possible properties and values from
+// [FlowNode], [ToolNode], [SpeakNode].
+//
+// Use the [ConversationFlowNodesUnion.AsAny] method to switch on the variant.
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type ConversationFlowNodesUnion struct {
+	ID string `json:"id"`
+	// This field is from variant [FlowNode].
+	Instructions string `json:"instructions"`
+	// This field is from variant [FlowNode].
+	ExternalLlm ExternalLlm `json:"external_llm"`
+	// This field is from variant [FlowNode].
+	InstructionsMode FlowNodeInstructionsMode `json:"instructions_mode"`
+	// This field is from variant [FlowNode].
+	LlmAPIKeyRef string `json:"llm_api_key_ref"`
+	// This field is from variant [FlowNode].
+	Model string `json:"model"`
+	Name  string `json:"name"`
+	// This field is from variant [FlowNode].
+	Position NodePosition `json:"position"`
+	// This field is from variant [FlowNode].
+	SharedToolIDs []string `json:"shared_tool_ids"`
+	// This field is from variant [FlowNode].
+	Tools [][]AssistantToolUnion `json:"tools"`
+	// This field is from variant [FlowNode].
+	ToolsMode FlowNodeToolsMode `json:"tools_mode"`
+	// This field is from variant [FlowNode].
+	Transcription TranscriptionSettings `json:"transcription"`
+	// Any of "prompt", "tool", "speak".
+	Type string `json:"type"`
+	// This field is from variant [FlowNode].
+	VoiceSettings VoiceSettings `json:"voice_settings"`
+	// This field is from variant [ToolNode].
+	SharedToolID string `json:"shared_tool_id"`
+	// This field is from variant [ToolNode].
+	Tool []AssistantToolUnion `json:"tool"`
+	// This field is from variant [SpeakNode].
+	Message string `json:"message"`
+	JSON    struct {
+		ID               respjson.Field
+		Instructions     respjson.Field
+		ExternalLlm      respjson.Field
+		InstructionsMode respjson.Field
+		LlmAPIKeyRef     respjson.Field
+		Model            respjson.Field
+		Name             respjson.Field
+		Position         respjson.Field
+		SharedToolIDs    respjson.Field
+		Tools            respjson.Field
+		ToolsMode        respjson.Field
+		Transcription    respjson.Field
+		Type             respjson.Field
+		VoiceSettings    respjson.Field
+		SharedToolID     respjson.Field
+		Tool             respjson.Field
+		Message          respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// anyConversationFlowNode is implemented by each variant of
+// [ConversationFlowNodesUnion] to add type safety for the return type of
+// [ConversationFlowNodesUnion.AsAny]
+type anyConversationFlowNode interface {
+	implConversationFlowNodesUnion()
+}
+
+func (FlowNode) implConversationFlowNodesUnion()  {}
+func (ToolNode) implConversationFlowNodesUnion()  {}
+func (SpeakNode) implConversationFlowNodesUnion() {}
+
+// Use the following switch statement to find the correct variant
+//
+//	switch variant := ConversationFlowNodesUnion.AsAny().(type) {
+//	case telnyx.FlowNode:
+//	case telnyx.ToolNode:
+//	case telnyx.SpeakNode:
+//	default:
+//	  fmt.Errorf("no variant present")
+//	}
+func (u ConversationFlowNodesUnion) AsAny() anyConversationFlowNode {
+	switch u.Type {
+	case "prompt":
+		return u.AsPrompt()
+	case "tool":
+		return u.AsTool()
+	case "speak":
+		return u.AsSpeak()
+	}
+	return nil
+}
+
+func (u ConversationFlowNodesUnion) AsPrompt() (v FlowNode) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u ConversationFlowNodesUnion) AsTool() (v ToolNode) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u ConversationFlowNodesUnion) AsSpeak() (v SpeakNode) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u ConversationFlowNodesUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *ConversationFlowNodesUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // Conversation flow as supplied by API clients (create / update).
 //
 // A directed graph of `FlowNodeReq` connected by `FlowEdge`s. Validation enforces
@@ -2689,9 +2844,9 @@ func (r *ConversationFlowReqParam) UnmarshalJSON(data []byte) error {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type ConversationFlowReqNodesUnionParam struct {
-	OfPrompt *ConversationFlowReqNodesPromptParam `json:",omitzero,inline"`
-	OfTool   *ConversationFlowReqNodesToolParam   `json:",omitzero,inline"`
-	OfSpeak  *ConversationFlowReqNodesSpeakParam  `json:",omitzero,inline"`
+	OfPrompt *FlowNodeReqParam  `json:",omitzero,inline"`
+	OfTool   *ToolNodeReqParam  `json:",omitzero,inline"`
+	OfSpeak  *SpeakNodeReqParam `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -2732,7 +2887,7 @@ func (u ConversationFlowReqNodesUnionParam) GetExternalLlm() *ExternalLlmReqPara
 // Returns a pointer to the underlying variant's property, if present.
 func (u ConversationFlowReqNodesUnionParam) GetInstructionsMode() *string {
 	if vt := u.OfPrompt; vt != nil {
-		return &vt.InstructionsMode
+		return (*string)(&vt.InstructionsMode)
 	}
 	return nil
 }
@@ -2764,7 +2919,7 @@ func (u ConversationFlowReqNodesUnionParam) GetSharedToolIDs() []string {
 // Returns a pointer to the underlying variant's property, if present.
 func (u ConversationFlowReqNodesUnionParam) GetToolsMode() *string {
 	if vt := u.OfPrompt; vt != nil {
-		return &vt.ToolsMode
+		return (*string)(&vt.ToolsMode)
 	}
 	return nil
 }
@@ -2852,180 +3007,9 @@ func (u ConversationFlowReqNodesUnionParam) GetPosition() *NodePositionParam {
 func init() {
 	apijson.RegisterUnion[ConversationFlowReqNodesUnionParam](
 		"type",
-		apijson.Discriminator[ConversationFlowReqNodesPromptParam]("prompt"),
-		apijson.Discriminator[ConversationFlowReqNodesToolParam]("tool"),
-		apijson.Discriminator[ConversationFlowReqNodesSpeakParam]("speak"),
-	)
-}
-
-// One step in a conversation flow, as supplied by API clients.
-//
-// Each node carries the prompt, tool scope, and optional overrides for
-// model/voice/transcription. Unset overrides cascade from the assistant.
-//
-// The properties ID, Instructions are required.
-type ConversationFlowReqNodesPromptParam struct {
-	// Caller-supplied unique identifier for this node within the flow.
-	ID string `json:"id" api:"required"`
-	// Prompt that drives the LLM while this node is active. Required.
-	Instructions string `json:"instructions" api:"required"`
-	// Override for `Assistant.llm_api_key_ref` while this node is active. Part of the
-	// LLM bundle — see `model` for cascade semantics.
-	LlmAPIKeyRef param.Opt[string] `json:"llm_api_key_ref,omitzero"`
-	// Override for `Assistant.model` while this node is active. Part of the LLM bundle
-	// (`model` + `llm_api_key_ref` + `external_llm`): when any of the three is set on
-	// the node, all three are taken from the node and the assistant-level LLM identity
-	// is not consulted. When none of the three is set, the assistant's bundle cascades
-	// unchanged.
-	Model param.Opt[string] `json:"model,omitzero"`
-	// Optional human-readable label, displayed in authoring UIs.
-	Name param.Opt[string] `json:"name,omitzero"`
-	// Override for `Assistant.external_llm` while this node is active. Use this to
-	// route a node's turns to a different external LLM (different `model`, `base_url`,
-	// credentials). Part of the LLM bundle — see `model` for cascade semantics.
-	// Mutually exclusive with `model` on the node (a single LLM identity per node).
-	ExternalLlm ExternalLlmReqParam `json:"external_llm,omitzero"`
-	// How `instructions` combine with the assistant-level instructions. `replace`
-	// (default): the node's instructions are used alone. `append`: the node's
-	// instructions are concatenated after the assistant's instructions.
-	//
-	// Any of "replace", "append".
-	InstructionsMode string `json:"instructions_mode,omitzero"`
-	// Optional canvas coordinates used by authoring UIs to lay out the graph. Ignored
-	// by the runtime; round-trips so frontends can persist graph layout across
-	// reloads.
-	Position NodePositionParam `json:"position,omitzero"`
-	// IDs of shared (org-level) tools available at this node. Knowledge bases are
-	// attached the same way — via a shared retrieval tool. Tools not listed here are
-	// not callable while this node is active.
-	SharedToolIDs []string `json:"shared_tool_ids,omitzero"`
-	// How `shared_tool_ids` combine with the assistant-level tool set. `replace`
-	// (default): only the node's tools are callable. `append`: the node's tools are
-	// added to the assistant's tools. Ignored when `shared_tool_ids` is null.
-	//
-	// Any of "replace", "append".
-	ToolsMode string `json:"tools_mode,omitzero"`
-	// Per-node transcription override (model/language/region). Unset fields cascade
-	// from the assistant-level transcription.
-	Transcription TranscriptionSettingsParam `json:"transcription,omitzero"`
-	// Node kind discriminator. `prompt` (default) is an LLM-driven step; `tool` is a
-	// standalone tool execution (see `ToolNodeReq`).
-	//
-	// Any of "prompt".
-	Type string `json:"type,omitzero"`
-	// Per-node voice override. Only fields set here override the assistant-level voice
-	// settings; unset fields cascade.
-	VoiceSettings VoiceSettingsParam `json:"voice_settings,omitzero"`
-	paramObj
-}
-
-func (r ConversationFlowReqNodesPromptParam) MarshalJSON() (data []byte, err error) {
-	type shadow ConversationFlowReqNodesPromptParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ConversationFlowReqNodesPromptParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[ConversationFlowReqNodesPromptParam](
-		"instructions_mode", "replace", "append",
-	)
-	apijson.RegisterFieldValidator[ConversationFlowReqNodesPromptParam](
-		"tools_mode", "replace", "append",
-	)
-	apijson.RegisterFieldValidator[ConversationFlowReqNodesPromptParam](
-		"type", "prompt",
-	)
-}
-
-// A standalone tool step in a conversation flow, as supplied by clients.
-//
-// Unlike a prompt node, a tool node has no instructions or model — it isn't an LLM
-// turn. Reaching it deterministically runs one shared tool (arguments filled from
-// matching dynamic variables by name), then routes on the result via outgoing
-// `tool_result` edges.
-//
-// The properties ID, SharedToolID are required.
-type ConversationFlowReqNodesToolParam struct {
-	// Caller-supplied unique identifier for this node within the flow.
-	ID string `json:"id" api:"required"`
-	// ID of the single shared (org-level) tool this node executes. When the flow
-	// reaches this node the tool runs as a deliberate step (no LLM turn); its outgoing
-	// `tool_result` edges then route on the outcome. Arguments are filled from the
-	// conversation's dynamic variables by name — a dynamic variable whose name matches
-	// one of the tool's parameters supplies that argument. Cross-validated against the
-	// org's shared tools on write.
-	SharedToolID string `json:"shared_tool_id" api:"required"`
-	// Optional human-readable label, displayed in authoring UIs.
-	Name param.Opt[string] `json:"name,omitzero"`
-	// Optional canvas coordinates used by authoring UIs to lay out the graph. Ignored
-	// by the runtime; round-trips so frontends can persist graph layout across
-	// reloads.
-	Position NodePositionParam `json:"position,omitzero"`
-	// Node kind discriminator. Always `tool` for a tool node.
-	//
-	// Any of "tool".
-	Type string `json:"type,omitzero"`
-	paramObj
-}
-
-func (r ConversationFlowReqNodesToolParam) MarshalJSON() (data []byte, err error) {
-	type shadow ConversationFlowReqNodesToolParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ConversationFlowReqNodesToolParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[ConversationFlowReqNodesToolParam](
-		"type", "tool",
-	)
-}
-
-// A standalone scripted-message step in a flow, as supplied by clients.
-//
-// Unlike a prompt node, a speak node has no instructions or model — it isn't an
-// LLM turn. Reaching it delivers `message` to the user verbatim (with
-// `{{variable}}` interpolation), then routes via outgoing `llm` / `expression`
-// edges.
-//
-// The properties ID, Message are required.
-type ConversationFlowReqNodesSpeakParam struct {
-	// Caller-supplied unique identifier for this node within the flow.
-	ID string `json:"id" api:"required"`
-	// Message delivered to the user verbatim when the flow reaches this node. No LLM
-	// turn — the text is spoken/sent exactly as written. `{{variable}}` placeholders
-	// are interpolated from the conversation's dynamic variables; an unresolved
-	// placeholder renders as an empty string. After delivering, the flow routes via
-	// the node's outgoing `llm` / `expression` edges (commonly a single unconditional
-	// edge).
-	Message string `json:"message" api:"required"`
-	// Optional human-readable label, displayed in authoring UIs.
-	Name param.Opt[string] `json:"name,omitzero"`
-	// Optional canvas coordinates used by authoring UIs to lay out the graph. Ignored
-	// by the runtime; round-trips so frontends can persist graph layout across
-	// reloads.
-	Position NodePositionParam `json:"position,omitzero"`
-	// Node kind discriminator. Always `speak` for a speak node.
-	//
-	// Any of "speak".
-	Type string `json:"type,omitzero"`
-	paramObj
-}
-
-func (r ConversationFlowReqNodesSpeakParam) MarshalJSON() (data []byte, err error) {
-	type shadow ConversationFlowReqNodesSpeakParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ConversationFlowReqNodesSpeakParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[ConversationFlowReqNodesSpeakParam](
-		"type", "speak",
+		apijson.Discriminator[FlowNodeReqParam]("prompt"),
+		apijson.Discriminator[ToolNodeReqParam]("tool"),
+		apijson.Discriminator[SpeakNodeReqParam]("speak"),
 	)
 }
 
@@ -3205,7 +3189,7 @@ func (r FlowEdge) ToParam() FlowEdgeParam {
 
 // FlowEdgeConditionUnion contains all possible properties and values from
 // [FlowEdgeConditionLlm], [FlowEdgeConditionExpression],
-// [FlowEdgeConditionDefault].
+// [FlowEdgeConditionDefaultCondition].
 //
 // Use the [FlowEdgeConditionUnion.AsAny] method to switch on the variant.
 //
@@ -3231,16 +3215,16 @@ type anyFlowEdgeCondition interface {
 	implFlowEdgeConditionUnion()
 }
 
-func (FlowEdgeConditionLlm) implFlowEdgeConditionUnion()        {}
-func (FlowEdgeConditionExpression) implFlowEdgeConditionUnion() {}
-func (FlowEdgeConditionDefault) implFlowEdgeConditionUnion()    {}
+func (FlowEdgeConditionLlm) implFlowEdgeConditionUnion()              {}
+func (FlowEdgeConditionExpression) implFlowEdgeConditionUnion()       {}
+func (FlowEdgeConditionDefaultCondition) implFlowEdgeConditionUnion() {}
 
 // Use the following switch statement to find the correct variant
 //
 //	switch variant := FlowEdgeConditionUnion.AsAny().(type) {
 //	case telnyx.FlowEdgeConditionLlm:
 //	case telnyx.FlowEdgeConditionExpression:
-//	case telnyx.FlowEdgeConditionDefault:
+//	case telnyx.FlowEdgeConditionDefaultCondition:
 //	default:
 //	  fmt.Errorf("no variant present")
 //	}
@@ -3251,7 +3235,7 @@ func (u FlowEdgeConditionUnion) AsAny() anyFlowEdgeCondition {
 	case "expression":
 		return u.AsExpression()
 	case "default":
-		return u.AsDefault()
+		return u.AsDefaultCondition()
 	}
 	return nil
 }
@@ -3266,7 +3250,7 @@ func (u FlowEdgeConditionUnion) AsExpression() (v FlowEdgeConditionExpression) {
 	return
 }
 
-func (u FlowEdgeConditionUnion) AsDefault() (v FlowEdgeConditionDefault) {
+func (u FlowEdgeConditionUnion) AsDefaultCondition() (v FlowEdgeConditionDefaultCondition) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -3337,7 +3321,7 @@ func (r *FlowEdgeConditionExpression) UnmarshalJSON(data []byte) error {
 // A tool/speak node with any outgoing edge is required to carry exactly one
 // `default` edge so it never dead-ends; a tool/speak node with no outgoing edges
 // is a valid terminal step. Carries no parameters.
-type FlowEdgeConditionDefault struct {
+type FlowEdgeConditionDefaultCondition struct {
 	Type constant.Default `json:"type" default:"default"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -3348,8 +3332,8 @@ type FlowEdgeConditionDefault struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r FlowEdgeConditionDefault) RawJSON() string { return r.JSON.raw }
-func (r *FlowEdgeConditionDefault) UnmarshalJSON(data []byte) error {
+func (r FlowEdgeConditionDefaultCondition) RawJSON() string { return r.JSON.raw }
+func (r *FlowEdgeConditionDefaultCondition) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -3522,14 +3506,14 @@ func (r *FlowEdgeParam) UnmarshalJSON(data []byte) error {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type FlowEdgeConditionUnionParam struct {
-	OfLlm        *FlowEdgeConditionLlmParam        `json:",omitzero,inline"`
-	OfExpression *FlowEdgeConditionExpressionParam `json:",omitzero,inline"`
-	OfDefault    *FlowEdgeConditionDefaultParam    `json:",omitzero,inline"`
+	OfLlm              *FlowEdgeConditionLlmParam              `json:",omitzero,inline"`
+	OfExpression       *FlowEdgeConditionExpressionParam       `json:",omitzero,inline"`
+	OfDefaultCondition *FlowEdgeConditionDefaultConditionParam `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u FlowEdgeConditionUnionParam) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfLlm, u.OfExpression, u.OfDefault)
+	return param.MarshalUnion(u, u.OfLlm, u.OfExpression, u.OfDefaultCondition)
 }
 func (u *FlowEdgeConditionUnionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -3540,8 +3524,8 @@ func (u *FlowEdgeConditionUnionParam) asAny() any {
 		return u.OfLlm
 	} else if !param.IsOmitted(u.OfExpression) {
 		return u.OfExpression
-	} else if !param.IsOmitted(u.OfDefault) {
-		return u.OfDefault
+	} else if !param.IsOmitted(u.OfDefaultCondition) {
+		return u.OfDefaultCondition
 	}
 	return nil
 }
@@ -3568,7 +3552,7 @@ func (u FlowEdgeConditionUnionParam) GetType() *string {
 		return (*string)(&vt.Type)
 	} else if vt := u.OfExpression; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfDefault; vt != nil {
+	} else if vt := u.OfDefaultCondition; vt != nil {
 		return (*string)(&vt.Type)
 	}
 	return nil
@@ -3579,7 +3563,7 @@ func init() {
 		"type",
 		apijson.Discriminator[FlowEdgeConditionLlmParam]("llm"),
 		apijson.Discriminator[FlowEdgeConditionExpressionParam]("expression"),
-		apijson.Discriminator[FlowEdgeConditionDefaultParam]("default"),
+		apijson.Discriminator[FlowEdgeConditionDefaultConditionParam]("default"),
 	)
 }
 
@@ -3631,8 +3615,8 @@ func (r *FlowEdgeConditionExpressionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func NewFlowEdgeConditionDefaultParam() FlowEdgeConditionDefaultParam {
-	return FlowEdgeConditionDefaultParam{
+func NewFlowEdgeConditionDefaultConditionParam() FlowEdgeConditionDefaultConditionParam {
+	return FlowEdgeConditionDefaultConditionParam{
 		Type: "default",
 	}
 }
@@ -3648,17 +3632,17 @@ func NewFlowEdgeConditionDefaultParam() FlowEdgeConditionDefaultParam {
 // is a valid terminal step. Carries no parameters.
 //
 // This struct has a constant value, construct it with
-// [NewFlowEdgeConditionDefaultParam].
-type FlowEdgeConditionDefaultParam struct {
+// [NewFlowEdgeConditionDefaultConditionParam].
+type FlowEdgeConditionDefaultConditionParam struct {
 	Type constant.Default `json:"type" default:"default"`
 	paramObj
 }
 
-func (r FlowEdgeConditionDefaultParam) MarshalJSON() (data []byte, err error) {
-	type shadow FlowEdgeConditionDefaultParam
+func (r FlowEdgeConditionDefaultConditionParam) MarshalJSON() (data []byte, err error) {
+	type shadow FlowEdgeConditionDefaultConditionParam
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *FlowEdgeConditionDefaultParam) UnmarshalJSON(data []byte) error {
+func (r *FlowEdgeConditionDefaultConditionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -3803,6 +3787,212 @@ func init() {
 	)
 }
 
+// One step in a conversation flow, as returned by the API.
+type FlowNode struct {
+	// Caller-supplied unique identifier for this node within the flow.
+	ID string `json:"id" api:"required"`
+	// Prompt that drives the LLM while this node is active. Required.
+	Instructions string `json:"instructions" api:"required"`
+	// Override for `Assistant.external_llm` while this node is active. Use this to
+	// route a node's turns to a different external LLM (different `model`, `base_url`,
+	// credentials). Part of the LLM bundle — see `model` for cascade semantics.
+	// Mutually exclusive with `model` on the node (a single LLM identity per node).
+	ExternalLlm ExternalLlm `json:"external_llm"`
+	// How `instructions` combine with the assistant-level instructions. `replace`
+	// (default): the node's instructions are used alone. `append`: the node's
+	// instructions are concatenated after the assistant's instructions.
+	//
+	// Any of "replace", "append".
+	InstructionsMode FlowNodeInstructionsMode `json:"instructions_mode"`
+	// Override for `Assistant.llm_api_key_ref` while this node is active. Part of the
+	// LLM bundle — see `model` for cascade semantics.
+	LlmAPIKeyRef string `json:"llm_api_key_ref"`
+	// Override for `Assistant.model` while this node is active. Part of the LLM bundle
+	// (`model` + `llm_api_key_ref` + `external_llm`): when any of the three is set on
+	// the node, all three are taken from the node and the assistant-level LLM identity
+	// is not consulted. When none of the three is set, the assistant's bundle cascades
+	// unchanged.
+	Model string `json:"model"`
+	// Optional human-readable label, displayed in authoring UIs.
+	Name string `json:"name"`
+	// Optional canvas coordinates used by authoring UIs to lay out the graph. Ignored
+	// by the runtime; round-trips so frontends can persist graph layout across
+	// reloads.
+	Position NodePosition `json:"position"`
+	// IDs of shared (org-level) tools available at this node. Knowledge bases are
+	// attached the same way — via a shared retrieval tool. Tools not listed here are
+	// not callable while this node is active.
+	SharedToolIDs []string `json:"shared_tool_ids"`
+	// Full tool definitions for this node, resolved from `shared_tool_ids`
+	// server-side. Populated on responses so clients can render the flow without a
+	// follow-up fetch per shared tool. Ignored on input — set `shared_tool_ids` to
+	// configure a node's tools.
+	Tools [][]AssistantToolUnion `json:"tools"`
+	// How `shared_tool_ids` combine with the assistant-level tool set. `replace`
+	// (default): only the node's tools are callable. `append`: the node's tools are
+	// added to the assistant's tools. Ignored when `shared_tool_ids` is null.
+	//
+	// Any of "replace", "append".
+	ToolsMode FlowNodeToolsMode `json:"tools_mode"`
+	// Per-node transcription override (response form).
+	Transcription TranscriptionSettings `json:"transcription"`
+	// Node kind discriminator. `prompt` is an LLM-driven step.
+	//
+	// Any of "prompt".
+	Type FlowNodeType `json:"type"`
+	// Per-node voice override (response form).
+	VoiceSettings VoiceSettings `json:"voice_settings"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID               respjson.Field
+		Instructions     respjson.Field
+		ExternalLlm      respjson.Field
+		InstructionsMode respjson.Field
+		LlmAPIKeyRef     respjson.Field
+		Model            respjson.Field
+		Name             respjson.Field
+		Position         respjson.Field
+		SharedToolIDs    respjson.Field
+		Tools            respjson.Field
+		ToolsMode        respjson.Field
+		Transcription    respjson.Field
+		Type             respjson.Field
+		VoiceSettings    respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r FlowNode) RawJSON() string { return r.JSON.raw }
+func (r *FlowNode) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// How `instructions` combine with the assistant-level instructions. `replace`
+// (default): the node's instructions are used alone. `append`: the node's
+// instructions are concatenated after the assistant's instructions.
+type FlowNodeInstructionsMode string
+
+const (
+	FlowNodeInstructionsModeReplace FlowNodeInstructionsMode = "replace"
+	FlowNodeInstructionsModeAppend  FlowNodeInstructionsMode = "append"
+)
+
+// How `shared_tool_ids` combine with the assistant-level tool set. `replace`
+// (default): only the node's tools are callable. `append`: the node's tools are
+// added to the assistant's tools. Ignored when `shared_tool_ids` is null.
+type FlowNodeToolsMode string
+
+const (
+	FlowNodeToolsModeReplace FlowNodeToolsMode = "replace"
+	FlowNodeToolsModeAppend  FlowNodeToolsMode = "append"
+)
+
+// Node kind discriminator. `prompt` is an LLM-driven step.
+type FlowNodeType string
+
+const (
+	FlowNodeTypePrompt FlowNodeType = "prompt"
+)
+
+// One step in a conversation flow, as supplied by API clients.
+//
+// Each node carries the prompt, tool scope, and optional overrides for
+// model/voice/transcription. Unset overrides cascade from the assistant.
+//
+// The properties ID, Instructions are required.
+type FlowNodeReqParam struct {
+	// Caller-supplied unique identifier for this node within the flow.
+	ID string `json:"id" api:"required"`
+	// Prompt that drives the LLM while this node is active. Required.
+	Instructions string `json:"instructions" api:"required"`
+	// Override for `Assistant.llm_api_key_ref` while this node is active. Part of the
+	// LLM bundle — see `model` for cascade semantics.
+	LlmAPIKeyRef param.Opt[string] `json:"llm_api_key_ref,omitzero"`
+	// Override for `Assistant.model` while this node is active. Part of the LLM bundle
+	// (`model` + `llm_api_key_ref` + `external_llm`): when any of the three is set on
+	// the node, all three are taken from the node and the assistant-level LLM identity
+	// is not consulted. When none of the three is set, the assistant's bundle cascades
+	// unchanged.
+	Model param.Opt[string] `json:"model,omitzero"`
+	// Optional human-readable label, displayed in authoring UIs.
+	Name param.Opt[string] `json:"name,omitzero"`
+	// Override for `Assistant.external_llm` while this node is active. Use this to
+	// route a node's turns to a different external LLM (different `model`, `base_url`,
+	// credentials). Part of the LLM bundle — see `model` for cascade semantics.
+	// Mutually exclusive with `model` on the node (a single LLM identity per node).
+	ExternalLlm ExternalLlmReqParam `json:"external_llm,omitzero"`
+	// How `instructions` combine with the assistant-level instructions. `replace`
+	// (default): the node's instructions are used alone. `append`: the node's
+	// instructions are concatenated after the assistant's instructions.
+	//
+	// Any of "replace", "append".
+	InstructionsMode FlowNodeReqInstructionsMode `json:"instructions_mode,omitzero"`
+	// Optional canvas coordinates used by authoring UIs to lay out the graph. Ignored
+	// by the runtime; round-trips so frontends can persist graph layout across
+	// reloads.
+	Position NodePositionParam `json:"position,omitzero"`
+	// IDs of shared (org-level) tools available at this node. Knowledge bases are
+	// attached the same way — via a shared retrieval tool. Tools not listed here are
+	// not callable while this node is active.
+	SharedToolIDs []string `json:"shared_tool_ids,omitzero"`
+	// How `shared_tool_ids` combine with the assistant-level tool set. `replace`
+	// (default): only the node's tools are callable. `append`: the node's tools are
+	// added to the assistant's tools. Ignored when `shared_tool_ids` is null.
+	//
+	// Any of "replace", "append".
+	ToolsMode FlowNodeReqToolsMode `json:"tools_mode,omitzero"`
+	// Per-node transcription override (model/language/region). Unset fields cascade
+	// from the assistant-level transcription.
+	Transcription TranscriptionSettingsParam `json:"transcription,omitzero"`
+	// Node kind discriminator. `prompt` (default) is an LLM-driven step; `tool` is a
+	// standalone tool execution (see `ToolNodeReq`).
+	//
+	// Any of "prompt".
+	Type FlowNodeReqType `json:"type,omitzero"`
+	// Per-node voice override. Only fields set here override the assistant-level voice
+	// settings; unset fields cascade.
+	VoiceSettings VoiceSettingsParam `json:"voice_settings,omitzero"`
+	paramObj
+}
+
+func (r FlowNodeReqParam) MarshalJSON() (data []byte, err error) {
+	type shadow FlowNodeReqParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *FlowNodeReqParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// How `instructions` combine with the assistant-level instructions. `replace`
+// (default): the node's instructions are used alone. `append`: the node's
+// instructions are concatenated after the assistant's instructions.
+type FlowNodeReqInstructionsMode string
+
+const (
+	FlowNodeReqInstructionsModeReplace FlowNodeReqInstructionsMode = "replace"
+	FlowNodeReqInstructionsModeAppend  FlowNodeReqInstructionsMode = "append"
+)
+
+// How `shared_tool_ids` combine with the assistant-level tool set. `replace`
+// (default): only the node's tools are callable. `append`: the node's tools are
+// added to the assistant's tools. Ignored when `shared_tool_ids` is null.
+type FlowNodeReqToolsMode string
+
+const (
+	FlowNodeReqToolsModeReplace FlowNodeReqToolsMode = "replace"
+	FlowNodeReqToolsModeAppend  FlowNodeReqToolsMode = "append"
+)
+
+// Node kind discriminator. `prompt` (default) is an LLM-driven step; `tool` is a
+// standalone tool execution (see `ToolNodeReq`).
+type FlowNodeReqType string
+
+const (
+	FlowNodeReqTypePrompt FlowNodeReqType = "prompt"
+)
+
 type HangupTool struct {
 	Hangup HangupToolParamsResp `json:"hangup" api:"required"`
 	// Any of "hangup".
@@ -3938,8 +4128,8 @@ type InferenceEmbedding struct {
 	Model string `json:"model" api:"required"`
 	Name  string `json:"name" api:"required"`
 	// Conversation flow as returned by the API.
-	ConversationFlow InferenceEmbeddingConversationFlow `json:"conversation_flow"`
-	Description      string                             `json:"description"`
+	ConversationFlow ConversationFlow `json:"conversation_flow"`
+	Description      string           `json:"description"`
 	// Map of dynamic variables and their values
 	DynamicVariables map[string]any `json:"dynamic_variables"`
 	// Timeout in milliseconds for the dynamic variables webhook. Must be between 1 and
@@ -4065,316 +4255,6 @@ type InferenceEmbedding struct {
 // Returns the unmodified JSON received from the API
 func (r InferenceEmbedding) RawJSON() string { return r.JSON.raw }
 func (r *InferenceEmbedding) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Conversation flow as returned by the API.
-type InferenceEmbeddingConversationFlow struct {
-	// All nodes in the flow.
-	Nodes []InferenceEmbeddingConversationFlowNodesUnion `json:"nodes" api:"required"`
-	// ID of the node where the conversation begins.
-	StartNodeID string `json:"start_node_id" api:"required"`
-	// Directed transitions between nodes.
-	Edges []FlowEdge `json:"edges"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Nodes       respjson.Field
-		StartNodeID respjson.Field
-		Edges       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r InferenceEmbeddingConversationFlow) RawJSON() string { return r.JSON.raw }
-func (r *InferenceEmbeddingConversationFlow) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// InferenceEmbeddingConversationFlowNodesUnion contains all possible properties
-// and values from [InferenceEmbeddingConversationFlowNodesPrompt],
-// [InferenceEmbeddingConversationFlowNodesTool],
-// [InferenceEmbeddingConversationFlowNodesSpeak].
-//
-// Use the [InferenceEmbeddingConversationFlowNodesUnion.AsAny] method to switch on
-// the variant.
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-type InferenceEmbeddingConversationFlowNodesUnion struct {
-	ID string `json:"id"`
-	// This field is from variant [InferenceEmbeddingConversationFlowNodesPrompt].
-	Instructions string `json:"instructions"`
-	// This field is from variant [InferenceEmbeddingConversationFlowNodesPrompt].
-	ExternalLlm ExternalLlm `json:"external_llm"`
-	// This field is from variant [InferenceEmbeddingConversationFlowNodesPrompt].
-	InstructionsMode string `json:"instructions_mode"`
-	// This field is from variant [InferenceEmbeddingConversationFlowNodesPrompt].
-	LlmAPIKeyRef string `json:"llm_api_key_ref"`
-	// This field is from variant [InferenceEmbeddingConversationFlowNodesPrompt].
-	Model string `json:"model"`
-	Name  string `json:"name"`
-	// This field is from variant [InferenceEmbeddingConversationFlowNodesPrompt].
-	Position NodePosition `json:"position"`
-	// This field is from variant [InferenceEmbeddingConversationFlowNodesPrompt].
-	SharedToolIDs []string `json:"shared_tool_ids"`
-	// This field is from variant [InferenceEmbeddingConversationFlowNodesPrompt].
-	Tools [][]AssistantToolUnion `json:"tools"`
-	// This field is from variant [InferenceEmbeddingConversationFlowNodesPrompt].
-	ToolsMode string `json:"tools_mode"`
-	// This field is from variant [InferenceEmbeddingConversationFlowNodesPrompt].
-	Transcription TranscriptionSettings `json:"transcription"`
-	// Any of "prompt", "tool", "speak".
-	Type string `json:"type"`
-	// This field is from variant [InferenceEmbeddingConversationFlowNodesPrompt].
-	VoiceSettings VoiceSettings `json:"voice_settings"`
-	// This field is from variant [InferenceEmbeddingConversationFlowNodesTool].
-	SharedToolID string `json:"shared_tool_id"`
-	// This field is from variant [InferenceEmbeddingConversationFlowNodesTool].
-	Tool []AssistantToolUnion `json:"tool"`
-	// This field is from variant [InferenceEmbeddingConversationFlowNodesSpeak].
-	Message string `json:"message"`
-	JSON    struct {
-		ID               respjson.Field
-		Instructions     respjson.Field
-		ExternalLlm      respjson.Field
-		InstructionsMode respjson.Field
-		LlmAPIKeyRef     respjson.Field
-		Model            respjson.Field
-		Name             respjson.Field
-		Position         respjson.Field
-		SharedToolIDs    respjson.Field
-		Tools            respjson.Field
-		ToolsMode        respjson.Field
-		Transcription    respjson.Field
-		Type             respjson.Field
-		VoiceSettings    respjson.Field
-		SharedToolID     respjson.Field
-		Tool             respjson.Field
-		Message          respjson.Field
-		raw              string
-	} `json:"-"`
-}
-
-// anyInferenceEmbeddingConversationFlowNode is implemented by each variant of
-// [InferenceEmbeddingConversationFlowNodesUnion] to add type safety for the return
-// type of [InferenceEmbeddingConversationFlowNodesUnion.AsAny]
-type anyInferenceEmbeddingConversationFlowNode interface {
-	implInferenceEmbeddingConversationFlowNodesUnion()
-}
-
-func (InferenceEmbeddingConversationFlowNodesPrompt) implInferenceEmbeddingConversationFlowNodesUnion() {
-}
-func (InferenceEmbeddingConversationFlowNodesTool) implInferenceEmbeddingConversationFlowNodesUnion() {
-}
-func (InferenceEmbeddingConversationFlowNodesSpeak) implInferenceEmbeddingConversationFlowNodesUnion() {
-}
-
-// Use the following switch statement to find the correct variant
-//
-//	switch variant := InferenceEmbeddingConversationFlowNodesUnion.AsAny().(type) {
-//	case telnyx.InferenceEmbeddingConversationFlowNodesPrompt:
-//	case telnyx.InferenceEmbeddingConversationFlowNodesTool:
-//	case telnyx.InferenceEmbeddingConversationFlowNodesSpeak:
-//	default:
-//	  fmt.Errorf("no variant present")
-//	}
-func (u InferenceEmbeddingConversationFlowNodesUnion) AsAny() anyInferenceEmbeddingConversationFlowNode {
-	switch u.Type {
-	case "prompt":
-		return u.AsPrompt()
-	case "tool":
-		return u.AsTool()
-	case "speak":
-		return u.AsSpeak()
-	}
-	return nil
-}
-
-func (u InferenceEmbeddingConversationFlowNodesUnion) AsPrompt() (v InferenceEmbeddingConversationFlowNodesPrompt) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u InferenceEmbeddingConversationFlowNodesUnion) AsTool() (v InferenceEmbeddingConversationFlowNodesTool) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u InferenceEmbeddingConversationFlowNodesUnion) AsSpeak() (v InferenceEmbeddingConversationFlowNodesSpeak) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u InferenceEmbeddingConversationFlowNodesUnion) RawJSON() string { return u.JSON.raw }
-
-func (r *InferenceEmbeddingConversationFlowNodesUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// One step in a conversation flow, as returned by the API.
-type InferenceEmbeddingConversationFlowNodesPrompt struct {
-	// Caller-supplied unique identifier for this node within the flow.
-	ID string `json:"id" api:"required"`
-	// Prompt that drives the LLM while this node is active. Required.
-	Instructions string `json:"instructions" api:"required"`
-	// Override for `Assistant.external_llm` while this node is active. Use this to
-	// route a node's turns to a different external LLM (different `model`, `base_url`,
-	// credentials). Part of the LLM bundle — see `model` for cascade semantics.
-	// Mutually exclusive with `model` on the node (a single LLM identity per node).
-	ExternalLlm ExternalLlm `json:"external_llm"`
-	// How `instructions` combine with the assistant-level instructions. `replace`
-	// (default): the node's instructions are used alone. `append`: the node's
-	// instructions are concatenated after the assistant's instructions.
-	//
-	// Any of "replace", "append".
-	InstructionsMode string `json:"instructions_mode"`
-	// Override for `Assistant.llm_api_key_ref` while this node is active. Part of the
-	// LLM bundle — see `model` for cascade semantics.
-	LlmAPIKeyRef string `json:"llm_api_key_ref"`
-	// Override for `Assistant.model` while this node is active. Part of the LLM bundle
-	// (`model` + `llm_api_key_ref` + `external_llm`): when any of the three is set on
-	// the node, all three are taken from the node and the assistant-level LLM identity
-	// is not consulted. When none of the three is set, the assistant's bundle cascades
-	// unchanged.
-	Model string `json:"model"`
-	// Optional human-readable label, displayed in authoring UIs.
-	Name string `json:"name"`
-	// Optional canvas coordinates used by authoring UIs to lay out the graph. Ignored
-	// by the runtime; round-trips so frontends can persist graph layout across
-	// reloads.
-	Position NodePosition `json:"position"`
-	// IDs of shared (org-level) tools available at this node. Knowledge bases are
-	// attached the same way — via a shared retrieval tool. Tools not listed here are
-	// not callable while this node is active.
-	SharedToolIDs []string `json:"shared_tool_ids"`
-	// Full tool definitions for this node, resolved from `shared_tool_ids`
-	// server-side. Populated on responses so clients can render the flow without a
-	// follow-up fetch per shared tool. Ignored on input — set `shared_tool_ids` to
-	// configure a node's tools.
-	Tools [][]AssistantToolUnion `json:"tools"`
-	// How `shared_tool_ids` combine with the assistant-level tool set. `replace`
-	// (default): only the node's tools are callable. `append`: the node's tools are
-	// added to the assistant's tools. Ignored when `shared_tool_ids` is null.
-	//
-	// Any of "replace", "append".
-	ToolsMode string `json:"tools_mode"`
-	// Per-node transcription override (response form).
-	Transcription TranscriptionSettings `json:"transcription"`
-	// Node kind discriminator. `prompt` is an LLM-driven step.
-	//
-	// Any of "prompt".
-	Type string `json:"type"`
-	// Per-node voice override (response form).
-	VoiceSettings VoiceSettings `json:"voice_settings"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID               respjson.Field
-		Instructions     respjson.Field
-		ExternalLlm      respjson.Field
-		InstructionsMode respjson.Field
-		LlmAPIKeyRef     respjson.Field
-		Model            respjson.Field
-		Name             respjson.Field
-		Position         respjson.Field
-		SharedToolIDs    respjson.Field
-		Tools            respjson.Field
-		ToolsMode        respjson.Field
-		Transcription    respjson.Field
-		Type             respjson.Field
-		VoiceSettings    respjson.Field
-		ExtraFields      map[string]respjson.Field
-		raw              string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r InferenceEmbeddingConversationFlowNodesPrompt) RawJSON() string { return r.JSON.raw }
-func (r *InferenceEmbeddingConversationFlowNodesPrompt) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// A standalone tool step in a conversation flow, as returned by the API.
-type InferenceEmbeddingConversationFlowNodesTool struct {
-	// Caller-supplied unique identifier for this node within the flow.
-	ID string `json:"id" api:"required"`
-	// ID of the single shared (org-level) tool this node executes. When the flow
-	// reaches this node the tool runs as a deliberate step (no LLM turn); its outgoing
-	// `tool_result` edges then route on the outcome. Arguments are filled from the
-	// conversation's dynamic variables by name — a dynamic variable whose name matches
-	// one of the tool's parameters supplies that argument. Cross-validated against the
-	// org's shared tools on write.
-	SharedToolID string `json:"shared_tool_id" api:"required"`
-	// Optional human-readable label, displayed in authoring UIs.
-	Name string `json:"name"`
-	// Optional canvas coordinates used by authoring UIs to lay out the graph. Ignored
-	// by the runtime; round-trips so frontends can persist graph layout across
-	// reloads.
-	Position NodePosition `json:"position"`
-	// Full tool definition resolved from `shared_tool_id` server-side. Populated on
-	// responses so clients can render the node without a follow-up fetch. Ignored on
-	// input — set `shared_tool_id`.
-	Tool []AssistantToolUnion `json:"tool"`
-	// Node kind discriminator. Always `tool` for a tool node.
-	//
-	// Any of "tool".
-	Type string `json:"type"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID           respjson.Field
-		SharedToolID respjson.Field
-		Name         respjson.Field
-		Position     respjson.Field
-		Tool         respjson.Field
-		Type         respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r InferenceEmbeddingConversationFlowNodesTool) RawJSON() string { return r.JSON.raw }
-func (r *InferenceEmbeddingConversationFlowNodesTool) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// A standalone scripted-message step in a flow, as returned by the API.
-type InferenceEmbeddingConversationFlowNodesSpeak struct {
-	// Caller-supplied unique identifier for this node within the flow.
-	ID string `json:"id" api:"required"`
-	// Message delivered to the user verbatim when the flow reaches this node. No LLM
-	// turn — the text is spoken/sent exactly as written. `{{variable}}` placeholders
-	// are interpolated from the conversation's dynamic variables; an unresolved
-	// placeholder renders as an empty string. After delivering, the flow routes via
-	// the node's outgoing `llm` / `expression` edges (commonly a single unconditional
-	// edge).
-	Message string `json:"message" api:"required"`
-	// Optional human-readable label, displayed in authoring UIs.
-	Name string `json:"name"`
-	// Optional canvas coordinates used by authoring UIs to lay out the graph. Ignored
-	// by the runtime; round-trips so frontends can persist graph layout across
-	// reloads.
-	Position NodePosition `json:"position"`
-	// Node kind discriminator. Always `speak` for a speak node.
-	//
-	// Any of "speak".
-	Type string `json:"type"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		Message     respjson.Field
-		Name        respjson.Field
-		Position    respjson.Field
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r InferenceEmbeddingConversationFlowNodesSpeak) RawJSON() string { return r.JSON.raw }
-func (r *InferenceEmbeddingConversationFlowNodesSpeak) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -4506,6 +4386,12 @@ type InferenceEmbeddingWebhookToolParamsWebhookResp struct {
 	BodyParameters InferenceEmbeddingWebhookToolParamsWebhookBodyParametersResp `json:"body_parameters"`
 	// The headers to be sent to the external tool.
 	Headers []InferenceEmbeddingWebhookToolParamsWebhookHeaderResp `json:"headers"`
+	// Filler messages spoken while a synchronous webhook request is in progress.
+	// `request_start` messages are spoken immediately when the request begins.
+	// `request_response_delayed` messages are spoken after `timing_ms` has elapsed
+	// only if the webhook response is still pending. Filler messages are not used for
+	// asynchronous webhooks.
+	Messages []InferenceEmbeddingWebhookToolParamsWebhookMessagesUnionResp `json:"messages"`
 	// The HTTP method to be used when calling the external tool.
 	//
 	// Any of "GET", "POST", "PUT", "DELETE", "PATCH".
@@ -4538,6 +4424,7 @@ type InferenceEmbeddingWebhookToolParamsWebhookResp struct {
 		AsyncTimeoutMs         respjson.Field
 		BodyParameters         respjson.Field
 		Headers                respjson.Field
+		Messages               respjson.Field
 		Method                 respjson.Field
 		PathParameters         respjson.Field
 		QueryParameters        respjson.Field
@@ -4604,6 +4491,94 @@ type InferenceEmbeddingWebhookToolParamsWebhookHeaderResp struct {
 // Returns the unmodified JSON received from the API
 func (r InferenceEmbeddingWebhookToolParamsWebhookHeaderResp) RawJSON() string { return r.JSON.raw }
 func (r *InferenceEmbeddingWebhookToolParamsWebhookHeaderResp) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// InferenceEmbeddingWebhookToolParamsWebhookMessagesUnionResp contains all
+// possible properties and values from
+// [InferenceEmbeddingWebhookToolParamsWebhookMessagesWebhookToolRequestStartMessageResp],
+// [InferenceEmbeddingWebhookToolParamsWebhookMessagesWebhookToolRequestResponseDelayedMessageResp].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type InferenceEmbeddingWebhookToolParamsWebhookMessagesUnionResp struct {
+	Content  string `json:"content"`
+	Type     string `json:"type"`
+	TimingMs int64  `json:"timing_ms"`
+	JSON     struct {
+		Content  respjson.Field
+		Type     respjson.Field
+		TimingMs respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u InferenceEmbeddingWebhookToolParamsWebhookMessagesUnionResp) AsWebhookToolRequestStartMessage() (v InferenceEmbeddingWebhookToolParamsWebhookMessagesWebhookToolRequestStartMessageResp) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u InferenceEmbeddingWebhookToolParamsWebhookMessagesUnionResp) AsWebhookToolRequestResponseDelayedMessage() (v InferenceEmbeddingWebhookToolParamsWebhookMessagesWebhookToolRequestResponseDelayedMessageResp) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u InferenceEmbeddingWebhookToolParamsWebhookMessagesUnionResp) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *InferenceEmbeddingWebhookToolParamsWebhookMessagesUnionResp) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type InferenceEmbeddingWebhookToolParamsWebhookMessagesWebhookToolRequestStartMessageResp struct {
+	// The text the assistant speaks.
+	Content string `json:"content" api:"required"`
+	// Speak the filler message immediately when the webhook request begins.
+	Type constant.RequestStart `json:"type" default:"request_start"`
+	// An optional delay value. This value is ignored for `request_start` messages.
+	TimingMs int64 `json:"timing_ms"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Content     respjson.Field
+		Type        respjson.Field
+		TimingMs    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingWebhookToolParamsWebhookMessagesWebhookToolRequestStartMessageResp) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *InferenceEmbeddingWebhookToolParamsWebhookMessagesWebhookToolRequestStartMessageResp) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type InferenceEmbeddingWebhookToolParamsWebhookMessagesWebhookToolRequestResponseDelayedMessageResp struct {
+	// The text the assistant speaks.
+	Content string `json:"content" api:"required"`
+	// The delay in milliseconds from the start of the webhook request.
+	TimingMs int64 `json:"timing_ms" api:"required"`
+	// Speak the filler message after the configured delay if the webhook response is
+	// still pending.
+	Type constant.RequestResponseDelayed `json:"type" default:"request_response_delayed"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Content     respjson.Field
+		TimingMs    respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingWebhookToolParamsWebhookMessagesWebhookToolRequestResponseDelayedMessageResp) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *InferenceEmbeddingWebhookToolParamsWebhookMessagesWebhookToolRequestResponseDelayedMessageResp) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -4734,6 +4709,12 @@ type InferenceEmbeddingWebhookToolParamsWebhook struct {
 	BodyParameters InferenceEmbeddingWebhookToolParamsWebhookBodyParameters `json:"body_parameters,omitzero"`
 	// The headers to be sent to the external tool.
 	Headers []InferenceEmbeddingWebhookToolParamsWebhookHeader `json:"headers,omitzero"`
+	// Filler messages spoken while a synchronous webhook request is in progress.
+	// `request_start` messages are spoken immediately when the request begins.
+	// `request_response_delayed` messages are spoken after `timing_ms` has elapsed
+	// only if the webhook response is still pending. Filler messages are not used for
+	// asynchronous webhooks.
+	Messages []InferenceEmbeddingWebhookToolParamsWebhookMessagesUnion `json:"messages,omitzero"`
 	// The HTTP method to be used when calling the external tool.
 	//
 	// Any of "GET", "POST", "PUT", "DELETE", "PATCH".
@@ -4816,6 +4797,113 @@ func (r InferenceEmbeddingWebhookToolParamsWebhookHeader) MarshalJSON() (data []
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *InferenceEmbeddingWebhookToolParamsWebhookHeader) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type InferenceEmbeddingWebhookToolParamsWebhookMessagesUnion struct {
+	OfWebhookToolRequestStartMessage           *InferenceEmbeddingWebhookToolParamsWebhookMessagesWebhookToolRequestStartMessage           `json:",omitzero,inline"`
+	OfWebhookToolRequestResponseDelayedMessage *InferenceEmbeddingWebhookToolParamsWebhookMessagesWebhookToolRequestResponseDelayedMessage `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u InferenceEmbeddingWebhookToolParamsWebhookMessagesUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfWebhookToolRequestStartMessage, u.OfWebhookToolRequestResponseDelayedMessage)
+}
+func (u *InferenceEmbeddingWebhookToolParamsWebhookMessagesUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *InferenceEmbeddingWebhookToolParamsWebhookMessagesUnion) asAny() any {
+	if !param.IsOmitted(u.OfWebhookToolRequestStartMessage) {
+		return u.OfWebhookToolRequestStartMessage
+	} else if !param.IsOmitted(u.OfWebhookToolRequestResponseDelayedMessage) {
+		return u.OfWebhookToolRequestResponseDelayedMessage
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u InferenceEmbeddingWebhookToolParamsWebhookMessagesUnion) GetContent() *string {
+	if vt := u.OfWebhookToolRequestStartMessage; vt != nil {
+		return (*string)(&vt.Content)
+	} else if vt := u.OfWebhookToolRequestResponseDelayedMessage; vt != nil {
+		return (*string)(&vt.Content)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u InferenceEmbeddingWebhookToolParamsWebhookMessagesUnion) GetType() *string {
+	if vt := u.OfWebhookToolRequestStartMessage; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfWebhookToolRequestResponseDelayedMessage; vt != nil {
+		return (*string)(&vt.Type)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u InferenceEmbeddingWebhookToolParamsWebhookMessagesUnion) GetTimingMs() *int64 {
+	if vt := u.OfWebhookToolRequestStartMessage; vt != nil && vt.TimingMs.Valid() {
+		return &vt.TimingMs.Value
+	} else if vt := u.OfWebhookToolRequestResponseDelayedMessage; vt != nil {
+		return (*int64)(&vt.TimingMs)
+	}
+	return nil
+}
+
+func init() {
+	apijson.RegisterUnion[InferenceEmbeddingWebhookToolParamsWebhookMessagesUnion](
+		"",
+		apijson.Variant[InferenceEmbeddingWebhookToolParamsWebhookMessagesWebhookToolRequestStartMessage](gjson.JSON),
+		apijson.Variant[InferenceEmbeddingWebhookToolParamsWebhookMessagesWebhookToolRequestResponseDelayedMessage](gjson.JSON),
+	)
+}
+
+// The properties Content, Type are required.
+type InferenceEmbeddingWebhookToolParamsWebhookMessagesWebhookToolRequestStartMessage struct {
+	// The text the assistant speaks.
+	Content string `json:"content" api:"required"`
+	// An optional delay value. This value is ignored for `request_start` messages.
+	TimingMs param.Opt[int64] `json:"timing_ms,omitzero"`
+	// Speak the filler message immediately when the webhook request begins.
+	//
+	// This field can be elided, and will marshal its zero value as "request_start".
+	Type constant.RequestStart `json:"type" default:"request_start"`
+	paramObj
+}
+
+func (r InferenceEmbeddingWebhookToolParamsWebhookMessagesWebhookToolRequestStartMessage) MarshalJSON() (data []byte, err error) {
+	type shadow InferenceEmbeddingWebhookToolParamsWebhookMessagesWebhookToolRequestStartMessage
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InferenceEmbeddingWebhookToolParamsWebhookMessagesWebhookToolRequestStartMessage) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties Content, TimingMs, Type are required.
+type InferenceEmbeddingWebhookToolParamsWebhookMessagesWebhookToolRequestResponseDelayedMessage struct {
+	// The text the assistant speaks.
+	Content string `json:"content" api:"required"`
+	// The delay in milliseconds from the start of the webhook request.
+	TimingMs int64 `json:"timing_ms" api:"required"`
+	// Speak the filler message after the configured delay if the webhook response is
+	// still pending.
+	//
+	// This field can be elided, and will marshal its zero value as
+	// "request_response_delayed".
+	Type constant.RequestResponseDelayed `json:"type" default:"request_response_delayed"`
+	paramObj
+}
+
+func (r InferenceEmbeddingWebhookToolParamsWebhookMessagesWebhookToolRequestResponseDelayedMessage) MarshalJSON() (data []byte, err error) {
+	type shadow InferenceEmbeddingWebhookToolParamsWebhookMessagesWebhookToolRequestResponseDelayedMessage
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InferenceEmbeddingWebhookToolParamsWebhookMessagesWebhookToolRequestResponseDelayedMessage) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -5281,6 +5369,98 @@ func (r RetrievalToolParam) MarshalJSON() (data []byte, err error) {
 func (r *RetrievalToolParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// A standalone scripted-message step in a flow, as returned by the API.
+type SpeakNode struct {
+	// Caller-supplied unique identifier for this node within the flow.
+	ID string `json:"id" api:"required"`
+	// Message delivered to the user verbatim when the flow reaches this node. No LLM
+	// turn — the text is spoken/sent exactly as written. `{{variable}}` placeholders
+	// are interpolated from the conversation's dynamic variables; an unresolved
+	// placeholder renders as an empty string. After delivering, the flow routes via
+	// the node's outgoing `llm` / `expression` edges (commonly a single unconditional
+	// edge).
+	Message string `json:"message" api:"required"`
+	// Optional human-readable label, displayed in authoring UIs.
+	Name string `json:"name"`
+	// Optional canvas coordinates used by authoring UIs to lay out the graph. Ignored
+	// by the runtime; round-trips so frontends can persist graph layout across
+	// reloads.
+	Position NodePosition `json:"position"`
+	// Node kind discriminator. Always `speak` for a speak node.
+	//
+	// Any of "speak".
+	Type SpeakNodeType `json:"type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Message     respjson.Field
+		Name        respjson.Field
+		Position    respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SpeakNode) RawJSON() string { return r.JSON.raw }
+func (r *SpeakNode) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Node kind discriminator. Always `speak` for a speak node.
+type SpeakNodeType string
+
+const (
+	SpeakNodeTypeSpeak SpeakNodeType = "speak"
+)
+
+// A standalone scripted-message step in a flow, as supplied by clients.
+//
+// Unlike a prompt node, a speak node has no instructions or model — it isn't an
+// LLM turn. Reaching it delivers `message` to the user verbatim (with
+// `{{variable}}` interpolation), then routes via outgoing `llm` / `expression`
+// edges.
+//
+// The properties ID, Message are required.
+type SpeakNodeReqParam struct {
+	// Caller-supplied unique identifier for this node within the flow.
+	ID string `json:"id" api:"required"`
+	// Message delivered to the user verbatim when the flow reaches this node. No LLM
+	// turn — the text is spoken/sent exactly as written. `{{variable}}` placeholders
+	// are interpolated from the conversation's dynamic variables; an unresolved
+	// placeholder renders as an empty string. After delivering, the flow routes via
+	// the node's outgoing `llm` / `expression` edges (commonly a single unconditional
+	// edge).
+	Message string `json:"message" api:"required"`
+	// Optional human-readable label, displayed in authoring UIs.
+	Name param.Opt[string] `json:"name,omitzero"`
+	// Optional canvas coordinates used by authoring UIs to lay out the graph. Ignored
+	// by the runtime; round-trips so frontends can persist graph layout across
+	// reloads.
+	Position NodePositionParam `json:"position,omitzero"`
+	// Node kind discriminator. Always `speak` for a speak node.
+	//
+	// Any of "speak".
+	Type SpeakNodeReqType `json:"type,omitzero"`
+	paramObj
+}
+
+func (r SpeakNodeReqParam) MarshalJSON() (data []byte, err error) {
+	type shadow SpeakNodeReqParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *SpeakNodeReqParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Node kind discriminator. Always `speak` for a speak node.
+type SpeakNodeReqType string
+
+const (
+	SpeakNodeReqTypeSpeak SpeakNodeReqType = "speak"
+)
 
 // Controls when the assistant starts speaking after the user stops. These
 // thresholds primarily apply to non turn-taking transcription models. For
@@ -5758,6 +5938,103 @@ func init() {
 		"type", "prompt", "message",
 	)
 }
+
+// A standalone tool step in a conversation flow, as returned by the API.
+type ToolNode struct {
+	// Caller-supplied unique identifier for this node within the flow.
+	ID string `json:"id" api:"required"`
+	// ID of the single shared (org-level) tool this node executes. When the flow
+	// reaches this node the tool runs as a deliberate step (no LLM turn); its outgoing
+	// `tool_result` edges then route on the outcome. Arguments are filled from the
+	// conversation's dynamic variables by name — a dynamic variable whose name matches
+	// one of the tool's parameters supplies that argument. Cross-validated against the
+	// org's shared tools on write.
+	SharedToolID string `json:"shared_tool_id" api:"required"`
+	// Optional human-readable label, displayed in authoring UIs.
+	Name string `json:"name"`
+	// Optional canvas coordinates used by authoring UIs to lay out the graph. Ignored
+	// by the runtime; round-trips so frontends can persist graph layout across
+	// reloads.
+	Position NodePosition `json:"position"`
+	// Full tool definition resolved from `shared_tool_id` server-side. Populated on
+	// responses so clients can render the node without a follow-up fetch. Ignored on
+	// input — set `shared_tool_id`.
+	Tool []AssistantToolUnion `json:"tool"`
+	// Node kind discriminator. Always `tool` for a tool node.
+	//
+	// Any of "tool".
+	Type ToolNodeType `json:"type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		SharedToolID respjson.Field
+		Name         respjson.Field
+		Position     respjson.Field
+		Tool         respjson.Field
+		Type         respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ToolNode) RawJSON() string { return r.JSON.raw }
+func (r *ToolNode) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Node kind discriminator. Always `tool` for a tool node.
+type ToolNodeType string
+
+const (
+	ToolNodeTypeTool ToolNodeType = "tool"
+)
+
+// A standalone tool step in a conversation flow, as supplied by clients.
+//
+// Unlike a prompt node, a tool node has no instructions or model — it isn't an LLM
+// turn. Reaching it deterministically runs one shared tool (arguments filled from
+// matching dynamic variables by name), then routes on the result via outgoing
+// `tool_result` edges.
+//
+// The properties ID, SharedToolID are required.
+type ToolNodeReqParam struct {
+	// Caller-supplied unique identifier for this node within the flow.
+	ID string `json:"id" api:"required"`
+	// ID of the single shared (org-level) tool this node executes. When the flow
+	// reaches this node the tool runs as a deliberate step (no LLM turn); its outgoing
+	// `tool_result` edges then route on the outcome. Arguments are filled from the
+	// conversation's dynamic variables by name — a dynamic variable whose name matches
+	// one of the tool's parameters supplies that argument. Cross-validated against the
+	// org's shared tools on write.
+	SharedToolID string `json:"shared_tool_id" api:"required"`
+	// Optional human-readable label, displayed in authoring UIs.
+	Name param.Opt[string] `json:"name,omitzero"`
+	// Optional canvas coordinates used by authoring UIs to lay out the graph. Ignored
+	// by the runtime; round-trips so frontends can persist graph layout across
+	// reloads.
+	Position NodePositionParam `json:"position,omitzero"`
+	// Node kind discriminator. Always `tool` for a tool node.
+	//
+	// Any of "tool".
+	Type ToolNodeReqType `json:"type,omitzero"`
+	paramObj
+}
+
+func (r ToolNodeReqParam) MarshalJSON() (data []byte, err error) {
+	type shadow ToolNodeReqParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ToolNodeReqParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Node kind discriminator. Always `tool` for a tool node.
+type ToolNodeReqType string
+
+const (
+	ToolNodeReqTypeTool ToolNodeReqType = "tool"
+)
 
 // Endpointing thresholds used to decide when the user has finished speaking.
 // Applies to non turn-taking transcription models. For `deepgram/flux`, use
@@ -7089,7 +7366,8 @@ type AIAssistantNewParams struct {
 	// to see available models. If `external_llm` is provided, the assistant uses
 	// `external_llm` instead of this field. If neither `model` nor `external_llm` is
 	// provided, Telnyx applies the default model.
-	Model param.Opt[string] `json:"model,omitzero"`
+	Model          param.Opt[string] `json:"model,omitzero"`
+	IdempotencyKey param.Opt[string] `header:"Idempotency-Key,omitzero" json:"-"`
 	// Conversation flow as supplied by API clients (create / update).
 	//
 	// A directed graph of `FlowNodeReq` connected by `FlowEdge`s. Validation enforces
@@ -7305,6 +7583,11 @@ func (r *AIAssistantChatParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type AIAssistantCloneParams struct {
+	IdempotencyKey param.Opt[string] `header:"Idempotency-Key,omitzero" json:"-"`
+	paramObj
+}
+
 type AIAssistantImportsParams struct {
 	// Integration secret pointer that refers to the API key for the external provider.
 	// This should be an identifier for an integration secret created via
@@ -7313,7 +7596,8 @@ type AIAssistantImportsParams struct {
 	// The external provider to import assistants from.
 	//
 	// Any of "elevenlabs", "vapi", "retell".
-	Provider AIAssistantImportsParamsProvider `json:"provider,omitzero" api:"required"`
+	Provider       AIAssistantImportsParamsProvider `json:"provider,omitzero" api:"required"`
+	IdempotencyKey param.Opt[string]                `header:"Idempotency-Key,omitzero" json:"-"`
 	// Optional list of assistant IDs to import from the external provider. If not
 	// provided, all assistants will be imported.
 	ImportIDs []string `json:"import_ids,omitzero"`
@@ -7342,6 +7626,7 @@ type AIAssistantSendSMSParams struct {
 	To                       string                                                       `json:"to" api:"required"`
 	ShouldCreateConversation param.Opt[bool]                                              `json:"should_create_conversation,omitzero"`
 	Text                     param.Opt[string]                                            `json:"text,omitzero"`
+	IdempotencyKey           param.Opt[string]                                            `header:"Idempotency-Key,omitzero" json:"-"`
 	ConversationMetadata     map[string]AIAssistantSendSMSParamsConversationMetadataUnion `json:"conversation_metadata,omitzero"`
 	paramObj
 }

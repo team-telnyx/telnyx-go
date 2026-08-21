@@ -32,7 +32,8 @@ func TestAIConversationInsightNewWithOptionalParams(t *testing.T) {
 		JsonSchema: telnyx.AIConversationInsightNewParamsJsonSchemaUnion{
 			OfString: telnyx.String("string"),
 		},
-		Webhook: telnyx.String(""),
+		Webhook:        telnyx.String(""),
+		IdempotencyKey: telnyx.String("8e03978e-40d5-43e8-bc93-6894a57f9326"),
 	})
 	if err != nil {
 		var apierr *telnyx.Error

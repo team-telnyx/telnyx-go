@@ -70,14 +70,17 @@ func (r *AIAssistantTestTestSuiteRunService) ListAutoPaging(ctx context.Context,
 }
 
 // Executes all tests within a specific test suite as a batch operation
-func (r *AIAssistantTestTestSuiteRunService) Trigger(ctx context.Context, suiteName string, body AIAssistantTestTestSuiteRunTriggerParams, opts ...option.RequestOption) (res *[]TestRunResponse, err error) {
+func (r *AIAssistantTestTestSuiteRunService) Trigger(ctx context.Context, suiteName string, params AIAssistantTestTestSuiteRunTriggerParams, opts ...option.RequestOption) (res *[]TestRunResponse, err error) {
+	if !param.IsOmitted(params.IdempotencyKey) {
+		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	if suiteName == "" {
 		err = errors.New("missing required suite_name parameter")
 		return nil, err
 	}
 	path := fmt.Sprintf("ai/assistants/tests/test-suites/%s/runs", suiteName)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
 
@@ -151,6 +154,7 @@ type AIAssistantTestTestSuiteRunTriggerParams struct {
 	// provided, the version must exist or a 400 error will be returned. If not
 	// provided, test will run on main version
 	DestinationVersionID param.Opt[string] `json:"destination_version_id,omitzero"`
+	IdempotencyKey       param.Opt[string] `header:"Idempotency-Key,omitzero" json:"-"`
 	paramObj
 }
 

@@ -38,7 +38,8 @@ func NewPortoutCommentService(opts ...option.RequestOption) (r PortoutCommentSer
 	return
 }
 
-// Creates a comment on a portout request.
+// Creates a comment on the specified port-out request and returns the created
+// comment.
 func (r *PortoutCommentService) New(ctx context.Context, id string, body PortoutCommentNewParams, opts ...option.RequestOption) (res *PortoutCommentNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

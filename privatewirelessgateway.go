@@ -85,7 +85,7 @@ func (r *PrivateWirelessGatewayService) ListAutoPaging(ctx context.Context, quer
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Deletes the Private Wireless Gateway.
+// Permanently deletes the specified Private Wireless Gateway from your account.
 func (r *PrivateWirelessGatewayService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *PrivateWirelessGatewayDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

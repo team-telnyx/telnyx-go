@@ -27,7 +27,7 @@ func TestRcBrandNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Rcs.Brands.New(context.TODO(), telnyx.RcBrandNewParams{
-		Addresses: map[string]telnyx.RcBrandNewParamsAddresses{
+		Addresses: map[string]telnyx.BrandAddressParam{
 			"primary": {
 				AdministrativeArea: "IL",
 				City:               "Chicago",
@@ -114,7 +114,7 @@ func TestRcBrandUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		telnyx.RcBrandUpdateParams{
-			Addresses: map[string]telnyx.RcBrandUpdateParamsAddresses{
+			Addresses: map[string]telnyx.BrandAddressParam{
 				"foo": {
 					AdministrativeArea: "x",
 					City:               "x",

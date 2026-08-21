@@ -36,7 +36,8 @@ func NewCountryCoverageService(opts ...option.RequestOption) (r CountryCoverageS
 	return
 }
 
-// Get country coverage
+// Returns Telnyx service coverage information for every country, including which
+// number types and features are available in each.
 func (r *CountryCoverageService) Get(ctx context.Context, opts ...option.RequestOption) (res *CountryCoverageGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "country_coverage"
@@ -44,7 +45,8 @@ func (r *CountryCoverageService) Get(ctx context.Context, opts ...option.Request
 	return res, err
 }
 
-// Get coverage for a specific country
+// Returns Telnyx service coverage information for the specified country, including
+// available number types and features.
 func (r *CountryCoverageService) GetCountry(ctx context.Context, countryCode string, opts ...option.RequestOption) (res *CountryCoverageGetCountryResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if countryCode == "" {

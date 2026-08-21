@@ -40,7 +40,8 @@ func NewRequirementTypeService(opts ...option.RequestOption) (r RequirementTypeS
 	return
 }
 
-// Retrieve a requirement type by id
+// Returns the details of a single requirement type by its identifier, describing a
+// kind of documentation needed for regulatory purposes.
 func (r *RequirementTypeService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *RequirementTypeGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

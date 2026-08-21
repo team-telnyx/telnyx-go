@@ -36,7 +36,9 @@ func NewAIMissionRunPlanService(opts ...option.RequestOption) (r AIMissionRunPla
 	return
 }
 
-// Create the initial plan for a run
+// Creates the initial plan for the specified run from the provided steps and
+// returns the created plan steps. Progress is subsequently reported by updating
+// individual steps.
 func (r *AIMissionRunPlanService) New(ctx context.Context, runID string, params AIMissionRunPlanNewParams, opts ...option.RequestOption) (res *PlanStepsCreatedResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if params.MissionID == "" {
@@ -52,7 +54,9 @@ func (r *AIMissionRunPlanService) New(ctx context.Context, runID string, params 
 	return res, err
 }
 
-// Get the plan (all steps) for a run
+// Returns the plan for the specified run, including all plan steps and their
+// statuses, so you can see how the mission was decomposed and how far execution
+// has progressed.
 func (r *AIMissionRunPlanService) Get(ctx context.Context, runID string, query AIMissionRunPlanGetParams, opts ...option.RequestOption) (res *AIMissionRunPlanGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if query.MissionID == "" {
@@ -84,7 +88,8 @@ func (r *AIMissionRunPlanService) AddStepsToPlan(ctx context.Context, runID stri
 	return res, err
 }
 
-// Get details of a specific plan step
+// Returns the details of a single plan step within a run's plan, including its
+// status.
 func (r *AIMissionRunPlanService) GetStepDetails(ctx context.Context, stepID string, query AIMissionRunPlanGetStepDetailsParams, opts ...option.RequestOption) (res *PlanStepResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if query.MissionID == "" {
@@ -104,7 +109,8 @@ func (r *AIMissionRunPlanService) GetStepDetails(ctx context.Context, stepID str
 	return res, err
 }
 
-// Update the status of a plan step
+// Updates the status of a single plan step and returns the updated step. Typically
+// called by the executing agent as it works through the plan.
 func (r *AIMissionRunPlanService) UpdateStep(ctx context.Context, stepID string, params AIMissionRunPlanUpdateStepParams, opts ...option.RequestOption) (res *PlanStepResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if params.MissionID == "" {

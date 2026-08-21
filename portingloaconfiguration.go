@@ -41,7 +41,8 @@ func NewPortingLoaConfigurationService(opts ...option.RequestOption) (r PortingL
 	return
 }
 
-// Create a LOA configuration.
+// Creates a new LOA configuration with your company details and branding for use
+// when generating LOA documents for porting orders.
 func (r *PortingLoaConfigurationService) New(ctx context.Context, body PortingLoaConfigurationNewParams, opts ...option.RequestOption) (res *PortingLoaConfigurationNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "porting/loa_configurations"
@@ -49,7 +50,8 @@ func (r *PortingLoaConfigurationService) New(ctx context.Context, body PortingLo
 	return res, err
 }
 
-// Retrieve a specific LOA configuration.
+// Returns the details of a single LOA (Letter of Authorization) configuration by
+// its identifier.
 func (r *PortingLoaConfigurationService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *PortingLoaConfigurationGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -61,7 +63,8 @@ func (r *PortingLoaConfigurationService) Get(ctx context.Context, id string, opt
 	return res, err
 }
 
-// Update a specific LOA configuration.
+// Updates the specified LOA configuration with the provided fields and returns the
+// updated configuration.
 func (r *PortingLoaConfigurationService) Update(ctx context.Context, id string, body PortingLoaConfigurationUpdateParams, opts ...option.RequestOption) (res *PortingLoaConfigurationUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -73,7 +76,9 @@ func (r *PortingLoaConfigurationService) Update(ctx context.Context, id string, 
 	return res, err
 }
 
-// List the LOA configurations.
+// Returns a paginated list of your LOA (Letter of Authorization) configurations.
+// LOA configurations customize the company details and branding used on generated
+// LOA documents.
 func (r *PortingLoaConfigurationService) List(ctx context.Context, query PortingLoaConfigurationListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[PortingLoaConfiguration], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -91,12 +96,15 @@ func (r *PortingLoaConfigurationService) List(ctx context.Context, query Porting
 	return res, nil
 }
 
-// List the LOA configurations.
+// Returns a paginated list of your LOA (Letter of Authorization) configurations.
+// LOA configurations customize the company details and branding used on generated
+// LOA documents.
 func (r *PortingLoaConfigurationService) ListAutoPaging(ctx context.Context, query PortingLoaConfigurationListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[PortingLoaConfiguration] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Delete a specific LOA configuration.
+// Permanently deletes the specified LOA configuration so it can no longer be used
+// when generating LOA documents.
 func (r *PortingLoaConfigurationService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
@@ -129,7 +137,8 @@ func (r *PortingLoaConfigurationService) Preview0(ctx context.Context, body Port
 	return res, err
 }
 
-// Preview a specific LOA configuration.
+// Renders a preview of the LOA document produced by this configuration so you can
+// verify company details and branding before using it on porting orders.
 func (r *PortingLoaConfigurationService) Preview1(ctx context.Context, id string, opts ...option.RequestOption) (res *http.Response, err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "application/pdf")}, opts...)
