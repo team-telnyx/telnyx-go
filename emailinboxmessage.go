@@ -139,10 +139,8 @@ func (r *EmailInboxMessageUpdateResponse) UnmarshalJSON(data []byte) error {
 }
 
 type EmailInboxMessageUpdateParams struct {
-	InboxID string `path:"inbox_id" api:"required" format:"uuid" json:"-"`
-	// Set to `true` for server time, an ISO 8601 timestamp for an explicit read time,
-	// or `null` to mark unread.
-	ReadAt EmailInboxMessageUpdateParamsReadAtUnion `json:"read_at,omitzero" api:"required" format:"date-time"`
+	InboxID string                                   `path:"inbox_id" api:"required" format:"uuid" json:"-"`
+	ReadAt  EmailInboxMessageUpdateParamsReadAtUnion `json:"read_at,omitzero" api:"required" format:"date-time"`
 	paramObj
 }
 
@@ -158,33 +156,32 @@ func (r *EmailInboxMessageUpdateParams) UnmarshalJSON(data []byte) error {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type EmailInboxMessageUpdateParamsReadAtUnion struct {
-	// Check if union is this variant with
-	// !param.IsOmitted(union.OfEmailInboxMessageUpdatesReadAtBoolean)
-	OfEmailInboxMessageUpdatesReadAtBoolean param.Opt[bool]      `json:",omitzero,inline"`
-	OfTime                                  param.Opt[time.Time] `json:",omitzero,inline"`
+	// Check if union is this variant with !param.IsOmitted(union.OfServerReadTime)
+	OfServerReadTime param.Opt[bool]      `json:",omitzero,inline"`
+	OfTime           param.Opt[time.Time] `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u EmailInboxMessageUpdateParamsReadAtUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfEmailInboxMessageUpdatesReadAtBoolean, u.OfTime)
+	return param.MarshalUnion(u, u.OfServerReadTime, u.OfTime)
 }
 func (u *EmailInboxMessageUpdateParamsReadAtUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *EmailInboxMessageUpdateParamsReadAtUnion) asAny() any {
-	if !param.IsOmitted(u.OfEmailInboxMessageUpdatesReadAtBoolean) {
-		return &u.OfEmailInboxMessageUpdatesReadAtBoolean
+	if !param.IsOmitted(u.OfServerReadTime) {
+		return &u.OfServerReadTime
 	} else if !param.IsOmitted(u.OfTime) {
 		return &u.OfTime.Value
 	}
 	return nil
 }
 
-type EmailInboxMessageUpdateParamsReadAtBoolean bool
+type EmailInboxMessageUpdateParamsReadAtServerReadTime bool
 
 const (
-	EmailInboxMessageUpdateParamsReadAtBooleanTrue EmailInboxMessageUpdateParamsReadAtBoolean = true
+	EmailInboxMessageUpdateParamsReadAtServerReadTimeTrue EmailInboxMessageUpdateParamsReadAtServerReadTime = true
 )
 
 type EmailInboxMessageListParams struct {

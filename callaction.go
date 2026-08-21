@@ -5146,7 +5146,7 @@ type CallActionPayParamsCurrency string
 
 const (
 	CallActionPayParamsCurrencyUsdUppercase CallActionPayParamsCurrency = "USD"
-	CallActionPayParamsCurrencyUsd          CallActionPayParamsCurrency = "usd"
+	CallActionPayParamsCurrencyUsdLowercase CallActionPayParamsCurrency = "usd"
 )
 
 // Payment method to collect.

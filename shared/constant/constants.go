@@ -29,7 +29,6 @@ type Comparative string            // Always "comparative"
 type Comparison string             // Always "comparison"
 type Default string                // Always "default"
 type Ein string                    // Always "EIN"
-type Error string                  // Always "error"
 type Expression string             // Always "expression"
 type Function string               // Always "function"
 type Handoff string                // Always "handoff"
@@ -55,7 +54,6 @@ type Simple string                 // Always "simple"
 type SkipTurn string               // Always "skip_turn"
 type StockSymbol string            // Always "STOCK_SYMBOL"
 type StringLiteral string          // Always "string_literal"
-type Transcript string             // Always "transcript"
 type Transfer string               // Always "transfer"
 type UpdateDynamicVariables string // Always "update_dynamic_variables"
 type Variable string               // Always "variable"
@@ -71,7 +69,6 @@ func (c Comparative) Default() Comparative                       { return "compa
 func (c Comparison) Default() Comparison                         { return "comparison" }
 func (c Default) Default() Default                               { return "default" }
 func (c Ein) Default() Ein                                       { return "EIN" }
-func (c Error) Default() Error                                   { return "error" }
 func (c Expression) Default() Expression                         { return "expression" }
 func (c Function) Default() Function                             { return "function" }
 func (c Handoff) Default() Handoff                               { return "handoff" }
@@ -97,7 +94,6 @@ func (c Simple) Default() Simple                                 { return "simpl
 func (c SkipTurn) Default() SkipTurn                             { return "skip_turn" }
 func (c StockSymbol) Default() StockSymbol                       { return "STOCK_SYMBOL" }
 func (c StringLiteral) Default() StringLiteral                   { return "string_literal" }
-func (c Transcript) Default() Transcript                         { return "transcript" }
 func (c Transfer) Default() Transfer                             { return "transfer" }
 func (c UpdateDynamicVariables) Default() UpdateDynamicVariables { return "update_dynamic_variables" }
 func (c Variable) Default() Variable                             { return "variable" }
@@ -113,7 +109,6 @@ func (c Comparative) MarshalJSON() ([]byte, error)            { return marshalSt
 func (c Comparison) MarshalJSON() ([]byte, error)             { return marshalString(c) }
 func (c Default) MarshalJSON() ([]byte, error)                { return marshalString(c) }
 func (c Ein) MarshalJSON() ([]byte, error)                    { return marshalString(c) }
-func (c Error) MarshalJSON() ([]byte, error)                  { return marshalString(c) }
 func (c Expression) MarshalJSON() ([]byte, error)             { return marshalString(c) }
 func (c Function) MarshalJSON() ([]byte, error)               { return marshalString(c) }
 func (c Handoff) MarshalJSON() ([]byte, error)                { return marshalString(c) }
@@ -139,7 +134,6 @@ func (c Simple) MarshalJSON() ([]byte, error)                 { return marshalSt
 func (c SkipTurn) MarshalJSON() ([]byte, error)               { return marshalString(c) }
 func (c StockSymbol) MarshalJSON() ([]byte, error)            { return marshalString(c) }
 func (c StringLiteral) MarshalJSON() ([]byte, error)          { return marshalString(c) }
-func (c Transcript) MarshalJSON() ([]byte, error)             { return marshalString(c) }
 func (c Transfer) MarshalJSON() ([]byte, error)               { return marshalString(c) }
 func (c UpdateDynamicVariables) MarshalJSON() ([]byte, error) { return marshalString(c) }
 func (c Variable) MarshalJSON() ([]byte, error)               { return marshalString(c) }

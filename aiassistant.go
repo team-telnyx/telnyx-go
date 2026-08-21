@@ -3189,7 +3189,7 @@ func (r FlowEdge) ToParam() FlowEdgeParam {
 
 // FlowEdgeConditionUnion contains all possible properties and values from
 // [FlowEdgeConditionLlm], [FlowEdgeConditionExpression],
-// [FlowEdgeConditionDefault].
+// [FlowEdgeConditionDefaultCondition].
 //
 // Use the [FlowEdgeConditionUnion.AsAny] method to switch on the variant.
 //
@@ -3215,16 +3215,16 @@ type anyFlowEdgeCondition interface {
 	implFlowEdgeConditionUnion()
 }
 
-func (FlowEdgeConditionLlm) implFlowEdgeConditionUnion()        {}
-func (FlowEdgeConditionExpression) implFlowEdgeConditionUnion() {}
-func (FlowEdgeConditionDefault) implFlowEdgeConditionUnion()    {}
+func (FlowEdgeConditionLlm) implFlowEdgeConditionUnion()              {}
+func (FlowEdgeConditionExpression) implFlowEdgeConditionUnion()       {}
+func (FlowEdgeConditionDefaultCondition) implFlowEdgeConditionUnion() {}
 
 // Use the following switch statement to find the correct variant
 //
 //	switch variant := FlowEdgeConditionUnion.AsAny().(type) {
 //	case telnyx.FlowEdgeConditionLlm:
 //	case telnyx.FlowEdgeConditionExpression:
-//	case telnyx.FlowEdgeConditionDefault:
+//	case telnyx.FlowEdgeConditionDefaultCondition:
 //	default:
 //	  fmt.Errorf("no variant present")
 //	}
@@ -3235,7 +3235,7 @@ func (u FlowEdgeConditionUnion) AsAny() anyFlowEdgeCondition {
 	case "expression":
 		return u.AsExpression()
 	case "default":
-		return u.AsDefault()
+		return u.AsDefaultCondition()
 	}
 	return nil
 }
@@ -3250,7 +3250,7 @@ func (u FlowEdgeConditionUnion) AsExpression() (v FlowEdgeConditionExpression) {
 	return
 }
 
-func (u FlowEdgeConditionUnion) AsDefault() (v FlowEdgeConditionDefault) {
+func (u FlowEdgeConditionUnion) AsDefaultCondition() (v FlowEdgeConditionDefaultCondition) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -3321,7 +3321,7 @@ func (r *FlowEdgeConditionExpression) UnmarshalJSON(data []byte) error {
 // A tool/speak node with any outgoing edge is required to carry exactly one
 // `default` edge so it never dead-ends; a tool/speak node with no outgoing edges
 // is a valid terminal step. Carries no parameters.
-type FlowEdgeConditionDefault struct {
+type FlowEdgeConditionDefaultCondition struct {
 	Type constant.Default `json:"type" default:"default"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -3332,8 +3332,8 @@ type FlowEdgeConditionDefault struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r FlowEdgeConditionDefault) RawJSON() string { return r.JSON.raw }
-func (r *FlowEdgeConditionDefault) UnmarshalJSON(data []byte) error {
+func (r FlowEdgeConditionDefaultCondition) RawJSON() string { return r.JSON.raw }
+func (r *FlowEdgeConditionDefaultCondition) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -3506,14 +3506,14 @@ func (r *FlowEdgeParam) UnmarshalJSON(data []byte) error {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type FlowEdgeConditionUnionParam struct {
-	OfLlm        *FlowEdgeConditionLlmParam        `json:",omitzero,inline"`
-	OfExpression *FlowEdgeConditionExpressionParam `json:",omitzero,inline"`
-	OfDefault    *FlowEdgeConditionDefaultParam    `json:",omitzero,inline"`
+	OfLlm              *FlowEdgeConditionLlmParam              `json:",omitzero,inline"`
+	OfExpression       *FlowEdgeConditionExpressionParam       `json:",omitzero,inline"`
+	OfDefaultCondition *FlowEdgeConditionDefaultConditionParam `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u FlowEdgeConditionUnionParam) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfLlm, u.OfExpression, u.OfDefault)
+	return param.MarshalUnion(u, u.OfLlm, u.OfExpression, u.OfDefaultCondition)
 }
 func (u *FlowEdgeConditionUnionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -3524,8 +3524,8 @@ func (u *FlowEdgeConditionUnionParam) asAny() any {
 		return u.OfLlm
 	} else if !param.IsOmitted(u.OfExpression) {
 		return u.OfExpression
-	} else if !param.IsOmitted(u.OfDefault) {
-		return u.OfDefault
+	} else if !param.IsOmitted(u.OfDefaultCondition) {
+		return u.OfDefaultCondition
 	}
 	return nil
 }
@@ -3552,7 +3552,7 @@ func (u FlowEdgeConditionUnionParam) GetType() *string {
 		return (*string)(&vt.Type)
 	} else if vt := u.OfExpression; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfDefault; vt != nil {
+	} else if vt := u.OfDefaultCondition; vt != nil {
 		return (*string)(&vt.Type)
 	}
 	return nil
@@ -3563,7 +3563,7 @@ func init() {
 		"type",
 		apijson.Discriminator[FlowEdgeConditionLlmParam]("llm"),
 		apijson.Discriminator[FlowEdgeConditionExpressionParam]("expression"),
-		apijson.Discriminator[FlowEdgeConditionDefaultParam]("default"),
+		apijson.Discriminator[FlowEdgeConditionDefaultConditionParam]("default"),
 	)
 }
 
@@ -3615,8 +3615,8 @@ func (r *FlowEdgeConditionExpressionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func NewFlowEdgeConditionDefaultParam() FlowEdgeConditionDefaultParam {
-	return FlowEdgeConditionDefaultParam{
+func NewFlowEdgeConditionDefaultConditionParam() FlowEdgeConditionDefaultConditionParam {
+	return FlowEdgeConditionDefaultConditionParam{
 		Type: "default",
 	}
 }
@@ -3632,17 +3632,17 @@ func NewFlowEdgeConditionDefaultParam() FlowEdgeConditionDefaultParam {
 // is a valid terminal step. Carries no parameters.
 //
 // This struct has a constant value, construct it with
-// [NewFlowEdgeConditionDefaultParam].
-type FlowEdgeConditionDefaultParam struct {
+// [NewFlowEdgeConditionDefaultConditionParam].
+type FlowEdgeConditionDefaultConditionParam struct {
 	Type constant.Default `json:"type" default:"default"`
 	paramObj
 }
 
-func (r FlowEdgeConditionDefaultParam) MarshalJSON() (data []byte, err error) {
-	type shadow FlowEdgeConditionDefaultParam
+func (r FlowEdgeConditionDefaultConditionParam) MarshalJSON() (data []byte, err error) {
+	type shadow FlowEdgeConditionDefaultConditionParam
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *FlowEdgeConditionDefaultParam) UnmarshalJSON(data []byte) error {
+func (r *FlowEdgeConditionDefaultConditionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

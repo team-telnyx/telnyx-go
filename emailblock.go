@@ -31,7 +31,7 @@ import (
 type EmailBlockService struct {
 	Options []option.RequestOption
 	// Async CSV import of competitor suppression lists.
-	Import EmailBlockImportService
+	Imports EmailBlockImportService
 }
 
 // NewEmailBlockService generates a new service that applies the given options to
@@ -40,7 +40,7 @@ type EmailBlockService struct {
 func NewEmailBlockService(opts ...option.RequestOption) (r EmailBlockService) {
 	r = EmailBlockService{}
 	r.Options = opts
-	r.Import = NewEmailBlockImportService(opts...)
+	r.Imports = NewEmailBlockImportService(opts...)
 	return
 }
 
