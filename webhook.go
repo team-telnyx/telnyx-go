@@ -6518,7 +6518,8 @@ type CallPaymentCompletedWebhookEventDataPayload struct {
 	PaymentCardPostalCode string `json:"payment_card_postal_code"`
 	// Detected card type. Present only for the recognized card brands listed below.
 	//
-	// Any of "visa", "mastercard", "amex", "discover", "diners-club", "jcb".
+	// Any of "visa", "mastercard", "amex", "optima", "discover", "diners-club", "jcb",
+	// "maestro", "enroute".
 	PaymentCardType string `json:"payment_card_type"`
 	// Payment confirmation code returned by the processor, when available.
 	PaymentConfirmationCode string `json:"payment_confirmation_code"`
@@ -6686,7 +6687,7 @@ type CallPaymentProgressWebhookEventDataPayload struct {
 	ConnectionID string `json:"connection_id"`
 	// Step-level error when payment collection fails.
 	//
-	// Any of "timeout", "invalid-card-number", "invalid-date",
+	// Any of "timeout", "invalid-card-number", "invalid-card-type", "invalid-date",
 	// "invalid-security-code", "invalid-postal-code", "invalid-bank-routing-number",
 	// "invalid-bank-account-number", "input-matching-failed".
 	ErrorType string `json:"error_type"`
@@ -6700,7 +6701,8 @@ type CallPaymentProgressWebhookEventDataPayload struct {
 	PaymentCardPostalCode string `json:"payment_card_postal_code"`
 	// Detected card type. Present only for the recognized card brands listed below.
 	//
-	// Any of "visa", "mastercard", "amex", "discover", "diners-club", "jcb".
+	// Any of "visa", "mastercard", "amex", "optima", "discover", "diners-club", "jcb",
+	// "maestro", "enroute".
 	PaymentCardType string `json:"payment_card_type"`
 	// Name of the Pay connector used.
 	PaymentConnector string `json:"payment_connector"`

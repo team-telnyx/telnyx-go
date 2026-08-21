@@ -1352,15 +1352,14 @@ type PayPromptValuePayPromptListItemParam struct {
 	Text string `json:"text" api:"required"`
 	// Space-separated 1-based attempt numbers for which this prompt applies.
 	Attempt param.Opt[string] `json:"attempt,omitzero"`
-	// Lowercase, case-sensitive detected card type for which this prompt applies. Only
-	// the listed brands are currently detected; accepted UnionPay and Maestro test
-	// cards do not produce a card-type qualifier.
+	// Lowercase, case-sensitive detected card type for which this prompt applies.
 	//
-	// Any of "visa", "mastercard", "amex", "discover", "diners-club", "jcb".
+	// Any of "visa", "mastercard", "amex", "optima", "discover", "diners-club", "jcb",
+	// "maestro", "enroute".
 	CardType string `json:"card_type,omitzero"`
 	// Step error for which this prompt applies.
 	//
-	// Any of "timeout", "invalid-card-number", "invalid-date",
+	// Any of "timeout", "invalid-card-number", "invalid-card-type", "invalid-date",
 	// "invalid-security-code", "invalid-postal-code", "invalid-bank-routing-number",
 	// "invalid-bank-account-number", "input-matching-failed".
 	ErrorType string `json:"error_type,omitzero"`
@@ -1377,10 +1376,10 @@ func (r *PayPromptValuePayPromptListItemParam) UnmarshalJSON(data []byte) error 
 
 func init() {
 	apijson.RegisterFieldValidator[PayPromptValuePayPromptListItemParam](
-		"card_type", "visa", "mastercard", "amex", "discover", "diners-club", "jcb",
+		"card_type", "visa", "mastercard", "amex", "optima", "discover", "diners-club", "jcb", "maestro", "enroute",
 	)
 	apijson.RegisterFieldValidator[PayPromptValuePayPromptListItemParam](
-		"error_type", "timeout", "invalid-card-number", "invalid-date", "invalid-security-code", "invalid-postal-code", "invalid-bank-routing-number", "invalid-bank-account-number", "input-matching-failed",
+		"error_type", "timeout", "invalid-card-number", "invalid-card-type", "invalid-date", "invalid-security-code", "invalid-postal-code", "invalid-bank-routing-number", "invalid-bank-account-number", "input-matching-failed",
 	)
 }
 
@@ -5123,6 +5122,14 @@ type CallActionPayParams struct {
 	//
 	// Any of "charge", "tokenize".
 	TransactionType CallActionPayParamsTransactionType `json:"transaction_type,omitzero"`
+	// Restricts accepted card numbers to the listed card types. When the caller enters
+	// a card number that does not match one of the listed types, Pay treats the input
+	// as invalid and re-prompts for the card number. Cannot be used together with
+	// `payment_token`.
+	//
+	// Any of "visa", "mastercard", "amex", "maestro", "discover", "optima", "jcb",
+	// "diners-club", "enroute".
+	ValidCardTypes []string `json:"valid_card_types,omitzero"`
 	paramObj
 }
 

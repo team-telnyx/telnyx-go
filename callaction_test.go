@@ -774,6 +774,7 @@ func TestCallActionPayWithOptionalParams(t *testing.T) {
 			ServiceLevel:    telnyx.String("service_level"),
 			TimeoutMillis:   telnyx.Int(5000),
 			TransactionType: telnyx.CallActionPayParamsTransactionTypeCharge,
+			ValidCardTypes:  []string{"visa", "mastercard"},
 			Voice:           telnyx.String("female"),
 		},
 	)
