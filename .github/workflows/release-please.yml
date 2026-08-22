@@ -371,6 +371,7 @@ jobs:
             --release-sha "$RELEASE_SHA"
 
       - name: Dispatch compatible release to CLI promotion
+        id: cli-handoff
         if: github.ref == 'refs/heads/main' && steps.release.outputs.is_release == 'true'
         env:
           GH_TOKEN: ${{ secrets.SDK_WRITE_TOKEN }}
@@ -448,21 +449,23 @@ jobs:
             exit 1
           fi
 
-          jq -n \
-            --arg version "v$VERSION" \
-            --arg release_sha "$RELEASE_SHA" \
-            --arg sdk_config_sha "$SDK_CONFIG_SHA" \
-            '{
-              event_type: "telnyx-go-released",
-              client_payload: {
-                go_version: $version,
-                go_release_sha: $release_sha,
-                sdk_config_sha: $sdk_config_sha
-              }
-            }' \
-            | gh api \
-                repos/team-telnyx/telnyx-cli-staging/dispatches \
-                --method POST \
-                --input -
+          python3 .github/scripts/dispatch_cli_release.py \
+            --go-version "v$VERSION" \
+            --go-release-sha "$RELEASE_SHA" \
+            --sdk-config-sha "$SDK_CONFIG_SHA" \
+            --github-output "$GITHUB_OUTPUT"
 
-          echo "Dispatched v$VERSION from SDK config $SDK_CONFIG_SHA to CLI promotion"
+      - name: Record observable CLI handoff
+        if: github.ref == 'refs/heads/main' && steps.release.outputs.is_release == 'true'
+        env:
+          HANDOFF_ID: ${{ steps.cli-handoff.outputs.handoff_id }}
+          DELIVERY_MODE: ${{ steps.cli-handoff.outputs.delivery_mode }}
+          CLI_RUN_ID: ${{ steps.cli-handoff.outputs.cli_run_id }}
+          CLI_RUN_URL: ${{ steps.cli-handoff.outputs.cli_run_url }}
+        run: |
+          {
+            echo "### Go → CLI release handoff"
+            echo "- Handoff: \`$HANDOFF_ID\`"
+            echo "- Delivery: \`$DELIVERY_MODE\`"
+            echo "- CLI run: [$CLI_RUN_ID]($CLI_RUN_URL)"
+          } >> "$GITHUB_STEP_SUMMARY"

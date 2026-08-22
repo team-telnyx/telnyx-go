@@ -110,6 +110,7 @@ jobs:
           python3 .github/scripts/test_classify_production_ci.py -v
           python3 .github/scripts/test_validate_next_provenance.py -v
           python3 .github/scripts/test_verify_go_release.py -v
+          python3 .github/scripts/test_dispatch_cli_release.py -v
   test:
     needs: classify-production-ci
     timeout-minutes: 10
