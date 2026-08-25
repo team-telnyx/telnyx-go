@@ -5530,8 +5530,9 @@ func (r *TranscriptionPayload) UnmarshalJSON(data []byte) error {
 }
 
 type TranscriptionPayloadTranscriptionData struct {
-	// Speech recognition confidence level.
-	Confidence float64 `json:"confidence"`
+	// Speech recognition confidence level. `cohere/ar-stt` returns `null` here rather
+	// than omitting the field.
+	Confidence float64 `json:"confidence" api:"nullable"`
 	// When false, it means that this is an interim result.
 	IsFinal bool `json:"is_final"`
 	// Recognized text.

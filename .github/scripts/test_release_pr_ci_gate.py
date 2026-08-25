@@ -18,9 +18,16 @@ class ReleasePRGateWorkflowTests(unittest.TestCase):
         for test in (
             "test_release_pr_auto_merge.py", "test_release_pr_ci_gate.py",
             "test_classify_production_ci.py", "test_validate_next_provenance.py",
-            "test_verify_go_release.py",
+            "test_verify_go_release.py", "test_dispatch_cli_release.py",
         ):
             self.assertIn(test, ci)
+
+    def test_release_workflow_handoff_is_retried_and_observed(self):
+        workflow = (ROOT / ".github/workflows/release-please.yml").read_text()
+        self.assertIn("id: cli-handoff", workflow)
+        self.assertIn("dispatch_cli_release.py", workflow)
+        self.assertIn('--sdk-config-sha "$SDK_CONFIG_SHA"', workflow)
+        self.assertIn("steps.cli-handoff.outputs.cli_run_url", workflow)
 
     def test_release_workflow_verifies_tag_and_module_after_release(self):
         workflow = (ROOT / ".github/workflows/release-please.yml").read_text()

@@ -862,6 +862,18 @@ type AssistantToolTransferTransfer struct {
 	// dial command; instead, playback starts after the specified delay. When not set,
 	// existing behavior (audio_url in dial) is preserved.
 	WarmMessageDelayMs int64 `json:"warm_message_delay_ms" api:"nullable"`
+	// Requires the transfer destination to accept the call before the caller is
+	// bridged. When enabled, the assistant speaks privately with the destination after
+	// they answer — delivering the warm transfer message and asking whether they take
+	// the call — while the caller keeps hearing ringback. The assistant then finalizes
+	// the transfer with the built-in `complete_transfer` tool: an accept bridges the
+	// calls, a decline hangs up the destination and returns the assistant to the
+	// caller with the reason the destination gave. Requires either
+	// `warm_transfer_instructions` or a `message` on every target, otherwise the
+	// assistant fails to save. Only available for calls started with
+	// `ai_assistant_start`; single-caller conversations only (a conference or
+	// additional invited participants fall back to a regular warm transfer).
+	WarmTransferAcceptance AssistantToolTransferTransferWarmTransferAcceptance `json:"warm_transfer_acceptance"`
 	// Natural language instructions for your agent for how to provide context for the
 	// transfer recipient.
 	WarmTransferInstructions string `json:"warm_transfer_instructions"`
@@ -873,6 +885,7 @@ type AssistantToolTransferTransfer struct {
 		Description              respjson.Field
 		VoicemailDetection       respjson.Field
 		WarmMessageDelayMs       respjson.Field
+		WarmTransferAcceptance   respjson.Field
 		WarmTransferInstructions respjson.Field
 		ExtraFields              map[string]respjson.Field
 		raw                      string
@@ -925,11 +938,16 @@ func (r *AssistantToolTransferTransferTargetsUnion) UnmarshalJSON(data []byte) e
 type AssistantToolTransferTransferTargetsTargetsListItem struct {
 	// The destination number or SIP URI of the call.
 	To string `json:"to" api:"required"`
+	// The warm transfer message to deliver to this specific target. When set, it takes
+	// precedence over the message the assistant composes from
+	// `warm_transfer_instructions`.
+	Message string `json:"message"`
 	// The name of the target.
 	Name string `json:"name"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		To          respjson.Field
+		Message     respjson.Field
 		Name        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -1098,6 +1116,43 @@ func (r AssistantToolTransferTransferVoicemailDetectionOnVoicemailDetectedVoicem
 	return r.JSON.raw
 }
 func (r *AssistantToolTransferTransferVoicemailDetectionOnVoicemailDetectedVoicemailMessage) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Requires the transfer destination to accept the call before the caller is
+// bridged. When enabled, the assistant speaks privately with the destination after
+// they answer — delivering the warm transfer message and asking whether they take
+// the call — while the caller keeps hearing ringback. The assistant then finalizes
+// the transfer with the built-in `complete_transfer` tool: an accept bridges the
+// calls, a decline hangs up the destination and returns the assistant to the
+// caller with the reason the destination gave. Requires either
+// `warm_transfer_instructions` or a `message` on every target, otherwise the
+// assistant fails to save. Only available for calls started with
+// `ai_assistant_start`; single-caller conversations only (a conference or
+// additional invited participants fall back to a regular warm transfer).
+type AssistantToolTransferTransferWarmTransferAcceptance struct {
+	// Whether the destination must accept the transfer before the calls are bridged.
+	Enabled bool `json:"enabled"`
+	// Controls whether the private exchange between the assistant and the transfer
+	// destination is kept out of the conversation. With `private` (default) the
+	// exchange never reaches the conversation history, AI conversations, webhooks or
+	// insights, and the transfer tool result is rewritten with the outcome only. With
+	// `shared` the exchange stays in the conversation like any other messages.
+	//
+	// Any of "private", "shared".
+	EndUserTargetContextMode string `json:"end_user_target_context_mode"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Enabled                  respjson.Field
+		EndUserTargetContextMode respjson.Field
+		ExtraFields              map[string]respjson.Field
+		raw                      string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AssistantToolTransferTransferWarmTransferAcceptance) RawJSON() string { return r.JSON.raw }
+func (r *AssistantToolTransferTransferWarmTransferAcceptance) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -2011,6 +2066,18 @@ type AssistantToolTransferTransferParam struct {
 	// transferred call. Allows the assistant to detect when a voicemail system answers
 	// the transferred call and take appropriate action.
 	VoicemailDetection AssistantToolTransferTransferVoicemailDetectionParam `json:"voicemail_detection,omitzero"`
+	// Requires the transfer destination to accept the call before the caller is
+	// bridged. When enabled, the assistant speaks privately with the destination after
+	// they answer — delivering the warm transfer message and asking whether they take
+	// the call — while the caller keeps hearing ringback. The assistant then finalizes
+	// the transfer with the built-in `complete_transfer` tool: an accept bridges the
+	// calls, a decline hangs up the destination and returns the assistant to the
+	// caller with the reason the destination gave. Requires either
+	// `warm_transfer_instructions` or a `message` on every target, otherwise the
+	// assistant fails to save. Only available for calls started with
+	// `ai_assistant_start`; single-caller conversations only (a conference or
+	// additional invited participants fall back to a regular warm transfer).
+	WarmTransferAcceptance AssistantToolTransferTransferWarmTransferAcceptanceParam `json:"warm_transfer_acceptance,omitzero"`
 	paramObj
 }
 
@@ -2051,6 +2118,10 @@ func (u *AssistantToolTransferTransferTargetsUnionParam) asAny() any {
 type AssistantToolTransferTransferTargetsTargetsListItemParam struct {
 	// The destination number or SIP URI of the call.
 	To string `json:"to" api:"required"`
+	// The warm transfer message to deliver to this specific target. When set, it takes
+	// precedence over the message the assistant composes from
+	// `warm_transfer_instructions`.
+	Message param.Opt[string] `json:"message,omitzero"`
 	// The name of the target.
 	Name param.Opt[string] `json:"name,omitzero"`
 	paramObj
@@ -2202,6 +2273,45 @@ func (r *AssistantToolTransferTransferVoicemailDetectionOnVoicemailDetectedVoice
 func init() {
 	apijson.RegisterFieldValidator[AssistantToolTransferTransferVoicemailDetectionOnVoicemailDetectedVoicemailMessageParam](
 		"type", "message", "warm_transfer_instructions",
+	)
+}
+
+// Requires the transfer destination to accept the call before the caller is
+// bridged. When enabled, the assistant speaks privately with the destination after
+// they answer — delivering the warm transfer message and asking whether they take
+// the call — while the caller keeps hearing ringback. The assistant then finalizes
+// the transfer with the built-in `complete_transfer` tool: an accept bridges the
+// calls, a decline hangs up the destination and returns the assistant to the
+// caller with the reason the destination gave. Requires either
+// `warm_transfer_instructions` or a `message` on every target, otherwise the
+// assistant fails to save. Only available for calls started with
+// `ai_assistant_start`; single-caller conversations only (a conference or
+// additional invited participants fall back to a regular warm transfer).
+type AssistantToolTransferTransferWarmTransferAcceptanceParam struct {
+	// Whether the destination must accept the transfer before the calls are bridged.
+	Enabled param.Opt[bool] `json:"enabled,omitzero"`
+	// Controls whether the private exchange between the assistant and the transfer
+	// destination is kept out of the conversation. With `private` (default) the
+	// exchange never reaches the conversation history, AI conversations, webhooks or
+	// insights, and the transfer tool result is rewritten with the outcome only. With
+	// `shared` the exchange stays in the conversation like any other messages.
+	//
+	// Any of "private", "shared".
+	EndUserTargetContextMode string `json:"end_user_target_context_mode,omitzero"`
+	paramObj
+}
+
+func (r AssistantToolTransferTransferWarmTransferAcceptanceParam) MarshalJSON() (data []byte, err error) {
+	type shadow AssistantToolTransferTransferWarmTransferAcceptanceParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AssistantToolTransferTransferWarmTransferAcceptanceParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[AssistantToolTransferTransferWarmTransferAcceptanceParam](
+		"end_user_target_context_mode", "private", "shared",
 	)
 }
 
@@ -4402,6 +4512,23 @@ type InferenceEmbeddingWebhookToolParamsWebhookResp struct {
 	// [JSON Schema reference](https://json-schema.org/understanding-json-schema) for
 	// documentation about the format
 	PathParameters InferenceEmbeddingWebhookToolParamsWebhookPathParametersResp `json:"path_parameters"`
+	// Body fields supplied by the assistant configuration rather than by the model.
+	// They are never advertised in the tool definition, so the LLM can neither see nor
+	// set them, and they take precedence over a `body_parameters` value of the same
+	// name. Values support mustache templating, so they can hold dynamic variables
+	// (`{{customer_id}}`) and integration secrets
+	// (`{{#integration_secret}}my-secret{{/integration_secret}}`). Not sent on `GET`
+	// requests, which carry no body.
+	PresetBodyFields map[string]any `json:"preset_body_fields"`
+	// Query string parameters supplied by the assistant configuration rather than by
+	// the model. They are never advertised in the tool definition, so the LLM can
+	// neither see nor set them, and they take precedence over a `query_parameters`
+	// value of the same name. Values support mustache templating, so they can hold
+	// dynamic variables (`{{telnyx_end_user_target}}`) and integration secrets
+	// (`{{#integration_secret}}my-secret{{/integration_secret}}`). Unlike values
+	// templated directly into the `url`, these are percent-encoded, so a value such as
+	// `+15551234567` survives the round trip.
+	PresetQueryParams map[string]any `json:"preset_query_params"`
 	// The query parameters the webhook tool accepts, described as a JSON Schema
 	// object. These parameters will be passed to the webhook as the query of the
 	// request. See the
@@ -4427,6 +4554,8 @@ type InferenceEmbeddingWebhookToolParamsWebhookResp struct {
 		Messages               respjson.Field
 		Method                 respjson.Field
 		PathParameters         respjson.Field
+		PresetBodyFields       respjson.Field
+		PresetQueryParams      respjson.Field
 		QueryParameters        respjson.Field
 		StoreFieldsAsVariables respjson.Field
 		TimeoutMs              respjson.Field
@@ -4725,6 +4854,23 @@ type InferenceEmbeddingWebhookToolParamsWebhook struct {
 	// [JSON Schema reference](https://json-schema.org/understanding-json-schema) for
 	// documentation about the format
 	PathParameters InferenceEmbeddingWebhookToolParamsWebhookPathParameters `json:"path_parameters,omitzero"`
+	// Body fields supplied by the assistant configuration rather than by the model.
+	// They are never advertised in the tool definition, so the LLM can neither see nor
+	// set them, and they take precedence over a `body_parameters` value of the same
+	// name. Values support mustache templating, so they can hold dynamic variables
+	// (`{{customer_id}}`) and integration secrets
+	// (`{{#integration_secret}}my-secret{{/integration_secret}}`). Not sent on `GET`
+	// requests, which carry no body.
+	PresetBodyFields map[string]any `json:"preset_body_fields,omitzero"`
+	// Query string parameters supplied by the assistant configuration rather than by
+	// the model. They are never advertised in the tool definition, so the LLM can
+	// neither see nor set them, and they take precedence over a `query_parameters`
+	// value of the same name. Values support mustache templating, so they can hold
+	// dynamic variables (`{{telnyx_end_user_target}}`) and integration secrets
+	// (`{{#integration_secret}}my-secret{{/integration_secret}}`). Unlike values
+	// templated directly into the `url`, these are percent-encoded, so a value such as
+	// `+15551234567` survives the round trip.
+	PresetQueryParams map[string]any `json:"preset_query_params,omitzero"`
 	// The query parameters the webhook tool accepts, described as a JSON Schema
 	// object. These parameters will be passed to the webhook as the query of the
 	// request. See the
@@ -5539,6 +5685,15 @@ type TelephonySettings struct {
 	NoiseSuppressionConfig TelephonySettingsNoiseSuppressionConfig `json:"noise_suppression_config"`
 	// Configuration for call recording format and channel settings.
 	RecordingSettings TelephonySettingsRecordingSettings `json:"recording_settings"`
+	// Whether the assistant sends a `call.ai_gather.message_history_updated` webhook
+	// with the full message history every time the conversation history changes. Leave
+	// unset to inherit the `send_message_history_updates` value from the
+	// `ai_assistant_start` or `gather_using_ai` command that started the conversation.
+	// Setting it here is authoritative: `true` turns the webhooks on even when the
+	// start command did not request them, and `false` turns them off even when it did.
+	// Messages exchanged during a private warm transfer acceptance phase are never
+	// included.
+	SendMessageHistoryUpdates bool `json:"send_message_history_updates"`
 	// When enabled, allows users to interact with your AI assistant directly from your
 	// website without requiring authentication. This is required for FE widgets that
 	// work with assistants that have telephony enabled.
@@ -5571,6 +5726,7 @@ type TelephonySettings struct {
 		NoiseSuppression                respjson.Field
 		NoiseSuppressionConfig          respjson.Field
 		RecordingSettings               respjson.Field
+		SendMessageHistoryUpdates       respjson.Field
 		SupportsUnauthenticatedWebCalls respjson.Field
 		TimeLimitSecs                   respjson.Field
 		UserIdleReplySecs               respjson.Field
@@ -5752,6 +5908,15 @@ type TelephonySettingsParam struct {
 	// configured anywhere on the assistant — on the main tool array or on any workflow
 	// node — enforced at write time.
 	DisableDtmf param.Opt[bool] `json:"disable_dtmf,omitzero"`
+	// Whether the assistant sends a `call.ai_gather.message_history_updated` webhook
+	// with the full message history every time the conversation history changes. Leave
+	// unset to inherit the `send_message_history_updates` value from the
+	// `ai_assistant_start` or `gather_using_ai` command that started the conversation.
+	// Setting it here is authoritative: `true` turns the webhooks on even when the
+	// start command did not request them, and `false` turns them off even when it did.
+	// Messages exchanged during a private warm transfer acceptance phase are never
+	// included.
+	SendMessageHistoryUpdates param.Opt[bool] `json:"send_message_history_updates,omitzero"`
 	// When enabled, allows users to interact with your AI assistant directly from your
 	// website without requiring authentication. This is required for FE widgets that
 	// work with assistants that have telephony enabled.
@@ -6111,7 +6276,9 @@ type TranscriptionSettings struct {
 	// does not fall back to `auto` when `language` is omitted — omitting it applies
 	// `en` instead. For `reson8/turns`, supported values are `auto` (or unset) for
 	// automatic language detection, and the language codes `nl`, `en`, `fr`, `fy`,
-	// `de`, `it`, `pl`, `pt`, `es`, and `sv` to fix the transcription language.
+	// `de`, `it`, `pl`, `pt`, `es`, and `sv` to fix the transcription language. For
+	// `cohere/ar-stt`, supported values are `ar` and `en`; unlike other models, this
+	// model does not auto-detect and defaults to `ar` when `language` is omitted.
 	Language string `json:"language"`
 	// The speech to text model to be used by the voice assistant. All Deepgram models
 	// are run on-premise.
@@ -6131,10 +6298,11 @@ type TranscriptionSettings struct {
 	//     code-switching support.
 	//   - `reson8/turns` is a turn-based streaming model covering 10 European languages
 	//     with automatic language detection.
+	//   - `cohere/ar-stt` is a non-streaming Arabic and English transcription model.
 	//
 	// Any of "deepgram/flux", "deepgram/nova-3", "deepgram/nova-2", "azure/fast",
 	// "assemblyai/universal-streaming", "xai/grok-stt", "soniox/stt-rt-v4",
-	// "nvidia/parakeet-v3", "humain/realtime", "reson8/turns",
+	// "nvidia/parakeet-v3", "humain/realtime", "reson8/turns", "cohere/ar-stt",
 	// "distil-whisper/distil-large-v2", "openai/whisper-large-v3-turbo".
 	Model TranscriptionSettingsModel `json:"model"`
 	// Region on third party cloud providers (currently Azure) if using one of their
@@ -6186,6 +6354,7 @@ func (r TranscriptionSettings) ToParam() TranscriptionSettingsParam {
 //     code-switching support.
 //   - `reson8/turns` is a turn-based streaming model covering 10 European languages
 //     with automatic language detection.
+//   - `cohere/ar-stt` is a non-streaming Arabic and English transcription model.
 type TranscriptionSettingsModel string
 
 const (
@@ -6199,6 +6368,7 @@ const (
 	TranscriptionSettingsModelNvidiaParakeetV3             TranscriptionSettingsModel = "nvidia/parakeet-v3"
 	TranscriptionSettingsModelHumainRealtime               TranscriptionSettingsModel = "humain/realtime"
 	TranscriptionSettingsModelReson8Turns                  TranscriptionSettingsModel = "reson8/turns"
+	TranscriptionSettingsModelCohereArStt                  TranscriptionSettingsModel = "cohere/ar-stt"
 	TranscriptionSettingsModelDistilWhisperDistilLargeV2   TranscriptionSettingsModel = "distil-whisper/distil-large-v2"
 	TranscriptionSettingsModelOpenAIWhisperLargeV3Turbo    TranscriptionSettingsModel = "openai/whisper-large-v3-turbo"
 )
@@ -6219,7 +6389,9 @@ type TranscriptionSettingsParam struct {
 	// does not fall back to `auto` when `language` is omitted — omitting it applies
 	// `en` instead. For `reson8/turns`, supported values are `auto` (or unset) for
 	// automatic language detection, and the language codes `nl`, `en`, `fr`, `fy`,
-	// `de`, `it`, `pl`, `pt`, `es`, and `sv` to fix the transcription language.
+	// `de`, `it`, `pl`, `pt`, `es`, and `sv` to fix the transcription language. For
+	// `cohere/ar-stt`, supported values are `ar` and `en`; unlike other models, this
+	// model does not auto-detect and defaults to `ar` when `language` is omitted.
 	Language param.Opt[string] `json:"language,omitzero"`
 	// Region on third party cloud providers (currently Azure) if using one of their
 	// models. Some regions require `api_key_ref`.
@@ -6242,10 +6414,11 @@ type TranscriptionSettingsParam struct {
 	//     code-switching support.
 	//   - `reson8/turns` is a turn-based streaming model covering 10 European languages
 	//     with automatic language detection.
+	//   - `cohere/ar-stt` is a non-streaming Arabic and English transcription model.
 	//
 	// Any of "deepgram/flux", "deepgram/nova-3", "deepgram/nova-2", "azure/fast",
 	// "assemblyai/universal-streaming", "xai/grok-stt", "soniox/stt-rt-v4",
-	// "nvidia/parakeet-v3", "humain/realtime", "reson8/turns",
+	// "nvidia/parakeet-v3", "humain/realtime", "reson8/turns", "cohere/ar-stt",
 	// "distil-whisper/distil-large-v2", "openai/whisper-large-v3-turbo".
 	Model    TranscriptionSettingsModel       `json:"model,omitzero"`
 	Settings TranscriptionSettingsConfigParam `json:"settings,omitzero"`
