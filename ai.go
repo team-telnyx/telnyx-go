@@ -48,6 +48,7 @@ type AIService struct {
 	// Configure AI assistant specifications
 	Tools     AIToolService
 	Anthropic AIAnthropicService
+	Knowledge AIKnowledgeService
 }
 
 // NewAIService generates a new service that applies the given options to each
@@ -70,6 +71,7 @@ func NewAIService(opts ...option.RequestOption) (r AIService) {
 	r.OpenAI = NewAIOpenAIService(opts...)
 	r.Tools = NewAIToolService(opts...)
 	r.Anthropic = NewAIAnthropicService(opts...)
+	r.Knowledge = NewAIKnowledgeService(opts...)
 	return
 }
 

@@ -93,8 +93,9 @@ func (r *SimCardGroupActionService) RemovePrivateWirelessGateway(ctx context.Con
 	return res, err
 }
 
-// This action will asynchronously remove an existing Wireless Blocklist to all the
-// SIMs in the SIM card group.
+// This action asynchronously removes the Wireless Blocklist assigned to a SIM Card
+// Group. The request returns `404` when the SIM Card Group does not exist and
+// `422` when no Wireless Blocklist is assigned.
 func (r *SimCardGroupActionService) RemoveWirelessBlocklist(ctx context.Context, id string, opts ...option.RequestOption) (res *SimCardGroupActionRemoveWirelessBlocklistResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -124,8 +125,9 @@ func (r *SimCardGroupActionService) SetPrivateWirelessGateway(ctx context.Contex
 	return res, err
 }
 
-// This action will asynchronously assign a Wireless Blocklist to all the SIMs in
-// the SIM card group.
+// This action asynchronously assigns a Wireless Blocklist to all SIMs in the SIM
+// Card Group. The request returns `404` when the SIM Card Group does not exist and
+// `422` when the Wireless Blocklist does not exist.
 func (r *SimCardGroupActionService) SetWirelessBlocklist(ctx context.Context, id string, body SimCardGroupActionSetWirelessBlocklistParams, opts ...option.RequestOption) (res *SimCardGroupActionSetWirelessBlocklistResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -184,9 +186,12 @@ func (r *SimCardGroupAction) UnmarshalJSON(data []byte) error {
 type SimCardGroupActionSettings struct {
 	// The identification of the related Private Wireless Gateway resource.
 	PrivateWirelessGatewayID string `json:"private_wireless_gateway_id" format:"uuid"`
+	// The identification of the related Wireless Blocklist resource.
+	WirelessBlocklistID string `json:"wireless_blocklist_id" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		PrivateWirelessGatewayID respjson.Field
+		WirelessBlocklistID      respjson.Field
 		ExtraFields              map[string]respjson.Field
 		raw                      string
 	} `json:"-"`

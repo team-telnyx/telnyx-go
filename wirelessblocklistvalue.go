@@ -37,7 +37,8 @@ func NewWirelessBlocklistValueService(opts ...option.RequestOption) (r WirelessB
 	return
 }
 
-// Retrieve all wireless blocklist values for a given blocklist type.
+// Retrieve all wireless blocklist values for a given blocklist type. The request
+// returns `422` when `type` is missing or invalid.
 func (r *WirelessBlocklistValueService) List(ctx context.Context, query WirelessBlocklistValueListParams, opts ...option.RequestOption) (res *WirelessBlocklistValueListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "wireless_blocklist_values"
@@ -46,12 +47,10 @@ func (r *WirelessBlocklistValueService) List(ctx context.Context, query Wireless
 }
 
 type WirelessBlocklistValueListResponse struct {
-	Data WirelessBlocklistValueListResponseDataUnion `json:"data"`
-	Meta PaginationMeta                              `json:"meta"`
+	Data WirelessBlocklistValueListResponseDataUnion `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
-		Meta        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -114,13 +113,10 @@ func (r *WirelessBlocklistValueListResponseDataUnion) UnmarshalJSON(data []byte)
 
 type WirelessBlocklistValueListResponseDataCountryItem struct {
 	// ISO 3166-1 Alpha-2 Country Code.
-	Code string `json:"code" api:"required"`
-	// The name of the country.
-	Name string `json:"name" api:"required"`
+	CountryCode string `json:"country_code" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Code        respjson.Field
-		Name        respjson.Field
+		CountryCode respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -134,13 +130,10 @@ func (r *WirelessBlocklistValueListResponseDataCountryItem) UnmarshalJSON(data [
 
 type WirelessBlocklistValueListResponseDataMccItem struct {
 	// Mobile Country Code.
-	Code string `json:"code" api:"required"`
-	// The name of the country.
-	Name string `json:"name" api:"required"`
+	Mcc string `json:"mcc" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Code        respjson.Field
-		Name        respjson.Field
+		Mcc         respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -154,13 +147,10 @@ func (r *WirelessBlocklistValueListResponseDataMccItem) UnmarshalJSON(data []byt
 
 type WirelessBlocklistValueListResponseDataPlmnItem struct {
 	// Public land mobile network code (MCC + MNC).
-	Code string `json:"code" api:"required"`
-	// The name of the network.
-	Name string `json:"name" api:"required"`
+	Plmn string `json:"plmn" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Code        respjson.Field
-		Name        respjson.Field
+		Plmn        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`

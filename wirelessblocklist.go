@@ -74,7 +74,7 @@ func (r *WirelessBlocklistService) Update(ctx context.Context, id string, body W
 }
 
 // Get all Wireless Blocklists belonging to the user.
-func (r *WirelessBlocklistService) List(ctx context.Context, query WirelessBlocklistListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[WirelessBlocklist], err error) {
+func (r *WirelessBlocklistService) List(ctx context.Context, query WirelessBlocklistListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[WirelessWirelessBlocklist], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -92,34 +92,36 @@ func (r *WirelessBlocklistService) List(ctx context.Context, query WirelessBlock
 }
 
 // Get all Wireless Blocklists belonging to the user.
-func (r *WirelessBlocklistService) ListAutoPaging(ctx context.Context, query WirelessBlocklistListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[WirelessBlocklist] {
+func (r *WirelessBlocklistService) ListAutoPaging(ctx context.Context, query WirelessBlocklistListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[WirelessWirelessBlocklist] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Permanently deletes the specified wireless blocklist from your account.
-func (r *WirelessBlocklistService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *WirelessBlocklistDeleteResponse, err error) {
+// Permanently deletes the specified wireless blocklist from your account. The
+// request returns `422` when the wireless blocklist is assigned to a SIM Card
+// Group.
+func (r *WirelessBlocklistService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return nil, err
+		return err
 	}
 	path := fmt.Sprintf("wireless_blocklists/%s", id)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return res, err
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
+	return err
 }
 
-type WirelessBlocklist struct {
+type WirelessWirelessBlocklist struct {
 	// Identifies the resource.
 	ID string `json:"id" format:"uuid"`
 	// ISO 8601 formatted date-time indicating when the resource was created.
 	CreatedAt string `json:"created_at"`
 	// The wireless blocklist name.
-	Name       string `json:"name"`
-	RecordType string `json:"record_type"`
+	Name string `json:"name"`
 	// The type of the wireless blocklist.
 	//
 	// Any of "country", "mcc", "plmn".
-	Type WirelessBlocklistType `json:"type"`
+	Type WirelessWirelessBlocklistType `json:"type"`
 	// ISO 8601 formatted date-time indicating when the resource was updated.
 	UpdatedAt string `json:"updated_at"`
 	// Values to block. The values here depend on the `type` of Wireless Blocklist.
@@ -129,7 +131,6 @@ type WirelessBlocklist struct {
 		ID          respjson.Field
 		CreatedAt   respjson.Field
 		Name        respjson.Field
-		RecordType  respjson.Field
 		Type        respjson.Field
 		UpdatedAt   respjson.Field
 		Values      respjson.Field
@@ -139,22 +140,22 @@ type WirelessBlocklist struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r WirelessBlocklist) RawJSON() string { return r.JSON.raw }
-func (r *WirelessBlocklist) UnmarshalJSON(data []byte) error {
+func (r WirelessWirelessBlocklist) RawJSON() string { return r.JSON.raw }
+func (r *WirelessWirelessBlocklist) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The type of the wireless blocklist.
-type WirelessBlocklistType string
+type WirelessWirelessBlocklistType string
 
 const (
-	WirelessBlocklistTypeCountry WirelessBlocklistType = "country"
-	WirelessBlocklistTypeMcc     WirelessBlocklistType = "mcc"
-	WirelessBlocklistTypePlmn    WirelessBlocklistType = "plmn"
+	WirelessWirelessBlocklistTypeCountry WirelessWirelessBlocklistType = "country"
+	WirelessWirelessBlocklistTypeMcc     WirelessWirelessBlocklistType = "mcc"
+	WirelessWirelessBlocklistTypePlmn    WirelessWirelessBlocklistType = "plmn"
 )
 
 type WirelessBlocklistNewResponse struct {
-	Data WirelessBlocklist `json:"data"`
+	Data WirelessWirelessBlocklist `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -170,7 +171,7 @@ func (r *WirelessBlocklistNewResponse) UnmarshalJSON(data []byte) error {
 }
 
 type WirelessBlocklistGetResponse struct {
-	Data WirelessBlocklist `json:"data"`
+	Data WirelessWirelessBlocklist `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -186,7 +187,7 @@ func (r *WirelessBlocklistGetResponse) UnmarshalJSON(data []byte) error {
 }
 
 type WirelessBlocklistUpdateResponse struct {
-	Data WirelessBlocklist `json:"data"`
+	Data WirelessWirelessBlocklist `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -198,22 +199,6 @@ type WirelessBlocklistUpdateResponse struct {
 // Returns the unmodified JSON received from the API
 func (r WirelessBlocklistUpdateResponse) RawJSON() string { return r.JSON.raw }
 func (r *WirelessBlocklistUpdateResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type WirelessBlocklistDeleteResponse struct {
-	Data WirelessBlocklist `json:"data"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r WirelessBlocklistDeleteResponse) RawJSON() string { return r.JSON.raw }
-func (r *WirelessBlocklistDeleteResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -267,8 +252,6 @@ type WirelessBlocklistListParams struct {
 	FilterName param.Opt[string] `query:"filter[name],omitzero" json:"-"`
 	// When the Private Wireless Gateway was last updated.
 	FilterType param.Opt[string] `query:"filter[type],omitzero" json:"-"`
-	// Values to filter on (inclusive).
-	FilterValues param.Opt[string] `query:"filter[values],omitzero" json:"-"`
 	// The page number to load.
 	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
 	// The size of the page.

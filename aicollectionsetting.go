@@ -80,8 +80,11 @@ func (r *AICollectionSettingService) PatchAll(ctx context.Context, uuid string, 
 type RetrievalSettings struct {
 	// Retrieval strategy. `vector` runs semantic similarity search; `hybrid` combines
 	// vector similarity with keyword matching; `keyword` runs lexical (BM25) matching.
+	// `keyword` is not accepted yet: setting it returns 422
+	// `unsupported_retrieval_type`. A collection set to `hybrid` is accepted here but
+	// cannot be searched until hybrid execution ships.
 	//
-	// Any of "vector", "hybrid", "keyword".
+	// Any of "vector", "hybrid".
 	RetrievalType RetrievalSettingsRetrievalType `json:"retrieval_type"`
 	// Number of top results to retrieve (1–50).
 	TopK int64 `json:"top_k"`
@@ -111,12 +114,14 @@ func (r RetrievalSettings) ToParam() RetrievalSettingsParam {
 
 // Retrieval strategy. `vector` runs semantic similarity search; `hybrid` combines
 // vector similarity with keyword matching; `keyword` runs lexical (BM25) matching.
+// `keyword` is not accepted yet: setting it returns 422
+// `unsupported_retrieval_type`. A collection set to `hybrid` is accepted here but
+// cannot be searched until hybrid execution ships.
 type RetrievalSettingsRetrievalType string
 
 const (
-	RetrievalSettingsRetrievalTypeVector  RetrievalSettingsRetrievalType = "vector"
-	RetrievalSettingsRetrievalTypeHybrid  RetrievalSettingsRetrievalType = "hybrid"
-	RetrievalSettingsRetrievalTypeKeyword RetrievalSettingsRetrievalType = "keyword"
+	RetrievalSettingsRetrievalTypeVector RetrievalSettingsRetrievalType = "vector"
+	RetrievalSettingsRetrievalTypeHybrid RetrievalSettingsRetrievalType = "hybrid"
 )
 
 // How documents are retrieved when searching the collection.
@@ -125,8 +130,11 @@ type RetrievalSettingsParam struct {
 	TopK param.Opt[int64] `json:"top_k,omitzero"`
 	// Retrieval strategy. `vector` runs semantic similarity search; `hybrid` combines
 	// vector similarity with keyword matching; `keyword` runs lexical (BM25) matching.
+	// `keyword` is not accepted yet: setting it returns 422
+	// `unsupported_retrieval_type`. A collection set to `hybrid` is accepted here but
+	// cannot be searched until hybrid execution ships.
 	//
-	// Any of "vector", "hybrid", "keyword".
+	// Any of "vector", "hybrid".
 	RetrievalType RetrievalSettingsRetrievalType `json:"retrieval_type,omitzero"`
 	paramObj
 }
