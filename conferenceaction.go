@@ -675,7 +675,9 @@ type ConferenceActionGatherDtmfAudioParams struct {
 	MinimumDigits param.Opt[int64] `json:"minimum_digits,omitzero"`
 	// Whether to stop the audio playback when a DTMF digit is received.
 	StopPlaybackOnDtmf param.Opt[bool] `json:"stop_playback_on_dtmf,omitzero"`
-	// Digit that terminates gathering.
+	// Digit that terminates gathering. Set to an empty string to disable the
+	// terminating digit entirely, so that a digit such as `#` can be collected as
+	// input per `valid_digits`.
 	TerminatingDigit param.Opt[string] `json:"terminating_digit,omitzero"`
 	// Duration in milliseconds to wait for input before timing out.
 	TimeoutMillis param.Opt[int64] `json:"timeout_millis,omitzero"`

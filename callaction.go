@@ -4320,7 +4320,8 @@ type CallActionGatherParams struct {
 	// The minimum number of digits to fetch. This parameter has a minimum value of 1.
 	MinimumDigits param.Opt[int64] `json:"minimum_digits,omitzero"`
 	// The digit used to terminate input if fewer than `maximum_digits` digits have
-	// been gathered.
+	// been gathered. Set to an empty string to disable the terminating digit entirely,
+	// so that a digit such as `#` can be collected as input per `valid_digits`.
 	TerminatingDigit param.Opt[string] `json:"terminating_digit,omitzero"`
 	// The number of milliseconds to wait to complete the request.
 	TimeoutMillis param.Opt[int64] `json:"timeout_millis,omitzero"`
@@ -4653,7 +4654,8 @@ type CallActionGatherUsingAudioParams struct {
 	// The minimum number of digits to fetch. This parameter has a minimum value of 1.
 	MinimumDigits param.Opt[int64] `json:"minimum_digits,omitzero"`
 	// The digit used to terminate input if fewer than `maximum_digits` digits have
-	// been gathered.
+	// been gathered. Set to an empty string to disable the terminating digit entirely,
+	// so that a digit such as `#` can be collected as input per `valid_digits`.
 	TerminatingDigit param.Opt[string] `json:"terminating_digit,omitzero"`
 	// The number of milliseconds to wait for a DTMF response after file playback ends
 	// before a replaying the sound file.
@@ -4749,7 +4751,8 @@ type CallActionGatherUsingSpeakParams struct {
 	// The minimum number of digits to fetch. This parameter has a minimum value of 1.
 	MinimumDigits param.Opt[int64] `json:"minimum_digits,omitzero"`
 	// The digit used to terminate input if fewer than `maximum_digits` digits have
-	// been gathered.
+	// been gathered. Set to an empty string to disable the terminating digit entirely,
+	// so that a digit such as `#` can be collected as input per `valid_digits`.
 	TerminatingDigit param.Opt[string] `json:"terminating_digit,omitzero"`
 	// The number of milliseconds to wait for a DTMF response after speak ends before a
 	// replaying the sound file.
