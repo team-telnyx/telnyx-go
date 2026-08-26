@@ -2019,6 +2019,54 @@ const (
 	TranscriptionEngineBConfigTranscriptionModelOpenAIWhisperLargeV3Turbo TranscriptionEngineBConfigTranscriptionModel = "openai/whisper-large-v3-turbo"
 )
 
+type TranscriptionEngineCohereConfigParam struct {
+	// The language of the audio to be transcribed. Unlike other self-hosted models,
+	// Cohere does not auto-detect the language; `auto` is not supported.
+	//
+	// Any of "ar", "en".
+	Language TranscriptionEngineCohereConfigLanguage `json:"language,omitzero"`
+	// Engine identifier for Cohere transcription service
+	//
+	// Any of "Cohere".
+	TranscriptionEngine TranscriptionEngineCohereConfigTranscriptionEngine `json:"transcription_engine,omitzero"`
+	// The model to use for transcription.
+	//
+	// Any of "cohere/ar-stt".
+	TranscriptionModel TranscriptionEngineCohereConfigTranscriptionModel `json:"transcription_model,omitzero"`
+	paramObj
+}
+
+func (r TranscriptionEngineCohereConfigParam) MarshalJSON() (data []byte, err error) {
+	type shadow TranscriptionEngineCohereConfigParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TranscriptionEngineCohereConfigParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The language of the audio to be transcribed. Unlike other self-hosted models,
+// Cohere does not auto-detect the language; `auto` is not supported.
+type TranscriptionEngineCohereConfigLanguage string
+
+const (
+	TranscriptionEngineCohereConfigLanguageAr TranscriptionEngineCohereConfigLanguage = "ar"
+	TranscriptionEngineCohereConfigLanguageEn TranscriptionEngineCohereConfigLanguage = "en"
+)
+
+// Engine identifier for Cohere transcription service
+type TranscriptionEngineCohereConfigTranscriptionEngine string
+
+const (
+	TranscriptionEngineCohereConfigTranscriptionEngineCohere TranscriptionEngineCohereConfigTranscriptionEngine = "Cohere"
+)
+
+// The model to use for transcription.
+type TranscriptionEngineCohereConfigTranscriptionModel string
+
+const (
+	TranscriptionEngineCohereConfigTranscriptionModelCohereArStt TranscriptionEngineCohereConfigTranscriptionModel = "cohere/ar-stt"
+)
+
 type TranscriptionEngineGoogleConfigParam struct {
 	// Enables speaker diarization.
 	EnableSpeakerDiarization param.Opt[bool] `json:"enable_speaker_diarization,omitzero"`
@@ -2532,21 +2580,21 @@ const (
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type TranscriptionStartRequestTranscriptionEngineConfigUnionParam struct {
-	OfGoogle        *TranscriptionEngineGoogleConfigParam                          `json:",omitzero,inline"`
-	OfTelnyx        *TranscriptionEngineTelnyxConfigParam                          `json:",omitzero,inline"`
-	OfAzure         *TranscriptionEngineAzureConfigParam                           `json:",omitzero,inline"`
-	OfXAI           *TranscriptionEngineXaiConfigParam                             `json:",omitzero,inline"`
-	OfAssemblyAI    *TranscriptionEngineAssemblyaiConfigParam                      `json:",omitzero,inline"`
-	OfSpeechmatics  *TranscriptionEngineSpeechmaticsConfigParam                    `json:",omitzero,inline"`
-	OfSoniox        *TranscriptionEngineSonioxConfigParam                          `json:",omitzero,inline"`
-	OfParakeet      *TranscriptionEngineParakeetConfigParam                        `json:",omitzero,inline"`
-	OfHumain        *TranscriptionEngineHumainConfigParam                          `json:",omitzero,inline"`
-	OfReson8        *TranscriptionEngineReson8ConfigParam                          `json:",omitzero,inline"`
-	OfCohere        *TranscriptionStartRequestTranscriptionEngineConfigCohereParam `json:",omitzero,inline"`
-	OfA             *TranscriptionEngineAConfigParam                               `json:",omitzero,inline"`
-	OfB             *TranscriptionEngineBConfigParam                               `json:",omitzero,inline"`
-	OfDeepgramNova2 *DeepgramNova2ConfigParam                                      `json:",omitzero,inline"`
-	OfDeepgramNova3 *DeepgramNova3ConfigParam                                      `json:",omitzero,inline"`
+	OfGoogle        *TranscriptionEngineGoogleConfigParam       `json:",omitzero,inline"`
+	OfTelnyx        *TranscriptionEngineTelnyxConfigParam       `json:",omitzero,inline"`
+	OfAzure         *TranscriptionEngineAzureConfigParam        `json:",omitzero,inline"`
+	OfXAI           *TranscriptionEngineXaiConfigParam          `json:",omitzero,inline"`
+	OfAssemblyAI    *TranscriptionEngineAssemblyaiConfigParam   `json:",omitzero,inline"`
+	OfSpeechmatics  *TranscriptionEngineSpeechmaticsConfigParam `json:",omitzero,inline"`
+	OfSoniox        *TranscriptionEngineSonioxConfigParam       `json:",omitzero,inline"`
+	OfParakeet      *TranscriptionEngineParakeetConfigParam     `json:",omitzero,inline"`
+	OfHumain        *TranscriptionEngineHumainConfigParam       `json:",omitzero,inline"`
+	OfReson8        *TranscriptionEngineReson8ConfigParam       `json:",omitzero,inline"`
+	OfCohere        *TranscriptionEngineCohereConfigParam       `json:",omitzero,inline"`
+	OfA             *TranscriptionEngineAConfigParam            `json:",omitzero,inline"`
+	OfB             *TranscriptionEngineBConfigParam            `json:",omitzero,inline"`
+	OfDeepgramNova2 *DeepgramNova2ConfigParam                   `json:",omitzero,inline"`
+	OfDeepgramNova3 *DeepgramNova3ConfigParam                   `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -2913,48 +2961,11 @@ func init() {
 		apijson.Discriminator[TranscriptionEngineParakeetConfigParam]("Parakeet"),
 		apijson.Discriminator[TranscriptionEngineHumainConfigParam]("Humain"),
 		apijson.Discriminator[TranscriptionEngineReson8ConfigParam]("Reson8"),
-		apijson.Discriminator[TranscriptionStartRequestTranscriptionEngineConfigCohereParam]("Cohere"),
+		apijson.Discriminator[TranscriptionEngineCohereConfigParam]("Cohere"),
 		apijson.Discriminator[TranscriptionEngineAConfigParam]("A"),
 		apijson.Discriminator[TranscriptionEngineBConfigParam]("B"),
 		apijson.Discriminator[DeepgramNova2ConfigParam]("deepgram/nova-2"),
 		apijson.Discriminator[DeepgramNova3ConfigParam]("deepgram/nova-3"),
-	)
-}
-
-type TranscriptionStartRequestTranscriptionEngineConfigCohereParam struct {
-	// The language of the audio to be transcribed. Unlike other self-hosted models,
-	// Cohere does not auto-detect the language; `auto` is not supported.
-	//
-	// Any of "ar", "en".
-	Language string `json:"language,omitzero"`
-	// Engine identifier for Cohere transcription service
-	//
-	// Any of "Cohere".
-	TranscriptionEngine string `json:"transcription_engine,omitzero"`
-	// The model to use for transcription.
-	//
-	// Any of "cohere/ar-stt".
-	TranscriptionModel string `json:"transcription_model,omitzero"`
-	paramObj
-}
-
-func (r TranscriptionStartRequestTranscriptionEngineConfigCohereParam) MarshalJSON() (data []byte, err error) {
-	type shadow TranscriptionStartRequestTranscriptionEngineConfigCohereParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *TranscriptionStartRequestTranscriptionEngineConfigCohereParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigCohereParam](
-		"language", "ar", "en",
-	)
-	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigCohereParam](
-		"transcription_engine", "Cohere",
-	)
-	apijson.RegisterFieldValidator[TranscriptionStartRequestTranscriptionEngineConfigCohereParam](
-		"transcription_model", "cohere/ar-stt",
 	)
 }
 
