@@ -43,6 +43,19 @@ class GoNextProvenanceTests(unittest.TestCase):
             "promotion",
         )
 
+    def test_cli_release_handoff_scripts_are_fail_closed_production_policy(self):
+        paths = {
+            ".github/scripts/dispatch_cli_release.py",
+            ".github/scripts/test_dispatch_cli_release.py",
+        }
+        self.assertTrue(paths <= PRODUCTION_POLICY_PATHS)
+        with self.assertRaisesRegex(GateError, "dispatch_cli_release.py"):
+            require_policy_parity(
+                {path: A for path in paths},
+                {path: B for path in paths},
+                paths,
+            )
+
     def test_add_delete_and_modify_are_all_detected(self):
         self.assertEqual(
             changed_paths({"same": A, "deleted": A, "changed": A}, {"same": A, "added": B, "changed": B}),

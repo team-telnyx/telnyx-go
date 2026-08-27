@@ -29,8 +29,10 @@ TreeEntry = Tuple[str, str, str]
 PRODUCTION_POLICY_PATHS = frozenset(
     {
         ".github/scripts/classify_production_ci.py",
+        ".github/scripts/dispatch_cli_release.py",
         ".github/scripts/release_pr_auto_merge.py",
         ".github/scripts/test_classify_production_ci.py",
+        ".github/scripts/test_dispatch_cli_release.py",
         ".github/scripts/test_release_pr_auto_merge.py",
         ".github/scripts/test_release_pr_ci_gate.py",
         ".github/scripts/test_validate_next_provenance.py",
