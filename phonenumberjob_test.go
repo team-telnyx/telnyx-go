@@ -51,7 +51,11 @@ func TestPhoneNumberJobListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.PhoneNumbers.Jobs.List(context.TODO(), telnyx.PhoneNumberJobListParams{
 		Filter: telnyx.PhoneNumberJobListParamsFilter{
-			Type: "update_emergency_settings",
+			PhoneNumber: telnyx.PhoneNumberJobListParamsFilterPhoneNumberUnion{
+				OfString: telnyx.String("+15551234567,1234567890123456789"),
+			},
+			Status: []string{"pending", "in_progress"},
+			Type:   "update_emergency_settings",
 		},
 		PageNumber: telnyx.Int(0),
 		PageSize:   telnyx.Int(0),
