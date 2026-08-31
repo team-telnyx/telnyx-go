@@ -283,6 +283,39 @@ class ReleasePRAutoMergeGateTests(unittest.TestCase):
         result = self.gate(client).run(415, HEAD, True)
         self.assertEqual(result["status"], "ready")
 
+    def test_skipped_only_required_check_waits_instead_of_failing_closed(self):
+        client = FixtureClient()
+        build = next(c for c in client.snapshot["checks"] if c["name"] == "build")
+        build.update(conclusion="skipped")
+        self.assert_blocked(client, "timed out")
+
+    def test_skipped_run_is_superseded_by_successful_run_on_same_head(self):
+        client = FixtureClient()
+        skipped = copy.deepcopy(next(c for c in client.snapshot["checks"] if c["name"] == "build"))
+        skipped.update(id=999, conclusion="skipped", completed_at="2026-08-16T00:01:00Z")
+        client.snapshot["checks"].append(skipped)
+        result = self.gate(client).run(415, HEAD, True)
+        self.assertEqual(result["status"], "ready")
+
+    def test_skipped_check_becomes_successful_before_timeout(self):
+        raced = FixtureClient.good_snapshot()
+        next(c for c in raced["checks"] if c["name"] == "build").update(conclusion="skipped")
+        ready = FixtureClient.good_snapshot()
+        client = SequenceClient([raced, ready, ready])
+        sleeps = []
+        result = self.gate(client, attempts=2, sleeps=sleeps).run(415, HEAD, True)
+        self.assertEqual(result["status"], "ready")
+        self.assertEqual(sleeps, [0])
+
+    def test_skipped_run_does_not_mask_real_failure_on_same_head(self):
+        client = FixtureClient()
+        build = next(c for c in client.snapshot["checks"] if c["name"] == "build")
+        build.update(conclusion="skipped")
+        failed = copy.deepcopy(build)
+        failed.update(id=999, conclusion="failure", completed_at="2026-08-16T00:01:00Z")
+        client.snapshot["checks"].append(failed)
+        self.assert_blocked(client, "check failed: build")
+
     def test_success_from_wrong_app_does_not_satisfy_check(self):
         client = FixtureClient()
         build = next(c for c in client.snapshot["checks"] if c["name"] == "build")
