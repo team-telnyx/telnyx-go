@@ -62,6 +62,7 @@ func TestSpeechToTextGetTranscriptionWithOptionalParams(t *testing.T) {
 		Language:            telnyx.String("language"),
 		Model:               telnyx.SpeechToTextGetTranscriptionParamsModelFast,
 		Redact:              telnyx.String("redact"),
+		SampleRate:          telnyx.Int(0),
 	})
 	if err != nil {
 		var apierr *telnyx.Error

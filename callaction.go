@@ -1620,7 +1620,9 @@ type TranscriptionConfigParam struct {
 	// `auto` when `language` is omitted — omitting it applies `en` instead. For
 	// `reson8/turns`, supported values are `auto` (or unset) for automatic language
 	// detection, and the language codes `nl`, `en`, `fr`, `fy`, `de`, `it`, `pl`,
-	// `pt`, `es`, and `sv` to fix the transcription language.
+	// `pt`, `es`, and `sv` to fix the transcription language. For `cohere/ar-stt`,
+	// supported values are `ar` and `en`; unlike other models, this model does not
+	// auto-detect and defaults to `ar` when `language` is omitted.
 	Language param.Opt[string] `json:"language,omitzero"`
 	// The speech to text model to be used by the voice assistant. Supported models
 	// include:
@@ -1639,6 +1641,7 @@ type TranscriptionConfigParam struct {
 	//     Arabic/English code-switching support.
 	//   - `reson8/turns` for live streaming turn-based transcription of 10 European
 	//     languages with automatic language detection.
+	//   - `cohere/ar-stt` for non-streaming Arabic and English transcription.
 	//   - `azure/fast` and `azure/realtime`; Azure models require `region`, and
 	//     unsupported regions require `api_key_ref`.
 	//   - `google/latest_long` for non-streaming multilingual transcription.
@@ -1650,9 +1653,9 @@ type TranscriptionConfigParam struct {
 	// Any of "deepgram/flux", "flux", "deepgram/nova-3", "deepgram/nova-2",
 	// "speechmatics/standard", "speechmatics/enhanced",
 	// "assemblyai/universal-streaming", "xai/grok-stt", "soniox/stt-rt-v4",
-	// "nvidia/parakeet-v3", "humain/realtime", "reson8/turns", "azure/fast",
-	// "azure/realtime", "google/latest_long", "distil-whisper/distil-large-v2",
-	// "openai/whisper-large-v3-turbo".
+	// "nvidia/parakeet-v3", "humain/realtime", "reson8/turns", "cohere/ar-stt",
+	// "azure/fast", "azure/realtime", "google/latest_long",
+	// "distil-whisper/distil-large-v2", "openai/whisper-large-v3-turbo".
 	Model TranscriptionConfigModel `json:"model,omitzero"`
 	paramObj
 }
@@ -1682,6 +1685,7 @@ func (r *TranscriptionConfigParam) UnmarshalJSON(data []byte) error {
 //     Arabic/English code-switching support.
 //   - `reson8/turns` for live streaming turn-based transcription of 10 European
 //     languages with automatic language detection.
+//   - `cohere/ar-stt` for non-streaming Arabic and English transcription.
 //   - `azure/fast` and `azure/realtime`; Azure models require `region`, and
 //     unsupported regions require `api_key_ref`.
 //   - `google/latest_long` for non-streaming multilingual transcription.
@@ -1704,6 +1708,7 @@ const (
 	TranscriptionConfigModelNvidiaParakeetV3             TranscriptionConfigModel = "nvidia/parakeet-v3"
 	TranscriptionConfigModelHumainRealtime               TranscriptionConfigModel = "humain/realtime"
 	TranscriptionConfigModelReson8Turns                  TranscriptionConfigModel = "reson8/turns"
+	TranscriptionConfigModelCohereArStt                  TranscriptionConfigModel = "cohere/ar-stt"
 	TranscriptionConfigModelAzureFast                    TranscriptionConfigModel = "azure/fast"
 	TranscriptionConfigModelAzureRealtime                TranscriptionConfigModel = "azure/realtime"
 	TranscriptionConfigModelGoogleLatestLong             TranscriptionConfigModel = "google/latest_long"
@@ -2012,6 +2017,54 @@ type TranscriptionEngineBConfigTranscriptionModel string
 const (
 	TranscriptionEngineBConfigTranscriptionModelOpenAIWhisperTiny         TranscriptionEngineBConfigTranscriptionModel = "openai/whisper-tiny"
 	TranscriptionEngineBConfigTranscriptionModelOpenAIWhisperLargeV3Turbo TranscriptionEngineBConfigTranscriptionModel = "openai/whisper-large-v3-turbo"
+)
+
+type TranscriptionEngineCohereConfigParam struct {
+	// The language of the audio to be transcribed. Unlike other self-hosted models,
+	// Cohere does not auto-detect the language; `auto` is not supported.
+	//
+	// Any of "ar", "en".
+	Language TranscriptionEngineCohereConfigLanguage `json:"language,omitzero"`
+	// Engine identifier for Cohere transcription service
+	//
+	// Any of "Cohere".
+	TranscriptionEngine TranscriptionEngineCohereConfigTranscriptionEngine `json:"transcription_engine,omitzero"`
+	// The model to use for transcription.
+	//
+	// Any of "cohere/ar-stt".
+	TranscriptionModel TranscriptionEngineCohereConfigTranscriptionModel `json:"transcription_model,omitzero"`
+	paramObj
+}
+
+func (r TranscriptionEngineCohereConfigParam) MarshalJSON() (data []byte, err error) {
+	type shadow TranscriptionEngineCohereConfigParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TranscriptionEngineCohereConfigParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The language of the audio to be transcribed. Unlike other self-hosted models,
+// Cohere does not auto-detect the language; `auto` is not supported.
+type TranscriptionEngineCohereConfigLanguage string
+
+const (
+	TranscriptionEngineCohereConfigLanguageAr TranscriptionEngineCohereConfigLanguage = "ar"
+	TranscriptionEngineCohereConfigLanguageEn TranscriptionEngineCohereConfigLanguage = "en"
+)
+
+// Engine identifier for Cohere transcription service
+type TranscriptionEngineCohereConfigTranscriptionEngine string
+
+const (
+	TranscriptionEngineCohereConfigTranscriptionEngineCohere TranscriptionEngineCohereConfigTranscriptionEngine = "Cohere"
+)
+
+// The model to use for transcription.
+type TranscriptionEngineCohereConfigTranscriptionModel string
+
+const (
+	TranscriptionEngineCohereConfigTranscriptionModelCohereArStt TranscriptionEngineCohereConfigTranscriptionModel = "cohere/ar-stt"
 )
 
 type TranscriptionEngineGoogleConfigParam struct {
@@ -2488,7 +2541,7 @@ type TranscriptionStartRequestParam struct {
 	// `Telnyx` are supported for backward compatibility.
 	//
 	// Any of "Google", "Telnyx", "Deepgram", "Azure", "xAI", "AssemblyAI",
-	// "Speechmatics", "Soniox", "Parakeet", "Humain", "Reson8", "A", "B".
+	// "Speechmatics", "Soniox", "Parakeet", "Humain", "Reson8", "Cohere", "A", "B".
 	TranscriptionEngine       TranscriptionStartRequestTranscriptionEngine                 `json:"transcription_engine,omitzero"`
 	TranscriptionEngineConfig TranscriptionStartRequestTranscriptionEngineConfigUnionParam `json:"transcription_engine_config,omitzero"`
 	paramObj
@@ -2518,6 +2571,7 @@ const (
 	TranscriptionStartRequestTranscriptionEngineParakeet     TranscriptionStartRequestTranscriptionEngine = "Parakeet"
 	TranscriptionStartRequestTranscriptionEngineHumain       TranscriptionStartRequestTranscriptionEngine = "Humain"
 	TranscriptionStartRequestTranscriptionEngineReson8       TranscriptionStartRequestTranscriptionEngine = "Reson8"
+	TranscriptionStartRequestTranscriptionEngineCohere       TranscriptionStartRequestTranscriptionEngine = "Cohere"
 	TranscriptionStartRequestTranscriptionEngineA            TranscriptionStartRequestTranscriptionEngine = "A"
 	TranscriptionStartRequestTranscriptionEngineB            TranscriptionStartRequestTranscriptionEngine = "B"
 )
@@ -2536,6 +2590,7 @@ type TranscriptionStartRequestTranscriptionEngineConfigUnionParam struct {
 	OfParakeet      *TranscriptionEngineParakeetConfigParam     `json:",omitzero,inline"`
 	OfHumain        *TranscriptionEngineHumainConfigParam       `json:",omitzero,inline"`
 	OfReson8        *TranscriptionEngineReson8ConfigParam       `json:",omitzero,inline"`
+	OfCohere        *TranscriptionEngineCohereConfigParam       `json:",omitzero,inline"`
 	OfA             *TranscriptionEngineAConfigParam            `json:",omitzero,inline"`
 	OfB             *TranscriptionEngineBConfigParam            `json:",omitzero,inline"`
 	OfDeepgramNova2 *DeepgramNova2ConfigParam                   `json:",omitzero,inline"`
@@ -2554,6 +2609,7 @@ func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) MarshalJSO
 		u.OfParakeet,
 		u.OfHumain,
 		u.OfReson8,
+		u.OfCohere,
 		u.OfA,
 		u.OfB,
 		u.OfDeepgramNova2,
@@ -2584,6 +2640,8 @@ func (u *TranscriptionStartRequestTranscriptionEngineConfigUnionParam) asAny() a
 		return u.OfHumain
 	} else if !param.IsOmitted(u.OfReson8) {
 		return u.OfReson8
+	} else if !param.IsOmitted(u.OfCohere) {
+		return u.OfCohere
 	} else if !param.IsOmitted(u.OfA) {
 		return u.OfA
 	} else if !param.IsOmitted(u.OfB) {
@@ -2688,6 +2746,8 @@ func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetLanguag
 		return (*string)(&vt.Language)
 	} else if vt := u.OfReson8; vt != nil {
 		return (*string)(&vt.Language)
+	} else if vt := u.OfCohere; vt != nil {
+		return (*string)(&vt.Language)
 	} else if vt := u.OfA; vt != nil {
 		return (*string)(&vt.Language)
 	} else if vt := u.OfB; vt != nil {
@@ -2762,6 +2822,8 @@ func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetTranscr
 		return (*string)(&vt.TranscriptionEngine)
 	} else if vt := u.OfReson8; vt != nil {
 		return (*string)(&vt.TranscriptionEngine)
+	} else if vt := u.OfCohere; vt != nil {
+		return (*string)(&vt.TranscriptionEngine)
 	} else if vt := u.OfA; vt != nil {
 		return (*string)(&vt.TranscriptionEngine)
 	} else if vt := u.OfB; vt != nil {
@@ -2801,6 +2863,8 @@ func (u TranscriptionStartRequestTranscriptionEngineConfigUnionParam) GetTranscr
 	} else if vt := u.OfHumain; vt != nil {
 		return (*string)(&vt.TranscriptionModel)
 	} else if vt := u.OfReson8; vt != nil {
+		return (*string)(&vt.TranscriptionModel)
+	} else if vt := u.OfCohere; vt != nil {
 		return (*string)(&vt.TranscriptionModel)
 	} else if vt := u.OfB; vt != nil {
 		return (*string)(&vt.TranscriptionModel)
@@ -2897,6 +2961,7 @@ func init() {
 		apijson.Discriminator[TranscriptionEngineParakeetConfigParam]("Parakeet"),
 		apijson.Discriminator[TranscriptionEngineHumainConfigParam]("Humain"),
 		apijson.Discriminator[TranscriptionEngineReson8ConfigParam]("Reson8"),
+		apijson.Discriminator[TranscriptionEngineCohereConfigParam]("Cohere"),
 		apijson.Discriminator[TranscriptionEngineAConfigParam]("A"),
 		apijson.Discriminator[TranscriptionEngineBConfigParam]("B"),
 		apijson.Discriminator[DeepgramNova2ConfigParam]("deepgram/nova-2"),
@@ -4266,7 +4331,8 @@ type CallActionGatherParams struct {
 	// The minimum number of digits to fetch. This parameter has a minimum value of 1.
 	MinimumDigits param.Opt[int64] `json:"minimum_digits,omitzero"`
 	// The digit used to terminate input if fewer than `maximum_digits` digits have
-	// been gathered.
+	// been gathered. Set to an empty string to disable the terminating digit entirely,
+	// so that a digit such as `#` can be collected as input per `valid_digits`.
 	TerminatingDigit param.Opt[string] `json:"terminating_digit,omitzero"`
 	// The number of milliseconds to wait to complete the request.
 	TimeoutMillis param.Opt[int64] `json:"timeout_millis,omitzero"`
@@ -4599,7 +4665,8 @@ type CallActionGatherUsingAudioParams struct {
 	// The minimum number of digits to fetch. This parameter has a minimum value of 1.
 	MinimumDigits param.Opt[int64] `json:"minimum_digits,omitzero"`
 	// The digit used to terminate input if fewer than `maximum_digits` digits have
-	// been gathered.
+	// been gathered. Set to an empty string to disable the terminating digit entirely,
+	// so that a digit such as `#` can be collected as input per `valid_digits`.
 	TerminatingDigit param.Opt[string] `json:"terminating_digit,omitzero"`
 	// The number of milliseconds to wait for a DTMF response after file playback ends
 	// before a replaying the sound file.
@@ -4695,7 +4762,8 @@ type CallActionGatherUsingSpeakParams struct {
 	// The minimum number of digits to fetch. This parameter has a minimum value of 1.
 	MinimumDigits param.Opt[int64] `json:"minimum_digits,omitzero"`
 	// The digit used to terminate input if fewer than `maximum_digits` digits have
-	// been gathered.
+	// been gathered. Set to an empty string to disable the terminating digit entirely,
+	// so that a digit such as `#` can be collected as input per `valid_digits`.
 	TerminatingDigit param.Opt[string] `json:"terminating_digit,omitzero"`
 	// The number of milliseconds to wait for a DTMF response after speak ends before a
 	// replaying the sound file.
@@ -5706,8 +5774,10 @@ type CallActionStartAIAssistantParams struct {
 	// played when the assistant starts. The greeting can be text for any voice or SSML
 	// for `AWS.Polly.<voice_id>` voices. There is a 3,000 character limit.
 	Greeting param.Opt[string] `json:"greeting,omitzero"`
-	// When `true`, a webhook is sent each time the conversation message history is
-	// updated.
+	// When `true`, a `call.ai_gather.message_history_updated` webhook carrying the
+	// full message history is sent each time the conversation message history is
+	// updated. The assistant's own `telephony_settings.send_message_history_updates`
+	// overrides this value when it is set.
 	SendMessageHistoryUpdates param.Opt[bool] `json:"send_message_history_updates,omitzero"`
 	// AI Assistant configuration. All fields except `id` are optional — the
 	// assistant's stored configuration will be used as fallback for any omitted

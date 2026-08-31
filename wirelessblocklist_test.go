@@ -107,11 +107,10 @@ func TestWirelessBlocklistListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.WirelessBlocklists.List(context.TODO(), telnyx.WirelessBlocklistListParams{
-		FilterName:   telnyx.String("filter[name]"),
-		FilterType:   telnyx.String("filter[type]"),
-		FilterValues: telnyx.String("filter[values]"),
-		PageNumber:   telnyx.Int(1),
-		PageSize:     telnyx.Int(1),
+		FilterName: telnyx.String("filter[name]"),
+		FilterType: telnyx.String("filter[type]"),
+		PageNumber: telnyx.Int(1),
+		PageSize:   telnyx.Int(1),
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -135,7 +134,7 @@ func TestWirelessBlocklistDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.WirelessBlocklists.Delete(context.TODO(), "6a09cdc3-8948-47f0-aa62-74ac943d6c58")
+	err := client.WirelessBlocklists.Delete(context.TODO(), "6a09cdc3-8948-47f0-aa62-74ac943d6c58")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {

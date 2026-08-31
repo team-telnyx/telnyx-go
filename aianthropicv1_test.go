@@ -32,7 +32,7 @@ func TestAIAnthropicV1MessagesWithOptionalParams(t *testing.T) {
 			"role":    "bar",
 			"content": "bar",
 		}},
-		Model:          "zai-org/GLM-5.2",
+		Model:          "zai-org/GLM-5.3-Flash",
 		APIKeyRef:      telnyx.String("api_key_ref"),
 		BillingGroupID: telnyx.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 		FallbackConfig: map[string]any{

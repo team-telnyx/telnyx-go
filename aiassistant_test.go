@@ -282,6 +282,7 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 				Format:                "wav",
 				StopOnConversationEnd: telnyx.Bool(true),
 			},
+			SendMessageHistoryUpdates:       telnyx.Bool(true),
 			SupportsUnauthenticatedWebCalls: telnyx.Bool(true),
 			TimeLimitSecs:                   telnyx.Int(30),
 			UserIdleReplySecs:               telnyx.Int(0),
@@ -337,6 +338,14 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 						},
 						Required: []string{"id"},
 						Type:     "object",
+					},
+					PresetBodyFields: map[string]any{
+						"account_id": "bar",
+						"source":     "bar",
+					},
+					PresetQueryParams: map[string]any{
+						"caller":  "bar",
+						"channel": "bar",
 					},
 					QueryParameters: telnyx.InferenceEmbeddingWebhookToolParamsWebhookQueryParameters{
 						Properties: map[string]any{
@@ -723,6 +732,7 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 					Format:                "wav",
 					StopOnConversationEnd: telnyx.Bool(true),
 				},
+				SendMessageHistoryUpdates:       telnyx.Bool(true),
 				SupportsUnauthenticatedWebCalls: telnyx.Bool(true),
 				TimeLimitSecs:                   telnyx.Int(30),
 				UserIdleReplySecs:               telnyx.Int(0),
@@ -778,6 +788,14 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 							},
 							Required: []string{"id"},
 							Type:     "object",
+						},
+						PresetBodyFields: map[string]any{
+							"account_id": "bar",
+							"source":     "bar",
+						},
+						PresetQueryParams: map[string]any{
+							"caller":  "bar",
+							"channel": "bar",
 						},
 						QueryParameters: telnyx.InferenceEmbeddingWebhookToolParamsWebhookQueryParameters{
 							Properties: map[string]any{

@@ -460,7 +460,7 @@ func TestCallActionGatherUsingAIWithOptionalParams(t *testing.T) {
 			SendMessageHistoryUpdates: telnyx.Bool(true),
 			SendPartialResults:        telnyx.Bool(true),
 			Transcription: telnyx.TranscriptionConfigParam{
-				Language: telnyx.String("auto"),
+				Language: telnyx.String("language"),
 				Model:    telnyx.TranscriptionConfigModelDistilWhisperDistilLargeV2,
 			},
 			UserResponseTimeoutMs: telnyx.Int(5000),
@@ -1117,7 +1117,7 @@ func TestCallActionStartAIAssistantWithOptionalParams(t *testing.T) {
 			}},
 			SendMessageHistoryUpdates: telnyx.Bool(true),
 			Transcription: telnyx.TranscriptionConfigParam{
-				Language: telnyx.String("auto"),
+				Language: telnyx.String("language"),
 				Model:    telnyx.TranscriptionConfigModelDistilWhisperDistilLargeV2,
 			},
 		},

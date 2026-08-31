@@ -58,8 +58,9 @@ type AIAnthropicV1MessagesParams struct {
 	// The messages to send to the model, following the
 	// [Anthropic Messages API](https://docs.anthropic.com/en/api/messages) format.
 	Messages []map[string]any `json:"messages,omitzero" api:"required"`
-	// The model to use for generating the response, for example `zai-org/GLM-5.2` or
-	// another model available from the Telnyx models endpoint.
+	// The model to use for generating the response, for example
+	// `zai-org/GLM-5.3-Flash` or another model available from the Telnyx models
+	// endpoint.
 	Model string `json:"model" api:"required"`
 	// If you are using an external inference provider, this field allows you to pass
 	// along a reference to your API key. After creating an
