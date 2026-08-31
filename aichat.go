@@ -153,6 +153,14 @@ type ChatCompletionRequestParam struct {
 	// Must be a valid JSON schema. If specified, the output will follow the JSON
 	// schema.
 	GuidedJson map[string]any `json:"guided_json,omitzero"`
+	// Controls the reasoning effort for models that support it. When set, the model
+	// spends more or less compute on internal reasoning before generating its
+	// response. Supported values: none, minimal, low, medium, high, xhigh, max. Not
+	// all models support all values; unsupported values are rejected with a 400 error.
+	// When omitted, reasoning models use their default effort level.
+	//
+	// Any of "none", "minimal", "low", "medium", "high", "xhigh", "max".
+	ReasoningEffort ChatCompletionRequestReasoningEffort `json:"reasoning_effort,omitzero"`
 	// Use this is you want to guarantee a JSON output without defining a schema. For
 	// control over the schema, use `guided_json`.
 	ResponseFormat ChatCompletionRequestResponseFormatParam `json:"response_format,omitzero"`
@@ -247,6 +255,23 @@ func init() {
 		"type", "text", "image_url",
 	)
 }
+
+// Controls the reasoning effort for models that support it. When set, the model
+// spends more or less compute on internal reasoning before generating its
+// response. Supported values: none, minimal, low, medium, high, xhigh, max. Not
+// all models support all values; unsupported values are rejected with a 400 error.
+// When omitted, reasoning models use their default effort level.
+type ChatCompletionRequestReasoningEffort string
+
+const (
+	ChatCompletionRequestReasoningEffortNone    ChatCompletionRequestReasoningEffort = "none"
+	ChatCompletionRequestReasoningEffortMinimal ChatCompletionRequestReasoningEffort = "minimal"
+	ChatCompletionRequestReasoningEffortLow     ChatCompletionRequestReasoningEffort = "low"
+	ChatCompletionRequestReasoningEffortMedium  ChatCompletionRequestReasoningEffort = "medium"
+	ChatCompletionRequestReasoningEffortHigh    ChatCompletionRequestReasoningEffort = "high"
+	ChatCompletionRequestReasoningEffortXhigh   ChatCompletionRequestReasoningEffort = "xhigh"
+	ChatCompletionRequestReasoningEffortMax     ChatCompletionRequestReasoningEffort = "max"
+)
 
 // Use this is you want to guarantee a JSON output without defining a schema. For
 // control over the schema, use `guided_json`.

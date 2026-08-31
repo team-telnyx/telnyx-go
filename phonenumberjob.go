@@ -55,8 +55,10 @@ func (r *PhoneNumberJobService) Get(ctx context.Context, id string, opts ...opti
 	return res, err
 }
 
-// Returns background jobs that operate on phone numbers. Results can be filtered
-// by job type and sorted by creation time, and include pagination metadata.
+// Returns background jobs that operate on phone numbers. Filter by job type,
+// target phone numbers, or job status, and sort by creation time. Multiple
+// phone-number or status values use OR semantics within that filter; different
+// filter categories use AND semantics. Results include pagination metadata.
 func (r *PhoneNumberJobService) List(ctx context.Context, query PhoneNumberJobListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[PhoneNumbersJob], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -74,8 +76,10 @@ func (r *PhoneNumberJobService) List(ctx context.Context, query PhoneNumberJobLi
 	return res, nil
 }
 
-// Returns background jobs that operate on phone numbers. Results can be filtered
-// by job type and sorted by creation time, and include pagination metadata.
+// Returns background jobs that operate on phone numbers. Filter by job type,
+// target phone numbers, or job status, and sort by creation time. Multiple
+// phone-number or status values use OR semantics within that filter; different
+// filter categories use AND semantics. Results include pagination metadata.
 func (r *PhoneNumberJobService) ListAutoPaging(ctx context.Context, query PhoneNumberJobListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[PhoneNumbersJob] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
@@ -316,7 +320,8 @@ func (r *PhoneNumberJobUpdateEmergencySettingsBatchResponse) UnmarshalJSON(data 
 type PhoneNumberJobListParams struct {
 	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
 	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
-	// Consolidated filter parameter (deepObject style). Originally: filter[type]
+	// Consolidated filter parameter (deepObject style). Originally: filter[type],
+	// filter[phone_number], filter[phone_number][], filter[status][]
 	Filter PhoneNumberJobListParamsFilter `query:"filter,omitzero" json:"-"`
 	// Specifies the sort order for results. If not given, results are sorted by
 	// created_at in descending order.
@@ -335,8 +340,20 @@ func (r PhoneNumberJobListParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// Consolidated filter parameter (deepObject style). Originally: filter[type]
+// Consolidated filter parameter (deepObject style). Originally: filter[type],
+// filter[phone_number], filter[phone_number][], filter[status][]
 type PhoneNumberJobListParamsFilter struct {
+	// Returns jobs that targeted any of the supplied account-owned phone numbers.
+	// Values beginning with `+` must contain 1 to 20 digits after the plus sign. The
+	// 10-value limit is enforced before duplicate values are removed. Unmatched or
+	// non-account-owned identifiers return an empty result. Phone-number filtering
+	// must be enabled for the account.
+	PhoneNumber PhoneNumberJobListParamsFilterPhoneNumberUnion `query:"phone_number,omitzero" json:"-"`
+	// Returns jobs with any of the supplied statuses. Use repeated `filter[status][]`
+	// parameters; scalar and comma-separated status values are not accepted.
+	//
+	// Any of "pending", "in_progress", "completed", "failed", "expired".
+	Status []string `query:"status,omitzero" json:"-"`
 	// Identifies the type of the background job.
 	//
 	// Any of "update_emergency_settings", "delete_phone_numbers",
@@ -352,6 +369,24 @@ func (r PhoneNumberJobListParamsFilter) URLQuery() (v url.Values, err error) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type PhoneNumberJobListParamsFilterPhoneNumberUnion struct {
+	OfString      param.Opt[string] `query:",omitzero,inline"`
+	OfStringArray []string          `query:",omitzero,inline"`
+	paramUnion
+}
+
+func (u *PhoneNumberJobListParamsFilterPhoneNumberUnion) asAny() any {
+	if !param.IsOmitted(u.OfString) {
+		return &u.OfString.Value
+	} else if !param.IsOmitted(u.OfStringArray) {
+		return &u.OfStringArray
+	}
+	return nil
 }
 
 // Specifies the sort order for results. If not given, results are sorted by

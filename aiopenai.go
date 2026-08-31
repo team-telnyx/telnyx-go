@@ -117,7 +117,8 @@ type AIOpenAINewResponseParams struct {
 	// streaming format.
 	Stream param.Opt[bool] `json:"stream,omitzero"`
 	// The input items for this turn, using the OpenAI Responses API input format.
-	Input map[string]any `json:"input,omitzero"`
+	Input     map[string]any                     `json:"input,omitzero"`
+	Reasoning AIOpenAINewResponseParamsReasoning `json:"reasoning,omitzero"`
 	paramObj
 }
 
@@ -127,4 +128,27 @@ func (r AIOpenAINewResponseParams) MarshalJSON() (data []byte, err error) {
 }
 func (r *AIOpenAINewResponseParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+type AIOpenAINewResponseParamsReasoning struct {
+	// Controls the reasoning effort for models that support it. Same values and
+	// semantics as reasoning_effort on Chat Completions.
+	//
+	// Any of "none", "minimal", "low", "medium", "high", "xhigh", "max".
+	Effort string `json:"effort,omitzero"`
+	paramObj
+}
+
+func (r AIOpenAINewResponseParamsReasoning) MarshalJSON() (data []byte, err error) {
+	type shadow AIOpenAINewResponseParamsReasoning
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIOpenAINewResponseParamsReasoning) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[AIOpenAINewResponseParamsReasoning](
+		"effort", "none", "minimal", "low", "medium", "high", "xhigh", "max",
+	)
 }

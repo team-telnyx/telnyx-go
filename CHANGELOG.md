@@ -1,5 +1,18 @@
 # Changelog
 
+## [4.98.0](https://github.com/team-telnyx/telnyx-go/compare/v4.97.0...v4.98.0) (2026-08-31)
+
+
+### Features
+
+* promote from staging 97cccc6 ([81fbe63](https://github.com/team-telnyx/telnyx-go/commit/81fbe6321ec950176a5ee408b76b3cd60f5523e7))
+
+
+### Bug Fixes
+
+* attest Go CLI release handoff policy ([#206](https://github.com/team-telnyx/telnyx-go/issues/206)) ([ce5b475](https://github.com/team-telnyx/telnyx-go/commit/ce5b4752e44db8c7ca67de7f42bf93e3506c1bb4))
+* treat skipped check runs as non-attesting in the release gate ([#207](https://github.com/team-telnyx/telnyx-go/issues/207)) ([d1f5c6f](https://github.com/team-telnyx/telnyx-go/commit/d1f5c6f2f2a0fe24c49b083a12240a7d50907a77))
+
 ## [4.97.0](https://github.com/team-telnyx/telnyx-go/compare/v4.96.0...v4.97.0) (2026-08-21)
 
 
