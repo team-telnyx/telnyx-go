@@ -412,6 +412,11 @@ class ReleasePRAutoMergeGate:
                 and check.get("head_sha") == head_sha
                 and isinstance(check.get("app"), Mapping)
                 and check["app"].get("slug") == app
+                # Classify-skip CI runs publish same-named skipped check runs
+                # on the exact head before the attesting run starts. A skip
+                # carries no verdict: keep waiting for a real run instead of
+                # failing closed on the race.
+                and check.get("conclusion") != "skipped"
             ]
             successes = [
                 check
