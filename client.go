@@ -331,8 +331,6 @@ type Client struct {
 	// Retrieve raw Voice SDK call report stats payloads for WebRTC call
 	// troubleshooting.
 	VoiceSDKCallReports VoiceSDKCallReportService
-	// UAC connection operations
-	SipRegistrationStatus SipRegistrationStatusService
 	// Static reference values the API accepts: call reasons, document types, rejection
 	// types.
 	CallReasons CallReasonService
@@ -573,7 +571,6 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.PronunciationDicts = NewPronunciationDictService(opts...)
 	r.UacConnections = NewUacConnectionService(opts...)
 	r.VoiceSDKCallReports = NewVoiceSDKCallReportService(opts...)
-	r.SipRegistrationStatus = NewSipRegistrationStatusService(opts...)
 	r.CallReasons = NewCallReasonService(opts...)
 	r.Dir = NewDirService(opts...)
 	r.InfringementClaims = NewInfringementClaimService(opts...)
