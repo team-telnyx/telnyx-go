@@ -212,6 +212,7 @@ func TestCallDialWithOptionalParams(t *testing.T) {
 			AnalyzeSentiment:           telnyx.Bool(false),
 			PartialAutomatedAgentReply: telnyx.Bool(false),
 		},
+		Diversion:            telnyx.String("+18005550101"),
 		EnableDialogflow:     telnyx.Bool(false),
 		FromDisplayName:      telnyx.String("Company Name"),
 		LinkTo:               telnyx.String("ilditnZK_eVysupV21KzmzN_sM29ygfauQojpm4BgFtfX5hXAcjotg=="),

@@ -853,6 +853,13 @@ type AssistantToolTransferTransfer struct {
 	// case the provided value is preserved. Most users should leave this empty and let
 	// Telnyx manage it.
 	Description string `json:"description"`
+	// The number the inbound call was received on, forwarded so an unverified
+	// non-Telnyx `from` can be used as the caller id -- typically to transfer out as
+	// the original caller by pairing `from: "{{telnyx_end_user_target}}"` with
+	// `diversion: "{{telnyx_agent_target}}"`. The caller id is only accepted while
+	// that number is still on an active inbound call to this `diversion` number, and
+	// the `diversion` number must be one you own or have verified.
+	Diversion string `json:"diversion"`
 	// Configuration for voicemail detection (AMD - Answering Machine Detection) on the
 	// transferred call. Allows the assistant to detect when a voicemail system answers
 	// the transferred call and take appropriate action.
@@ -883,6 +890,7 @@ type AssistantToolTransferTransfer struct {
 		Targets                  respjson.Field
 		CustomHeaders            respjson.Field
 		Description              respjson.Field
+		Diversion                respjson.Field
 		VoicemailDetection       respjson.Field
 		WarmMessageDelayMs       respjson.Field
 		WarmTransferAcceptance   respjson.Field
@@ -2057,6 +2065,13 @@ type AssistantToolTransferTransferParam struct {
 	// case the provided value is preserved. Most users should leave this empty and let
 	// Telnyx manage it.
 	Description param.Opt[string] `json:"description,omitzero"`
+	// The number the inbound call was received on, forwarded so an unverified
+	// non-Telnyx `from` can be used as the caller id -- typically to transfer out as
+	// the original caller by pairing `from: "{{telnyx_end_user_target}}"` with
+	// `diversion: "{{telnyx_agent_target}}"`. The caller id is only accepted while
+	// that number is still on an active inbound call to this `diversion` number, and
+	// the `diversion` number must be one you own or have verified.
+	Diversion param.Opt[string] `json:"diversion,omitzero"`
 	// Natural language instructions for your agent for how to provide context for the
 	// transfer recipient.
 	WarmTransferInstructions param.Opt[string] `json:"warm_transfer_instructions,omitzero"`
