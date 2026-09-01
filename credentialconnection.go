@@ -145,8 +145,8 @@ const (
 )
 
 type ConnectionRtcpSettings struct {
-	// BETA - Enable the capture and storage of RTCP messages to create QoS reports on
-	// the Telnyx Mission Control Portal.
+	// Enable the capture and storage of RTCP messages to create QoS reports on the
+	// Telnyx Mission Control Portal.
 	CaptureEnabled bool `json:"capture_enabled"`
 	// RTCP port by default is rtp+1, it can also be set to rtcp-mux
 	//
@@ -189,8 +189,8 @@ const (
 )
 
 type ConnectionRtcpSettingsParam struct {
-	// BETA - Enable the capture and storage of RTCP messages to create QoS reports on
-	// the Telnyx Mission Control Portal.
+	// Enable the capture and storage of RTCP messages to create QoS reports on the
+	// Telnyx Mission Control Portal.
 	CaptureEnabled param.Opt[bool] `json:"capture_enabled,omitzero"`
 	// RTCP reports are sent to customers based on the frequency set. Frequency is in
 	// seconds and it can be set to values from 5 to 3000 seconds.

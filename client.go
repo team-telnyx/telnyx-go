@@ -359,10 +359,11 @@ type Client struct {
 	// Named groups and group-scoped suppressions.
 	EmailUnsubscribeGroups EmailUnsubscribeGroupService
 	// Validate email addresses synchronously or in asynchronous batches.
-	EmailValidations EmailValidationService
-	Pricing          PricingService
-	WebSearch        WebSearchService
-	MeetingSessions  MeetingSessionService
+	EmailValidations     EmailValidationService
+	Pricing              PricingService
+	WebSearch            WebSearchService
+	MeetingSessions      MeetingSessionService
+	ExternalRequirements ExternalRequirementService
 }
 
 // DefaultClientOptions read from the environment (TELNYX_API_KEY,
@@ -588,6 +589,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.Pricing = NewPricingService(opts...)
 	r.WebSearch = NewWebSearchService(opts...)
 	r.MeetingSessions = NewMeetingSessionService(opts...)
+	r.ExternalRequirements = NewExternalRequirementService(opts...)
 
 	return
 }

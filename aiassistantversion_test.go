@@ -92,6 +92,7 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 								Model:     telnyx.TranscriptionSettingsModelDeepgramFlux,
 								Region:    telnyx.String("region"),
 								Settings: telnyx.TranscriptionSettingsConfigParam{
+									Context:                      telnyx.String("context"),
 									EagerEotThreshold:            telnyx.Float(0.3),
 									EnableEndpointDetection:      telnyx.Bool(true),
 									EndOfTurnConfidenceThreshold: telnyx.Float(0),
@@ -99,6 +100,7 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 									EotTimeoutMs:                 telnyx.Int(500),
 									InterimResults:               telnyx.Bool(true),
 									Keyterm:                      telnyx.String("keyterm"),
+									LanguageHints:                []string{"string"},
 									MaxEndpointDelayMs:           telnyx.Int(500),
 									MaxTurnSilence:               telnyx.Int(100),
 									MinTurnSilence:               telnyx.Int(100),
@@ -155,6 +157,7 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 								Model:     telnyx.TranscriptionSettingsModelDeepgramFlux,
 								Region:    telnyx.String("region"),
 								Settings: telnyx.TranscriptionSettingsConfigParam{
+									Context:                      telnyx.String("context"),
 									EagerEotThreshold:            telnyx.Float(0.3),
 									EnableEndpointDetection:      telnyx.Bool(true),
 									EndOfTurnConfidenceThreshold: telnyx.Float(0),
@@ -162,6 +165,7 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 									EotTimeoutMs:                 telnyx.Int(500),
 									InterimResults:               telnyx.Bool(true),
 									Keyterm:                      telnyx.String("keyterm"),
+									LanguageHints:                []string{"string"},
 									MaxEndpointDelayMs:           telnyx.Int(500),
 									MaxTurnSilence:               telnyx.Int(100),
 									MinTurnSilence:               telnyx.Int(100),
@@ -403,6 +407,7 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 					Model:     telnyx.TranscriptionSettingsModelDeepgramFlux,
 					Region:    telnyx.String("region"),
 					Settings: telnyx.TranscriptionSettingsConfigParam{
+						Context:                      telnyx.String("context"),
 						EagerEotThreshold:            telnyx.Float(0.3),
 						EnableEndpointDetection:      telnyx.Bool(true),
 						EndOfTurnConfidenceThreshold: telnyx.Float(0),
@@ -410,6 +415,7 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 						EotTimeoutMs:                 telnyx.Int(500),
 						InterimResults:               telnyx.Bool(true),
 						Keyterm:                      telnyx.String("keyterm"),
+						LanguageHints:                []string{"string"},
 						MaxEndpointDelayMs:           telnyx.Int(500),
 						MaxTurnSilence:               telnyx.Int(100),
 						MinTurnSilence:               telnyx.Int(100),
