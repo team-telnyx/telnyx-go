@@ -217,8 +217,8 @@ type OutboundVoiceProfile struct {
 	// null (for no group assigned).
 	BillingGroupID string                `json:"billing_group_id" api:"nullable" format:"uuid"`
 	CallRecording  OutboundCallRecording `json:"call_recording"`
-	// (BETA) Specifies the time window and call limits for calls made using this
-	// outbound voice profile. Note that all times are UTC in 24-hour clock time.
+	// Specifies the time window and call limits for calls made using this outbound
+	// voice profile. Note that all times are UTC in 24-hour clock time.
 	CallingWindow OutboundVoiceProfileCallingWindow `json:"calling_window"`
 	// Must be no more than your global concurrent call limit. Null means no limit.
 	ConcurrentCallLimit int64 `json:"concurrent_call_limit" api:"nullable"`
@@ -290,17 +290,17 @@ func (r *OutboundVoiceProfile) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// (BETA) Specifies the time window and call limits for calls made using this
-// outbound voice profile. Note that all times are UTC in 24-hour clock time.
+// Specifies the time window and call limits for calls made using this outbound
+// voice profile. Note that all times are UTC in 24-hour clock time.
 type OutboundVoiceProfileCallingWindow struct {
-	// (BETA) The maximum number of calls that can be initiated to a single called
-	// party (CLD) within the calling window. A null value means no limit.
+	// The maximum number of calls that can be initiated to a single called party (CLD)
+	// within the calling window. A null value means no limit.
 	CallsPerCld int64 `json:"calls_per_cld"`
-	// (BETA) The UTC time of day (in HH:MM format, 24-hour clock) when calls are no
-	// longer allowed to start.
-	EndTime string `json:"end_time"`
-	// (BETA) The UTC time of day (in HH:MM format, 24-hour clock) when calls are
+	// The UTC time of day (in HH:MM format, 24-hour clock) when calls are no longer
 	// allowed to start.
+	EndTime string `json:"end_time"`
+	// The UTC time of day (in HH:MM format, 24-hour clock) when calls are allowed to
+	// start.
 	StartTime string `json:"start_time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -424,8 +424,8 @@ type OutboundVoiceProfileNewParams struct {
 	// outbound calls.
 	MaxDestinationRate param.Opt[float64]         `json:"max_destination_rate,omitzero"`
 	CallRecording      OutboundCallRecordingParam `json:"call_recording,omitzero"`
-	// (BETA) Specifies the time window and call limits for calls made using this
-	// outbound voice profile. Note that all times are UTC in 24-hour clock time.
+	// Specifies the time window and call limits for calls made using this outbound
+	// voice profile. Note that all times are UTC in 24-hour clock time.
 	CallingWindow OutboundVoiceProfileNewParamsCallingWindow `json:"calling_window,omitzero"`
 	// Indicates the coverage of the termination regions.
 	//
@@ -454,17 +454,17 @@ func (r *OutboundVoiceProfileNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// (BETA) Specifies the time window and call limits for calls made using this
-// outbound voice profile. Note that all times are UTC in 24-hour clock time.
+// Specifies the time window and call limits for calls made using this outbound
+// voice profile. Note that all times are UTC in 24-hour clock time.
 type OutboundVoiceProfileNewParamsCallingWindow struct {
-	// (BETA) The maximum number of calls that can be initiated to a single called
-	// party (CLD) within the calling window. A null value means no limit.
+	// The maximum number of calls that can be initiated to a single called party (CLD)
+	// within the calling window. A null value means no limit.
 	CallsPerCld param.Opt[int64] `json:"calls_per_cld,omitzero"`
-	// (BETA) The UTC time of day (in HH:MM format, 24-hour clock) when calls are no
-	// longer allowed to start.
-	EndTime param.Opt[string] `json:"end_time,omitzero" format:"time"`
-	// (BETA) The UTC time of day (in HH:MM format, 24-hour clock) when calls are
+	// The UTC time of day (in HH:MM format, 24-hour clock) when calls are no longer
 	// allowed to start.
+	EndTime param.Opt[string] `json:"end_time,omitzero" format:"time"`
+	// The UTC time of day (in HH:MM format, 24-hour clock) when calls are allowed to
+	// start.
 	StartTime param.Opt[string] `json:"start_time,omitzero" format:"time"`
 	paramObj
 }
@@ -498,8 +498,8 @@ type OutboundVoiceProfileUpdateParams struct {
 	// outbound calls.
 	MaxDestinationRate param.Opt[float64]         `json:"max_destination_rate,omitzero"`
 	CallRecording      OutboundCallRecordingParam `json:"call_recording,omitzero"`
-	// (BETA) Specifies the time window and call limits for calls made using this
-	// outbound voice profile.
+	// Specifies the time window and call limits for calls made using this outbound
+	// voice profile.
 	CallingWindow OutboundVoiceProfileUpdateParamsCallingWindow `json:"calling_window,omitzero"`
 	// Indicates the coverage of the termination regions.
 	//
@@ -528,17 +528,17 @@ func (r *OutboundVoiceProfileUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// (BETA) Specifies the time window and call limits for calls made using this
-// outbound voice profile.
+// Specifies the time window and call limits for calls made using this outbound
+// voice profile.
 type OutboundVoiceProfileUpdateParamsCallingWindow struct {
-	// (BETA) The maximum number of calls that can be initiated to a single called
-	// party (CLD) within the calling window. A null value means no limit.
+	// The maximum number of calls that can be initiated to a single called party (CLD)
+	// within the calling window. A null value means no limit.
 	CallsPerCld param.Opt[int64] `json:"calls_per_cld,omitzero"`
-	// (BETA) The UTC time of day (in HH:MM format, 24-hour clock) when calls are no
-	// longer allowed to start.
-	EndTime param.Opt[string] `json:"end_time,omitzero" format:"time"`
-	// (BETA) The UTC time of day (in HH:MM format, 24-hour clock) when calls are
+	// The UTC time of day (in HH:MM format, 24-hour clock) when calls are no longer
 	// allowed to start.
+	EndTime param.Opt[string] `json:"end_time,omitzero" format:"time"`
+	// The UTC time of day (in HH:MM format, 24-hour clock) when calls are allowed to
+	// start.
 	StartTime param.Opt[string] `json:"start_time,omitzero" format:"time"`
 	paramObj
 }

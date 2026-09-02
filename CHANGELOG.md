@@ -1,5 +1,17 @@
 # Changelog
 
+## [4.99.0](https://github.com/team-telnyx/telnyx-go/compare/v4.98.0...v4.99.0) (2026-09-02)
+
+
+### Features
+
+* promote from staging 1220124 ([ac85cf8](https://github.com/team-telnyx/telnyx-go/commit/ac85cf8c5041222ee0cfa5f75a01cc5aa81869d5))
+
+
+### Bug Fixes
+
+* **ci:** skip post-merge release readiness ([#208](https://github.com/team-telnyx/telnyx-go/issues/208)) ([aa709f0](https://github.com/team-telnyx/telnyx-go/commit/aa709f00b0f2696d5ae662e763db48d4cc710fd8))
+
 ## [4.98.0](https://github.com/team-telnyx/telnyx-go/compare/v4.97.0...v4.98.0) (2026-08-31)
 
 
