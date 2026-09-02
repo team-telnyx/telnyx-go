@@ -7334,6 +7334,12 @@ type CallActionTransferParams struct {
 	// Use this field to avoid duplicate commands. Telnyx will ignore any command with
 	// the same `command_id` for the same `call_control_id`.
 	CommandID param.Opt[string] `json:"command_id,omitzero"`
+	// The number the inbound call being transferred was originally received on, in
+	// +E164 format. Supplying it lets an unverified non-Telnyx `from` be used as the
+	// caller id, provided that number is still on an active inbound call to this
+	// `diversion` number for your account. The `diversion` number itself must be one
+	// you own or have verified.
+	Diversion param.Opt[string] `json:"diversion,omitzero"`
 	// If set to false, early media will not be passed to the originating leg.
 	EarlyMedia param.Opt[bool] `json:"early_media,omitzero"`
 	// The `from` number to be used as the caller id presented to the destination (`to`
