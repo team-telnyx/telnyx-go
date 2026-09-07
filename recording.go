@@ -50,7 +50,7 @@ func (r *RecordingService) Get(ctx context.Context, recordingID string, opts ...
 		err = errors.New("missing required recording_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("recordings/%s", recordingID)
+	path := fmt.Sprintf("recordings/%s", url.PathEscape(recordingID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -88,7 +88,7 @@ func (r *RecordingService) Delete(ctx context.Context, recordingID string, opts 
 		err = errors.New("missing required recording_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("recordings/%s", recordingID)
+	path := fmt.Sprintf("recordings/%s", url.PathEscape(recordingID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
 }

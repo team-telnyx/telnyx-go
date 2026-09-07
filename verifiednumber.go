@@ -59,7 +59,7 @@ func (r *VerifiedNumberService) Get(ctx context.Context, phoneNumber string, opt
 		err = errors.New("missing required phone_number parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("verified_numbers/%s", phoneNumber)
+	path := fmt.Sprintf("verified_numbers/%s", url.PathEscape(phoneNumber))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -94,7 +94,7 @@ func (r *VerifiedNumberService) Delete(ctx context.Context, phoneNumber string, 
 		err = errors.New("missing required phone_number parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("verified_numbers/%s", phoneNumber)
+	path := fmt.Sprintf("verified_numbers/%s", url.PathEscape(phoneNumber))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
 }

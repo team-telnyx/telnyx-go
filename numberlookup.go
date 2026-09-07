@@ -45,7 +45,7 @@ func (r *NumberLookupService) Get(ctx context.Context, phoneNumber string, query
 		err = errors.New("missing required phone_number parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("number_lookup/%s", phoneNumber)
+	path := fmt.Sprintf("number_lookup/%s", url.PathEscape(phoneNumber))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }

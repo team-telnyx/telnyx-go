@@ -103,7 +103,7 @@ func (r *AIMissionService) CloneMission(ctx context.Context, missionID string, o
 		err = errors.New("missing required mission_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/missions/%s/clone", missionID)
+	path := fmt.Sprintf("ai/missions/%s/clone", url.PathEscape(missionID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
 	return res, err
 }

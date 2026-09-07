@@ -47,7 +47,7 @@ func (r *ExternalConnectionLogMessageService) Get(ctx context.Context, id string
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("external_connections/log_messages/%s", id)
+	path := fmt.Sprintf("external_connections/log_messages/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -84,7 +84,7 @@ func (r *ExternalConnectionLogMessageService) Dismiss(ctx context.Context, id st
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("external_connections/log_messages/%s", id)
+	path := fmt.Sprintf("external_connections/log_messages/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
 }

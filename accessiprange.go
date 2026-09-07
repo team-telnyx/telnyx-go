@@ -80,7 +80,7 @@ func (r *AccessIPRangeService) Delete(ctx context.Context, accessIPRangeID strin
 		err = errors.New("missing required access_ip_range_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("access_ip_ranges/%s", accessIPRangeID)
+	path := fmt.Sprintf("access_ip_ranges/%s", url.PathEscape(accessIPRangeID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
 }

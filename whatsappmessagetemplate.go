@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
@@ -46,7 +47,7 @@ func (r *WhatsappMessageTemplateService) Get(ctx context.Context, id string, opt
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("v2/whatsapp_message_templates/%s", id)
+	path := fmt.Sprintf("v2/whatsapp_message_templates/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -58,7 +59,7 @@ func (r *WhatsappMessageTemplateService) Update(ctx context.Context, id string, 
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("v2/whatsapp_message_templates/%s", id)
+	path := fmt.Sprintf("v2/whatsapp_message_templates/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }
@@ -71,7 +72,7 @@ func (r *WhatsappMessageTemplateService) Delete(ctx context.Context, id string, 
 		err = errors.New("missing required id parameter")
 		return err
 	}
-	path := fmt.Sprintf("v2/whatsapp_message_templates/%s", id)
+	path := fmt.Sprintf("v2/whatsapp_message_templates/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return err
 }

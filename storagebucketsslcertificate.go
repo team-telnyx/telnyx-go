@@ -10,6 +10,7 @@ import (
 	"io"
 	"mime/multipart"
 	"net/http"
+	"net/url"
 	"slices"
 	"time"
 
@@ -49,7 +50,7 @@ func (r *StorageBucketSslCertificateService) New(ctx context.Context, bucketName
 		err = errors.New("missing required bucketName parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("storage/buckets/%s/ssl_certificate", bucketName)
+	path := fmt.Sprintf("storage/buckets/%s/ssl_certificate", url.PathEscape(bucketName))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return res, err
 }
@@ -61,7 +62,7 @@ func (r *StorageBucketSslCertificateService) Get(ctx context.Context, bucketName
 		err = errors.New("missing required bucketName parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("storage/buckets/%s/ssl_certificate", bucketName)
+	path := fmt.Sprintf("storage/buckets/%s/ssl_certificate", url.PathEscape(bucketName))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -73,7 +74,7 @@ func (r *StorageBucketSslCertificateService) Delete(ctx context.Context, bucketN
 		err = errors.New("missing required bucketName parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("storage/buckets/%s/ssl_certificate", bucketName)
+	path := fmt.Sprintf("storage/buckets/%s/ssl_certificate", url.PathEscape(bucketName))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
 }

@@ -92,6 +92,22 @@ type AIAnthropicV1MessagesParams struct {
 	McpServers []map[string]any `json:"mcp_servers,omitzero"`
 	// An object describing metadata about the request.
 	Metadata map[string]any `json:"metadata,omitzero"`
+	// How strictly `region` is applied. `preferred` (the default when `region` is set)
+	// tries that region first and falls back to another when the model cannot be
+	// served there, so a request that would have succeeded still succeeds. `strict`
+	// pins the request: it is served from that region or it fails with a 422, never
+	// redirected to another region. Requires `region`.
+	//
+	// Any of "preferred", "strict".
+	Mode AIAnthropicV1MessagesParamsMode `json:"mode,omitzero"`
+	// Optional data-residency region the request should be served from, using the same
+	// vocabulary as your account's Data Locality setting. Behavior depends on `mode`.
+	// Supported for Telnyx-hosted models only: a request routed to an external
+	// provider never passes through Telnyx model routing, so a region cannot be
+	// enforced for it. Omit for today's latency-based routing.
+	//
+	// Any of "USA", "EU", "AUS", "UAE".
+	Region AIAnthropicV1MessagesParamsRegion `json:"region,omitzero"`
 	// Custom sequences that will cause the model to stop generating.
 	StopSequences []string `json:"stop_sequences,omitzero"`
 	// System prompt. Can be a string or an array of content blocks following the
@@ -114,6 +130,32 @@ func (r AIAnthropicV1MessagesParams) MarshalJSON() (data []byte, err error) {
 func (r *AIAnthropicV1MessagesParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// How strictly `region` is applied. `preferred` (the default when `region` is set)
+// tries that region first and falls back to another when the model cannot be
+// served there, so a request that would have succeeded still succeeds. `strict`
+// pins the request: it is served from that region or it fails with a 422, never
+// redirected to another region. Requires `region`.
+type AIAnthropicV1MessagesParamsMode string
+
+const (
+	AIAnthropicV1MessagesParamsModePreferred AIAnthropicV1MessagesParamsMode = "preferred"
+	AIAnthropicV1MessagesParamsModeStrict    AIAnthropicV1MessagesParamsMode = "strict"
+)
+
+// Optional data-residency region the request should be served from, using the same
+// vocabulary as your account's Data Locality setting. Behavior depends on `mode`.
+// Supported for Telnyx-hosted models only: a request routed to an external
+// provider never passes through Telnyx model routing, so a region cannot be
+// enforced for it. Omit for today's latency-based routing.
+type AIAnthropicV1MessagesParamsRegion string
+
+const (
+	AIAnthropicV1MessagesParamsRegionUsa AIAnthropicV1MessagesParamsRegion = "USA"
+	AIAnthropicV1MessagesParamsRegionEu  AIAnthropicV1MessagesParamsRegion = "EU"
+	AIAnthropicV1MessagesParamsRegionAus AIAnthropicV1MessagesParamsRegion = "AUS"
+	AIAnthropicV1MessagesParamsRegionUae AIAnthropicV1MessagesParamsRegion = "UAE"
+)
 
 // Only one field can be non-zero.
 //

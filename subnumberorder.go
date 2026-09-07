@@ -45,7 +45,7 @@ func (r *SubNumberOrderService) Get(ctx context.Context, subNumberOrderID string
 		err = errors.New("missing required sub_number_order_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("sub_number_orders/%s", subNumberOrderID)
+	path := fmt.Sprintf("sub_number_orders/%s", url.PathEscape(subNumberOrderID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
@@ -58,7 +58,7 @@ func (r *SubNumberOrderService) Update(ctx context.Context, subNumberOrderID str
 		err = errors.New("missing required sub_number_order_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("sub_number_orders/%s", subNumberOrderID)
+	path := fmt.Sprintf("sub_number_orders/%s", url.PathEscape(subNumberOrderID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }
@@ -78,7 +78,7 @@ func (r *SubNumberOrderService) Cancel(ctx context.Context, subNumberOrderID str
 		err = errors.New("missing required sub_number_order_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("sub_number_orders/%s/cancel", subNumberOrderID)
+	path := fmt.Sprintf("sub_number_orders/%s/cancel", url.PathEscape(subNumberOrderID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, nil, &res, opts...)
 	return res, err
 }

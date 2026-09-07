@@ -47,7 +47,7 @@ func (r *MessagingProfileActionService) RegenerateSecret(ctx context.Context, id
 }
 
 type MessagingProfileActionRegenerateSecretResponse struct {
-	Data MessagingProfile `json:"data"`
+	Data MessagingMessagingProfile `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field

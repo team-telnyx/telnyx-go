@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
@@ -45,7 +46,7 @@ func (r *DialogflowConnectionService) New(ctx context.Context, connectionID stri
 		err = errors.New("missing required connection_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("dialogflow_connections/%s", connectionID)
+	path := fmt.Sprintf("dialogflow_connections/%s", url.PathEscape(connectionID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -58,7 +59,7 @@ func (r *DialogflowConnectionService) Get(ctx context.Context, connectionID stri
 		err = errors.New("missing required connection_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("dialogflow_connections/%s", connectionID)
+	path := fmt.Sprintf("dialogflow_connections/%s", url.PathEscape(connectionID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -71,7 +72,7 @@ func (r *DialogflowConnectionService) Update(ctx context.Context, connectionID s
 		err = errors.New("missing required connection_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("dialogflow_connections/%s", connectionID)
+	path := fmt.Sprintf("dialogflow_connections/%s", url.PathEscape(connectionID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return res, err
 }
@@ -84,7 +85,7 @@ func (r *DialogflowConnectionService) Delete(ctx context.Context, connectionID s
 		err = errors.New("missing required connection_id parameter")
 		return err
 	}
-	path := fmt.Sprintf("dialogflow_connections/%s", connectionID)
+	path := fmt.Sprintf("dialogflow_connections/%s", url.PathEscape(connectionID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return err
 }

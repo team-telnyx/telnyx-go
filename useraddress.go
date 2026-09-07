@@ -60,7 +60,7 @@ func (r *UserAddressService) Get(ctx context.Context, id string, opts ...option.
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("user_addresses/%s", id)
+	path := fmt.Sprintf("user_addresses/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }

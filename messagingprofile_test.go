@@ -122,7 +122,9 @@ func TestMessagingProfileUpdateWithOptionalParams(t *testing.T) {
 				Geomatch:       telnyx.Bool(false),
 				StickySender:   telnyx.Bool(true),
 			},
-			SmartEncoding: telnyx.Bool(true),
+			RedactionEnabled: telnyx.Bool(true),
+			RedactionLevel:   telnyx.Int(0),
+			SmartEncoding:    telnyx.Bool(true),
 			URLShortenerSettings: telnyx.URLShortenerSettingsParam{
 				Domain:               "example.ex",
 				Prefix:               telnyx.String("cmpny"),

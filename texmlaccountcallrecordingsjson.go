@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 	"time"
 
@@ -49,7 +50,7 @@ func (r *TexmlAccountCallRecordingsJsonService) RecordingsJson(ctx context.Conte
 		err = errors.New("missing required call_sid parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("texml/Accounts/%s/Calls/%s/Recordings.json", params.AccountSid, callSid)
+	path := fmt.Sprintf("texml/Accounts/%s/Calls/%s/Recordings.json", url.PathEscape(params.AccountSid), url.PathEscape(callSid))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
@@ -65,7 +66,7 @@ func (r *TexmlAccountCallRecordingsJsonService) GetRecordingsJson(ctx context.Co
 		err = errors.New("missing required call_sid parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("texml/Accounts/%s/Calls/%s/Recordings.json", query.AccountSid, callSid)
+	path := fmt.Sprintf("texml/Accounts/%s/Calls/%s/Recordings.json", url.PathEscape(query.AccountSid), url.PathEscape(callSid))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }

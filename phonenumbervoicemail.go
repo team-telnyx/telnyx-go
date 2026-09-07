@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
@@ -48,7 +49,7 @@ func (r *PhoneNumberVoicemailService) New(ctx context.Context, phoneNumberID str
 		err = errors.New("missing required phone_number_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("phone_numbers/%s/voicemail", phoneNumberID)
+	path := fmt.Sprintf("phone_numbers/%s/voicemail", url.PathEscape(phoneNumberID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -60,7 +61,7 @@ func (r *PhoneNumberVoicemailService) Get(ctx context.Context, phoneNumberID str
 		err = errors.New("missing required phone_number_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("phone_numbers/%s/voicemail", phoneNumberID)
+	path := fmt.Sprintf("phone_numbers/%s/voicemail", url.PathEscape(phoneNumberID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -75,7 +76,7 @@ func (r *PhoneNumberVoicemailService) Update(ctx context.Context, phoneNumberID 
 		err = errors.New("missing required phone_number_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("phone_numbers/%s/voicemail", phoneNumberID)
+	path := fmt.Sprintf("phone_numbers/%s/voicemail", url.PathEscape(phoneNumberID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }

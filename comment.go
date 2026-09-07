@@ -59,7 +59,7 @@ func (r *CommentService) Get(ctx context.Context, id string, opts ...option.Requ
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("comments/%s", id)
+	path := fmt.Sprintf("comments/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -81,7 +81,7 @@ func (r *CommentService) MarkAsRead(ctx context.Context, id string, opts ...opti
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("comments/%s/read", id)
+	path := fmt.Sprintf("comments/%s/read", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, nil, &res, opts...)
 	return res, err
 }

@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
@@ -68,7 +69,7 @@ func (r *WebSearchResearchService) Get(ctx context.Context, taskID string, opts 
 		err = errors.New("missing required task_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("web_search/research/%s", taskID)
+	path := fmt.Sprintf("web_search/research/%s", url.PathEscape(taskID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }

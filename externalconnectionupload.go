@@ -49,7 +49,7 @@ func (r *ExternalConnectionUploadService) New(ctx context.Context, id string, bo
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("external_connections/%s/uploads", id)
+	path := fmt.Sprintf("external_connections/%s/uploads", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -65,7 +65,7 @@ func (r *ExternalConnectionUploadService) Get(ctx context.Context, ticketID stri
 		err = errors.New("missing required ticket_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("external_connections/%s/uploads/%s", query.ID, ticketID)
+	path := fmt.Sprintf("external_connections/%s/uploads/%s", url.PathEscape(query.ID), ticketID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -79,7 +79,7 @@ func (r *ExternalConnectionUploadService) List(ctx context.Context, id string, q
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("external_connections/%s/uploads", id)
+	path := fmt.Sprintf("external_connections/%s/uploads", url.PathEscape(id))
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
 		return nil, err
@@ -105,7 +105,7 @@ func (r *ExternalConnectionUploadService) PendingCount(ctx context.Context, id s
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("external_connections/%s/uploads/status", id)
+	path := fmt.Sprintf("external_connections/%s/uploads/status", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -118,7 +118,7 @@ func (r *ExternalConnectionUploadService) RefreshStatus(ctx context.Context, id 
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("external_connections/%s/uploads/refresh", id)
+	path := fmt.Sprintf("external_connections/%s/uploads/refresh", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
 	return res, err
 }
@@ -137,7 +137,7 @@ func (r *ExternalConnectionUploadService) Retry(ctx context.Context, ticketID st
 		err = errors.New("missing required ticket_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("external_connections/%s/uploads/%s/retry", body.ID, ticketID)
+	path := fmt.Sprintf("external_connections/%s/uploads/%s/retry", url.PathEscape(body.ID), ticketID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
 	return res, err
 }

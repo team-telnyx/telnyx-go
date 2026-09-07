@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
@@ -51,7 +52,7 @@ func (r *MessagingRcService) InviteTestNumber(ctx context.Context, phoneNumber s
 		err = errors.New("missing required phone_number parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("messaging/rcs/test_number_invite/%s/%s", body.ID, phoneNumber)
+	path := fmt.Sprintf("messaging/rcs/test_number_invite/%s/%s", url.PathEscape(body.ID), url.PathEscape(phoneNumber))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, nil, &res, opts...)
 	return res, err
 }
@@ -76,7 +77,7 @@ func (r *MessagingRcService) GetCapabilities(ctx context.Context, phoneNumber st
 		err = errors.New("missing required phone_number parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("messaging/rcs/capabilities/%s/%s", query.AgentID, phoneNumber)
+	path := fmt.Sprintf("messaging/rcs/capabilities/%s/%s", url.PathEscape(query.AgentID), url.PathEscape(phoneNumber))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }

@@ -52,7 +52,7 @@ func (r *AIConversationMessageService) List(ctx context.Context, conversationID 
 		err = errors.New("missing required conversation_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/conversations/%s/messages", conversationID)
+	path := fmt.Sprintf("ai/conversations/%s/messages", url.PathEscape(conversationID))
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
 		return nil, err

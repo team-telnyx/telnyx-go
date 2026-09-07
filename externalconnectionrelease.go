@@ -51,7 +51,7 @@ func (r *ExternalConnectionReleaseService) Get(ctx context.Context, releaseID st
 		err = errors.New("missing required release_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("external_connections/%s/releases/%s", query.ID, releaseID)
+	path := fmt.Sprintf("external_connections/%s/releases/%s", url.PathEscape(query.ID), releaseID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -67,7 +67,7 @@ func (r *ExternalConnectionReleaseService) List(ctx context.Context, id string, 
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("external_connections/%s/releases", id)
+	path := fmt.Sprintf("external_connections/%s/releases", url.PathEscape(id))
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
 		return nil, err

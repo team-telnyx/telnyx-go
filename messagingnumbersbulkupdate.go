@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
@@ -54,7 +55,7 @@ func (r *MessagingNumbersBulkUpdateService) Get(ctx context.Context, orderID str
 		err = errors.New("missing required order_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("messaging_numbers_bulk_updates/%s", orderID)
+	path := fmt.Sprintf("messaging_numbers_bulk_updates/%s", url.PathEscape(orderID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }

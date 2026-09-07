@@ -110,7 +110,7 @@ func (r *EmailUnsubscribeGroupSuppressionService) Delete(ctx context.Context, em
 		err = errors.New("missing required email parameter")
 		return err
 	}
-	path := fmt.Sprintf("email_unsubscribe_groups/%s/suppressions/%s", body.ID, email)
+	path := fmt.Sprintf("email_unsubscribe_groups/%s/suppressions/%s", body.ID, url.PathEscape(email))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return err
 }

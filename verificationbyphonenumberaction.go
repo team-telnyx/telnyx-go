@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
@@ -45,7 +46,7 @@ func (r *VerificationByPhoneNumberActionService) Verify(ctx context.Context, pho
 		err = errors.New("missing required phone_number parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("verifications/by_phone_number/%s/actions/verify", phoneNumber)
+	path := fmt.Sprintf("verifications/by_phone_number/%s/actions/verify", url.PathEscape(phoneNumber))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }

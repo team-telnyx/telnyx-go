@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 	"time"
 
@@ -53,7 +54,7 @@ func (r *AIAssistantCanaryDeployService) New(ctx context.Context, assistantID st
 		err = errors.New("missing required assistant_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/assistants/%s/canary-deploys", assistantID)
+	path := fmt.Sprintf("ai/assistants/%s/canary-deploys", url.PathEscape(assistantID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
@@ -68,7 +69,7 @@ func (r *AIAssistantCanaryDeployService) Get(ctx context.Context, assistantID st
 		err = errors.New("missing required assistant_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/assistants/%s/canary-deploys", assistantID)
+	path := fmt.Sprintf("ai/assistants/%s/canary-deploys", url.PathEscape(assistantID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -84,7 +85,7 @@ func (r *AIAssistantCanaryDeployService) Update(ctx context.Context, assistantID
 		err = errors.New("missing required assistant_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/assistants/%s/canary-deploys", assistantID)
+	path := fmt.Sprintf("ai/assistants/%s/canary-deploys", url.PathEscape(assistantID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return res, err
 }
@@ -99,7 +100,7 @@ func (r *AIAssistantCanaryDeployService) Delete(ctx context.Context, assistantID
 		err = errors.New("missing required assistant_id parameter")
 		return err
 	}
-	path := fmt.Sprintf("ai/assistants/%s/canary-deploys", assistantID)
+	path := fmt.Sprintf("ai/assistants/%s/canary-deploys", url.PathEscape(assistantID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return err
 }

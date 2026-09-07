@@ -45,7 +45,7 @@ func (r *Messaging10dlcPartnerCampaignService) Get(ctx context.Context, campaign
 		err = errors.New("missing required campaignId parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("10dlc/partner_campaigns/%s", campaignID)
+	path := fmt.Sprintf("10dlc/partner_campaigns/%s", url.PathEscape(campaignID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -58,7 +58,7 @@ func (r *Messaging10dlcPartnerCampaignService) Update(ctx context.Context, campa
 		err = errors.New("missing required campaignId parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("10dlc/partner_campaigns/%s", campaignID)
+	path := fmt.Sprintf("10dlc/partner_campaigns/%s", url.PathEscape(campaignID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }
@@ -132,7 +132,7 @@ func (r *Messaging10dlcPartnerCampaignService) GetSharingStatus(ctx context.Cont
 		err = errors.New("missing required campaignId parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("10dlc/partnerCampaign/%s/sharing", campaignID)
+	path := fmt.Sprintf("10dlc/partnerCampaign/%s/sharing", url.PathEscape(campaignID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }

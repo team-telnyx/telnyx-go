@@ -58,7 +58,7 @@ func (r *IPConnectionService) Get(ctx context.Context, id string, opts ...option
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ip_connections/%s", id)
+	path := fmt.Sprintf("ip_connections/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -70,7 +70,7 @@ func (r *IPConnectionService) Update(ctx context.Context, id string, body IPConn
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ip_connections/%s", id)
+	path := fmt.Sprintf("ip_connections/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }
@@ -107,7 +107,7 @@ func (r *IPConnectionService) Delete(ctx context.Context, id string, opts ...opt
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ip_connections/%s", id)
+	path := fmt.Sprintf("ip_connections/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
 }

@@ -60,7 +60,7 @@ func (r *VoiceDesignService) Get(ctx context.Context, id string, query VoiceDesi
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("voice_designs/%s", id)
+	path := fmt.Sprintf("voice_designs/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
@@ -99,7 +99,7 @@ func (r *VoiceDesignService) Delete(ctx context.Context, id string, opts ...opti
 		err = errors.New("missing required id parameter")
 		return err
 	}
-	path := fmt.Sprintf("voice_designs/%s", id)
+	path := fmt.Sprintf("voice_designs/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return err
 }
@@ -113,7 +113,7 @@ func (r *VoiceDesignService) DeleteVersion(ctx context.Context, version int64, b
 		err = errors.New("missing required id parameter")
 		return err
 	}
-	path := fmt.Sprintf("voice_designs/%s/versions/%v", body.ID, version)
+	path := fmt.Sprintf("voice_designs/%s/versions/%v", url.PathEscape(body.ID), version)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return err
 }
@@ -128,7 +128,7 @@ func (r *VoiceDesignService) DownloadSample(ctx context.Context, id string, quer
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("voice_designs/%s/sample", id)
+	path := fmt.Sprintf("voice_designs/%s/sample", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
@@ -140,7 +140,7 @@ func (r *VoiceDesignService) Rename(ctx context.Context, id string, body VoiceDe
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("voice_designs/%s", id)
+	path := fmt.Sprintf("voice_designs/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }

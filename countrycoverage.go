@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
@@ -53,7 +54,7 @@ func (r *CountryCoverageService) GetCountry(ctx context.Context, countryCode str
 		err = errors.New("missing required country_code parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("country_coverage/countries/%s", countryCode)
+	path := fmt.Sprintf("country_coverage/countries/%s", url.PathEscape(countryCode))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }

@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
@@ -46,7 +47,7 @@ func (r *TexmlAccountRecordingJsonService) DeleteRecordingSidJson(ctx context.Co
 		err = errors.New("missing required recording_sid parameter")
 		return err
 	}
-	path := fmt.Sprintf("texml/Accounts/%s/Recordings/%s.json", body.AccountSid, recordingSid)
+	path := fmt.Sprintf("texml/Accounts/%s/Recordings/%s.json", url.PathEscape(body.AccountSid), recordingSid)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return err
 }
@@ -62,7 +63,7 @@ func (r *TexmlAccountRecordingJsonService) GetRecordingSidJson(ctx context.Conte
 		err = errors.New("missing required recording_sid parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("texml/Accounts/%s/Recordings/%s.json", query.AccountSid, recordingSid)
+	path := fmt.Sprintf("texml/Accounts/%s/Recordings/%s.json", url.PathEscape(query.AccountSid), recordingSid)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }

@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 	"time"
 
@@ -45,7 +46,7 @@ func (r *AIEmbeddingBucketService) Get(ctx context.Context, bucketName string, o
 		err = errors.New("missing required bucket_name parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/embeddings/buckets/%s", bucketName)
+	path := fmt.Sprintf("ai/embeddings/buckets/%s", url.PathEscape(bucketName))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -68,7 +69,7 @@ func (r *AIEmbeddingBucketService) Delete(ctx context.Context, bucketName string
 		err = errors.New("missing required bucket_name parameter")
 		return err
 	}
-	path := fmt.Sprintf("ai/embeddings/buckets/%s", bucketName)
+	path := fmt.Sprintf("ai/embeddings/buckets/%s", url.PathEscape(bucketName))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return err
 }

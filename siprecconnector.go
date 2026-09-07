@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
@@ -52,7 +53,7 @@ func (r *SiprecConnectorService) Get(ctx context.Context, connectorName string, 
 		err = errors.New("missing required connector_name parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("siprec_connectors/%s", connectorName)
+	path := fmt.Sprintf("siprec_connectors/%s", url.PathEscape(connectorName))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -64,7 +65,7 @@ func (r *SiprecConnectorService) Update(ctx context.Context, connectorName strin
 		err = errors.New("missing required connector_name parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("siprec_connectors/%s", connectorName)
+	path := fmt.Sprintf("siprec_connectors/%s", url.PathEscape(connectorName))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return res, err
 }
@@ -77,7 +78,7 @@ func (r *SiprecConnectorService) Delete(ctx context.Context, connectorName strin
 		err = errors.New("missing required connector_name parameter")
 		return err
 	}
-	path := fmt.Sprintf("siprec_connectors/%s", connectorName)
+	path := fmt.Sprintf("siprec_connectors/%s", url.PathEscape(connectorName))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return err
 }

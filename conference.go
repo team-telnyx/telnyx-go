@@ -72,7 +72,7 @@ func (r *ConferenceService) Get(ctx context.Context, id string, query Conference
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("conferences/%s", id)
+	path := fmt.Sprintf("conferences/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
@@ -116,7 +116,7 @@ func (r *ConferenceService) ListParticipants(ctx context.Context, conferenceID s
 		err = errors.New("missing required conference_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("conferences/%s/participants", conferenceID)
+	path := fmt.Sprintf("conferences/%s/participants", url.PathEscape(conferenceID))
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
 		return nil, err
@@ -146,7 +146,7 @@ func (r *ConferenceService) GetParticipant(ctx context.Context, participantID st
 		err = errors.New("missing required participant_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("conferences/%s/participants/%s", query.ID, participantID)
+	path := fmt.Sprintf("conferences/%s/participants/%s", query.ID, url.PathEscape(participantID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -162,7 +162,7 @@ func (r *ConferenceService) UpdateParticipant(ctx context.Context, participantID
 		err = errors.New("missing required participant_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("conferences/%s/participants/%s", params.ID, participantID)
+	path := fmt.Sprintf("conferences/%s/participants/%s", params.ID, url.PathEscape(participantID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
 	return res, err
 }

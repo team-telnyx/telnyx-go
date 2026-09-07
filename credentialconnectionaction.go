@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
@@ -36,16 +37,16 @@ func NewCredentialConnectionActionService(opts ...option.RequestOption) (r Crede
 	return
 }
 
-// Checks the registration_status for a credential connection,
-// (`registration_status`) as well as the timestamp for the last SIP registration
-// event (`registration_status_updated_at`)
+// Returns the live SIP registration status for a credential connection. Reports
+// whether the endpoint is currently registered (`status`) and the timestamp of the
+// last SIP registration event (`last_registration`).
 func (r *CredentialConnectionActionService) CheckRegistrationStatus(ctx context.Context, id string, opts ...option.RequestOption) (res *CredentialConnectionActionCheckRegistrationStatusResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("credential_connections/%s/actions/check_registration_status", id)
+	path := fmt.Sprintf("credential_connections/%s/actions/check_registration_status", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
 	return res, err
 }
@@ -70,24 +71,24 @@ func (r *CredentialConnectionActionCheckRegistrationStatusResponse) UnmarshalJSO
 
 type CredentialConnectionActionCheckRegistrationStatusResponseData struct {
 	// The ip used during the SIP connection
-	IPAddress string `json:"ip_address"`
+	IPAddress string `json:"ip_address" api:"nullable"`
 	// ISO 8601 formatted date indicating when the resource was last updated.
-	LastRegistration string `json:"last_registration"`
+	LastRegistration string `json:"last_registration" api:"nullable"`
 	// The port of the SIP connection
-	Port int64 `json:"port"`
+	Port int64 `json:"port" api:"nullable"`
 	// Identifies the type of the resource.
 	RecordType string `json:"record_type"`
 	// The user name of the SIP connection
-	SipUsername string `json:"sip_username"`
+	SipUsername string `json:"sip_username" api:"nullable"`
 	// The current registration status of your SIP connection
 	//
 	// Any of "Not Applicable", "Not Registered", "Failed", "Expired", "Registered",
 	// "Unregistered".
 	Status string `json:"status"`
 	// The protocol of the SIP connection
-	Transport string `json:"transport"`
+	Transport string `json:"transport" api:"nullable"`
 	// The user agent of the SIP connection
-	UserAgent string `json:"user_agent"`
+	UserAgent string `json:"user_agent" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		IPAddress        respjson.Field

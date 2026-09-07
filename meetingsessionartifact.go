@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 	"time"
 
@@ -49,7 +50,7 @@ func (r *MeetingSessionArtifactService) New(ctx context.Context, id string, body
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("meeting_sessions/%s/artifacts", id)
+	path := fmt.Sprintf("meeting_sessions/%s/artifacts", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -65,7 +66,7 @@ func (r *MeetingSessionArtifactService) Get(ctx context.Context, artifactID stri
 		err = errors.New("missing required artifact_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("meeting_sessions/%s/artifacts/%s", query.ID, artifactID)
+	path := fmt.Sprintf("meeting_sessions/%s/artifacts/%s", url.PathEscape(query.ID), url.PathEscape(artifactID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -77,7 +78,7 @@ func (r *MeetingSessionArtifactService) List(ctx context.Context, id string, opt
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("meeting_sessions/%s/artifacts", id)
+	path := fmt.Sprintf("meeting_sessions/%s/artifacts", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }

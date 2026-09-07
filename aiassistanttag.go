@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
@@ -52,7 +53,7 @@ func (r *AIAssistantTagService) Add(ctx context.Context, assistantID string, bod
 		err = errors.New("missing required assistant_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/assistants/%s/tags", assistantID)
+	path := fmt.Sprintf("ai/assistants/%s/tags", url.PathEscape(assistantID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -69,7 +70,7 @@ func (r *AIAssistantTagService) Remove(ctx context.Context, tag string, body AIA
 		err = errors.New("missing required tag parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/assistants/%s/tags/%s", body.AssistantID, tag)
+	path := fmt.Sprintf("ai/assistants/%s/tags/%s", url.PathEscape(body.AssistantID), url.PathEscape(tag))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
 }

@@ -55,7 +55,7 @@ func (r *NumberBlockOrderService) Get(ctx context.Context, numberBlockOrderID st
 		err = errors.New("missing required number_block_order_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("number_block_orders/%s", numberBlockOrderID)
+	path := fmt.Sprintf("number_block_orders/%s", url.PathEscape(numberBlockOrderID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }

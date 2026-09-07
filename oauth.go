@@ -44,7 +44,7 @@ func (r *OAuthService) Get(ctx context.Context, consentToken string, opts ...opt
 		err = errors.New("missing required consent_token parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("oauth/consent/%s", consentToken)
+	path := fmt.Sprintf("oauth/consent/%s", url.PathEscape(consentToken))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }

@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
@@ -46,7 +47,7 @@ func (r *CustomStorageCredentialService) New(ctx context.Context, connectionID s
 		err = errors.New("missing required connection_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("custom_storage_credentials/%s", connectionID)
+	path := fmt.Sprintf("custom_storage_credentials/%s", url.PathEscape(connectionID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -58,7 +59,7 @@ func (r *CustomStorageCredentialService) Get(ctx context.Context, connectionID s
 		err = errors.New("missing required connection_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("custom_storage_credentials/%s", connectionID)
+	path := fmt.Sprintf("custom_storage_credentials/%s", url.PathEscape(connectionID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -70,7 +71,7 @@ func (r *CustomStorageCredentialService) Update(ctx context.Context, connectionI
 		err = errors.New("missing required connection_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("custom_storage_credentials/%s", connectionID)
+	path := fmt.Sprintf("custom_storage_credentials/%s", url.PathEscape(connectionID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return res, err
 }
@@ -83,7 +84,7 @@ func (r *CustomStorageCredentialService) Delete(ctx context.Context, connectionI
 		err = errors.New("missing required connection_id parameter")
 		return err
 	}
-	path := fmt.Sprintf("custom_storage_credentials/%s", connectionID)
+	path := fmt.Sprintf("custom_storage_credentials/%s", url.PathEscape(connectionID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return err
 }

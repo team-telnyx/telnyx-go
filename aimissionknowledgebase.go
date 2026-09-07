@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
@@ -39,7 +40,7 @@ func (r *AIMissionKnowledgeBaseService) NewKnowledgeBase(ctx context.Context, mi
 		err = errors.New("missing required mission_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/missions/%s/knowledge-bases", missionID)
+	path := fmt.Sprintf("ai/missions/%s/knowledge-bases", url.PathEscape(missionID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
 	return res, err
 }
@@ -57,7 +58,7 @@ func (r *AIMissionKnowledgeBaseService) DeleteKnowledgeBase(ctx context.Context,
 		err = errors.New("missing required knowledge_base_id parameter")
 		return err
 	}
-	path := fmt.Sprintf("ai/missions/%s/knowledge-bases/%s", body.MissionID, knowledgeBaseID)
+	path := fmt.Sprintf("ai/missions/%s/knowledge-bases/%s", url.PathEscape(body.MissionID), url.PathEscape(knowledgeBaseID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return err
 }
@@ -74,7 +75,7 @@ func (r *AIMissionKnowledgeBaseService) GetKnowledgeBase(ctx context.Context, kn
 		err = errors.New("missing required knowledge_base_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/missions/%s/knowledge-bases/%s", query.MissionID, knowledgeBaseID)
+	path := fmt.Sprintf("ai/missions/%s/knowledge-bases/%s", url.PathEscape(query.MissionID), url.PathEscape(knowledgeBaseID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -87,7 +88,7 @@ func (r *AIMissionKnowledgeBaseService) ListKnowledgeBases(ctx context.Context, 
 		err = errors.New("missing required mission_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/missions/%s/knowledge-bases", missionID)
+	path := fmt.Sprintf("ai/missions/%s/knowledge-bases", url.PathEscape(missionID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -103,7 +104,7 @@ func (r *AIMissionKnowledgeBaseService) UpdateKnowledgeBase(ctx context.Context,
 		err = errors.New("missing required knowledge_base_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/missions/%s/knowledge-bases/%s", body.MissionID, knowledgeBaseID)
+	path := fmt.Sprintf("ai/missions/%s/knowledge-bases/%s", url.PathEscape(body.MissionID), url.PathEscape(knowledgeBaseID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, nil, &res, opts...)
 	return res, err
 }

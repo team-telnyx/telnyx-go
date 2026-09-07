@@ -60,7 +60,7 @@ func (r *TexmlAccountService) GetRecordingsJson(ctx context.Context, accountSid 
 		err = errors.New("missing required account_sid parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("texml/Accounts/%s/Recordings.json", accountSid)
+	path := fmt.Sprintf("texml/Accounts/%s/Recordings.json", url.PathEscape(accountSid))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
@@ -72,7 +72,7 @@ func (r *TexmlAccountService) GetTranscriptionsJson(ctx context.Context, account
 		err = errors.New("missing required account_sid parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("texml/Accounts/%s/Transcriptions.json", accountSid)
+	path := fmt.Sprintf("texml/Accounts/%s/Transcriptions.json", url.PathEscape(accountSid))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }

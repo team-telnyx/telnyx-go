@@ -153,6 +153,14 @@ type ChatCompletionRequestParam struct {
 	// Must be a valid JSON schema. If specified, the output will follow the JSON
 	// schema.
 	GuidedJson map[string]any `json:"guided_json,omitzero"`
+	// How strictly `region` is applied. `preferred` (the default when `region` is set)
+	// tries that region first and falls back to another when the model cannot be
+	// served there, so a request that would have succeeded still succeeds. `strict`
+	// pins the request: it is served from that region or it fails with a 422, never
+	// redirected to another region. Requires `region`.
+	//
+	// Any of "preferred", "strict".
+	Mode ChatCompletionRequestMode `json:"mode,omitzero"`
 	// Controls the reasoning effort for models that support it. When set, the model
 	// spends more or less compute on internal reasoning before generating its
 	// response. Supported values: none, minimal, low, medium, high, xhigh, max. Not
@@ -161,6 +169,14 @@ type ChatCompletionRequestParam struct {
 	//
 	// Any of "none", "minimal", "low", "medium", "high", "xhigh", "max".
 	ReasoningEffort ChatCompletionRequestReasoningEffort `json:"reasoning_effort,omitzero"`
+	// Optional data-residency region the request should be served from, using the same
+	// vocabulary as your account's Data Locality setting. Behavior depends on `mode`.
+	// Supported for Telnyx-hosted models only: a request routed to an external
+	// provider never passes through Telnyx model routing, so a region cannot be
+	// enforced for it. Omit for today's latency-based routing.
+	//
+	// Any of "USA", "EU", "AUS", "UAE".
+	Region ChatCompletionRequestRegion `json:"region,omitzero"`
 	// Use this is you want to guarantee a JSON output without defining a schema. For
 	// control over the schema, use `guided_json`.
 	ResponseFormat ChatCompletionRequestResponseFormatParam `json:"response_format,omitzero"`
@@ -256,6 +272,18 @@ func init() {
 	)
 }
 
+// How strictly `region` is applied. `preferred` (the default when `region` is set)
+// tries that region first and falls back to another when the model cannot be
+// served there, so a request that would have succeeded still succeeds. `strict`
+// pins the request: it is served from that region or it fails with a 422, never
+// redirected to another region. Requires `region`.
+type ChatCompletionRequestMode string
+
+const (
+	ChatCompletionRequestModePreferred ChatCompletionRequestMode = "preferred"
+	ChatCompletionRequestModeStrict    ChatCompletionRequestMode = "strict"
+)
+
 // Controls the reasoning effort for models that support it. When set, the model
 // spends more or less compute on internal reasoning before generating its
 // response. Supported values: none, minimal, low, medium, high, xhigh, max. Not
@@ -271,6 +299,20 @@ const (
 	ChatCompletionRequestReasoningEffortHigh    ChatCompletionRequestReasoningEffort = "high"
 	ChatCompletionRequestReasoningEffortXhigh   ChatCompletionRequestReasoningEffort = "xhigh"
 	ChatCompletionRequestReasoningEffortMax     ChatCompletionRequestReasoningEffort = "max"
+)
+
+// Optional data-residency region the request should be served from, using the same
+// vocabulary as your account's Data Locality setting. Behavior depends on `mode`.
+// Supported for Telnyx-hosted models only: a request routed to an external
+// provider never passes through Telnyx model routing, so a region cannot be
+// enforced for it. Omit for today's latency-based routing.
+type ChatCompletionRequestRegion string
+
+const (
+	ChatCompletionRequestRegionUsa ChatCompletionRequestRegion = "USA"
+	ChatCompletionRequestRegionEu  ChatCompletionRequestRegion = "EU"
+	ChatCompletionRequestRegionAus ChatCompletionRequestRegion = "AUS"
+	ChatCompletionRequestRegionUae ChatCompletionRequestRegion = "UAE"
 )
 
 // Use this is you want to guarantee a JSON output without defining a schema. For

@@ -10,6 +10,7 @@ import (
 	"io"
 	"mime/multipart"
 	"net/http"
+	"net/url"
 	"slices"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apiform"
@@ -48,7 +49,7 @@ func (r *WhatsappPhoneNumberProfilePhotoService) Get(ctx context.Context, phoneN
 		err = errors.New("missing required phone_number parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("v2/whatsapp/phone_numbers/%s/profile/photo", phoneNumber)
+	path := fmt.Sprintf("v2/whatsapp/phone_numbers/%s/profile/photo", url.PathEscape(phoneNumber))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -61,7 +62,7 @@ func (r *WhatsappPhoneNumberProfilePhotoService) Delete(ctx context.Context, pho
 		err = errors.New("missing required phone_number parameter")
 		return err
 	}
-	path := fmt.Sprintf("v2/whatsapp/phone_numbers/%s/profile/photo", phoneNumber)
+	path := fmt.Sprintf("v2/whatsapp/phone_numbers/%s/profile/photo", url.PathEscape(phoneNumber))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return err
 }
@@ -74,7 +75,7 @@ func (r *WhatsappPhoneNumberProfilePhotoService) Upload(ctx context.Context, pho
 		err = errors.New("missing required phone_number parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("v2/whatsapp/phone_numbers/%s/profile/photo", phoneNumber)
+	path := fmt.Sprintf("v2/whatsapp/phone_numbers/%s/profile/photo", url.PathEscape(phoneNumber))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }

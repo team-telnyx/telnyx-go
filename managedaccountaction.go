@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
@@ -47,7 +48,7 @@ func (r *ManagedAccountActionService) Disable(ctx context.Context, id string, op
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("managed_accounts/%s/actions/disable", id)
+	path := fmt.Sprintf("managed_accounts/%s/actions/disable", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
 	return res, err
 }
@@ -59,7 +60,7 @@ func (r *ManagedAccountActionService) Enable(ctx context.Context, id string, bod
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("managed_accounts/%s/actions/enable", id)
+	path := fmt.Sprintf("managed_accounts/%s/actions/enable", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }

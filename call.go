@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
@@ -78,7 +79,7 @@ func (r *CallService) GetStatus(ctx context.Context, callControlID string, opts 
 		err = errors.New("missing required call_control_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("calls/%s", callControlID)
+	path := fmt.Sprintf("calls/%s", url.PathEscape(callControlID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -1367,6 +1368,12 @@ type CallDialParams struct {
 	// Use this field to avoid duplicate commands. Telnyx will ignore others Dial
 	// commands with the same `command_id`.
 	CommandID param.Opt[string] `json:"command_id,omitzero"`
+	// The number the inbound call being transferred was originally received on, in
+	// +E164 format. Supplying it lets an unverified non-Telnyx `from` be used as the
+	// caller id, provided that number is still on an active inbound call to this
+	// `diversion` number for your account. The `diversion` number itself must be one
+	// you own or have verified.
+	Diversion param.Opt[string] `json:"diversion,omitzero"`
 	// Enables Dialogflow for the current call. The default value is false.
 	EnableDialogflow param.Opt[bool] `json:"enable_dialogflow,omitzero"`
 	// The `from_display_name` string to be used as the caller id name (SIP From
