@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
@@ -45,7 +46,7 @@ func (r *Messaging10dlcBrandExternalVettingService) List(ctx context.Context, br
 		err = errors.New("missing required brandId parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("10dlc/brand/%s/externalVetting", brandID)
+	path := fmt.Sprintf("10dlc/brand/%s/externalVetting", url.PathEscape(brandID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -60,7 +61,7 @@ func (r *Messaging10dlcBrandExternalVettingService) Imports(ctx context.Context,
 		err = errors.New("missing required brandId parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("10dlc/brand/%s/externalVetting", brandID)
+	path := fmt.Sprintf("10dlc/brand/%s/externalVetting", url.PathEscape(brandID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return res, err
 }
@@ -76,7 +77,7 @@ func (r *Messaging10dlcBrandExternalVettingService) Order(ctx context.Context, b
 		err = errors.New("missing required brandId parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("10dlc/brand/%s/externalVetting", brandID)
+	path := fmt.Sprintf("10dlc/brand/%s/externalVetting", url.PathEscape(brandID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }

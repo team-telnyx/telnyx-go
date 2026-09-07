@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 	"time"
 
@@ -86,7 +87,7 @@ func (r *AIMissionRunTelnyxAgentService) Unlink(ctx context.Context, telnyxAgent
 		err = errors.New("missing required telnyx_agent_id parameter")
 		return err
 	}
-	path := fmt.Sprintf("ai/missions/%s/runs/%s/telnyx-agents/%s", body.MissionID, body.RunID, telnyxAgentID)
+	path := fmt.Sprintf("ai/missions/%s/runs/%s/telnyx-agents/%s", body.MissionID, body.RunID, url.PathEscape(telnyxAgentID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return err
 }

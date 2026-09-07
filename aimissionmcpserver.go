@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
@@ -40,7 +41,7 @@ func (r *AIMissionMcpServerService) NewMcpServer(ctx context.Context, missionID 
 		err = errors.New("missing required mission_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/missions/%s/mcp-servers", missionID)
+	path := fmt.Sprintf("ai/missions/%s/mcp-servers", url.PathEscape(missionID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
 	return res, err
 }
@@ -58,7 +59,7 @@ func (r *AIMissionMcpServerService) DeleteMcpServer(ctx context.Context, mcpServ
 		err = errors.New("missing required mcp_server_id parameter")
 		return err
 	}
-	path := fmt.Sprintf("ai/missions/%s/mcp-servers/%s", body.MissionID, mcpServerID)
+	path := fmt.Sprintf("ai/missions/%s/mcp-servers/%s", url.PathEscape(body.MissionID), url.PathEscape(mcpServerID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return err
 }
@@ -75,7 +76,7 @@ func (r *AIMissionMcpServerService) GetMcpServer(ctx context.Context, mcpServerI
 		err = errors.New("missing required mcp_server_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/missions/%s/mcp-servers/%s", query.MissionID, mcpServerID)
+	path := fmt.Sprintf("ai/missions/%s/mcp-servers/%s", url.PathEscape(query.MissionID), url.PathEscape(mcpServerID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -88,7 +89,7 @@ func (r *AIMissionMcpServerService) ListMcpServers(ctx context.Context, missionI
 		err = errors.New("missing required mission_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/missions/%s/mcp-servers", missionID)
+	path := fmt.Sprintf("ai/missions/%s/mcp-servers", url.PathEscape(missionID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -104,7 +105,7 @@ func (r *AIMissionMcpServerService) UpdateMcpServer(ctx context.Context, mcpServ
 		err = errors.New("missing required mcp_server_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/missions/%s/mcp-servers/%s", body.MissionID, mcpServerID)
+	path := fmt.Sprintf("ai/missions/%s/mcp-servers/%s", url.PathEscape(body.MissionID), url.PathEscape(mcpServerID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, nil, &res, opts...)
 	return res, err
 }

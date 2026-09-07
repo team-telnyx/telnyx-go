@@ -50,7 +50,7 @@ func (r *ChannelZoneService) Update(ctx context.Context, channelZoneID string, b
 		err = errors.New("missing required channel_zone_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("channel_zones/%s", channelZoneID)
+	path := fmt.Sprintf("channel_zones/%s", url.PathEscape(channelZoneID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return res, err
 }

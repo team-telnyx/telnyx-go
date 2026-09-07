@@ -49,7 +49,7 @@ func (r *WhatsappBusinessAccountPhoneNumberService) List(ctx context.Context, id
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("v2/whatsapp/business_accounts/%s/phone_numbers", id)
+	path := fmt.Sprintf("v2/whatsapp/business_accounts/%s/phone_numbers", url.PathEscape(id))
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
 		return nil, err
@@ -76,7 +76,7 @@ func (r *WhatsappBusinessAccountPhoneNumberService) InitializeVerification(ctx c
 		err = errors.New("missing required id parameter")
 		return err
 	}
-	path := fmt.Sprintf("v2/whatsapp/business_accounts/%s/phone_numbers", id)
+	path := fmt.Sprintf("v2/whatsapp/business_accounts/%s/phone_numbers", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
 	return err
 }

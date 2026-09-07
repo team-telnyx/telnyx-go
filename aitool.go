@@ -59,7 +59,7 @@ func (r *AIToolService) Get(ctx context.Context, toolID string, opts ...option.R
 		err = errors.New("missing required tool_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/tools/%s", toolID)
+	path := fmt.Sprintf("ai/tools/%s", url.PathEscape(toolID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -71,7 +71,7 @@ func (r *AIToolService) Update(ctx context.Context, toolID string, body AIToolUp
 		err = errors.New("missing required tool_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/tools/%s", toolID)
+	path := fmt.Sprintf("ai/tools/%s", url.PathEscape(toolID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }
@@ -106,7 +106,7 @@ func (r *AIToolService) Delete(ctx context.Context, toolID string, opts ...optio
 		err = errors.New("missing required tool_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/tools/%s", toolID)
+	path := fmt.Sprintf("ai/tools/%s", url.PathEscape(toolID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
 }

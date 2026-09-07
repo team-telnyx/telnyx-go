@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
@@ -45,7 +46,7 @@ func (r *FqdnConnectionFqdnAuthenticationService) List(ctx context.Context, fqdn
 		err = errors.New("missing required fqdn_connection_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("fqdn_connections/%s/fqdn_authentication", fqdnConnectionID)
+	path := fmt.Sprintf("fqdn_connections/%s/fqdn_authentication", url.PathEscape(fqdnConnectionID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -57,7 +58,7 @@ func (r *FqdnConnectionFqdnAuthenticationService) PatchAll(ctx context.Context, 
 		err = errors.New("missing required fqdn_connection_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("fqdn_connections/%s/fqdn_authentication", fqdnConnectionID)
+	path := fmt.Sprintf("fqdn_connections/%s/fqdn_authentication", url.PathEscape(fqdnConnectionID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }

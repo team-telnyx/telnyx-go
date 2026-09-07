@@ -57,7 +57,7 @@ func (r *OutboundVoiceProfileService) Get(ctx context.Context, id string, opts .
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("outbound_voice_profiles/%s", id)
+	path := fmt.Sprintf("outbound_voice_profiles/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -69,7 +69,7 @@ func (r *OutboundVoiceProfileService) Update(ctx context.Context, id string, bod
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("outbound_voice_profiles/%s", id)
+	path := fmt.Sprintf("outbound_voice_profiles/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }
@@ -106,7 +106,7 @@ func (r *OutboundVoiceProfileService) Delete(ctx context.Context, id string, opt
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("outbound_voice_profiles/%s", id)
+	path := fmt.Sprintf("outbound_voice_profiles/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
 }

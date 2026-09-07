@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
@@ -45,7 +46,7 @@ func (r *CredentialConnectionActionService) CheckRegistrationStatus(ctx context.
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("credential_connections/%s/actions/check_registration_status", id)
+	path := fmt.Sprintf("credential_connections/%s/actions/check_registration_status", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
 	return res, err
 }

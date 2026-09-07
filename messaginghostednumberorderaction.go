@@ -10,6 +10,7 @@ import (
 	"io"
 	"mime/multipart"
 	"net/http"
+	"net/url"
 	"slices"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apiform"
@@ -48,7 +49,7 @@ func (r *MessagingHostedNumberOrderActionService) UploadFile(ctx context.Context
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("messaging_hosted_number_orders/%s/actions/file_upload", id)
+	path := fmt.Sprintf("messaging_hosted_number_orders/%s/actions/file_upload", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }

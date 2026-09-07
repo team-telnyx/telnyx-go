@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 	"time"
 
@@ -104,7 +105,7 @@ func (r *AIMissionRunPlanService) GetStepDetails(ctx context.Context, stepID str
 		err = errors.New("missing required step_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/missions/%s/runs/%s/plan/steps/%s", query.MissionID, query.RunID, stepID)
+	path := fmt.Sprintf("ai/missions/%s/runs/%s/plan/steps/%s", query.MissionID, query.RunID, url.PathEscape(stepID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -125,7 +126,7 @@ func (r *AIMissionRunPlanService) UpdateStep(ctx context.Context, stepID string,
 		err = errors.New("missing required step_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/missions/%s/runs/%s/plan/steps/%s", params.MissionID, params.RunID, stepID)
+	path := fmt.Sprintf("ai/missions/%s/runs/%s/plan/steps/%s", params.MissionID, params.RunID, url.PathEscape(stepID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
 	return res, err
 }

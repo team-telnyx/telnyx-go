@@ -56,7 +56,7 @@ func (r *PhoneNumberCsvDownloadService) Get(ctx context.Context, id string, opts
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("phone_numbers/csv_downloads/%s", id)
+	path := fmt.Sprintf("phone_numbers/csv_downloads/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }

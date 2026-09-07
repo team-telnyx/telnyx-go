@@ -45,6 +45,8 @@ func TestAIAnthropicV1MessagesWithOptionalParams(t *testing.T) {
 		Metadata: map[string]any{
 			"foo": "bar",
 		},
+		Mode:          telnyx.AIAnthropicV1MessagesParamsModePreferred,
+		Region:        telnyx.AIAnthropicV1MessagesParamsRegionUsa,
 		ServiceTier:   telnyx.String("service_tier"),
 		StopSequences: []string{"string"},
 		Stream:        telnyx.Bool(true),

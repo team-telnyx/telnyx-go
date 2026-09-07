@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
@@ -77,7 +78,7 @@ func (r *AICollectionSourceService) Delete(ctx context.Context, sourceID string,
 		err = errors.New("missing required sourceId parameter")
 		return err
 	}
-	path := fmt.Sprintf("ai/collections/%s/sources/%s", body.Uuid, sourceID)
+	path := fmt.Sprintf("ai/collections/%s/sources/%s", body.Uuid, url.PathEscape(sourceID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return err
 }

@@ -32,10 +32,12 @@ func TestAIOpenAINewResponseWithOptionalParams(t *testing.T) {
 			"0": "bar",
 		},
 		Instructions: telnyx.String("You are a friendly chatbot."),
+		Mode:         telnyx.AIOpenAINewResponseParamsModePreferred,
 		Model:        telnyx.String("zai-org/GLM-5.1-FP8"),
 		Reasoning: telnyx.AIOpenAINewResponseParamsReasoning{
 			Effort: "none",
 		},
+		Region:      telnyx.AIOpenAINewResponseParamsRegionUsa,
 		ServiceTier: telnyx.String("service_tier"),
 		Stream:      telnyx.Bool(false),
 	})

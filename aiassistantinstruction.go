@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
@@ -59,7 +60,7 @@ func (r *AIAssistantInstructionService) Enhance(ctx context.Context, assistantID
 		err = errors.New("missing required assistant_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/assistants/%s/instructions/enhance", assistantID)
+	path := fmt.Sprintf("ai/assistants/%s/instructions/enhance", url.PathEscape(assistantID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }

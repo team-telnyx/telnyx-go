@@ -84,7 +84,7 @@ func (r *AIAssistantService) Get(ctx context.Context, assistantID string, query 
 		err = errors.New("missing required assistant_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/assistants/%s", assistantID)
+	path := fmt.Sprintf("ai/assistants/%s", url.PathEscape(assistantID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
@@ -98,7 +98,7 @@ func (r *AIAssistantService) Update(ctx context.Context, assistantID string, bod
 		err = errors.New("missing required assistant_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/assistants/%s", assistantID)
+	path := fmt.Sprintf("ai/assistants/%s", url.PathEscape(assistantID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -118,7 +118,7 @@ func (r *AIAssistantService) Delete(ctx context.Context, assistantID string, opt
 		err = errors.New("missing required assistant_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/assistants/%s", assistantID)
+	path := fmt.Sprintf("ai/assistants/%s", url.PathEscape(assistantID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
 }
@@ -137,7 +137,7 @@ func (r *AIAssistantService) Chat(ctx context.Context, assistantID string, body 
 		err = errors.New("missing required assistant_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/assistants/%s/chat", assistantID)
+	path := fmt.Sprintf("ai/assistants/%s/chat", url.PathEscape(assistantID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -152,7 +152,7 @@ func (r *AIAssistantService) Clone(ctx context.Context, assistantID string, body
 		err = errors.New("missing required assistant_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/assistants/%s/clone", assistantID)
+	path := fmt.Sprintf("ai/assistants/%s/clone", url.PathEscape(assistantID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
 	return res, err
 }
@@ -164,7 +164,7 @@ func (r *AIAssistantService) GetTexml(ctx context.Context, assistantID string, o
 		err = errors.New("missing required assistant_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/assistants/%s/texml", assistantID)
+	path := fmt.Sprintf("ai/assistants/%s/texml", url.PathEscape(assistantID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -202,7 +202,7 @@ func (r *AIAssistantService) SendSMS(ctx context.Context, assistantID string, pa
 		err = errors.New("missing required assistant_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/assistants/%s/chat/sms", assistantID)
+	path := fmt.Sprintf("ai/assistants/%s/chat/sms", url.PathEscape(assistantID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }

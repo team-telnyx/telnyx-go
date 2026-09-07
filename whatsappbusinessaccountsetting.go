@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 	"time"
 
@@ -45,7 +46,7 @@ func (r *WhatsappBusinessAccountSettingService) Get(ctx context.Context, id stri
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("v2/whatsapp/business_accounts/%s/settings", id)
+	path := fmt.Sprintf("v2/whatsapp/business_accounts/%s/settings", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -58,7 +59,7 @@ func (r *WhatsappBusinessAccountSettingService) Update(ctx context.Context, id s
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("v2/whatsapp/business_accounts/%s/settings", id)
+	path := fmt.Sprintf("v2/whatsapp/business_accounts/%s/settings", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }

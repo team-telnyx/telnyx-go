@@ -59,7 +59,7 @@ func (r *NumberOrderService) Get(ctx context.Context, numberOrderID string, opts
 		err = errors.New("missing required number_order_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("number_orders/%s", numberOrderID)
+	path := fmt.Sprintf("number_orders/%s", url.PathEscape(numberOrderID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -72,7 +72,7 @@ func (r *NumberOrderService) Update(ctx context.Context, numberOrderID string, b
 		err = errors.New("missing required number_order_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("number_orders/%s", numberOrderID)
+	path := fmt.Sprintf("number_orders/%s", url.PathEscape(numberOrderID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }

@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
@@ -51,7 +52,7 @@ func (r *ListService) GetByZone(ctx context.Context, channelZoneID string, opts 
 		err = errors.New("missing required channel_zone_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("list/%s", channelZoneID)
+	path := fmt.Sprintf("list/%s", url.PathEscape(channelZoneID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }

@@ -50,7 +50,7 @@ func (r *PortingOrderActionRequirementService) List(ctx context.Context, porting
 		err = errors.New("missing required porting_order_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("porting_orders/%s/action_requirements", portingOrderID)
+	path := fmt.Sprintf("porting_orders/%s/action_requirements", url.PathEscape(portingOrderID))
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
 		return nil, err
@@ -79,7 +79,7 @@ func (r *PortingOrderActionRequirementService) Initiate(ctx context.Context, id 
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("porting_orders/%s/action_requirements/%s/initiate", params.PortingOrderID, id)
+	path := fmt.Sprintf("porting_orders/%s/action_requirements/%s/initiate", url.PathEscape(params.PortingOrderID), url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }

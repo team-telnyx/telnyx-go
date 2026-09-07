@@ -96,7 +96,7 @@ func (r *AIEmbeddingService) Get(ctx context.Context, taskID string, opts ...opt
 		err = errors.New("missing required task_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/embeddings/%s", taskID)
+	path := fmt.Sprintf("ai/embeddings/%s", url.PathEscape(taskID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }

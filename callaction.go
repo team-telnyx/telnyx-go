@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
@@ -46,7 +47,7 @@ func (r *CallActionService) AddAIAssistantMessages(ctx context.Context, callCont
 		err = errors.New("missing required call_control_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("calls/%s/actions/ai_assistant_add_messages", callControlID)
+	path := fmt.Sprintf("calls/%s/actions/ai_assistant_add_messages", url.PathEscape(callControlID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -72,7 +73,7 @@ func (r *CallActionService) Answer(ctx context.Context, callControlID string, bo
 		err = errors.New("missing required call_control_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("calls/%s/actions/answer", callControlID)
+	path := fmt.Sprintf("calls/%s/actions/answer", url.PathEscape(callControlID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -89,7 +90,7 @@ func (r *CallActionService) Bridge(ctx context.Context, callControlIDToBridge st
 		err = errors.New("missing required call_control_id_to_bridge parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("calls/%s/actions/bridge", callControlIDToBridge)
+	path := fmt.Sprintf("calls/%s/actions/bridge", url.PathEscape(callControlIDToBridge))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -102,7 +103,7 @@ func (r *CallActionService) Enqueue(ctx context.Context, callControlID string, b
 		err = errors.New("missing required call_control_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("calls/%s/actions/enqueue", callControlID)
+	path := fmt.Sprintf("calls/%s/actions/enqueue", url.PathEscape(callControlID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -122,7 +123,7 @@ func (r *CallActionService) Gather(ctx context.Context, callControlID string, bo
 		err = errors.New("missing required call_control_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("calls/%s/actions/gather", callControlID)
+	path := fmt.Sprintf("calls/%s/actions/gather", url.PathEscape(callControlID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -145,7 +146,7 @@ func (r *CallActionService) GatherUsingAI(ctx context.Context, callControlID str
 		err = errors.New("missing required call_control_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("calls/%s/actions/gather_using_ai", callControlID)
+	path := fmt.Sprintf("calls/%s/actions/gather_using_ai", url.PathEscape(callControlID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -170,7 +171,7 @@ func (r *CallActionService) GatherUsingAudio(ctx context.Context, callControlID 
 		err = errors.New("missing required call_control_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("calls/%s/actions/gather_using_audio", callControlID)
+	path := fmt.Sprintf("calls/%s/actions/gather_using_audio", url.PathEscape(callControlID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -193,7 +194,7 @@ func (r *CallActionService) GatherUsingSpeak(ctx context.Context, callControlID 
 		err = errors.New("missing required call_control_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("calls/%s/actions/gather_using_speak", callControlID)
+	path := fmt.Sprintf("calls/%s/actions/gather_using_speak", url.PathEscape(callControlID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -210,7 +211,7 @@ func (r *CallActionService) Hangup(ctx context.Context, callControlID string, bo
 		err = errors.New("missing required call_control_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("calls/%s/actions/hangup", callControlID)
+	path := fmt.Sprintf("calls/%s/actions/hangup", url.PathEscape(callControlID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -223,7 +224,7 @@ func (r *CallActionService) JoinAIAssistant(ctx context.Context, callControlID s
 		err = errors.New("missing required call_control_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("calls/%s/actions/ai_assistant_join", callControlID)
+	path := fmt.Sprintf("calls/%s/actions/ai_assistant_join", url.PathEscape(callControlID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -236,7 +237,7 @@ func (r *CallActionService) LeaveQueue(ctx context.Context, callControlID string
 		err = errors.New("missing required call_control_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("calls/%s/actions/leave_queue", callControlID)
+	path := fmt.Sprintf("calls/%s/actions/leave_queue", url.PathEscape(callControlID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -252,7 +253,7 @@ func (r *CallActionService) PauseRecording(ctx context.Context, callControlID st
 		err = errors.New("missing required call_control_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("calls/%s/actions/record_pause", callControlID)
+	path := fmt.Sprintf("calls/%s/actions/record_pause", url.PathEscape(callControlID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -282,7 +283,7 @@ func (r *CallActionService) Pay(ctx context.Context, callControlID string, body 
 		err = errors.New("missing required call_control_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("calls/%s/actions/pay", callControlID)
+	path := fmt.Sprintf("calls/%s/actions/pay", url.PathEscape(callControlID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -301,7 +302,7 @@ func (r *CallActionService) Refer(ctx context.Context, callControlID string, bod
 		err = errors.New("missing required call_control_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("calls/%s/actions/refer", callControlID)
+	path := fmt.Sprintf("calls/%s/actions/refer", url.PathEscape(callControlID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -317,7 +318,7 @@ func (r *CallActionService) Reject(ctx context.Context, callControlID string, bo
 		err = errors.New("missing required call_control_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("calls/%s/actions/reject", callControlID)
+	path := fmt.Sprintf("calls/%s/actions/reject", url.PathEscape(callControlID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -333,7 +334,7 @@ func (r *CallActionService) ResumeRecording(ctx context.Context, callControlID s
 		err = errors.New("missing required call_control_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("calls/%s/actions/record_resume", callControlID)
+	path := fmt.Sprintf("calls/%s/actions/record_resume", url.PathEscape(callControlID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -350,7 +351,7 @@ func (r *CallActionService) SendDtmf(ctx context.Context, callControlID string, 
 		err = errors.New("missing required call_control_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("calls/%s/actions/send_dtmf", callControlID)
+	path := fmt.Sprintf("calls/%s/actions/send_dtmf", url.PathEscape(callControlID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -366,7 +367,7 @@ func (r *CallActionService) SendSipInfo(ctx context.Context, callControlID strin
 		err = errors.New("missing required call_control_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("calls/%s/actions/send_sip_info", callControlID)
+	path := fmt.Sprintf("calls/%s/actions/send_sip_info", url.PathEscape(callControlID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -385,7 +386,7 @@ func (r *CallActionService) Speak(ctx context.Context, callControlID string, bod
 		err = errors.New("missing required call_control_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("calls/%s/actions/speak", callControlID)
+	path := fmt.Sprintf("calls/%s/actions/speak", url.PathEscape(callControlID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -402,7 +403,7 @@ func (r *CallActionService) StartAIAssistant(ctx context.Context, callControlID 
 		err = errors.New("missing required call_control_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("calls/%s/actions/ai_assistant_start", callControlID)
+	path := fmt.Sprintf("calls/%s/actions/ai_assistant_start", url.PathEscape(callControlID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -424,7 +425,7 @@ func (r *CallActionService) StartConversationRelay(ctx context.Context, callCont
 		err = errors.New("missing required call_control_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("calls/%s/actions/conversation_relay_start", callControlID)
+	path := fmt.Sprintf("calls/%s/actions/conversation_relay_start", url.PathEscape(callControlID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -445,7 +446,7 @@ func (r *CallActionService) StartForking(ctx context.Context, callControlID stri
 		err = errors.New("missing required call_control_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("calls/%s/actions/fork_start", callControlID)
+	path := fmt.Sprintf("calls/%s/actions/fork_start", url.PathEscape(callControlID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -458,7 +459,7 @@ func (r *CallActionService) StartNoiseSuppression(ctx context.Context, callContr
 		err = errors.New("missing required call_control_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("calls/%s/actions/suppression_start", callControlID)
+	path := fmt.Sprintf("calls/%s/actions/suppression_start", url.PathEscape(callControlID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -482,7 +483,7 @@ func (r *CallActionService) StartPlayback(ctx context.Context, callControlID str
 		err = errors.New("missing required call_control_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("calls/%s/actions/playback_start", callControlID)
+	path := fmt.Sprintf("calls/%s/actions/playback_start", url.PathEscape(callControlID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -501,7 +502,7 @@ func (r *CallActionService) StartRecording(ctx context.Context, callControlID st
 		err = errors.New("missing required call_control_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("calls/%s/actions/record_start", callControlID)
+	path := fmt.Sprintf("calls/%s/actions/record_start", url.PathEscape(callControlID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -519,7 +520,7 @@ func (r *CallActionService) StartSiprec(ctx context.Context, callControlID strin
 		err = errors.New("missing required call_control_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("calls/%s/actions/siprec_start", callControlID)
+	path := fmt.Sprintf("calls/%s/actions/siprec_start", url.PathEscape(callControlID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -536,7 +537,7 @@ func (r *CallActionService) StartStreaming(ctx context.Context, callControlID st
 		err = errors.New("missing required call_control_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("calls/%s/actions/streaming_start", callControlID)
+	path := fmt.Sprintf("calls/%s/actions/streaming_start", url.PathEscape(callControlID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -553,7 +554,7 @@ func (r *CallActionService) StartTranscription(ctx context.Context, callControlI
 		err = errors.New("missing required call_control_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("calls/%s/actions/transcription_start", callControlID)
+	path := fmt.Sprintf("calls/%s/actions/transcription_start", url.PathEscape(callControlID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -566,7 +567,7 @@ func (r *CallActionService) StopAIAssistant(ctx context.Context, callControlID s
 		err = errors.New("missing required call_control_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("calls/%s/actions/ai_assistant_stop", callControlID)
+	path := fmt.Sprintf("calls/%s/actions/ai_assistant_stop", url.PathEscape(callControlID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -578,7 +579,7 @@ func (r *CallActionService) StopConversationRelay(ctx context.Context, callContr
 		err = errors.New("missing required call_control_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("calls/%s/actions/conversation_relay_stop", callControlID)
+	path := fmt.Sprintf("calls/%s/actions/conversation_relay_stop", url.PathEscape(callControlID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -594,7 +595,7 @@ func (r *CallActionService) StopForking(ctx context.Context, callControlID strin
 		err = errors.New("missing required call_control_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("calls/%s/actions/fork_stop", callControlID)
+	path := fmt.Sprintf("calls/%s/actions/fork_stop", url.PathEscape(callControlID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -610,7 +611,7 @@ func (r *CallActionService) StopGather(ctx context.Context, callControlID string
 		err = errors.New("missing required call_control_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("calls/%s/actions/gather_stop", callControlID)
+	path := fmt.Sprintf("calls/%s/actions/gather_stop", url.PathEscape(callControlID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -623,7 +624,7 @@ func (r *CallActionService) StopNoiseSuppression(ctx context.Context, callContro
 		err = errors.New("missing required call_control_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("calls/%s/actions/suppression_stop", callControlID)
+	path := fmt.Sprintf("calls/%s/actions/suppression_stop", url.PathEscape(callControlID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -639,7 +640,7 @@ func (r *CallActionService) StopPlayback(ctx context.Context, callControlID stri
 		err = errors.New("missing required call_control_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("calls/%s/actions/playback_stop", callControlID)
+	path := fmt.Sprintf("calls/%s/actions/playback_stop", url.PathEscape(callControlID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -655,7 +656,7 @@ func (r *CallActionService) StopRecording(ctx context.Context, callControlID str
 		err = errors.New("missing required call_control_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("calls/%s/actions/record_stop", callControlID)
+	path := fmt.Sprintf("calls/%s/actions/record_stop", url.PathEscape(callControlID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -671,7 +672,7 @@ func (r *CallActionService) StopSiprec(ctx context.Context, callControlID string
 		err = errors.New("missing required call_control_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("calls/%s/actions/siprec_stop", callControlID)
+	path := fmt.Sprintf("calls/%s/actions/siprec_stop", url.PathEscape(callControlID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -687,7 +688,7 @@ func (r *CallActionService) StopStreaming(ctx context.Context, callControlID str
 		err = errors.New("missing required call_control_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("calls/%s/actions/streaming_stop", callControlID)
+	path := fmt.Sprintf("calls/%s/actions/streaming_stop", url.PathEscape(callControlID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -700,7 +701,7 @@ func (r *CallActionService) StopTranscription(ctx context.Context, callControlID
 		err = errors.New("missing required call_control_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("calls/%s/actions/transcription_stop", callControlID)
+	path := fmt.Sprintf("calls/%s/actions/transcription_stop", url.PathEscape(callControlID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -713,7 +714,7 @@ func (r *CallActionService) SwitchSupervisorRole(ctx context.Context, callContro
 		err = errors.New("missing required call_control_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("calls/%s/actions/switch_supervisor_role", callControlID)
+	path := fmt.Sprintf("calls/%s/actions/switch_supervisor_role", url.PathEscape(callControlID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -742,7 +743,7 @@ func (r *CallActionService) Transfer(ctx context.Context, callControlID string, 
 		err = errors.New("missing required call_control_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("calls/%s/actions/transfer", callControlID)
+	path := fmt.Sprintf("calls/%s/actions/transfer", url.PathEscape(callControlID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -756,7 +757,7 @@ func (r *CallActionService) UpdateClientState(ctx context.Context, callControlID
 		err = errors.New("missing required call_control_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("calls/%s/actions/client_state_update", callControlID)
+	path := fmt.Sprintf("calls/%s/actions/client_state_update", url.PathEscape(callControlID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return res, err
 }

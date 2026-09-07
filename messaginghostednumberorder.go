@@ -61,7 +61,7 @@ func (r *MessagingHostedNumberOrderService) Get(ctx context.Context, id string, 
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("messaging_hosted_number_orders/%s", id)
+	path := fmt.Sprintf("messaging_hosted_number_orders/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -98,7 +98,7 @@ func (r *MessagingHostedNumberOrderService) Delete(ctx context.Context, id strin
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("messaging_hosted_number_orders/%s", id)
+	path := fmt.Sprintf("messaging_hosted_number_orders/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
 }
@@ -120,7 +120,7 @@ func (r *MessagingHostedNumberOrderService) NewVerificationCodes(ctx context.Con
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("messaging_hosted_number_orders/%s/verification_codes", id)
+	path := fmt.Sprintf("messaging_hosted_number_orders/%s/verification_codes", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -133,7 +133,7 @@ func (r *MessagingHostedNumberOrderService) ValidateCodes(ctx context.Context, i
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("messaging_hosted_number_orders/%s/validation_codes", id)
+	path := fmt.Sprintf("messaging_hosted_number_orders/%s/validation_codes", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }

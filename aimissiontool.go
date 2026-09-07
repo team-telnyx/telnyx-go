@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
@@ -40,7 +41,7 @@ func (r *AIMissionToolService) NewTool(ctx context.Context, missionID string, op
 		err = errors.New("missing required mission_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/missions/%s/tools", missionID)
+	path := fmt.Sprintf("ai/missions/%s/tools", url.PathEscape(missionID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
 	return res, err
 }
@@ -58,7 +59,7 @@ func (r *AIMissionToolService) DeleteTool(ctx context.Context, toolID string, bo
 		err = errors.New("missing required tool_id parameter")
 		return err
 	}
-	path := fmt.Sprintf("ai/missions/%s/tools/%s", body.MissionID, toolID)
+	path := fmt.Sprintf("ai/missions/%s/tools/%s", url.PathEscape(body.MissionID), url.PathEscape(toolID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return err
 }
@@ -74,7 +75,7 @@ func (r *AIMissionToolService) GetTool(ctx context.Context, toolID string, query
 		err = errors.New("missing required tool_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/missions/%s/tools/%s", query.MissionID, toolID)
+	path := fmt.Sprintf("ai/missions/%s/tools/%s", url.PathEscape(query.MissionID), url.PathEscape(toolID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -87,7 +88,7 @@ func (r *AIMissionToolService) ListTools(ctx context.Context, missionID string, 
 		err = errors.New("missing required mission_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/missions/%s/tools", missionID)
+	path := fmt.Sprintf("ai/missions/%s/tools", url.PathEscape(missionID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -103,7 +104,7 @@ func (r *AIMissionToolService) UpdateTool(ctx context.Context, toolID string, bo
 		err = errors.New("missing required tool_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/missions/%s/tools/%s", body.MissionID, toolID)
+	path := fmt.Sprintf("ai/missions/%s/tools/%s", url.PathEscape(body.MissionID), url.PathEscape(toolID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, nil, &res, opts...)
 	return res, err
 }

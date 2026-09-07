@@ -46,7 +46,7 @@ func (r *MediaService) Get(ctx context.Context, mediaName string, opts ...option
 		err = errors.New("missing required media_name parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("media/%s", mediaName)
+	path := fmt.Sprintf("media/%s", url.PathEscape(mediaName))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -58,7 +58,7 @@ func (r *MediaService) Update(ctx context.Context, mediaName string, body MediaU
 		err = errors.New("missing required media_name parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("media/%s", mediaName)
+	path := fmt.Sprintf("media/%s", url.PathEscape(mediaName))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return res, err
 }
@@ -80,7 +80,7 @@ func (r *MediaService) Delete(ctx context.Context, mediaName string, opts ...opt
 		err = errors.New("missing required media_name parameter")
 		return err
 	}
-	path := fmt.Sprintf("media/%s", mediaName)
+	path := fmt.Sprintf("media/%s", url.PathEscape(mediaName))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return err
 }
@@ -93,7 +93,7 @@ func (r *MediaService) Download(ctx context.Context, mediaName string, opts ...o
 		err = errors.New("missing required media_name parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("media/%s/download", mediaName)
+	path := fmt.Sprintf("media/%s/download", url.PathEscape(mediaName))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }

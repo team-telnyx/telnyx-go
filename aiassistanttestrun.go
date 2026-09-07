@@ -52,7 +52,7 @@ func (r *AIAssistantTestRunService) Get(ctx context.Context, runID string, query
 		err = errors.New("missing required run_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/assistants/tests/%s/runs/%s", query.TestID, runID)
+	path := fmt.Sprintf("ai/assistants/tests/%s/runs/%s", url.PathEscape(query.TestID), url.PathEscape(runID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -67,7 +67,7 @@ func (r *AIAssistantTestRunService) List(ctx context.Context, testID string, que
 		err = errors.New("missing required test_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/assistants/tests/%s/runs", testID)
+	path := fmt.Sprintf("ai/assistants/tests/%s/runs", url.PathEscape(testID))
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
 		return nil, err
@@ -96,7 +96,7 @@ func (r *AIAssistantTestRunService) Trigger(ctx context.Context, testID string, 
 		err = errors.New("missing required test_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/assistants/tests/%s/runs", testID)
+	path := fmt.Sprintf("ai/assistants/tests/%s/runs", url.PathEscape(testID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }

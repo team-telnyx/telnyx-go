@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
@@ -48,7 +49,7 @@ func (r *AIAssistantToolService) Add(ctx context.Context, toolID string, body AI
 		err = errors.New("missing required tool_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/assistants/%s/tools/%s", body.AssistantID, toolID)
+	path := fmt.Sprintf("ai/assistants/%s/tools/%s", url.PathEscape(body.AssistantID), url.PathEscape(toolID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, nil, &res, opts...)
 	return res, err
 }
@@ -65,7 +66,7 @@ func (r *AIAssistantToolService) Remove(ctx context.Context, toolID string, body
 		err = errors.New("missing required tool_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/assistants/%s/tools/%s", body.AssistantID, toolID)
+	path := fmt.Sprintf("ai/assistants/%s/tools/%s", url.PathEscape(body.AssistantID), url.PathEscape(toolID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
 }
@@ -83,7 +84,7 @@ func (r *AIAssistantToolService) Test(ctx context.Context, toolID string, params
 		err = errors.New("missing required tool_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/assistants/%s/tools/%s/test", params.AssistantID, toolID)
+	path := fmt.Sprintf("ai/assistants/%s/tools/%s/test", url.PathEscape(params.AssistantID), url.PathEscape(toolID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }

@@ -55,7 +55,7 @@ func (r *SessionAnalysisService) Get(ctx context.Context, eventID string, params
 		err = errors.New("missing required event_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("session_analysis/%s/%s", params.RecordType, eventID)
+	path := fmt.Sprintf("session_analysis/%s/%s", url.PathEscape(params.RecordType), eventID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
 	return res, err
 }

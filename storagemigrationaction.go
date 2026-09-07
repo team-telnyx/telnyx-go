@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
@@ -44,7 +45,7 @@ func (r *StorageMigrationActionService) Stop(ctx context.Context, id string, opt
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("storage/migrations/%s/actions/stop", id)
+	path := fmt.Sprintf("storage/migrations/%s/actions/stop", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
 	return res, err
 }

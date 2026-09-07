@@ -56,7 +56,7 @@ func (r *TexmlApplicationService) Get(ctx context.Context, id string, opts ...op
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("texml_applications/%s", id)
+	path := fmt.Sprintf("texml_applications/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -68,7 +68,7 @@ func (r *TexmlApplicationService) Update(ctx context.Context, id string, body Te
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("texml_applications/%s", id)
+	path := fmt.Sprintf("texml_applications/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }
@@ -103,7 +103,7 @@ func (r *TexmlApplicationService) Delete(ctx context.Context, id string, opts ..
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("texml_applications/%s", id)
+	path := fmt.Sprintf("texml_applications/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
 }

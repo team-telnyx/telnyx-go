@@ -47,7 +47,7 @@ func (r *MobilePhoneNumberMessagingService) Get(ctx context.Context, id string, 
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("mobile_phone_numbers/%s/messaging", id)
+	path := fmt.Sprintf("mobile_phone_numbers/%s/messaging", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }

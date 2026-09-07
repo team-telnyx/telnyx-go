@@ -72,7 +72,7 @@ func (r *MeetingSessionService) Get(ctx context.Context, id string, opts ...opti
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("meeting_sessions/%s", id)
+	path := fmt.Sprintf("meeting_sessions/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -87,7 +87,7 @@ func (r *MeetingSessionService) Update(ctx context.Context, id string, body Meet
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("meeting_sessions/%s", id)
+	path := fmt.Sprintf("meeting_sessions/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }
@@ -109,7 +109,7 @@ func (r *MeetingSessionService) Delete(ctx context.Context, id string, opts ...o
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("meeting_sessions/%s", id)
+	path := fmt.Sprintf("meeting_sessions/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
 }
@@ -128,7 +128,7 @@ func (r *MeetingSessionService) DeleteRecordingMedia(ctx context.Context, id str
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("meeting_sessions/%s/recording_media", id)
+	path := fmt.Sprintf("meeting_sessions/%s/recording_media", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
 }
@@ -143,7 +143,7 @@ func (r *MeetingSessionService) GetEvents(ctx context.Context, id string, query 
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("meeting_sessions/%s/events", id)
+	path := fmt.Sprintf("meeting_sessions/%s/events", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
@@ -155,7 +155,7 @@ func (r *MeetingSessionService) GetRecordings(ctx context.Context, id string, op
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("meeting_sessions/%s/recordings", id)
+	path := fmt.Sprintf("meeting_sessions/%s/recordings", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -170,7 +170,7 @@ func (r *MeetingSessionService) GetTranscript(ctx context.Context, id string, qu
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("meeting_sessions/%s/transcript", id)
+	path := fmt.Sprintf("meeting_sessions/%s/transcript", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }

@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
@@ -46,7 +47,7 @@ func (r *PhoneNumberActionService) ChangeBundleStatus(ctx context.Context, id st
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("phone_numbers/%s/actions/bundle_status_change", id)
+	path := fmt.Sprintf("phone_numbers/%s/actions/bundle_status_change", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }
@@ -60,7 +61,7 @@ func (r *PhoneNumberActionService) EnableEmergency(ctx context.Context, id strin
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("phone_numbers/%s/actions/enable_emergency", id)
+	path := fmt.Sprintf("phone_numbers/%s/actions/enable_emergency", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }

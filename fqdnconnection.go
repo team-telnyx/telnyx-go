@@ -61,7 +61,7 @@ func (r *FqdnConnectionService) Get(ctx context.Context, id string, opts ...opti
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("fqdn_connections/%s", id)
+	path := fmt.Sprintf("fqdn_connections/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -73,7 +73,7 @@ func (r *FqdnConnectionService) Update(ctx context.Context, id string, body Fqdn
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("fqdn_connections/%s", id)
+	path := fmt.Sprintf("fqdn_connections/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }
@@ -108,7 +108,7 @@ func (r *FqdnConnectionService) Delete(ctx context.Context, id string, opts ...o
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("fqdn_connections/%s", id)
+	path := fmt.Sprintf("fqdn_connections/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
 }

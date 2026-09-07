@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 	"time"
 
@@ -54,7 +55,7 @@ func (r *SessionAnalysisMetadataService) GetRecordType(ctx context.Context, reco
 		err = errors.New("missing required record_type parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("session_analysis/metadata/%s", recordType)
+	path := fmt.Sprintf("session_analysis/metadata/%s", url.PathEscape(recordType))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }

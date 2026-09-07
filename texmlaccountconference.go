@@ -53,7 +53,7 @@ func (r *TexmlAccountConferenceService) Get(ctx context.Context, conferenceSid s
 		err = errors.New("missing required conference_sid parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("texml/Accounts/%s/Conferences/%s", query.AccountSid, conferenceSid)
+	path := fmt.Sprintf("texml/Accounts/%s/Conferences/%s", url.PathEscape(query.AccountSid), url.PathEscape(conferenceSid))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -70,7 +70,7 @@ func (r *TexmlAccountConferenceService) Update(ctx context.Context, conferenceSi
 		err = errors.New("missing required conference_sid parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("texml/Accounts/%s/Conferences/%s", params.AccountSid, conferenceSid)
+	path := fmt.Sprintf("texml/Accounts/%s/Conferences/%s", url.PathEscape(params.AccountSid), url.PathEscape(conferenceSid))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
@@ -83,7 +83,7 @@ func (r *TexmlAccountConferenceService) GetConferences(ctx context.Context, acco
 		err = errors.New("missing required account_sid parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("texml/Accounts/%s/Conferences", accountSid)
+	path := fmt.Sprintf("texml/Accounts/%s/Conferences", url.PathEscape(accountSid))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
@@ -99,7 +99,7 @@ func (r *TexmlAccountConferenceService) GetRecordings(ctx context.Context, confe
 		err = errors.New("missing required conference_sid parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("texml/Accounts/%s/Conferences/%s/Recordings", query.AccountSid, conferenceSid)
+	path := fmt.Sprintf("texml/Accounts/%s/Conferences/%s/Recordings", url.PathEscape(query.AccountSid), url.PathEscape(conferenceSid))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -115,7 +115,7 @@ func (r *TexmlAccountConferenceService) GetRecordingsJson(ctx context.Context, c
 		err = errors.New("missing required conference_sid parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("texml/Accounts/%s/Conferences/%s/Recordings.json", query.AccountSid, conferenceSid)
+	path := fmt.Sprintf("texml/Accounts/%s/Conferences/%s/Recordings.json", url.PathEscape(query.AccountSid), url.PathEscape(conferenceSid))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }

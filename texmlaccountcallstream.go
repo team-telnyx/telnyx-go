@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 	"time"
 
@@ -53,7 +54,7 @@ func (r *TexmlAccountCallStreamService) StreamingSidJson(ctx context.Context, st
 		err = errors.New("missing required streaming_sid parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("texml/Accounts/%s/Calls/%s/Streams/%s.json", params.AccountSid, params.CallSid, streamingSid)
+	path := fmt.Sprintf("texml/Accounts/%s/Calls/%s/Streams/%s.json", url.PathEscape(params.AccountSid), url.PathEscape(params.CallSid), streamingSid)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }

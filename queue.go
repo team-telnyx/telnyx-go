@@ -60,7 +60,7 @@ func (r *QueueService) Get(ctx context.Context, queueName string, opts ...option
 		err = errors.New("missing required queue_name parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("queues/%s", queueName)
+	path := fmt.Sprintf("queues/%s", url.PathEscape(queueName))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -72,7 +72,7 @@ func (r *QueueService) Update(ctx context.Context, queueName string, body QueueU
 		err = errors.New("missing required queue_name parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("queues/%s", queueName)
+	path := fmt.Sprintf("queues/%s", url.PathEscape(queueName))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -108,7 +108,7 @@ func (r *QueueService) Delete(ctx context.Context, queueName string, opts ...opt
 		err = errors.New("missing required queue_name parameter")
 		return err
 	}
-	path := fmt.Sprintf("queues/%s", queueName)
+	path := fmt.Sprintf("queues/%s", url.PathEscape(queueName))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return err
 }

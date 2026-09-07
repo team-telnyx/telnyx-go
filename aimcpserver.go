@@ -58,7 +58,7 @@ func (r *AIMcpServerService) Get(ctx context.Context, mcpServerID string, opts .
 		err = errors.New("missing required mcp_server_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/mcp_servers/%s", mcpServerID)
+	path := fmt.Sprintf("ai/mcp_servers/%s", url.PathEscape(mcpServerID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -70,7 +70,7 @@ func (r *AIMcpServerService) Update(ctx context.Context, mcpServerID string, bod
 		err = errors.New("missing required mcp_server_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/mcp_servers/%s", mcpServerID)
+	path := fmt.Sprintf("ai/mcp_servers/%s", url.PathEscape(mcpServerID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return res, err
 }
@@ -108,7 +108,7 @@ func (r *AIMcpServerService) Delete(ctx context.Context, mcpServerID string, opt
 		err = errors.New("missing required mcp_server_id parameter")
 		return err
 	}
-	path := fmt.Sprintf("ai/mcp_servers/%s", mcpServerID)
+	path := fmt.Sprintf("ai/mcp_servers/%s", url.PathEscape(mcpServerID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return err
 }

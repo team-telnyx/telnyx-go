@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
@@ -44,7 +45,7 @@ func (r *AIIntegrationService) Get(ctx context.Context, integrationID string, op
 		err = errors.New("missing required integration_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/integrations/%s", integrationID)
+	path := fmt.Sprintf("ai/integrations/%s", url.PathEscape(integrationID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }

@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
@@ -49,7 +50,7 @@ func (r *Messaging10dlcCampaignBuilderBrandService) QualifyByUsecase(ctx context
 		err = errors.New("missing required usecase parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("10dlc/campaignBuilder/brand/%s/usecase/%s", query.BrandID, usecase)
+	path := fmt.Sprintf("10dlc/campaignBuilder/brand/%s/usecase/%s", url.PathEscape(query.BrandID), url.PathEscape(usecase))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }

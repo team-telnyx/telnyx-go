@@ -50,7 +50,7 @@ func (r *AIAssistantVersionService) Get(ctx context.Context, versionID string, p
 		err = errors.New("missing required version_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/assistants/%s/versions/%s", params.AssistantID, versionID)
+	path := fmt.Sprintf("ai/assistants/%s/versions/%s", url.PathEscape(params.AssistantID), url.PathEscape(versionID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
 	return res, err
 }
@@ -67,7 +67,7 @@ func (r *AIAssistantVersionService) Update(ctx context.Context, versionID string
 		err = errors.New("missing required version_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/assistants/%s/versions/%s", params.AssistantID, versionID)
+	path := fmt.Sprintf("ai/assistants/%s/versions/%s", url.PathEscape(params.AssistantID), url.PathEscape(versionID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
@@ -80,7 +80,7 @@ func (r *AIAssistantVersionService) List(ctx context.Context, assistantID string
 		err = errors.New("missing required assistant_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/assistants/%s/versions", assistantID)
+	path := fmt.Sprintf("ai/assistants/%s/versions", url.PathEscape(assistantID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -98,7 +98,7 @@ func (r *AIAssistantVersionService) Delete(ctx context.Context, versionID string
 		err = errors.New("missing required version_id parameter")
 		return err
 	}
-	path := fmt.Sprintf("ai/assistants/%s/versions/%s", body.AssistantID, versionID)
+	path := fmt.Sprintf("ai/assistants/%s/versions/%s", url.PathEscape(body.AssistantID), url.PathEscape(versionID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return err
 }
@@ -116,7 +116,7 @@ func (r *AIAssistantVersionService) Promote(ctx context.Context, versionID strin
 		err = errors.New("missing required version_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/assistants/%s/versions/%s/promote", body.AssistantID, versionID)
+	path := fmt.Sprintf("ai/assistants/%s/versions/%s/promote", url.PathEscape(body.AssistantID), url.PathEscape(versionID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
 	return res, err
 }

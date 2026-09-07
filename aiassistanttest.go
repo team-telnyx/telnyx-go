@@ -66,7 +66,7 @@ func (r *AIAssistantTestService) Get(ctx context.Context, testID string, opts ..
 		err = errors.New("missing required test_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/assistants/tests/%s", testID)
+	path := fmt.Sprintf("ai/assistants/tests/%s", url.PathEscape(testID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -78,7 +78,7 @@ func (r *AIAssistantTestService) Update(ctx context.Context, testID string, body
 		err = errors.New("missing required test_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/assistants/tests/%s", testID)
+	path := fmt.Sprintf("ai/assistants/tests/%s", url.PathEscape(testID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return res, err
 }
@@ -116,7 +116,7 @@ func (r *AIAssistantTestService) Delete(ctx context.Context, testID string, opts
 		err = errors.New("missing required test_id parameter")
 		return err
 	}
-	path := fmt.Sprintf("ai/assistants/tests/%s", testID)
+	path := fmt.Sprintf("ai/assistants/tests/%s", url.PathEscape(testID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return err
 }

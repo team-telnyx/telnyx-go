@@ -50,7 +50,7 @@ func (r *ExternalConnectionCivicAddressService) Get(ctx context.Context, address
 		err = errors.New("missing required address_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("external_connections/%s/civic_addresses/%s", query.ID, addressID)
+	path := fmt.Sprintf("external_connections/%s/civic_addresses/%s", url.PathEscape(query.ID), addressID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -62,7 +62,7 @@ func (r *ExternalConnectionCivicAddressService) List(ctx context.Context, id str
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("external_connections/%s/civic_addresses", id)
+	path := fmt.Sprintf("external_connections/%s/civic_addresses", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }

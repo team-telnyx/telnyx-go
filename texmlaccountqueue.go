@@ -48,7 +48,7 @@ func (r *TexmlAccountQueueService) New(ctx context.Context, accountSid string, b
 		err = errors.New("missing required account_sid parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("texml/Accounts/%s/Queues", accountSid)
+	path := fmt.Sprintf("texml/Accounts/%s/Queues", url.PathEscape(accountSid))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -64,7 +64,7 @@ func (r *TexmlAccountQueueService) Get(ctx context.Context, queueSid string, que
 		err = errors.New("missing required queue_sid parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("texml/Accounts/%s/Queues/%s", query.AccountSid, queueSid)
+	path := fmt.Sprintf("texml/Accounts/%s/Queues/%s", url.PathEscape(query.AccountSid), url.PathEscape(queueSid))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -80,7 +80,7 @@ func (r *TexmlAccountQueueService) Update(ctx context.Context, queueSid string, 
 		err = errors.New("missing required queue_sid parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("texml/Accounts/%s/Queues/%s", params.AccountSid, queueSid)
+	path := fmt.Sprintf("texml/Accounts/%s/Queues/%s", url.PathEscape(params.AccountSid), url.PathEscape(queueSid))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
@@ -95,7 +95,7 @@ func (r *TexmlAccountQueueService) List(ctx context.Context, accountSid string, 
 		err = errors.New("missing required account_sid parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("texml/Accounts/%s/Queues", accountSid)
+	path := fmt.Sprintf("texml/Accounts/%s/Queues", url.PathEscape(accountSid))
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
 		return nil, err
@@ -126,7 +126,7 @@ func (r *TexmlAccountQueueService) Delete(ctx context.Context, queueSid string, 
 		err = errors.New("missing required queue_sid parameter")
 		return err
 	}
-	path := fmt.Sprintf("texml/Accounts/%s/Queues/%s", body.AccountSid, queueSid)
+	path := fmt.Sprintf("texml/Accounts/%s/Queues/%s", url.PathEscape(body.AccountSid), url.PathEscape(queueSid))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return err
 }

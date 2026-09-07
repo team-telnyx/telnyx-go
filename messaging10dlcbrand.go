@@ -63,7 +63,7 @@ func (r *Messaging10dlcBrandService) Get(ctx context.Context, brandID string, op
 		err = errors.New("missing required brandId parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("10dlc/brand/%s", brandID)
+	path := fmt.Sprintf("10dlc/brand/%s", url.PathEscape(brandID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -75,7 +75,7 @@ func (r *Messaging10dlcBrandService) Update(ctx context.Context, brandID string,
 		err = errors.New("missing required brandId parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("10dlc/brand/%s", brandID)
+	path := fmt.Sprintf("10dlc/brand/%s", url.PathEscape(brandID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return res, err
 }
@@ -113,7 +113,7 @@ func (r *Messaging10dlcBrandService) Delete(ctx context.Context, brandID string,
 		err = errors.New("missing required brandId parameter")
 		return err
 	}
-	path := fmt.Sprintf("10dlc/brand/%s", brandID)
+	path := fmt.Sprintf("10dlc/brand/%s", url.PathEscape(brandID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return err
 }
@@ -137,7 +137,7 @@ func (r *Messaging10dlcBrandService) GetFeedback(ctx context.Context, brandID st
 		err = errors.New("missing required brandId parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("10dlc/brand/feedback/%s", brandID)
+	path := fmt.Sprintf("10dlc/brand/feedback/%s", url.PathEscape(brandID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -160,7 +160,7 @@ func (r *Messaging10dlcBrandService) GetSMSOtpByReference(ctx context.Context, r
 		err = errors.New("missing required referenceId parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("10dlc/brand/smsOtp/%s", referenceID)
+	path := fmt.Sprintf("10dlc/brand/smsOtp/%s", url.PathEscape(referenceID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
@@ -175,7 +175,7 @@ func (r *Messaging10dlcBrandService) Resend2faEmail(ctx context.Context, brandID
 		err = errors.New("missing required brandId parameter")
 		return err
 	}
-	path := fmt.Sprintf("10dlc/brand/%s/2faEmail", brandID)
+	path := fmt.Sprintf("10dlc/brand/%s/2faEmail", url.PathEscape(brandID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, nil, opts...)
 	return err
 }
@@ -198,7 +198,7 @@ func (r *Messaging10dlcBrandService) GetSMSOtpStatus(ctx context.Context, brandI
 		err = errors.New("missing required brandId parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("10dlc/brand/%s/smsOtp", brandID)
+	path := fmt.Sprintf("10dlc/brand/%s/smsOtp", url.PathEscape(brandID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -212,7 +212,7 @@ func (r *Messaging10dlcBrandService) Revet(ctx context.Context, brandID string, 
 		err = errors.New("missing required brandId parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("10dlc/brand/%s/revet", brandID)
+	path := fmt.Sprintf("10dlc/brand/%s/revet", url.PathEscape(brandID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, nil, &res, opts...)
 	return res, err
 }
@@ -241,7 +241,7 @@ func (r *Messaging10dlcBrandService) TriggerSMSOtp(ctx context.Context, brandID 
 		err = errors.New("missing required brandId parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("10dlc/brand/%s/smsOtp", brandID)
+	path := fmt.Sprintf("10dlc/brand/%s/smsOtp", url.PathEscape(brandID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -271,7 +271,7 @@ func (r *Messaging10dlcBrandService) VerifySMSOtp(ctx context.Context, brandID s
 		err = errors.New("missing required brandId parameter")
 		return err
 	}
-	path := fmt.Sprintf("10dlc/brand/%s/smsOtp", brandID)
+	path := fmt.Sprintf("10dlc/brand/%s/smsOtp", url.PathEscape(brandID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, nil, opts...)
 	return err
 }

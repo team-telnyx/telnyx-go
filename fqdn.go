@@ -55,7 +55,7 @@ func (r *FqdnService) Get(ctx context.Context, id string, opts ...option.Request
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("fqdns/%s", id)
+	path := fmt.Sprintf("fqdns/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -67,7 +67,7 @@ func (r *FqdnService) Update(ctx context.Context, id string, body FqdnUpdatePara
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("fqdns/%s", id)
+	path := fmt.Sprintf("fqdns/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }
@@ -102,7 +102,7 @@ func (r *FqdnService) Delete(ctx context.Context, id string, opts ...option.Requ
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("fqdns/%s", id)
+	path := fmt.Sprintf("fqdns/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
 }

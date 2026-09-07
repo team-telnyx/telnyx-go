@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
@@ -78,7 +79,7 @@ func (r *CallService) GetStatus(ctx context.Context, callControlID string, opts 
 		err = errors.New("missing required call_control_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("calls/%s", callControlID)
+	path := fmt.Sprintf("calls/%s", url.PathEscape(callControlID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }

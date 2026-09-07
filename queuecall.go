@@ -51,7 +51,7 @@ func (r *QueueCallService) Get(ctx context.Context, callControlID string, query 
 		err = errors.New("missing required call_control_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("queues/%s/calls/%s", query.QueueName, callControlID)
+	path := fmt.Sprintf("queues/%s/calls/%s", url.PathEscape(query.QueueName), url.PathEscape(callControlID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -68,7 +68,7 @@ func (r *QueueCallService) Update(ctx context.Context, callControlID string, par
 		err = errors.New("missing required call_control_id parameter")
 		return err
 	}
-	path := fmt.Sprintf("queues/%s/calls/%s", params.QueueName, callControlID)
+	path := fmt.Sprintf("queues/%s/calls/%s", url.PathEscape(params.QueueName), url.PathEscape(callControlID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, nil, opts...)
 	return err
 }
@@ -82,7 +82,7 @@ func (r *QueueCallService) List(ctx context.Context, queueName string, query Que
 		err = errors.New("missing required queue_name parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("queues/%s/calls", queueName)
+	path := fmt.Sprintf("queues/%s/calls", url.PathEscape(queueName))
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
 		return nil, err
@@ -113,7 +113,7 @@ func (r *QueueCallService) Remove(ctx context.Context, callControlID string, bod
 		err = errors.New("missing required call_control_id parameter")
 		return err
 	}
-	path := fmt.Sprintf("queues/%s/calls/%s", body.QueueName, callControlID)
+	path := fmt.Sprintf("queues/%s/calls/%s", url.PathEscape(body.QueueName), url.PathEscape(callControlID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return err
 }

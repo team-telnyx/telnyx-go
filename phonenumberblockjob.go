@@ -49,7 +49,7 @@ func (r *PhoneNumberBlockJobService) Get(ctx context.Context, id string, opts ..
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("phone_number_blocks/jobs/%s", id)
+	path := fmt.Sprintf("phone_number_blocks/jobs/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }

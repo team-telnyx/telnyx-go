@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
@@ -52,7 +53,7 @@ func (r *TexmlAccountCallSiprecService) SiprecSidJson(ctx context.Context, sipre
 		err = errors.New("missing required siprec_sid parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("texml/Accounts/%s/Calls/%s/Siprec/%s.json", params.AccountSid, params.CallSid, siprecSid)
+	path := fmt.Sprintf("texml/Accounts/%s/Calls/%s/Siprec/%s.json", url.PathEscape(params.AccountSid), url.PathEscape(params.CallSid), url.PathEscape(siprecSid))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }

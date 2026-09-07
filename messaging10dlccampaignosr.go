@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
@@ -43,7 +44,7 @@ func (r *Messaging10dlcCampaignOsrService) GetAttributes(ctx context.Context, ca
 		err = errors.New("missing required campaignId parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("10dlc/campaign/%s/osr/attributes", campaignID)
+	path := fmt.Sprintf("10dlc/campaign/%s/osr/attributes", url.PathEscape(campaignID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
