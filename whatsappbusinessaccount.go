@@ -53,7 +53,7 @@ func (r *WhatsappBusinessAccountService) Get(ctx context.Context, id string, opt
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("v2/whatsapp/business_accounts/%s", id)
+	path := fmt.Sprintf("v2/whatsapp/business_accounts/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -90,7 +90,7 @@ func (r *WhatsappBusinessAccountService) Delete(ctx context.Context, id string, 
 		err = errors.New("missing required id parameter")
 		return err
 	}
-	path := fmt.Sprintf("v2/whatsapp/business_accounts/%s", id)
+	path := fmt.Sprintf("v2/whatsapp/business_accounts/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return err
 }

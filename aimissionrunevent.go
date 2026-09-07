@@ -90,7 +90,7 @@ func (r *AIMissionRunEventService) GetEventDetails(ctx context.Context, eventID 
 		err = errors.New("missing required event_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/missions/%s/runs/%s/events/%s", query.MissionID, query.RunID, eventID)
+	path := fmt.Sprintf("ai/missions/%s/runs/%s/events/%s", query.MissionID, query.RunID, url.PathEscape(eventID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }

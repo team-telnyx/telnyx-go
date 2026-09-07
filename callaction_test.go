@@ -1922,6 +1922,7 @@ func TestCallActionTransferWithOptionalParams(t *testing.T) {
 				Name:  "head_2",
 				Value: "val_2",
 			}},
+			Diversion:            telnyx.String("+18005550101"),
 			EarlyMedia:           telnyx.Bool(true),
 			From:                 telnyx.String("+18005550101"),
 			FromDisplayName:      telnyx.String("Company Name"),

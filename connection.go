@@ -46,7 +46,7 @@ func (r *ConnectionService) Get(ctx context.Context, id string, opts ...option.R
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("connections/%s", id)
+	path := fmt.Sprintf("connections/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -85,7 +85,7 @@ func (r *ConnectionService) ListActiveCalls(ctx context.Context, connectionID st
 		err = errors.New("missing required connection_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("connections/%s/active_calls", connectionID)
+	path := fmt.Sprintf("connections/%s/active_calls", url.PathEscape(connectionID))
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
 		return nil, err

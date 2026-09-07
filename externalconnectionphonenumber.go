@@ -52,7 +52,7 @@ func (r *ExternalConnectionPhoneNumberService) Get(ctx context.Context, phoneNum
 		err = errors.New("missing required phone_number_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("external_connections/%s/phone_numbers/%s", query.ID, phoneNumberID)
+	path := fmt.Sprintf("external_connections/%s/phone_numbers/%s", url.PathEscape(query.ID), url.PathEscape(phoneNumberID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -69,7 +69,7 @@ func (r *ExternalConnectionPhoneNumberService) Update(ctx context.Context, phone
 		err = errors.New("missing required phone_number_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("external_connections/%s/phone_numbers/%s", params.ID, phoneNumberID)
+	path := fmt.Sprintf("external_connections/%s/phone_numbers/%s", url.PathEscape(params.ID), url.PathEscape(phoneNumberID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
 	return res, err
 }
@@ -84,7 +84,7 @@ func (r *ExternalConnectionPhoneNumberService) List(ctx context.Context, id stri
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("external_connections/%s/phone_numbers", id)
+	path := fmt.Sprintf("external_connections/%s/phone_numbers", url.PathEscape(id))
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
 		return nil, err

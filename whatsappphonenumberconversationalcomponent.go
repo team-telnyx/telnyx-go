@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
@@ -46,7 +47,7 @@ func (r *WhatsappPhoneNumberConversationalComponentService) List(ctx context.Con
 		err = errors.New("missing required phone_number parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("v2/whatsapp/phone_numbers/%s/conversational_components", phoneNumber)
+	path := fmt.Sprintf("v2/whatsapp/phone_numbers/%s/conversational_components", url.PathEscape(phoneNumber))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -59,7 +60,7 @@ func (r *WhatsappPhoneNumberConversationalComponentService) PatchAll(ctx context
 		err = errors.New("missing required phone_number parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("v2/whatsapp/phone_numbers/%s/conversational_components", phoneNumber)
+	path := fmt.Sprintf("v2/whatsapp/phone_numbers/%s/conversational_components", url.PathEscape(phoneNumber))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }

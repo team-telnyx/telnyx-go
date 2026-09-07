@@ -58,7 +58,7 @@ func (r *RequirementGroupService) Get(ctx context.Context, id string, opts ...op
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("requirement_groups/%s", id)
+	path := fmt.Sprintf("requirement_groups/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -71,7 +71,7 @@ func (r *RequirementGroupService) Update(ctx context.Context, id string, body Re
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("requirement_groups/%s", id)
+	path := fmt.Sprintf("requirement_groups/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }
@@ -93,7 +93,7 @@ func (r *RequirementGroupService) Delete(ctx context.Context, id string, opts ..
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("requirement_groups/%s", id)
+	path := fmt.Sprintf("requirement_groups/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
 }
@@ -106,7 +106,7 @@ func (r *RequirementGroupService) SubmitForApproval(ctx context.Context, id stri
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("requirement_groups/%s/submit_for_approval", id)
+	path := fmt.Sprintf("requirement_groups/%s/submit_for_approval", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
 	return res, err
 }

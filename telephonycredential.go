@@ -54,7 +54,7 @@ func (r *TelephonyCredentialService) Get(ctx context.Context, id string, opts ..
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("telephony_credentials/%s", id)
+	path := fmt.Sprintf("telephony_credentials/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -66,7 +66,7 @@ func (r *TelephonyCredentialService) Update(ctx context.Context, id string, body
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("telephony_credentials/%s", id)
+	path := fmt.Sprintf("telephony_credentials/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }
@@ -104,7 +104,7 @@ func (r *TelephonyCredentialService) Delete(ctx context.Context, id string, opts
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("telephony_credentials/%s", id)
+	path := fmt.Sprintf("telephony_credentials/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
 }
@@ -117,7 +117,7 @@ func (r *TelephonyCredentialService) NewToken(ctx context.Context, id string, op
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("telephony_credentials/%s/token", id)
+	path := fmt.Sprintf("telephony_credentials/%s/token", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
 	return res, err
 }

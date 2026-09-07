@@ -95,7 +95,7 @@ func (r *PortoutService) ListRejectionCodes(ctx context.Context, portoutID strin
 		err = errors.New("missing required portout_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("portouts/rejections/%s", portoutID)
+	path := fmt.Sprintf("portouts/rejections/%s", url.PathEscape(portoutID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }

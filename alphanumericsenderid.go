@@ -53,7 +53,7 @@ func (r *AlphanumericSenderIDService) Get(ctx context.Context, id string, opts .
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("alphanumeric_sender_ids/%s", id)
+	path := fmt.Sprintf("alphanumeric_sender_ids/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -88,7 +88,7 @@ func (r *AlphanumericSenderIDService) Delete(ctx context.Context, id string, opt
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("alphanumeric_sender_ids/%s", id)
+	path := fmt.Sprintf("alphanumeric_sender_ids/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
 }

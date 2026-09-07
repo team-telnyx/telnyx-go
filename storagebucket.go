@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 	"time"
 
@@ -61,7 +62,7 @@ func (r *StorageBucketService) NewPresignedURL(ctx context.Context, objectName s
 		err = errors.New("missing required objectName parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("storage/buckets/%s/%s/presigned_url", params.BucketName, objectName)
+	path := fmt.Sprintf("storage/buckets/%s/%s/presigned_url", url.PathEscape(params.BucketName), url.PathEscape(objectName))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }

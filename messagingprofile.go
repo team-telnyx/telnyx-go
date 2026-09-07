@@ -83,7 +83,7 @@ func (r *MessagingProfileService) Update(ctx context.Context, messagingProfileID
 
 // Lists messaging profiles owned by the authenticated account. Apply the
 // documented filters and pagination parameters to narrow the result set.
-func (r *MessagingProfileService) List(ctx context.Context, query MessagingProfileListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[MessagingProfile], err error) {
+func (r *MessagingProfileService) List(ctx context.Context, query MessagingProfileListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[MessagingMessagingProfile], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -102,7 +102,7 @@ func (r *MessagingProfileService) List(ctx context.Context, query MessagingProfi
 
 // Lists messaging profiles owned by the authenticated account. Apply the
 // documented filters and pagination parameters to narrow the result set.
-func (r *MessagingProfileService) ListAutoPaging(ctx context.Context, query MessagingProfileListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[MessagingProfile] {
+func (r *MessagingProfileService) ListAutoPaging(ctx context.Context, query MessagingProfileListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[MessagingMessagingProfile] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
@@ -217,7 +217,7 @@ func (r *MessagingProfileService) GetMetrics(ctx context.Context, id string, que
 	return res, err
 }
 
-type MessagingProfile struct {
+type MessagingMessagingProfile struct {
 	// Identifies the type of resource.
 	ID string `json:"id" format:"uuid"`
 	// The AI assistant ID associated with this messaging profile.
@@ -255,11 +255,17 @@ type MessagingProfile struct {
 	// Identifies the type of the resource.
 	//
 	// Any of "messaging_profile".
-	RecordType MessagingProfileRecordType `json:"record_type"`
-	// Indicates whether message content redaction is enabled for this profile.
+	RecordType MessagingMessagingProfileRecordType `json:"record_type"`
+	// Indicates whether message content redaction is enabled for this profile. When
+	// enabled, message text, MMS media, and the counterparty phone number are redacted
+	// in message records and reporting. Requires organization activation — contact
+	// support to enable. The field is only present in responses for organizations with
+	// redaction access.
 	RedactionEnabled bool `json:"redaction_enabled"`
-	// Determines how much information is redacted in messages for privacy or
-	// compliance purposes.
+	// Determines how much information is redacted for privacy or compliance purposes.
+	// Level 1: message records and reporting are redacted, but inbound webhook
+	// payloads are not. Level 2 (default): message records, reporting, and inbound
+	// webhook payloads are all redacted.
 	RedactionLevel int64 `json:"redaction_level"`
 	// The resource group ID associated with this messaging profile.
 	ResourceGroupID string `json:"resource_group_id" api:"nullable"`
@@ -283,7 +289,7 @@ type MessagingProfile struct {
 	// 2010-04-01 format.
 	//
 	// Any of "1", "2", "2010-04-01".
-	WebhookAPIVersion MessagingProfileWebhookAPIVersion `json:"webhook_api_version"`
+	WebhookAPIVersion MessagingMessagingProfileWebhookAPIVersion `json:"webhook_api_version"`
 	// The failover URL where webhooks related to this messaging profile will be sent
 	// if sending to the primary URL fails.
 	WebhookFailoverURL string `json:"webhook_failover_url" api:"nullable" format:"url"`
@@ -327,26 +333,26 @@ type MessagingProfile struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r MessagingProfile) RawJSON() string { return r.JSON.raw }
-func (r *MessagingProfile) UnmarshalJSON(data []byte) error {
+func (r MessagingMessagingProfile) RawJSON() string { return r.JSON.raw }
+func (r *MessagingMessagingProfile) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Identifies the type of the resource.
-type MessagingProfileRecordType string
+type MessagingMessagingProfileRecordType string
 
 const (
-	MessagingProfileRecordTypeMessagingProfile MessagingProfileRecordType = "messaging_profile"
+	MessagingMessagingProfileRecordTypeMessagingProfile MessagingMessagingProfileRecordType = "messaging_profile"
 )
 
 // Determines which webhook format will be used, Telnyx API v1, v2, or a legacy
 // 2010-04-01 format.
-type MessagingProfileWebhookAPIVersion string
+type MessagingMessagingProfileWebhookAPIVersion string
 
 const (
-	MessagingProfileWebhookAPIVersionV1          MessagingProfileWebhookAPIVersion = "1"
-	MessagingProfileWebhookAPIVersionV2          MessagingProfileWebhookAPIVersion = "2"
-	MessagingProfileWebhookAPIVersionV2010_04_01 MessagingProfileWebhookAPIVersion = "2010-04-01"
+	MessagingMessagingProfileWebhookAPIVersionV1          MessagingMessagingProfileWebhookAPIVersion = "1"
+	MessagingMessagingProfileWebhookAPIVersionV2          MessagingMessagingProfileWebhookAPIVersion = "2"
+	MessagingMessagingProfileWebhookAPIVersionV2010_04_01 MessagingMessagingProfileWebhookAPIVersion = "2010-04-01"
 )
 
 // Number Pool allows you to send messages from a pool of numbers of different
@@ -533,7 +539,7 @@ func (r *URLShortenerSettingsParam) UnmarshalJSON(data []byte) error {
 }
 
 type MessagingProfileNewResponse struct {
-	Data MessagingProfile `json:"data"`
+	Data MessagingMessagingProfile `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -549,7 +555,7 @@ func (r *MessagingProfileNewResponse) UnmarshalJSON(data []byte) error {
 }
 
 type MessagingProfileGetResponse struct {
-	Data MessagingProfile `json:"data"`
+	Data MessagingMessagingProfile `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -565,7 +571,7 @@ func (r *MessagingProfileGetResponse) UnmarshalJSON(data []byte) error {
 }
 
 type MessagingProfileUpdateResponse struct {
-	Data MessagingProfile `json:"data"`
+	Data MessagingMessagingProfile `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -581,7 +587,7 @@ func (r *MessagingProfileUpdateResponse) UnmarshalJSON(data []byte) error {
 }
 
 type MessagingProfileDeleteResponse struct {
-	Data MessagingProfile `json:"data"`
+	Data MessagingMessagingProfile `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -717,6 +723,15 @@ type MessagingProfileUpdateParams struct {
 	MobileOnly param.Opt[bool] `json:"mobile_only,omitzero"`
 	// A user friendly name for the messaging profile.
 	Name param.Opt[string] `json:"name,omitzero"`
+	// Set to true to enable message content redaction on this profile, or false to
+	// disable it. Ignored if the organization is not on the redaction allowlist. See
+	// the [Message Redaction guide](/docs/messaging/messages/message-redaction) for
+	// what is redacted.
+	RedactionEnabled param.Opt[bool] `json:"redaction_enabled,omitzero"`
+	// The redaction level to apply when redaction is enabled. 1: redact message
+	// records and reporting only. 2 (default): also redact inbound webhook payloads.
+	// See the [Message Redaction guide](/docs/messaging/messages/message-redaction).
+	RedactionLevel param.Opt[int64] `json:"redaction_level,omitzero"`
 	// Enables automatic character encoding optimization for SMS messages. When
 	// enabled, the system automatically selects the most efficient encoding (GSM-7 or
 	// UCS-2) based on message content to maximize character limits and minimize costs.

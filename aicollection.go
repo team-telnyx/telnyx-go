@@ -67,7 +67,7 @@ func (r *AICollectionService) Get(ctx context.Context, slug string, opts ...opti
 		err = errors.New("missing required slug parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/collections/slug/%s", slug)
+	path := fmt.Sprintf("ai/collections/slug/%s", url.PathEscape(slug))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }

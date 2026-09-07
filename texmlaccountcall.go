@@ -65,7 +65,7 @@ func (r *TexmlAccountCallService) Get(ctx context.Context, callSid string, query
 		err = errors.New("missing required call_sid parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("texml/Accounts/%s/Calls/%s", query.AccountSid, callSid)
+	path := fmt.Sprintf("texml/Accounts/%s/Calls/%s", url.PathEscape(query.AccountSid), url.PathEscape(callSid))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -82,7 +82,7 @@ func (r *TexmlAccountCallService) Update(ctx context.Context, callSid string, pa
 		err = errors.New("missing required call_sid parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("texml/Accounts/%s/Calls/%s", params.AccountSid, callSid)
+	path := fmt.Sprintf("texml/Accounts/%s/Calls/%s", url.PathEscape(params.AccountSid), url.PathEscape(callSid))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
@@ -95,7 +95,7 @@ func (r *TexmlAccountCallService) Calls(ctx context.Context, accountSid string, 
 		err = errors.New("missing required account_sid parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("texml/Accounts/%s/Calls", accountSid)
+	path := fmt.Sprintf("texml/Accounts/%s/Calls", url.PathEscape(accountSid))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -108,7 +108,7 @@ func (r *TexmlAccountCallService) GetCalls(ctx context.Context, accountSid strin
 		err = errors.New("missing required account_sid parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("texml/Accounts/%s/Calls", accountSid)
+	path := fmt.Sprintf("texml/Accounts/%s/Calls", url.PathEscape(accountSid))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
@@ -125,7 +125,7 @@ func (r *TexmlAccountCallService) SiprecJson(ctx context.Context, callSid string
 		err = errors.New("missing required call_sid parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("texml/Accounts/%s/Calls/%s/Siprec.json", params.AccountSid, callSid)
+	path := fmt.Sprintf("texml/Accounts/%s/Calls/%s/Siprec.json", url.PathEscape(params.AccountSid), url.PathEscape(callSid))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
@@ -141,7 +141,7 @@ func (r *TexmlAccountCallService) StreamsJson(ctx context.Context, callSid strin
 		err = errors.New("missing required call_sid parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("texml/Accounts/%s/Calls/%s/Streams.json", params.AccountSid, callSid)
+	path := fmt.Sprintf("texml/Accounts/%s/Calls/%s/Streams.json", url.PathEscape(params.AccountSid), url.PathEscape(callSid))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }

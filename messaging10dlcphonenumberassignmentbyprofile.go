@@ -63,7 +63,7 @@ func (r *Messaging10dlcPhoneNumberAssignmentByProfileService) ListPhoneNumberSta
 		err = errors.New("missing required taskId parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("10dlc/phoneNumberAssignmentByProfile/%s/phoneNumbers", taskID)
+	path := fmt.Sprintf("10dlc/phoneNumberAssignmentByProfile/%s/phoneNumbers", url.PathEscape(taskID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
@@ -76,7 +76,7 @@ func (r *Messaging10dlcPhoneNumberAssignmentByProfileService) GetPhoneNumberStat
 		err = errors.New("missing required taskId parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("10dlc/phoneNumberAssignmentByProfile/%s/phoneNumbers", taskID)
+	path := fmt.Sprintf("10dlc/phoneNumberAssignmentByProfile/%s/phoneNumbers", url.PathEscape(taskID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
@@ -89,7 +89,7 @@ func (r *Messaging10dlcPhoneNumberAssignmentByProfileService) GetStatus(ctx cont
 		err = errors.New("missing required taskId parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("10dlc/phoneNumberAssignmentByProfile/%s", taskID)
+	path := fmt.Sprintf("10dlc/phoneNumberAssignmentByProfile/%s", url.PathEscape(taskID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }

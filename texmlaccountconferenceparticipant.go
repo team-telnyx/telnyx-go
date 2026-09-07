@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
@@ -53,7 +54,7 @@ func (r *TexmlAccountConferenceParticipantService) Get(ctx context.Context, call
 		err = errors.New("missing required call_sid_or_participant_label parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("texml/Accounts/%s/Conferences/%s/Participants/%s", query.AccountSid, query.ConferenceSid, callSidOrParticipantLabel)
+	path := fmt.Sprintf("texml/Accounts/%s/Conferences/%s/Participants/%s", url.PathEscape(query.AccountSid), url.PathEscape(query.ConferenceSid), url.PathEscape(callSidOrParticipantLabel))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -74,7 +75,7 @@ func (r *TexmlAccountConferenceParticipantService) Update(ctx context.Context, c
 		err = errors.New("missing required call_sid_or_participant_label parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("texml/Accounts/%s/Conferences/%s/Participants/%s", params.AccountSid, params.ConferenceSid, callSidOrParticipantLabel)
+	path := fmt.Sprintf("texml/Accounts/%s/Conferences/%s/Participants/%s", url.PathEscape(params.AccountSid), url.PathEscape(params.ConferenceSid), url.PathEscape(callSidOrParticipantLabel))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
@@ -96,7 +97,7 @@ func (r *TexmlAccountConferenceParticipantService) Delete(ctx context.Context, c
 		err = errors.New("missing required call_sid_or_participant_label parameter")
 		return err
 	}
-	path := fmt.Sprintf("texml/Accounts/%s/Conferences/%s/Participants/%s", body.AccountSid, body.ConferenceSid, callSidOrParticipantLabel)
+	path := fmt.Sprintf("texml/Accounts/%s/Conferences/%s/Participants/%s", url.PathEscape(body.AccountSid), url.PathEscape(body.ConferenceSid), url.PathEscape(callSidOrParticipantLabel))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return err
 }
@@ -113,7 +114,7 @@ func (r *TexmlAccountConferenceParticipantService) Participants(ctx context.Cont
 		err = errors.New("missing required conference_sid parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("texml/Accounts/%s/Conferences/%s/Participants", params.AccountSid, conferenceSid)
+	path := fmt.Sprintf("texml/Accounts/%s/Conferences/%s/Participants", url.PathEscape(params.AccountSid), url.PathEscape(conferenceSid))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
@@ -129,7 +130,7 @@ func (r *TexmlAccountConferenceParticipantService) GetParticipants(ctx context.C
 		err = errors.New("missing required conference_sid parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("texml/Accounts/%s/Conferences/%s/Participants", query.AccountSid, conferenceSid)
+	path := fmt.Sprintf("texml/Accounts/%s/Conferences/%s/Participants", url.PathEscape(query.AccountSid), url.PathEscape(conferenceSid))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }

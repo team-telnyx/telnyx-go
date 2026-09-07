@@ -57,7 +57,7 @@ func (r *CustomerServiceRecordService) Get(ctx context.Context, customerServiceR
 		err = errors.New("missing required customer_service_record_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("customer_service_records/%s", customerServiceRecordID)
+	path := fmt.Sprintf("customer_service_records/%s", url.PathEscape(customerServiceRecordID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }

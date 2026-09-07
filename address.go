@@ -81,7 +81,7 @@ func (r *AddressService) Get(ctx context.Context, id string, opts ...option.Requ
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("addresses/%s", id)
+	path := fmt.Sprintf("addresses/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -118,7 +118,7 @@ func (r *AddressService) Delete(ctx context.Context, id string, opts ...option.R
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("addresses/%s", id)
+	path := fmt.Sprintf("addresses/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
 }

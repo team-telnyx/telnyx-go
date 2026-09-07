@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
@@ -41,7 +42,7 @@ func (r *AIIntegrationConnectionService) Get(ctx context.Context, userConnection
 		err = errors.New("missing required user_connection_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/integrations/connections/%s", userConnectionID)
+	path := fmt.Sprintf("ai/integrations/connections/%s", url.PathEscape(userConnectionID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -63,7 +64,7 @@ func (r *AIIntegrationConnectionService) Delete(ctx context.Context, userConnect
 		err = errors.New("missing required user_connection_id parameter")
 		return err
 	}
-	path := fmt.Sprintf("ai/integrations/connections/%s", userConnectionID)
+	path := fmt.Sprintf("ai/integrations/connections/%s", url.PathEscape(userConnectionID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return err
 }

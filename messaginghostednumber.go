@@ -47,7 +47,7 @@ func (r *MessagingHostedNumberService) Get(ctx context.Context, id string, opts 
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("messaging_hosted_numbers/%s", id)
+	path := fmt.Sprintf("messaging_hosted_numbers/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -59,7 +59,7 @@ func (r *MessagingHostedNumberService) Update(ctx context.Context, id string, bo
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("messaging_hosted_numbers/%s", id)
+	path := fmt.Sprintf("messaging_hosted_numbers/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }
@@ -94,7 +94,7 @@ func (r *MessagingHostedNumberService) Delete(ctx context.Context, id string, op
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("messaging_hosted_numbers/%s", id)
+	path := fmt.Sprintf("messaging_hosted_numbers/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
 }

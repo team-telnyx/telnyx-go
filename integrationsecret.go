@@ -81,7 +81,7 @@ func (r *IntegrationSecretService) Delete(ctx context.Context, id string, opts .
 		err = errors.New("missing required id parameter")
 		return err
 	}
-	path := fmt.Sprintf("integration_secrets/%s", id)
+	path := fmt.Sprintf("integration_secrets/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return err
 }

@@ -58,7 +58,7 @@ func (r *LegacyReportingUsageReportNumberLookupService) Get(ctx context.Context,
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("legacy/reporting/usage_reports/number_lookup/%s", id)
+	path := fmt.Sprintf("legacy/reporting/usage_reports/number_lookup/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -94,7 +94,7 @@ func (r *LegacyReportingUsageReportNumberLookupService) Delete(ctx context.Conte
 		err = errors.New("missing required id parameter")
 		return err
 	}
-	path := fmt.Sprintf("legacy/reporting/usage_reports/number_lookup/%s", id)
+	path := fmt.Sprintf("legacy/reporting/usage_reports/number_lookup/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return err
 }

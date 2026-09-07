@@ -50,7 +50,7 @@ func (r *AIAssistantTestTestSuiteRunService) List(ctx context.Context, suiteName
 		err = errors.New("missing required suite_name parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/assistants/tests/test-suites/%s/runs", suiteName)
+	path := fmt.Sprintf("ai/assistants/tests/test-suites/%s/runs", url.PathEscape(suiteName))
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
 		return nil, err
@@ -79,7 +79,7 @@ func (r *AIAssistantTestTestSuiteRunService) Trigger(ctx context.Context, suiteN
 		err = errors.New("missing required suite_name parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/assistants/tests/test-suites/%s/runs", suiteName)
+	path := fmt.Sprintf("ai/assistants/tests/test-suites/%s/runs", url.PathEscape(suiteName))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }

@@ -46,7 +46,7 @@ func (r *ReputationNumberService) Get(ctx context.Context, phoneNumber string, q
 		err = errors.New("missing required phone_number parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("reputation/numbers/%s", phoneNumber)
+	path := fmt.Sprintf("reputation/numbers/%s", url.PathEscape(phoneNumber))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
@@ -87,7 +87,7 @@ func (r *ReputationNumberService) Delete(ctx context.Context, phoneNumber string
 		err = errors.New("missing required phone_number parameter")
 		return err
 	}
-	path := fmt.Sprintf("reputation/numbers/%s", phoneNumber)
+	path := fmt.Sprintf("reputation/numbers/%s", url.PathEscape(phoneNumber))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return err
 }

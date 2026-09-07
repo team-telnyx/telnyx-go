@@ -59,7 +59,7 @@ func (r *StorageKvKeyService) Get(ctx context.Context, key string, query Storage
 		err = errors.New("missing required key parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("storage/kvs/%s/keys/%s", query.ID, key)
+	path := fmt.Sprintf("storage/kvs/%s/keys/%s", query.ID, url.PathEscape(key))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -79,7 +79,7 @@ func (r *StorageKvKeyService) Update(ctx context.Context, key string, body io.Re
 		err = errors.New("missing required key parameter")
 		return err
 	}
-	path := fmt.Sprintf("storage/kvs/%s/keys/%s", params.ID, key)
+	path := fmt.Sprintf("storage/kvs/%s/keys/%s", params.ID, url.PathEscape(key))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, nil, nil, opts...)
 	return err
 }
@@ -126,7 +126,7 @@ func (r *StorageKvKeyService) Delete(ctx context.Context, key string, body Stora
 		err = errors.New("missing required key parameter")
 		return err
 	}
-	path := fmt.Sprintf("storage/kvs/%s/keys/%s", body.ID, key)
+	path := fmt.Sprintf("storage/kvs/%s/keys/%s", body.ID, url.PathEscape(key))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return err
 }

@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
@@ -43,7 +44,7 @@ func (r *NumberReservationActionService) Extend(ctx context.Context, numberReser
 		err = errors.New("missing required number_reservation_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("number_reservations/%s/actions/extend", numberReservationID)
+	path := fmt.Sprintf("number_reservations/%s/actions/extend", url.PathEscape(numberReservationID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
 	return res, err
 }

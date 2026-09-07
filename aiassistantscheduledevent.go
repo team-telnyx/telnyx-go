@@ -52,7 +52,7 @@ func (r *AIAssistantScheduledEventService) New(ctx context.Context, assistantID 
 		err = errors.New("missing required assistant_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/assistants/%s/scheduled_events", assistantID)
+	path := fmt.Sprintf("ai/assistants/%s/scheduled_events", url.PathEscape(assistantID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
@@ -69,7 +69,7 @@ func (r *AIAssistantScheduledEventService) Get(ctx context.Context, eventID stri
 		err = errors.New("missing required event_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/assistants/%s/scheduled_events/%s", query.AssistantID, eventID)
+	path := fmt.Sprintf("ai/assistants/%s/scheduled_events/%s", url.PathEscape(query.AssistantID), url.PathEscape(eventID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -83,7 +83,7 @@ func (r *AIAssistantScheduledEventService) List(ctx context.Context, assistantID
 		err = errors.New("missing required assistant_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/assistants/%s/scheduled_events", assistantID)
+	path := fmt.Sprintf("ai/assistants/%s/scheduled_events", url.PathEscape(assistantID))
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
 		return nil, err
@@ -114,7 +114,7 @@ func (r *AIAssistantScheduledEventService) Delete(ctx context.Context, eventID s
 		err = errors.New("missing required event_id parameter")
 		return err
 	}
-	path := fmt.Sprintf("ai/assistants/%s/scheduled_events/%s", body.AssistantID, eventID)
+	path := fmt.Sprintf("ai/assistants/%s/scheduled_events/%s", url.PathEscape(body.AssistantID), url.PathEscape(eventID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return err
 }

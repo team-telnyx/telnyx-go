@@ -79,7 +79,7 @@ func (r *AIKnowledgeCollectionService) GetDocuments(ctx context.Context, slug st
 		err = errors.New("missing required slug parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/knowledge/collections/%s/documents", slug)
+	path := fmt.Sprintf("ai/knowledge/collections/%s/documents", url.PathEscape(slug))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }

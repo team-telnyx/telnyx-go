@@ -53,10 +53,12 @@ func TestAIOpenAIChatNewCompletionWithOptionalParams(t *testing.T) {
 			Logprobs:        telnyx.Bool(true),
 			MaxTokens:       telnyx.Int(0),
 			MinP:            telnyx.Float(0),
+			Mode:            telnyx.ChatCompletionRequestModePreferred,
 			Model:           telnyx.String("model"),
 			N:               telnyx.Float(0),
 			PresencePenalty: telnyx.Float(0),
 			ReasoningEffort: telnyx.ChatCompletionRequestReasoningEffortNone,
+			Region:          telnyx.ChatCompletionRequestRegionUsa,
 			ResponseFormat: telnyx.ChatCompletionRequestResponseFormatParam{
 				Type: "text",
 			},

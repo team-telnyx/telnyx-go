@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
@@ -61,7 +62,7 @@ func (r *TexmlService) InitiateAICall(ctx context.Context, connectionID string, 
 		err = errors.New("missing required connection_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("texml/ai_calls/%s", connectionID)
+	path := fmt.Sprintf("texml/ai_calls/%s", url.PathEscape(connectionID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }

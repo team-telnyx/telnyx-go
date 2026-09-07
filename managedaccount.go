@@ -59,7 +59,7 @@ func (r *ManagedAccountService) Get(ctx context.Context, id string, opts ...opti
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("managed_accounts/%s", id)
+	path := fmt.Sprintf("managed_accounts/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -72,7 +72,7 @@ func (r *ManagedAccountService) Update(ctx context.Context, id string, body Mana
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("managed_accounts/%s", id)
+	path := fmt.Sprintf("managed_accounts/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }
@@ -119,7 +119,7 @@ func (r *ManagedAccountService) UpdateGlobalChannelLimit(ctx context.Context, id
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("managed_accounts/%s/update_global_channel_limit", id)
+	path := fmt.Sprintf("managed_accounts/%s/update_global_channel_limit", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }

@@ -13,7 +13,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
-func TestAIOpenAINewResponseWithOptionalParams(t *testing.T) {
+func TestExternalRequirementSubNumberOrderGet(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -26,21 +26,13 @@ func TestAIOpenAINewResponseWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.AI.OpenAI.NewResponse(context.TODO(), telnyx.AIOpenAINewResponseParams{
-		Conversation: telnyx.String("6a09cdc3-8948-47f0-aa62-74ac943d6c58"),
-		Input: map[string]any{
-			"0": "bar",
+	_, err := client.ExternalRequirements.SubNumberOrders.Get(
+		context.TODO(),
+		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+		telnyx.ExternalRequirementSubNumberOrderGetParams{
+			RegulatoryRequirementID: "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		},
-		Instructions: telnyx.String("You are a friendly chatbot."),
-		Mode:         telnyx.AIOpenAINewResponseParamsModePreferred,
-		Model:        telnyx.String("zai-org/GLM-5.1-FP8"),
-		Reasoning: telnyx.AIOpenAINewResponseParamsReasoning{
-			Effort: "none",
-		},
-		Region:      telnyx.AIOpenAINewResponseParamsRegionUsa,
-		ServiceTier: telnyx.String("service_tier"),
-		Stream:      telnyx.Bool(false),
-	})
+	)
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
@@ -50,7 +42,7 @@ func TestAIOpenAINewResponseWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestAIOpenAIListModels(t *testing.T) {
+func TestExternalRequirementSubNumberOrderUpdate(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -63,7 +55,17 @@ func TestAIOpenAIListModels(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.AI.OpenAI.ListModels(context.TODO())
+	_, err := client.ExternalRequirements.SubNumberOrders.Update(
+		context.TODO(),
+		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+		telnyx.ExternalRequirementSubNumberOrderUpdateParams{
+			RegulatoryRequirementID: "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+			Requirement: telnyx.ExternalRequirementSubNumberOrderUpdateParamsRequirement{
+				FirstName: "Jane",
+				LastName:  "Doe",
+			},
+		},
+	)
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {

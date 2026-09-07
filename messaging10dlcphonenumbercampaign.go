@@ -57,7 +57,7 @@ func (r *Messaging10dlcPhoneNumberCampaignService) Get(ctx context.Context, phon
 		err = errors.New("missing required phoneNumber parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("10dlc/phone_number_campaigns/%s", phoneNumber)
+	path := fmt.Sprintf("10dlc/phone_number_campaigns/%s", url.PathEscape(phoneNumber))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -69,7 +69,7 @@ func (r *Messaging10dlcPhoneNumberCampaignService) Update(ctx context.Context, c
 		err = errors.New("missing required campaign_phone_number parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("10dlc/phone_number_campaigns/%s", campaignPhoneNumber)
+	path := fmt.Sprintf("10dlc/phone_number_campaigns/%s", url.PathEscape(campaignPhoneNumber))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return res, err
 }
@@ -107,7 +107,7 @@ func (r *Messaging10dlcPhoneNumberCampaignService) Delete(ctx context.Context, p
 		err = errors.New("missing required phoneNumber parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("10dlc/phone_number_campaigns/%s", phoneNumber)
+	path := fmt.Sprintf("10dlc/phone_number_campaigns/%s", url.PathEscape(phoneNumber))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
 }

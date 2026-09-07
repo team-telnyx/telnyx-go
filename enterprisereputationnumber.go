@@ -55,7 +55,7 @@ func (r *EnterpriseReputationNumberService) Get(ctx context.Context, phoneNumber
 		err = errors.New("missing required phone_number parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("enterprises/%s/reputation/numbers/%s", params.EnterpriseID, phoneNumber)
+	path := fmt.Sprintf("enterprises/%s/reputation/numbers/%s", params.EnterpriseID, url.PathEscape(phoneNumber))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
 	return res, err
 }
@@ -124,7 +124,7 @@ func (r *EnterpriseReputationNumberService) Disassociate(ctx context.Context, ph
 		err = errors.New("missing required phone_number parameter")
 		return err
 	}
-	path := fmt.Sprintf("enterprises/%s/reputation/numbers/%s", body.EnterpriseID, phoneNumber)
+	path := fmt.Sprintf("enterprises/%s/reputation/numbers/%s", body.EnterpriseID, url.PathEscape(phoneNumber))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return err
 }

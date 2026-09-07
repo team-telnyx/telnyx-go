@@ -49,7 +49,7 @@ func (r *MessagingProfileAutorespConfigService) New(ctx context.Context, profile
 		err = errors.New("missing required profile_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("messaging_profiles/%s/autoresp_configs", profileID)
+	path := fmt.Sprintf("messaging_profiles/%s/autoresp_configs", url.PathEscape(profileID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }

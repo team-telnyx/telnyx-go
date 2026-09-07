@@ -48,7 +48,7 @@ func (r *MessageRcService) GenerateDeeplink(ctx context.Context, agentID string,
 		err = errors.New("missing required agent_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("messages/rcs/deeplinks/%s", agentID)
+	path := fmt.Sprintf("messages/rcs/deeplinks/%s", url.PathEscape(agentID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }

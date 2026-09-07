@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
@@ -54,7 +55,7 @@ func (r *AIFineTuningJobService) Get(ctx context.Context, jobID string, opts ...
 		err = errors.New("missing required job_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/fine_tuning/jobs/%s", jobID)
+	path := fmt.Sprintf("ai/fine_tuning/jobs/%s", url.PathEscape(jobID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -74,7 +75,7 @@ func (r *AIFineTuningJobService) Cancel(ctx context.Context, jobID string, opts 
 		err = errors.New("missing required job_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/fine_tuning/jobs/%s/cancel", jobID)
+	path := fmt.Sprintf("ai/fine_tuning/jobs/%s/cancel", url.PathEscape(jobID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
 	return res, err
 }

@@ -54,7 +54,7 @@ func (r *PricingProductService) Get(ctx context.Context, slug string, query Pric
 		err = errors.New("missing required slug parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("pricing/products/%s", slug)
+	path := fmt.Sprintf("pricing/products/%s", url.PathEscape(slug))
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
 		return nil, err

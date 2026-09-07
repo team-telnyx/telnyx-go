@@ -61,7 +61,7 @@ func (r *NumberReservationService) Get(ctx context.Context, numberReservationID 
 		err = errors.New("missing required number_reservation_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("number_reservations/%s", numberReservationID)
+	path := fmt.Sprintf("number_reservations/%s", url.PathEscape(numberReservationID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }

@@ -51,7 +51,7 @@ func (r *OrganizationUserService) Get(ctx context.Context, id string, query Orga
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("organizations/users/%s", id)
+	path := fmt.Sprintf("organizations/users/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }

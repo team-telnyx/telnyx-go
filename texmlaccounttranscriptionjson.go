@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 	"time"
 
@@ -49,7 +50,7 @@ func (r *TexmlAccountTranscriptionJsonService) DeleteRecordingTranscriptionSidJs
 		err = errors.New("missing required recording_transcription_sid parameter")
 		return err
 	}
-	path := fmt.Sprintf("texml/Accounts/%s/Transcriptions/%s.json", body.AccountSid, recordingTranscriptionSid)
+	path := fmt.Sprintf("texml/Accounts/%s/Transcriptions/%s.json", url.PathEscape(body.AccountSid), recordingTranscriptionSid)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return err
 }
@@ -65,7 +66,7 @@ func (r *TexmlAccountTranscriptionJsonService) GetRecordingTranscriptionSidJson(
 		err = errors.New("missing required recording_transcription_sid parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("texml/Accounts/%s/Transcriptions/%s.json", query.AccountSid, recordingTranscriptionSid)
+	path := fmt.Sprintf("texml/Accounts/%s/Transcriptions/%s.json", url.PathEscape(query.AccountSid), recordingTranscriptionSid)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }

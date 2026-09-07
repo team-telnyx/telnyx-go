@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
@@ -54,7 +55,7 @@ func (r *StorageMigrationSourceService) Get(ctx context.Context, id string, opts
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("storage/migration_sources/%s", id)
+	path := fmt.Sprintf("storage/migration_sources/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -76,7 +77,7 @@ func (r *StorageMigrationSourceService) Delete(ctx context.Context, id string, o
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("storage/migration_sources/%s", id)
+	path := fmt.Sprintf("storage/migration_sources/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
 }

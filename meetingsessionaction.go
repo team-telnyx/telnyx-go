@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
@@ -44,7 +45,7 @@ func (r *MeetingSessionActionService) SendChat(ctx context.Context, id string, b
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("meeting_sessions/%s/actions/send_chat", id)
+	path := fmt.Sprintf("meeting_sessions/%s/actions/send_chat", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -56,7 +57,7 @@ func (r *MeetingSessionActionService) Speak(ctx context.Context, id string, body
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("meeting_sessions/%s/actions/speak", id)
+	path := fmt.Sprintf("meeting_sessions/%s/actions/speak", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -68,7 +69,7 @@ func (r *MeetingSessionActionService) StopSpeaking(ctx context.Context, id strin
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("meeting_sessions/%s/actions/stop_speaking", id)
+	path := fmt.Sprintf("meeting_sessions/%s/actions/stop_speaking", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
 	return res, err
 }

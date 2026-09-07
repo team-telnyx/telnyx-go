@@ -71,7 +71,7 @@ func (r *AIConversationService) Get(ctx context.Context, conversationID string, 
 		err = errors.New("missing required conversation_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/conversations/%s", conversationID)
+	path := fmt.Sprintf("ai/conversations/%s", url.PathEscape(conversationID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -83,7 +83,7 @@ func (r *AIConversationService) Update(ctx context.Context, conversationID strin
 		err = errors.New("missing required conversation_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/conversations/%s", conversationID)
+	path := fmt.Sprintf("ai/conversations/%s", url.PathEscape(conversationID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return res, err
 }
@@ -108,7 +108,7 @@ func (r *AIConversationService) Delete(ctx context.Context, conversationID strin
 		err = errors.New("missing required conversation_id parameter")
 		return err
 	}
-	path := fmt.Sprintf("ai/conversations/%s", conversationID)
+	path := fmt.Sprintf("ai/conversations/%s", url.PathEscape(conversationID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return err
 }
@@ -137,7 +137,7 @@ func (r *AIConversationService) GetConversationsInsights(ctx context.Context, co
 		err = errors.New("missing required conversation_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/conversations/%s/conversations-insights", conversationID)
+	path := fmt.Sprintf("ai/conversations/%s/conversations-insights", url.PathEscape(conversationID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }

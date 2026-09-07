@@ -66,7 +66,7 @@ func (r *PhoneNumberService) Get(ctx context.Context, id string, opts ...option.
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("phone_numbers/%s", id)
+	path := fmt.Sprintf("phone_numbers/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -79,7 +79,7 @@ func (r *PhoneNumberService) Update(ctx context.Context, phoneNumberID string, b
 		err = errors.New("missing required phone_number_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("phone_numbers/%s", phoneNumberID)
+	path := fmt.Sprintf("phone_numbers/%s", url.PathEscape(phoneNumberID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }
@@ -119,7 +119,7 @@ func (r *PhoneNumberService) Delete(ctx context.Context, id string, opts ...opti
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("phone_numbers/%s", id)
+	path := fmt.Sprintf("phone_numbers/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
 }

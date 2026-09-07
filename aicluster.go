@@ -48,7 +48,7 @@ func (r *AIClusterService) Get(ctx context.Context, taskID string, query AIClust
 		err = errors.New("missing required task_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/clusters/%s", taskID)
+	path := fmt.Sprintf("ai/clusters/%s", url.PathEscape(taskID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
@@ -84,7 +84,7 @@ func (r *AIClusterService) Delete(ctx context.Context, taskID string, opts ...op
 		err = errors.New("missing required task_id parameter")
 		return err
 	}
-	path := fmt.Sprintf("ai/clusters/%s", taskID)
+	path := fmt.Sprintf("ai/clusters/%s", url.PathEscape(taskID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return err
 }
@@ -107,7 +107,7 @@ func (r *AIClusterService) FetchGraph(ctx context.Context, taskID string, query 
 		err = errors.New("missing required task_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("ai/clusters/%s/graph", taskID)
+	path := fmt.Sprintf("ai/clusters/%s/graph", url.PathEscape(taskID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }

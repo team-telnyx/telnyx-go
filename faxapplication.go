@@ -58,7 +58,7 @@ func (r *FaxApplicationService) Get(ctx context.Context, id string, opts ...opti
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("fax_applications/%s", id)
+	path := fmt.Sprintf("fax_applications/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -71,7 +71,7 @@ func (r *FaxApplicationService) Update(ctx context.Context, id string, body FaxA
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("fax_applications/%s", id)
+	path := fmt.Sprintf("fax_applications/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }
@@ -113,7 +113,7 @@ func (r *FaxApplicationService) Delete(ctx context.Context, id string, opts ...o
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("fax_applications/%s", id)
+	path := fmt.Sprintf("fax_applications/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
 }

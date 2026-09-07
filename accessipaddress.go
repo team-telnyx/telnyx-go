@@ -57,7 +57,7 @@ func (r *AccessIPAddressService) Get(ctx context.Context, accessIPAddressID stri
 		err = errors.New("missing required access_ip_address_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("access_ip_address/%s", accessIPAddressID)
+	path := fmt.Sprintf("access_ip_address/%s", url.PathEscape(accessIPAddressID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -92,7 +92,7 @@ func (r *AccessIPAddressService) Delete(ctx context.Context, accessIPAddressID s
 		err = errors.New("missing required access_ip_address_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("access_ip_address/%s", accessIPAddressID)
+	path := fmt.Sprintf("access_ip_address/%s", url.PathEscape(accessIPAddressID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
 }

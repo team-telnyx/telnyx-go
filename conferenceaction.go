@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
@@ -46,7 +47,7 @@ func (r *ConferenceActionService) Update(ctx context.Context, id string, body Co
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("conferences/%s/actions/update", id)
+	path := fmt.Sprintf("conferences/%s/actions/update", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -82,7 +83,7 @@ func (r *ConferenceActionService) Hold(ctx context.Context, id string, body Conf
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("conferences/%s/actions/hold", id)
+	path := fmt.Sprintf("conferences/%s/actions/hold", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -103,7 +104,7 @@ func (r *ConferenceActionService) Join(ctx context.Context, id string, body Conf
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("conferences/%s/actions/join", id)
+	path := fmt.Sprintf("conferences/%s/actions/join", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -119,7 +120,7 @@ func (r *ConferenceActionService) Leave(ctx context.Context, id string, body Con
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("conferences/%s/actions/leave", id)
+	path := fmt.Sprintf("conferences/%s/actions/leave", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -131,7 +132,7 @@ func (r *ConferenceActionService) Mute(ctx context.Context, id string, body Conf
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("conferences/%s/actions/mute", id)
+	path := fmt.Sprintf("conferences/%s/actions/mute", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -143,7 +144,7 @@ func (r *ConferenceActionService) Play(ctx context.Context, id string, body Conf
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("conferences/%s/actions/play", id)
+	path := fmt.Sprintf("conferences/%s/actions/play", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -156,7 +157,7 @@ func (r *ConferenceActionService) RecordPause(ctx context.Context, id string, bo
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("conferences/%s/actions/record_pause", id)
+	path := fmt.Sprintf("conferences/%s/actions/record_pause", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -169,7 +170,7 @@ func (r *ConferenceActionService) RecordResume(ctx context.Context, id string, b
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("conferences/%s/actions/record_resume", id)
+	path := fmt.Sprintf("conferences/%s/actions/record_resume", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -186,7 +187,7 @@ func (r *ConferenceActionService) RecordStart(ctx context.Context, id string, bo
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("conferences/%s/actions/record_start", id)
+	path := fmt.Sprintf("conferences/%s/actions/record_start", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -202,7 +203,7 @@ func (r *ConferenceActionService) RecordStop(ctx context.Context, id string, bod
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("conferences/%s/actions/record_stop", id)
+	path := fmt.Sprintf("conferences/%s/actions/record_stop", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -226,7 +227,7 @@ func (r *ConferenceActionService) Speak(ctx context.Context, id string, body Con
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("conferences/%s/actions/speak", id)
+	path := fmt.Sprintf("conferences/%s/actions/speak", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -238,7 +239,7 @@ func (r *ConferenceActionService) Stop(ctx context.Context, id string, body Conf
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("conferences/%s/actions/stop", id)
+	path := fmt.Sprintf("conferences/%s/actions/stop", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -250,7 +251,7 @@ func (r *ConferenceActionService) Unhold(ctx context.Context, id string, body Co
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("conferences/%s/actions/unhold", id)
+	path := fmt.Sprintf("conferences/%s/actions/unhold", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -262,7 +263,7 @@ func (r *ConferenceActionService) Unmute(ctx context.Context, id string, body Co
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("conferences/%s/actions/unmute", id)
+	path := fmt.Sprintf("conferences/%s/actions/unmute", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
