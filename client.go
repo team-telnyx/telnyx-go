@@ -362,6 +362,7 @@ type Client struct {
 	WebSearch            WebSearchService
 	MeetingSessions      MeetingSessionService
 	ExternalRequirements ExternalRequirementService
+	Compute              ComputeService
 }
 
 // DefaultClientOptions read from the environment (TELNYX_API_KEY,
@@ -587,6 +588,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.WebSearch = NewWebSearchService(opts...)
 	r.MeetingSessions = NewMeetingSessionService(opts...)
 	r.ExternalRequirements = NewExternalRequirementService(opts...)
+	r.Compute = NewComputeService(opts...)
 
 	return
 }

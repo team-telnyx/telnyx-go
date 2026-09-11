@@ -29,6 +29,23 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 	_, err := client.AI.Assistants.New(context.TODO(), telnyx.AIAssistantNewParams{
 		Instructions: "instructions",
 		Name:         "name",
+		A2aAgents: []telnyx.AssistantA2AAgentParam{{
+			Name:  "billing_agent",
+			URL:   "https://agents.example.com",
+			Async: telnyx.Bool(true),
+			Headers: []telnyx.AssistantA2AAgentHeaderParam{{
+				Name:  "X-Api-Key",
+				Value: "{{#integration_secret}}my_agent_api_key{{/integration_secret}}",
+			}},
+			Messages: []telnyx.AssistantA2AAgentMessagesUnionParam{{
+				OfA2AAgentRequestStartMessage: &telnyx.AssistantA2AAgentMessagesA2AAgentRequestStartMessageParam{
+					Content:  "x",
+					TimingMs: telnyx.Int(100),
+				},
+			}},
+			PollIntervalMs: telnyx.Int(500),
+			TimeoutMs:      telnyx.Int(30000),
+		}},
 		ConversationFlow: telnyx.ConversationFlowReqParam{
 			Nodes: []telnyx.ConversationFlowReqNodesUnionParam{{
 				OfPrompt: &telnyx.FlowNodeReqParam{
@@ -273,9 +290,10 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 		},
 		Tags: []string{"string"},
 		TelephonySettings: telnyx.TelephonySettingsParam{
-			DefaultTexmlAppID: telnyx.String("default_texml_app_id"),
-			DisableDtmf:       telnyx.Bool(true),
-			NoiseSuppression:  telnyx.TelephonySettingsNoiseSuppressionKrisp,
+			DefaultTexmlAppID:   telnyx.String("default_texml_app_id"),
+			DisableDtmf:         telnyx.Bool(true),
+			FallbackDestination: telnyx.String("fallback_destination"),
+			NoiseSuppression:    telnyx.TelephonySettingsNoiseSuppressionKrisp,
 			NoiseSuppressionConfig: telnyx.TelephonySettingsNoiseSuppressionConfigParam{
 				AttenuationLimit: telnyx.Int(0),
 				Mode:             "advanced",
@@ -482,6 +500,23 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"assistant_id",
 		telnyx.AIAssistantUpdateParams{
+			A2aAgents: []telnyx.AssistantA2AAgentParam{{
+				Name:  "billing_agent",
+				URL:   "https://agents.example.com",
+				Async: telnyx.Bool(true),
+				Headers: []telnyx.AssistantA2AAgentHeaderParam{{
+					Name:  "X-Api-Key",
+					Value: "{{#integration_secret}}my_agent_api_key{{/integration_secret}}",
+				}},
+				Messages: []telnyx.AssistantA2AAgentMessagesUnionParam{{
+					OfA2AAgentRequestStartMessage: &telnyx.AssistantA2AAgentMessagesA2AAgentRequestStartMessageParam{
+						Content:  "x",
+						TimingMs: telnyx.Int(100),
+					},
+				}},
+				PollIntervalMs: telnyx.Int(500),
+				TimeoutMs:      telnyx.Int(30000),
+			}},
 			ConversationFlow: telnyx.ConversationFlowReqParam{
 				Nodes: []telnyx.ConversationFlowReqNodesUnionParam{{
 					OfPrompt: &telnyx.FlowNodeReqParam{
@@ -729,9 +764,10 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 			PromoteToMain: telnyx.Bool(true),
 			Tags:          []string{"string"},
 			TelephonySettings: telnyx.TelephonySettingsParam{
-				DefaultTexmlAppID: telnyx.String("default_texml_app_id"),
-				DisableDtmf:       telnyx.Bool(true),
-				NoiseSuppression:  telnyx.TelephonySettingsNoiseSuppressionKrisp,
+				DefaultTexmlAppID:   telnyx.String("default_texml_app_id"),
+				DisableDtmf:         telnyx.Bool(true),
+				FallbackDestination: telnyx.String("fallback_destination"),
+				NoiseSuppression:    telnyx.TelephonySettingsNoiseSuppressionKrisp,
 				NoiseSuppressionConfig: telnyx.TelephonySettingsNoiseSuppressionConfigParam{
 					AttenuationLimit: telnyx.Int(0),
 					Mode:             "advanced",

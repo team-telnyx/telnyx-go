@@ -206,7 +206,10 @@ type UacConnection struct {
 	OnnetT38PassthroughEnabled bool        `json:"onnet_t38_passthrough_enabled"`
 	Outbound                   UacOutbound `json:"outbound"`
 	// The password to be used as part of the credentials. Must be 8 to 128 characters
-	// long.
+	// long. For primary accounts created on or after September 8, 2026, this password
+	// is returned as `********`. The password is returned in full on create, and on
+	// update only when that update changed the password. Accounts created before
+	// September 8, 2026 are unaffected.
 	Password string `json:"password"`
 	// Identifies the type of the resource.
 	RecordType string `json:"record_type"`
@@ -344,7 +347,11 @@ type UacExternalSettings struct {
 	// An optional SIP proxy used to route outbound requests before reaching the
 	// external SIP peer.
 	OutboundProxy string `json:"outbound_proxy" api:"nullable"`
-	// The SIP password used for digest authentication with the external SIP peer.
+	// The SIP password used for digest authentication with the external SIP peer. For
+	// primary accounts created on or after September 8, 2026, this password is
+	// returned as `********`. The password is returned in full on create, and on
+	// update only when that update changed the password. Accounts created before
+	// September 8, 2026 are unaffected.
 	Password string `json:"password"`
 	// The SIP proxy address of the external SIP peer used for registrations and
 	// outbound call routing.
@@ -420,7 +427,11 @@ type UacExternalSettingsParam struct {
 	// Custom SIP User-Agent header value that Telnyx uses on outbound REGISTER and
 	// INVITE messages. Set to null to use Telnyx's default User-Agent.
 	UserAgent param.Opt[string] `json:"user_agent,omitzero"`
-	// The SIP password used for digest authentication with the external SIP peer.
+	// The SIP password used for digest authentication with the external SIP peer. For
+	// primary accounts created on or after September 8, 2026, this password is
+	// returned as `********`. The password is returned in full on create, and on
+	// update only when that update changed the password. Accounts created before
+	// September 8, 2026 are unaffected.
 	Password param.Opt[string] `json:"password,omitzero"`
 	// The SIP proxy address of the external SIP peer used for registrations and
 	// outbound call routing.

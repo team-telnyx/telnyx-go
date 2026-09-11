@@ -5566,6 +5566,249 @@ const (
 	TranscriptionRecordTypeEvent TranscriptionRecordType = "event"
 )
 
+type WhatsappAccountUpdate struct {
+	Data WhatsappAccountUpdateData `json:"data" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappAccountUpdate) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappAccountUpdate) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappAccountUpdateData struct {
+	ID string `json:"id" api:"required" format:"uuid"`
+	// Any of "whatsapp.account.update".
+	EventType  string                           `json:"event_type" api:"required"`
+	OccurredAt time.Time                        `json:"occurred_at" api:"required" format:"date-time"`
+	Payload    WhatsappAccountUpdateDataPayload `json:"payload" api:"required"`
+	// Any of "event".
+	RecordType string `json:"record_type" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		EventType   respjson.Field
+		OccurredAt  respjson.Field
+		Payload     respjson.Field
+		RecordType  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappAccountUpdateData) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappAccountUpdateData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappAccountUpdateDataPayload struct {
+	// Account event reported by Meta. Coexistence lifecycle values include
+	// `ACCOUNT_OFFBOARDED`, `ACCOUNT_RECONNECTED`, and `PARTNER_REMOVED`. Preserve
+	// unknown values for forward compatibility.
+	Event string `json:"event" api:"required"`
+	// Any of "whatsapp_account".
+	RecordType string `json:"record_type" api:"required"`
+	// Meta WhatsApp Business Account identifier.
+	WabaID string `json:"waba_id" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Event       respjson.Field
+		RecordType  respjson.Field
+		WabaID      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappAccountUpdateDataPayload) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappAccountUpdateDataPayload) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappMessageEcho struct {
+	Data WhatsappMessageEchoData `json:"data" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappMessageEcho) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappMessageEcho) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappMessageEchoData struct {
+	ID string `json:"id" api:"required" format:"uuid"`
+	// Any of "message.echo".
+	EventType  string                         `json:"event_type" api:"required"`
+	OccurredAt time.Time                      `json:"occurred_at" api:"required" format:"date-time"`
+	Payload    WhatsappMessageEchoDataPayload `json:"payload" api:"required"`
+	// Any of "event".
+	RecordType string `json:"record_type" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		EventType   respjson.Field
+		OccurredAt  respjson.Field
+		Payload     respjson.Field
+		RecordType  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappMessageEchoData) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappMessageEchoData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappMessageEchoDataPayload struct {
+	// Telnyx identifier for the mirrored message.
+	ID string `json:"id" api:"required" format:"uuid"`
+	// Mirrored WhatsApp message content. The content property matches the value of
+	// `type`.
+	Body WhatsappMessageEchoDataPayloadBody `json:"body" api:"required"`
+	// No charge is created for a Business app message echo.
+	Cost WhatsappMessageEchoDataPayloadCost `json:"cost" api:"required"`
+	// Indicates that the business sent the message to the WhatsApp user.
+	//
+	// Any of "outbound".
+	Direction          string                             `json:"direction" api:"required"`
+	Errors             []MessagingError0b38e7044b         `json:"errors" api:"required"`
+	From               WhatsappMessageEchoDataPayloadFrom `json:"from" api:"required"`
+	MessagingProfileID string                             `json:"messaging_profile_id" api:"required" format:"uuid"`
+	OrganizationID     string                             `json:"organization_id" api:"required" format:"uuid"`
+	// Identifies the WhatsApp Business app as the source of the message.
+	//
+	// Any of "whatsapp_business_app".
+	Origin string `json:"origin" api:"required"`
+	// Any of "message".
+	RecordType string `json:"record_type" api:"required"`
+	// WhatsApp user who received the Business app message.
+	To string `json:"to" api:"required"`
+	// Any of "WHATSAPP".
+	Type               string    `json:"type" api:"required"`
+	ReceivedAt         time.Time `json:"received_at" format:"date-time"`
+	Tags               []string  `json:"tags"`
+	WebhookFailoverURL string    `json:"webhook_failover_url" api:"nullable" format:"uri"`
+	WebhookURL         string    `json:"webhook_url" api:"nullable" format:"uri"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                 respjson.Field
+		Body               respjson.Field
+		Cost               respjson.Field
+		Direction          respjson.Field
+		Errors             respjson.Field
+		From               respjson.Field
+		MessagingProfileID respjson.Field
+		OrganizationID     respjson.Field
+		Origin             respjson.Field
+		RecordType         respjson.Field
+		To                 respjson.Field
+		Type               respjson.Field
+		ReceivedAt         respjson.Field
+		Tags               respjson.Field
+		WebhookFailoverURL respjson.Field
+		WebhookURL         respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappMessageEchoDataPayload) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappMessageEchoDataPayload) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Mirrored WhatsApp message content. The content property matches the value of
+// `type`.
+type WhatsappMessageEchoDataPayloadBody struct {
+	// Telnyx identifier for the mirrored message.
+	ID string `json:"id" api:"required" format:"uuid"`
+	// Meta WhatsApp message identifier, also known as a wamid.
+	ForeignID string `json:"foreign_id" api:"required"`
+	// Unix timestamp supplied by Meta.
+	Timestamp string `json:"timestamp" api:"required"`
+	// WhatsApp message content type.
+	Type string `json:"type" api:"required"`
+	// WhatsApp user who received the message.
+	From string `json:"from"`
+	// Opaque recipient identifier when Meta does not supply a phone number.
+	FromUserID  string         `json:"from_user_id"`
+	ExtraFields map[string]any `json:"" api:"extrafields"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		ForeignID   respjson.Field
+		Timestamp   respjson.Field
+		Type        respjson.Field
+		From        respjson.Field
+		FromUserID  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappMessageEchoDataPayloadBody) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappMessageEchoDataPayloadBody) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// No charge is created for a Business app message echo.
+type WhatsappMessageEchoDataPayloadCost struct {
+	Amount   string `json:"amount" api:"nullable"`
+	Currency string `json:"currency" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Amount      respjson.Field
+		Currency    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappMessageEchoDataPayloadCost) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappMessageEchoDataPayloadCost) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappMessageEchoDataPayloadFrom struct {
+	// Coexistence-enabled business phone number in E.164 format.
+	PhoneNumber string `json:"phone_number" api:"required"`
+	Carrier     string `json:"carrier"`
+	LineType    string `json:"line_type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PhoneNumber respjson.Field
+		Carrier     respjson.Field
+		LineType    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappMessageEchoDataPayloadFrom) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappMessageEchoDataPayloadFrom) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type CallAIGatherEndedWebhookEvent struct {
 	Data CallAIGatherEnded `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -7990,7 +8233,7 @@ func (r *TranscriptionWebhookEvent) UnmarshalJSON(data []byte) error {
 // [InboundMessageWebhookEvent], [NumberOrderStatusUpdateWebhookEvent],
 // [RecordingAvailableWebhookEvent], [ReplacedLinkClickWebhookEvent],
 // [SessionStatusChangedWebhookEvent], [TranscriptCompletedWebhookEvent],
-// [TranscriptionWebhookEvent].
+// [TranscriptionWebhookEvent], [WhatsappAccountUpdate], [WhatsappMessageEcho].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type UnsafeUnwrapWebhookEventUnion struct {
@@ -8022,7 +8265,8 @@ type UnsafeUnwrapWebhookEventUnion struct {
 	// [HostedNumberOrderEventWebhookEventData], [InboundMessageWebhookEventData],
 	// [NumberOrderStatusUpdateWebhookEventData], [RecordingAvailableWebhookEventData],
 	// [ReplacedLinkClick], [SessionStatusChangedWebhookEventData],
-	// [TranscriptCompletedWebhookEventData], [Transcription]
+	// [TranscriptCompletedWebhookEventData], [Transcription],
+	// [WhatsappAccountUpdateData], [WhatsappMessageEchoData]
 	Data       UnsafeUnwrapWebhookEventUnionData `json:"data"`
 	ID         string                            `json:"id"`
 	Event      string                            `json:"event"`
@@ -8441,6 +8685,16 @@ func (u UnsafeUnwrapWebhookEventUnion) AsTranscriptionEvent() (v TranscriptionWe
 	return
 }
 
+func (u UnsafeUnwrapWebhookEventUnion) AsWhatsappAccountUpdate() (v WhatsappAccountUpdate) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsWhatsappMessageEcho() (v WhatsappMessageEcho) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
 // Returns the unmodified JSON received from the API
 func (u UnsafeUnwrapWebhookEventUnion) RawJSON() string { return u.JSON.raw }
 
@@ -8491,7 +8745,8 @@ type UnsafeUnwrapWebhookEventUnionData struct {
 	// [FaxMediaProcessedDataPayload], [FaxQueuedDataPayload],
 	// [FaxSendingStartedDataPayload], [HostedNumberOrderEventWebhookEventDataPayload],
 	// [MessagingInboundMessagePayload],
-	// [NumberOrderStatusUpdateWebhookEventDataPayload], [TranscriptionPayload]
+	// [NumberOrderStatusUpdateWebhookEventDataPayload], [TranscriptionPayload],
+	// [WhatsappAccountUpdateDataPayload], [WhatsappMessageEchoDataPayload]
 	Payload    UnsafeUnwrapWebhookEventUnionDataPayload `json:"payload"`
 	RecordType string                                   `json:"record_type"`
 	ArtifactID string                                   `json:"artifact_id"`
@@ -8572,7 +8827,7 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 	// [string], [string], [string], [string], [string], [string], [string], [string],
 	// [string], [string], [string], [string], [string], [string], [string], [string],
 	// [OutboundMessagePayloadFrom], [string], [string], [string], [string], [string],
-	// [MessagingInboundMessagePayloadFrom]
+	// [MessagingInboundMessagePayloadFrom], [WhatsappMessageEchoDataPayloadFrom]
 	From UnsafeUnwrapWebhookEventUnionDataPayloadFrom `json:"from"`
 	// This field is a union of [[]CallAIGatherEndedPayloadMessageHistory],
 	// [[]CallAIGatherMessageHistoryUpdatedPayloadMessageHistory],
@@ -8586,7 +8841,7 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 	// [string], [string], [string], [string], [string], [string], [string], [string],
 	// [string], [string], [string], [string], [string], [string], [string], [string],
 	// [[]OutboundMessagePayloadTo], [string], [string], [string], [string], [string],
-	// [[]MessagingInboundMessagePayloadTo]
+	// [MessagingInboundMessagePayloadToUnion], [string]
 	To UnsafeUnwrapWebhookEventUnionDataPayloadTo `json:"to"`
 	// This field is from variant [CallAIGatherPartialResultsPayload].
 	PartialResults map[string]any     `json:"partial_results"`
@@ -8733,13 +8988,14 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 	Cc          UnsafeUnwrapWebhookEventUnionDataPayloadCc `json:"cc"`
 	CompletedAt time.Time                                  `json:"completed_at"`
 	// This field is a union of [OutboundMessagePayloadCost],
-	// [MessagingInboundMessagePayloadCost]
+	// [MessagingInboundMessagePayloadCost], [WhatsappMessageEchoDataPayloadCost]
 	Cost UnsafeUnwrapWebhookEventUnionDataPayloadCost `json:"cost"`
 	// This field is a union of [OutboundMessagePayloadCostBreakdown],
 	// [MessagingInboundMessagePayloadCostBreakdown]
 	CostBreakdown UnsafeUnwrapWebhookEventUnionDataPayloadCostBreakdown `json:"cost_breakdown"`
 	Encoding      string                                                `json:"encoding"`
-	// This field is a union of [[]shared.MessagingError], [[]MessagingError0b38e7044b]
+	// This field is a union of [[]shared.MessagingError],
+	// [[]MessagingError0b38e7044b], [[]MessagingError0b38e7044b]
 	Errors UnsafeUnwrapWebhookEventUnionDataPayloadErrors `json:"errors"`
 	// This field is a union of [[]OutboundMessagePayloadMedia],
 	// [[]MessagingInboundMessagePayloadMedia]
@@ -8785,6 +9041,9 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 	OrderStatus string `json:"order_status"`
 	// This field is from variant [HostedNumberOrderEventWebhookEventDataPayload].
 	ProfileID string `json:"profile_id"`
+	// This field is a union of [MessagingInboundMessagePayloadBody],
+	// [WhatsappMessageEchoDataPayloadBody]
+	Body UnsafeUnwrapWebhookEventUnionDataPayloadBody `json:"body"`
 	// This field is from variant [NumberOrderStatusUpdateWebhookEventDataPayload].
 	CreatedAt time.Time `json:"created_at"`
 	// This field is from variant [NumberOrderStatusUpdateWebhookEventDataPayload].
@@ -8801,7 +9060,13 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 	UpdatedAt time.Time `json:"updated_at"`
 	// This field is from variant [TranscriptionPayload].
 	TranscriptionData TranscriptionPayloadTranscriptionData `json:"transcription_data"`
-	JSON              struct {
+	// This field is from variant [WhatsappAccountUpdateDataPayload].
+	Event string `json:"event"`
+	// This field is from variant [WhatsappAccountUpdateDataPayload].
+	WabaID string `json:"waba_id"`
+	// This field is from variant [WhatsappMessageEchoDataPayload].
+	Origin string `json:"origin"`
+	JSON   struct {
 		CallControlID            respjson.Field
 		CallLegID                respjson.Field
 		CallSessionID            respjson.Field
@@ -8936,6 +9201,7 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 		OrderID                  respjson.Field
 		OrderStatus              respjson.Field
 		ProfileID                respjson.Field
+		Body                     respjson.Field
 		CreatedAt                respjson.Field
 		CustomerReference        respjson.Field
 		PhoneNumbers             respjson.Field
@@ -8944,6 +9210,9 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 		SubNumberOrdersIDs       respjson.Field
 		UpdatedAt                respjson.Field
 		TranscriptionData        respjson.Field
+		Event                    respjson.Field
+		WabaID                   respjson.Field
+		Origin                   respjson.Field
 		raw                      string
 	} `json:"-"`
 }
@@ -9060,8 +9329,8 @@ type UnsafeUnwrapWebhookEventUnionDataPayloadTo struct {
 	// instead of an object.
 	OfOutboundMessagePayloadToArray []OutboundMessagePayloadTo `json:",inline"`
 	// This field will be present if the value is a
-	// [[]MessagingInboundMessagePayloadTo] instead of an object.
-	OfMessagingInboundMessagePayloadToArray []MessagingInboundMessagePayloadTo `json:",inline"`
+	// [[]MessagingInboundMessagePayloadToArrayItem] instead of an object.
+	OfMessagingInboundMessagePayloadToArray []MessagingInboundMessagePayloadToArrayItem `json:",inline"`
 	JSON                                    struct {
 		OfString                                respjson.Field
 		OfOutboundMessagePayloadToArray         respjson.Field
@@ -9286,6 +9555,41 @@ func (r *UnsafeUnwrapWebhookEventUnionDataPayloadMedia) UnmarshalJSON(data []byt
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// UnsafeUnwrapWebhookEventUnionDataPayloadBody is an implicit subunion of
+// [UnsafeUnwrapWebhookEventUnion]. UnsafeUnwrapWebhookEventUnionDataPayloadBody
+// provides convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [UnsafeUnwrapWebhookEventUnion].
+type UnsafeUnwrapWebhookEventUnionDataPayloadBody struct {
+	ID string `json:"id"`
+	// This field is from variant [MessagingInboundMessagePayloadBody].
+	Edit      MessagingInboundMessagePayloadBodyEdit `json:"edit"`
+	ForeignID string                                 `json:"foreign_id"`
+	From      string                                 `json:"from"`
+	// This field is from variant [MessagingInboundMessagePayloadBody].
+	Revoke    MessagingInboundMessagePayloadBodyRevoke `json:"revoke"`
+	Timestamp string                                   `json:"timestamp"`
+	Type      string                                   `json:"type"`
+	// This field is from variant [WhatsappMessageEchoDataPayloadBody].
+	FromUserID string `json:"from_user_id"`
+	JSON       struct {
+		ID         respjson.Field
+		Edit       respjson.Field
+		ForeignID  respjson.Field
+		From       respjson.Field
+		Revoke     respjson.Field
+		Timestamp  respjson.Field
+		Type       respjson.Field
+		FromUserID respjson.Field
+		raw        string
+	} `json:"-"`
+}
+
+func (r *UnsafeUnwrapWebhookEventUnionDataPayloadBody) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // UnsafeUnwrapWebhookEventUnionMeta is an implicit subunion of
 // [UnsafeUnwrapWebhookEventUnion]. UnsafeUnwrapWebhookEventUnionMeta provides
 // convenient access to the sub-properties of the union.
@@ -9347,7 +9651,7 @@ func (r *UnsafeUnwrapWebhookEventUnionMeta) UnmarshalJSON(data []byte) error {
 // [InboundMessageWebhookEvent], [NumberOrderStatusUpdateWebhookEvent],
 // [RecordingAvailableWebhookEvent], [ReplacedLinkClickWebhookEvent],
 // [SessionStatusChangedWebhookEvent], [TranscriptCompletedWebhookEvent],
-// [TranscriptionWebhookEvent].
+// [TranscriptionWebhookEvent], [WhatsappAccountUpdate], [WhatsappMessageEcho].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type UnwrapWebhookEventUnion struct {
@@ -9379,7 +9683,8 @@ type UnwrapWebhookEventUnion struct {
 	// [HostedNumberOrderEventWebhookEventData], [InboundMessageWebhookEventData],
 	// [NumberOrderStatusUpdateWebhookEventData], [RecordingAvailableWebhookEventData],
 	// [ReplacedLinkClick], [SessionStatusChangedWebhookEventData],
-	// [TranscriptCompletedWebhookEventData], [Transcription]
+	// [TranscriptCompletedWebhookEventData], [Transcription],
+	// [WhatsappAccountUpdateData], [WhatsappMessageEchoData]
 	Data       UnwrapWebhookEventUnionData `json:"data"`
 	ID         string                      `json:"id"`
 	Event      string                      `json:"event"`
@@ -9798,6 +10103,16 @@ func (u UnwrapWebhookEventUnion) AsTranscriptionEvent() (v TranscriptionWebhookE
 	return
 }
 
+func (u UnwrapWebhookEventUnion) AsWhatsappAccountUpdate() (v WhatsappAccountUpdate) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnwrapWebhookEventUnion) AsWhatsappMessageEcho() (v WhatsappMessageEcho) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
 // Returns the unmodified JSON received from the API
 func (u UnwrapWebhookEventUnion) RawJSON() string { return u.JSON.raw }
 
@@ -9848,7 +10163,8 @@ type UnwrapWebhookEventUnionData struct {
 	// [FaxMediaProcessedDataPayload], [FaxQueuedDataPayload],
 	// [FaxSendingStartedDataPayload], [HostedNumberOrderEventWebhookEventDataPayload],
 	// [MessagingInboundMessagePayload],
-	// [NumberOrderStatusUpdateWebhookEventDataPayload], [TranscriptionPayload]
+	// [NumberOrderStatusUpdateWebhookEventDataPayload], [TranscriptionPayload],
+	// [WhatsappAccountUpdateDataPayload], [WhatsappMessageEchoDataPayload]
 	Payload    UnwrapWebhookEventUnionDataPayload `json:"payload"`
 	RecordType string                             `json:"record_type"`
 	ArtifactID string                             `json:"artifact_id"`
@@ -9929,7 +10245,7 @@ type UnwrapWebhookEventUnionDataPayload struct {
 	// [string], [string], [string], [string], [string], [string], [string], [string],
 	// [string], [string], [string], [string], [string], [string], [string], [string],
 	// [OutboundMessagePayloadFrom], [string], [string], [string], [string], [string],
-	// [MessagingInboundMessagePayloadFrom]
+	// [MessagingInboundMessagePayloadFrom], [WhatsappMessageEchoDataPayloadFrom]
 	From UnwrapWebhookEventUnionDataPayloadFrom `json:"from"`
 	// This field is a union of [[]CallAIGatherEndedPayloadMessageHistory],
 	// [[]CallAIGatherMessageHistoryUpdatedPayloadMessageHistory],
@@ -9943,7 +10259,7 @@ type UnwrapWebhookEventUnionDataPayload struct {
 	// [string], [string], [string], [string], [string], [string], [string], [string],
 	// [string], [string], [string], [string], [string], [string], [string], [string],
 	// [[]OutboundMessagePayloadTo], [string], [string], [string], [string], [string],
-	// [[]MessagingInboundMessagePayloadTo]
+	// [MessagingInboundMessagePayloadToUnion], [string]
 	To UnwrapWebhookEventUnionDataPayloadTo `json:"to"`
 	// This field is from variant [CallAIGatherPartialResultsPayload].
 	PartialResults map[string]any     `json:"partial_results"`
@@ -10090,13 +10406,14 @@ type UnwrapWebhookEventUnionDataPayload struct {
 	Cc          UnwrapWebhookEventUnionDataPayloadCc `json:"cc"`
 	CompletedAt time.Time                            `json:"completed_at"`
 	// This field is a union of [OutboundMessagePayloadCost],
-	// [MessagingInboundMessagePayloadCost]
+	// [MessagingInboundMessagePayloadCost], [WhatsappMessageEchoDataPayloadCost]
 	Cost UnwrapWebhookEventUnionDataPayloadCost `json:"cost"`
 	// This field is a union of [OutboundMessagePayloadCostBreakdown],
 	// [MessagingInboundMessagePayloadCostBreakdown]
 	CostBreakdown UnwrapWebhookEventUnionDataPayloadCostBreakdown `json:"cost_breakdown"`
 	Encoding      string                                          `json:"encoding"`
-	// This field is a union of [[]shared.MessagingError], [[]MessagingError0b38e7044b]
+	// This field is a union of [[]shared.MessagingError],
+	// [[]MessagingError0b38e7044b], [[]MessagingError0b38e7044b]
 	Errors UnwrapWebhookEventUnionDataPayloadErrors `json:"errors"`
 	// This field is a union of [[]OutboundMessagePayloadMedia],
 	// [[]MessagingInboundMessagePayloadMedia]
@@ -10142,6 +10459,9 @@ type UnwrapWebhookEventUnionDataPayload struct {
 	OrderStatus string `json:"order_status"`
 	// This field is from variant [HostedNumberOrderEventWebhookEventDataPayload].
 	ProfileID string `json:"profile_id"`
+	// This field is a union of [MessagingInboundMessagePayloadBody],
+	// [WhatsappMessageEchoDataPayloadBody]
+	Body UnwrapWebhookEventUnionDataPayloadBody `json:"body"`
 	// This field is from variant [NumberOrderStatusUpdateWebhookEventDataPayload].
 	CreatedAt time.Time `json:"created_at"`
 	// This field is from variant [NumberOrderStatusUpdateWebhookEventDataPayload].
@@ -10158,7 +10478,13 @@ type UnwrapWebhookEventUnionDataPayload struct {
 	UpdatedAt time.Time `json:"updated_at"`
 	// This field is from variant [TranscriptionPayload].
 	TranscriptionData TranscriptionPayloadTranscriptionData `json:"transcription_data"`
-	JSON              struct {
+	// This field is from variant [WhatsappAccountUpdateDataPayload].
+	Event string `json:"event"`
+	// This field is from variant [WhatsappAccountUpdateDataPayload].
+	WabaID string `json:"waba_id"`
+	// This field is from variant [WhatsappMessageEchoDataPayload].
+	Origin string `json:"origin"`
+	JSON   struct {
 		CallControlID            respjson.Field
 		CallLegID                respjson.Field
 		CallSessionID            respjson.Field
@@ -10293,6 +10619,7 @@ type UnwrapWebhookEventUnionDataPayload struct {
 		OrderID                  respjson.Field
 		OrderStatus              respjson.Field
 		ProfileID                respjson.Field
+		Body                     respjson.Field
 		CreatedAt                respjson.Field
 		CustomerReference        respjson.Field
 		PhoneNumbers             respjson.Field
@@ -10301,6 +10628,9 @@ type UnwrapWebhookEventUnionDataPayload struct {
 		SubNumberOrdersIDs       respjson.Field
 		UpdatedAt                respjson.Field
 		TranscriptionData        respjson.Field
+		Event                    respjson.Field
+		WabaID                   respjson.Field
+		Origin                   respjson.Field
 		raw                      string
 	} `json:"-"`
 }
@@ -10416,8 +10746,8 @@ type UnwrapWebhookEventUnionDataPayloadTo struct {
 	// instead of an object.
 	OfOutboundMessagePayloadToArray []OutboundMessagePayloadTo `json:",inline"`
 	// This field will be present if the value is a
-	// [[]MessagingInboundMessagePayloadTo] instead of an object.
-	OfMessagingInboundMessagePayloadToArray []MessagingInboundMessagePayloadTo `json:",inline"`
+	// [[]MessagingInboundMessagePayloadToArrayItem] instead of an object.
+	OfMessagingInboundMessagePayloadToArray []MessagingInboundMessagePayloadToArrayItem `json:",inline"`
 	JSON                                    struct {
 		OfString                                respjson.Field
 		OfOutboundMessagePayloadToArray         respjson.Field
@@ -10635,6 +10965,41 @@ type UnwrapWebhookEventUnionDataPayloadMedia struct {
 }
 
 func (r *UnwrapWebhookEventUnionDataPayloadMedia) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// UnwrapWebhookEventUnionDataPayloadBody is an implicit subunion of
+// [UnwrapWebhookEventUnion]. UnwrapWebhookEventUnionDataPayloadBody provides
+// convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [UnwrapWebhookEventUnion].
+type UnwrapWebhookEventUnionDataPayloadBody struct {
+	ID string `json:"id"`
+	// This field is from variant [MessagingInboundMessagePayloadBody].
+	Edit      MessagingInboundMessagePayloadBodyEdit `json:"edit"`
+	ForeignID string                                 `json:"foreign_id"`
+	From      string                                 `json:"from"`
+	// This field is from variant [MessagingInboundMessagePayloadBody].
+	Revoke    MessagingInboundMessagePayloadBodyRevoke `json:"revoke"`
+	Timestamp string                                   `json:"timestamp"`
+	Type      string                                   `json:"type"`
+	// This field is from variant [WhatsappMessageEchoDataPayloadBody].
+	FromUserID string `json:"from_user_id"`
+	JSON       struct {
+		ID         respjson.Field
+		Edit       respjson.Field
+		ForeignID  respjson.Field
+		From       respjson.Field
+		Revoke     respjson.Field
+		Timestamp  respjson.Field
+		Type       respjson.Field
+		FromUserID respjson.Field
+		raw        string
+	} `json:"-"`
+}
+
+func (r *UnwrapWebhookEventUnionDataPayloadBody) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
