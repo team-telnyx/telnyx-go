@@ -234,6 +234,10 @@ type MessagingMessagingProfile struct {
 	DailySpendLimitEnabled bool `json:"daily_spend_limit_enabled"`
 	// Specifies whether the messaging profile is enabled or not.
 	Enabled bool `json:"enabled"`
+	// Telnyx product features the messaging customer can enable on the messaging
+	// profile. Keys map to individual feature flags; unknown keys are accepted and
+	// preserved for forward compatibility with rolling deployments.
+	Features MessagingProfileFeatures `json:"features" api:"nullable"`
 	// DEPRECATED: health check url service checking
 	HealthWebhookURL string `json:"health_webhook_url" api:"nullable" format:"url"`
 	// enables SMS fallback for MMS messages.
@@ -308,6 +312,7 @@ type MessagingMessagingProfile struct {
 		DailySpendLimit         respjson.Field
 		DailySpendLimitEnabled  respjson.Field
 		Enabled                 respjson.Field
+		Features                respjson.Field
 		HealthWebhookURL        respjson.Field
 		MmsFallBackToSMS        respjson.Field
 		MmsTranscoding          respjson.Field
@@ -354,6 +359,61 @@ const (
 	MessagingMessagingProfileWebhookAPIVersionV2          MessagingMessagingProfileWebhookAPIVersion = "2"
 	MessagingMessagingProfileWebhookAPIVersionV2010_04_01 MessagingMessagingProfileWebhookAPIVersion = "2010-04-01"
 )
+
+// Telnyx product features the messaging customer can enable on the messaging
+// profile. Keys map to individual feature flags; unknown keys are accepted and
+// preserved for forward compatibility with rolling deployments.
+type MessagingProfileFeatures struct {
+	// Enables AI detection of inbound opt-out messages that do not follow the standard
+	// STOP/UNSTOP/HELP opt-out keyword pattern. When enabled, the messaging platform
+	// applies an AI model to identify non-standard opt-out requests (e.g.
+	// natural-language phrases) and treats them as opt-outs.
+	AIOptOutDetectionEnabled bool           `json:"ai_opt_out_detection_enabled"`
+	ExtraFields              map[string]any `json:"" api:"extrafields"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AIOptOutDetectionEnabled respjson.Field
+		ExtraFields              map[string]respjson.Field
+		raw                      string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessagingProfileFeatures) RawJSON() string { return r.JSON.raw }
+func (r *MessagingProfileFeatures) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this MessagingProfileFeatures to a
+// MessagingProfileFeaturesParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// MessagingProfileFeaturesParam.Overrides()
+func (r MessagingProfileFeatures) ToParam() MessagingProfileFeaturesParam {
+	return param.Override[MessagingProfileFeaturesParam](json.RawMessage(r.RawJSON()))
+}
+
+// Telnyx product features the messaging customer can enable on the messaging
+// profile. Keys map to individual feature flags; unknown keys are accepted and
+// preserved for forward compatibility with rolling deployments.
+type MessagingProfileFeaturesParam struct {
+	// Enables AI detection of inbound opt-out messages that do not follow the standard
+	// STOP/UNSTOP/HELP opt-out keyword pattern. When enabled, the messaging platform
+	// applies an AI model to identify non-standard opt-out requests (e.g.
+	// natural-language phrases) and treats them as opt-outs.
+	AIOptOutDetectionEnabled param.Opt[bool] `json:"ai_opt_out_detection_enabled,omitzero"`
+	ExtraFields              map[string]any  `json:"-"`
+	paramObj
+}
+
+func (r MessagingProfileFeaturesParam) MarshalJSON() (data []byte, err error) {
+	type shadow MessagingProfileFeaturesParam
+	return param.MarshalWithExtras(r, (*shadow)(&r), r.ExtraFields)
+}
+func (r *MessagingProfileFeaturesParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // Number Pool allows you to send messages from a pool of numbers of different
 // types, assigning weights to each type. The pool consists of all the long code
@@ -657,6 +717,10 @@ type MessagingProfileNewParams struct {
 	// enabled, the system automatically selects the most efficient encoding (GSM-7 or
 	// UCS-2) based on message content to maximize character limits and minimize costs.
 	SmartEncoding param.Opt[bool] `json:"smart_encoding,omitzero"`
+	// Telnyx product features the messaging customer can enable on the messaging
+	// profile. Keys map to individual feature flags; unknown keys are accepted and
+	// preserved for forward compatibility with rolling deployments.
+	Features MessagingProfileFeaturesParam `json:"features,omitzero"`
 	// Number Pool allows you to send messages from a pool of numbers of different
 	// types, assigning weights to each type. The pool consists of all the long code
 	// and toll free numbers assigned to the messaging profile.
@@ -738,6 +802,10 @@ type MessagingProfileUpdateParams struct {
 	SmartEncoding param.Opt[bool] `json:"smart_encoding,omitzero"`
 	// Secret used to authenticate with v1 endpoints.
 	V1Secret param.Opt[string] `json:"v1_secret,omitzero"`
+	// Telnyx product features the messaging customer can enable on the messaging
+	// profile. Keys map to individual feature flags; unknown keys are accepted and
+	// preserved for forward compatibility with rolling deployments.
+	Features MessagingProfileFeaturesParam `json:"features,omitzero"`
 	// Number Pool allows you to send messages from a pool of numbers of different
 	// types, assigning weights to each type. The pool consists of all the long code
 	// and toll free numbers assigned to the messaging profile.

@@ -352,6 +352,370 @@ func init() {
 	)
 }
 
+// A remote agent, reachable over the A2A (Agent2Agent) protocol, that an assistant
+// can delegate to. Tools are not configured here: at the start of every
+// conversation the agent's card is fetched and one tool is derived per skill the
+// card advertises.
+type AssistantA2AAgent struct {
+	// Identifies the agent and seeds the names of the tools derived from its card
+	// (`a2a_<name>_<skill_id>`). Characters outside `[A-Za-z0-9_]` are replaced with
+	// `_` before the tool name is built, so two agents whose names differ only in
+	// punctuation collide and are rejected.
+	Name string `json:"name" api:"required"`
+	// The agent's base URL, or the URL of its agent card. At most 2,048 bytes once
+	// UTF-8 encoded. `/.well-known/agent-card.json` is appended to the path unless it
+	// already ends in `.json`. Must be an `http://` or `https://` URL for an
+	// externally reachable host: internal destinations (`localhost`, private and
+	// reserved IP ranges, `.local` domains) are rejected, and the hostname may not
+	// contain a `{{...}}` placeholder. Placeholders in the path are allowed.
+	URL string `json:"url" api:"required"`
+	// When `true`, the assistant hands the turn straight back to the model and the
+	// agent's answer is delivered into the conversation once it arrives, instead of
+	// the caller waiting for it in silence.
+	Async bool `json:"async"`
+	// Headers sent when fetching this agent's card and on every call made to it. Use
+	// them to authenticate to the agent.
+	Headers []AssistantA2AAgentHeader `json:"headers"`
+	// Filler messages spoken while a call to this agent is in progress.
+	// `request_start` messages are spoken immediately when the call begins.
+	// `request_response_delayed` messages are spoken after `timing_ms` has elapsed
+	// only if the agent has not answered yet. Filler messages are not used when
+	// `async` is `true`.
+	Messages []AssistantA2AAgentMessagesUnion `json:"messages"`
+	// How often, in milliseconds, to poll an agent task that has not finished yet.
+	// Defaults to 500.
+	PollIntervalMs int64 `json:"poll_interval_ms"`
+	// Total budget, in milliseconds, for one call to this agent, including any time
+	// spent polling a task that is still running. Omit to inherit the assistant's tool
+	// timeout.
+	TimeoutMs int64 `json:"timeout_ms"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Name           respjson.Field
+		URL            respjson.Field
+		Async          respjson.Field
+		Headers        respjson.Field
+		Messages       respjson.Field
+		PollIntervalMs respjson.Field
+		TimeoutMs      respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AssistantA2AAgent) RawJSON() string { return r.JSON.raw }
+func (r *AssistantA2AAgent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this AssistantA2AAgent to a AssistantA2AAgentParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// AssistantA2AAgentParam.Overrides()
+func (r AssistantA2AAgent) ToParam() AssistantA2AAgentParam {
+	return param.Override[AssistantA2AAgentParam](json.RawMessage(r.RawJSON()))
+}
+
+// A header sent when fetching an A2A agent's card and on every call made to that
+// agent.
+type AssistantA2AAgentHeader struct {
+	// HTTP header name. May only contain alphanumeric characters, hyphens, and
+	// underscores, or a `{{dynamic_variable}}` placeholder surrounded by those
+	// characters.
+	Name string `json:"name" api:"required"`
+	// Header value, stored exactly as written. It may be a literal, a
+	// `{{dynamic_variable}}`, or an
+	// `{{#integration_secret}}identifier{{/integration_secret}}` section that resolves
+	// to a stored integration secret when the conversation starts. Control characters
+	// are not allowed. The encrypted `{{variable | encryption_secret_ref}}` form used
+	// for per-caller credentials is not resolved here and is rejected when the
+	// assistant is saved.
+	Value string `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Name        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AssistantA2AAgentHeader) RawJSON() string { return r.JSON.raw }
+func (r *AssistantA2AAgentHeader) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// AssistantA2AAgentMessagesUnion contains all possible properties and values from
+// [AssistantA2AAgentMessagesA2AAgentRequestStartMessage],
+// [AssistantA2AAgentMessagesA2AAgentRequestResponseDelayedMessage].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type AssistantA2AAgentMessagesUnion struct {
+	Content  string `json:"content"`
+	Type     string `json:"type"`
+	TimingMs int64  `json:"timing_ms"`
+	JSON     struct {
+		Content  respjson.Field
+		Type     respjson.Field
+		TimingMs respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u AssistantA2AAgentMessagesUnion) AsA2AAgentRequestStartMessage() (v AssistantA2AAgentMessagesA2AAgentRequestStartMessage) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u AssistantA2AAgentMessagesUnion) AsA2AAgentRequestResponseDelayedMessage() (v AssistantA2AAgentMessagesA2AAgentRequestResponseDelayedMessage) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u AssistantA2AAgentMessagesUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *AssistantA2AAgentMessagesUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type AssistantA2AAgentMessagesA2AAgentRequestStartMessage struct {
+	// The text the assistant speaks.
+	Content string `json:"content" api:"required"`
+	// Speak the filler message immediately when the call to the agent begins.
+	Type constant.RequestStart `json:"type" default:"request_start"`
+	// An optional delay value. This value is ignored for `request_start` messages.
+	TimingMs int64 `json:"timing_ms"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Content     respjson.Field
+		Type        respjson.Field
+		TimingMs    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AssistantA2AAgentMessagesA2AAgentRequestStartMessage) RawJSON() string { return r.JSON.raw }
+func (r *AssistantA2AAgentMessagesA2AAgentRequestStartMessage) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type AssistantA2AAgentMessagesA2AAgentRequestResponseDelayedMessage struct {
+	// The text the assistant speaks.
+	Content string `json:"content" api:"required"`
+	// How long to wait, in milliseconds, before speaking this message.
+	TimingMs int64 `json:"timing_ms" api:"required"`
+	// Speak the filler message only if the agent has not answered yet after
+	// `timing_ms`.
+	Type constant.RequestResponseDelayed `json:"type" default:"request_response_delayed"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Content     respjson.Field
+		TimingMs    respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AssistantA2AAgentMessagesA2AAgentRequestResponseDelayedMessage) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *AssistantA2AAgentMessagesA2AAgentRequestResponseDelayedMessage) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A remote agent, reachable over the A2A (Agent2Agent) protocol, that an assistant
+// can delegate to. Tools are not configured here: at the start of every
+// conversation the agent's card is fetched and one tool is derived per skill the
+// card advertises.
+//
+// The properties Name, URL are required.
+type AssistantA2AAgentParam struct {
+	// Identifies the agent and seeds the names of the tools derived from its card
+	// (`a2a_<name>_<skill_id>`). Characters outside `[A-Za-z0-9_]` are replaced with
+	// `_` before the tool name is built, so two agents whose names differ only in
+	// punctuation collide and are rejected.
+	Name string `json:"name" api:"required"`
+	// The agent's base URL, or the URL of its agent card. At most 2,048 bytes once
+	// UTF-8 encoded. `/.well-known/agent-card.json` is appended to the path unless it
+	// already ends in `.json`. Must be an `http://` or `https://` URL for an
+	// externally reachable host: internal destinations (`localhost`, private and
+	// reserved IP ranges, `.local` domains) are rejected, and the hostname may not
+	// contain a `{{...}}` placeholder. Placeholders in the path are allowed.
+	URL string `json:"url" api:"required"`
+	// When `true`, the assistant hands the turn straight back to the model and the
+	// agent's answer is delivered into the conversation once it arrives, instead of
+	// the caller waiting for it in silence.
+	Async param.Opt[bool] `json:"async,omitzero"`
+	// How often, in milliseconds, to poll an agent task that has not finished yet.
+	// Defaults to 500.
+	PollIntervalMs param.Opt[int64] `json:"poll_interval_ms,omitzero"`
+	// Total budget, in milliseconds, for one call to this agent, including any time
+	// spent polling a task that is still running. Omit to inherit the assistant's tool
+	// timeout.
+	TimeoutMs param.Opt[int64] `json:"timeout_ms,omitzero"`
+	// Headers sent when fetching this agent's card and on every call made to it. Use
+	// them to authenticate to the agent.
+	Headers []AssistantA2AAgentHeaderParam `json:"headers,omitzero"`
+	// Filler messages spoken while a call to this agent is in progress.
+	// `request_start` messages are spoken immediately when the call begins.
+	// `request_response_delayed` messages are spoken after `timing_ms` has elapsed
+	// only if the agent has not answered yet. Filler messages are not used when
+	// `async` is `true`.
+	Messages []AssistantA2AAgentMessagesUnionParam `json:"messages,omitzero"`
+	paramObj
+}
+
+func (r AssistantA2AAgentParam) MarshalJSON() (data []byte, err error) {
+	type shadow AssistantA2AAgentParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AssistantA2AAgentParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A header sent when fetching an A2A agent's card and on every call made to that
+// agent.
+//
+// The properties Name, Value are required.
+type AssistantA2AAgentHeaderParam struct {
+	// HTTP header name. May only contain alphanumeric characters, hyphens, and
+	// underscores, or a `{{dynamic_variable}}` placeholder surrounded by those
+	// characters.
+	Name string `json:"name" api:"required"`
+	// Header value, stored exactly as written. It may be a literal, a
+	// `{{dynamic_variable}}`, or an
+	// `{{#integration_secret}}identifier{{/integration_secret}}` section that resolves
+	// to a stored integration secret when the conversation starts. Control characters
+	// are not allowed. The encrypted `{{variable | encryption_secret_ref}}` form used
+	// for per-caller credentials is not resolved here and is rejected when the
+	// assistant is saved.
+	Value string `json:"value" api:"required"`
+	paramObj
+}
+
+func (r AssistantA2AAgentHeaderParam) MarshalJSON() (data []byte, err error) {
+	type shadow AssistantA2AAgentHeaderParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AssistantA2AAgentHeaderParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type AssistantA2AAgentMessagesUnionParam struct {
+	OfA2AAgentRequestStartMessage           *AssistantA2AAgentMessagesA2AAgentRequestStartMessageParam           `json:",omitzero,inline"`
+	OfA2AAgentRequestResponseDelayedMessage *AssistantA2AAgentMessagesA2AAgentRequestResponseDelayedMessageParam `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u AssistantA2AAgentMessagesUnionParam) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfA2AAgentRequestStartMessage, u.OfA2AAgentRequestResponseDelayedMessage)
+}
+func (u *AssistantA2AAgentMessagesUnionParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *AssistantA2AAgentMessagesUnionParam) asAny() any {
+	if !param.IsOmitted(u.OfA2AAgentRequestStartMessage) {
+		return u.OfA2AAgentRequestStartMessage
+	} else if !param.IsOmitted(u.OfA2AAgentRequestResponseDelayedMessage) {
+		return u.OfA2AAgentRequestResponseDelayedMessage
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AssistantA2AAgentMessagesUnionParam) GetContent() *string {
+	if vt := u.OfA2AAgentRequestStartMessage; vt != nil {
+		return (*string)(&vt.Content)
+	} else if vt := u.OfA2AAgentRequestResponseDelayedMessage; vt != nil {
+		return (*string)(&vt.Content)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AssistantA2AAgentMessagesUnionParam) GetType() *string {
+	if vt := u.OfA2AAgentRequestStartMessage; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfA2AAgentRequestResponseDelayedMessage; vt != nil {
+		return (*string)(&vt.Type)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AssistantA2AAgentMessagesUnionParam) GetTimingMs() *int64 {
+	if vt := u.OfA2AAgentRequestStartMessage; vt != nil && vt.TimingMs.Valid() {
+		return &vt.TimingMs.Value
+	} else if vt := u.OfA2AAgentRequestResponseDelayedMessage; vt != nil {
+		return (*int64)(&vt.TimingMs)
+	}
+	return nil
+}
+
+func init() {
+	apijson.RegisterUnion[AssistantA2AAgentMessagesUnionParam](
+		"",
+		apijson.Variant[AssistantA2AAgentMessagesA2AAgentRequestStartMessageParam](gjson.JSON),
+		apijson.Variant[AssistantA2AAgentMessagesA2AAgentRequestResponseDelayedMessageParam](gjson.JSON),
+	)
+}
+
+// The properties Content, Type are required.
+type AssistantA2AAgentMessagesA2AAgentRequestStartMessageParam struct {
+	// The text the assistant speaks.
+	Content string `json:"content" api:"required"`
+	// An optional delay value. This value is ignored for `request_start` messages.
+	TimingMs param.Opt[int64] `json:"timing_ms,omitzero"`
+	// Speak the filler message immediately when the call to the agent begins.
+	//
+	// This field can be elided, and will marshal its zero value as "request_start".
+	Type constant.RequestStart `json:"type" default:"request_start"`
+	paramObj
+}
+
+func (r AssistantA2AAgentMessagesA2AAgentRequestStartMessageParam) MarshalJSON() (data []byte, err error) {
+	type shadow AssistantA2AAgentMessagesA2AAgentRequestStartMessageParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AssistantA2AAgentMessagesA2AAgentRequestStartMessageParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties Content, TimingMs, Type are required.
+type AssistantA2AAgentMessagesA2AAgentRequestResponseDelayedMessageParam struct {
+	// The text the assistant speaks.
+	Content string `json:"content" api:"required"`
+	// How long to wait, in milliseconds, before speaking this message.
+	TimingMs int64 `json:"timing_ms" api:"required"`
+	// Speak the filler message only if the agent has not answered yet after
+	// `timing_ms`.
+	//
+	// This field can be elided, and will marshal its zero value as
+	// "request_response_delayed".
+	Type constant.RequestResponseDelayed `json:"type" default:"request_response_delayed"`
+	paramObj
+}
+
+func (r AssistantA2AAgentMessagesA2AAgentRequestResponseDelayedMessageParam) MarshalJSON() (data []byte, err error) {
+	type shadow AssistantA2AAgentMessagesA2AAgentRequestResponseDelayedMessageParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AssistantA2AAgentMessagesA2AAgentRequestResponseDelayedMessageParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // Reference to a connected integration attached to an assistant. Discover
 // available integrations with `/ai/integrations` and connected integrations with
 // `/ai/integrations/connections`.
@@ -4252,6 +4616,15 @@ type InferenceEmbedding struct {
 	// provided, Telnyx applies the default model.
 	Model string `json:"model" api:"required"`
 	Name  string `json:"name" api:"required"`
+	// A2A agents this assistant can delegate to. Tools are not stored here: at the
+	// start of every conversation each agent's card is fetched and one tool is derived
+	// per skill the card advertises, named `a2a_<name>_<skill_id>`. The following
+	// limits are not enforced when the assistant is saved, and anything past them is
+	// dropped when the conversation starts: 64 agents per assistant, 64 skills per
+	// card, 128 derived tools per assistant, and a 6 second budget for all card
+	// fetches combined. An agent whose card cannot be fetched costs the assistant that
+	// capability for the conversation; it does not fail the call.
+	A2aAgents []AssistantA2AAgent `json:"a2a_agents"`
 	// Conversation flow as returned by the API.
 	ConversationFlow ConversationFlow `json:"conversation_flow"`
 	Description      string           `json:"description"`
@@ -4343,6 +4716,7 @@ type InferenceEmbedding struct {
 		Instructions                     respjson.Field
 		Model                            respjson.Field
 		Name                             respjson.Field
+		A2aAgents                        respjson.Field
 		ConversationFlow                 respjson.Field
 		Description                      respjson.Field
 		DynamicVariables                 respjson.Field
@@ -5690,6 +6064,14 @@ type TelephonySettings struct {
 	// configured anywhere on the assistant — on the main tool array or on any workflow
 	// node — enforced at write time.
 	DisableDtmf bool `json:"disable_dtmf"`
+	// Destination number or SIP URI to transfer the caller to when the AI conversation
+	// ends abnormally, for example because of an assistant-side error, so the caller
+	// is not left in dead air. This only fires for abnormal ends: it does not fire
+	// when the conversation ends on purpose (the caller hung up, the assistant
+	// completed normally, the caller hung up after a relay handoff, or voicemail was
+	// detected), and it does not fire when the assistant already transferred or
+	// bridged the call.
+	FallbackDestination string `json:"fallback_destination"`
 	// The noise suppression engine to use. Use 'disabled' to turn off noise
 	// suppression.
 	//
@@ -5738,6 +6120,7 @@ type TelephonySettings struct {
 	JSON struct {
 		DefaultTexmlAppID               respjson.Field
 		DisableDtmf                     respjson.Field
+		FallbackDestination             respjson.Field
 		NoiseSuppression                respjson.Field
 		NoiseSuppressionConfig          respjson.Field
 		RecordingSettings               respjson.Field
@@ -5923,6 +6306,14 @@ type TelephonySettingsParam struct {
 	// configured anywhere on the assistant — on the main tool array or on any workflow
 	// node — enforced at write time.
 	DisableDtmf param.Opt[bool] `json:"disable_dtmf,omitzero"`
+	// Destination number or SIP URI to transfer the caller to when the AI conversation
+	// ends abnormally, for example because of an assistant-side error, so the caller
+	// is not left in dead air. This only fires for abnormal ends: it does not fire
+	// when the conversation ends on purpose (the caller hung up, the assistant
+	// completed normally, the caller hung up after a relay handoff, or voicemail was
+	// detected), and it does not fire when the assistant already transferred or
+	// bridged the call.
+	FallbackDestination param.Opt[string] `json:"fallback_destination,omitzero"`
 	// Whether the assistant sends a `call.ai_gather.message_history_updated` webhook
 	// with the full message history every time the conversation history changes. Leave
 	// unset to inherit the `send_message_history_updates` value from the
@@ -7594,6 +7985,15 @@ type AIAssistantNewParams struct {
 	// provided, Telnyx applies the default model.
 	Model          param.Opt[string] `json:"model,omitzero"`
 	IdempotencyKey param.Opt[string] `header:"Idempotency-Key,omitzero" json:"-"`
+	// A2A agents this assistant can delegate to. Tools are not stored here: at the
+	// start of every conversation each agent's card is fetched and one tool is derived
+	// per skill the card advertises, named `a2a_<name>_<skill_id>`. The following
+	// limits are not enforced when the assistant is saved, and anything past them is
+	// dropped when the conversation starts: 64 agents per assistant, 64 skills per
+	// card, 128 derived tools per assistant, and a 6 second budget for all card
+	// fetches combined. An agent whose card cannot be fetched costs the assistant that
+	// capability for the conversation; it does not fail the call.
+	A2aAgents []AssistantA2AAgentParam `json:"a2a_agents,omitzero"`
 	// Conversation flow as supplied by API clients (create / update).
 	//
 	// A directed graph of `FlowNodeReq` connected by `FlowEdge`s. Validation enforces
@@ -7722,6 +8122,16 @@ type AIAssistantUpdateParams struct {
 	PromoteToMain param.Opt[bool] `json:"promote_to_main,omitzero"`
 	// Human-readable name for the assistant version.
 	VersionName param.Opt[string] `json:"version_name,omitzero"`
+	// A2A agents this assistant can delegate to. Tools are not stored here: at the
+	// start of every conversation each agent's card is fetched and one tool is derived
+	// per skill the card advertises, named `a2a_<name>_<skill_id>`. The following
+	// limits are not enforced when the assistant is saved, and anything past them is
+	// dropped when the conversation starts: 64 agents per assistant, 64 skills per
+	// card, 128 derived tools per assistant, and a 6 second budget for all card
+	// fetches combined. An agent whose card cannot be fetched costs the assistant that
+	// capability for the conversation; it does not fail the call. Omit this field to
+	// leave the assistant's agents unchanged; send an empty array to remove them all.
+	A2aAgents []AssistantA2AAgentParam `json:"a2a_agents,omitzero"`
 	// Conversation flow as supplied by API clients (create / update).
 	//
 	// A directed graph of `FlowNodeReq` connected by `FlowEdge`s. Validation enforces

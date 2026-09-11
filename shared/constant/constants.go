@@ -35,6 +35,8 @@ type Handoff string                // Always "handoff"
 type Invite string                 // Always "invite"
 type Ios string                    // Always "ios"
 type Jpeg string                   // Always "jpeg"
+type JsonObject string             // Always "json_object"
+type JsonSchema string             // Always "json_schema"
 type Llm string                    // Always "llm"
 type MediaName string              // Always "media_name"
 type MediaURL string               // Always "media_url"
@@ -54,6 +56,7 @@ type Simple string                 // Always "simple"
 type SkipTurn string               // Always "skip_turn"
 type StockSymbol string            // Always "STOCK_SYMBOL"
 type StringLiteral string          // Always "string_literal"
+type Text string                   // Always "text"
 type Transfer string               // Always "transfer"
 type UpdateDynamicVariables string // Always "update_dynamic_variables"
 type Variable string               // Always "variable"
@@ -75,6 +78,8 @@ func (c Handoff) Default() Handoff                               { return "hando
 func (c Invite) Default() Invite                                 { return "invite" }
 func (c Ios) Default() Ios                                       { return "ios" }
 func (c Jpeg) Default() Jpeg                                     { return "jpeg" }
+func (c JsonObject) Default() JsonObject                         { return "json_object" }
+func (c JsonSchema) Default() JsonSchema                         { return "json_schema" }
 func (c Llm) Default() Llm                                       { return "llm" }
 func (c MediaName) Default() MediaName                           { return "media_name" }
 func (c MediaURL) Default() MediaURL                             { return "media_url" }
@@ -94,6 +99,7 @@ func (c Simple) Default() Simple                                 { return "simpl
 func (c SkipTurn) Default() SkipTurn                             { return "skip_turn" }
 func (c StockSymbol) Default() StockSymbol                       { return "STOCK_SYMBOL" }
 func (c StringLiteral) Default() StringLiteral                   { return "string_literal" }
+func (c Text) Default() Text                                     { return "text" }
 func (c Transfer) Default() Transfer                             { return "transfer" }
 func (c UpdateDynamicVariables) Default() UpdateDynamicVariables { return "update_dynamic_variables" }
 func (c Variable) Default() Variable                             { return "variable" }
@@ -115,6 +121,8 @@ func (c Handoff) MarshalJSON() ([]byte, error)                { return marshalSt
 func (c Invite) MarshalJSON() ([]byte, error)                 { return marshalString(c) }
 func (c Ios) MarshalJSON() ([]byte, error)                    { return marshalString(c) }
 func (c Jpeg) MarshalJSON() ([]byte, error)                   { return marshalString(c) }
+func (c JsonObject) MarshalJSON() ([]byte, error)             { return marshalString(c) }
+func (c JsonSchema) MarshalJSON() ([]byte, error)             { return marshalString(c) }
 func (c Llm) MarshalJSON() ([]byte, error)                    { return marshalString(c) }
 func (c MediaName) MarshalJSON() ([]byte, error)              { return marshalString(c) }
 func (c MediaURL) MarshalJSON() ([]byte, error)               { return marshalString(c) }
@@ -134,6 +142,7 @@ func (c Simple) MarshalJSON() ([]byte, error)                 { return marshalSt
 func (c SkipTurn) MarshalJSON() ([]byte, error)               { return marshalString(c) }
 func (c StockSymbol) MarshalJSON() ([]byte, error)            { return marshalString(c) }
 func (c StringLiteral) MarshalJSON() ([]byte, error)          { return marshalString(c) }
+func (c Text) MarshalJSON() ([]byte, error)                   { return marshalString(c) }
 func (c Transfer) MarshalJSON() ([]byte, error)               { return marshalString(c) }
 func (c UpdateDynamicVariables) MarshalJSON() ([]byte, error) { return marshalString(c) }
 func (c Variable) MarshalJSON() ([]byte, error)               { return marshalString(c) }

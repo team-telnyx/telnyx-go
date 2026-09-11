@@ -10,6 +10,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 	"github.com/team-telnyx/telnyx-go/v4/shared/constant"
+	"github.com/tidwall/gjson"
 )
 
 // AIChatService contains methods and other services that help with interacting
@@ -103,8 +104,6 @@ type ChatCompletionRequestParam struct {
 	EnableThinking param.Opt[bool] `json:"enable_thinking,omitzero"`
 	// Higher values will penalize the model from repeating the same output tokens.
 	FrequencyPenalty param.Opt[float64] `json:"frequency_penalty,omitzero"`
-	// If specified, the output will follow the regex pattern.
-	GuidedRegex param.Opt[string] `json:"guided_regex,omitzero"`
 	// This is used with `use_beam_search` to prefer shorter or longer completions.
 	LengthPenalty param.Opt[float64] `json:"length_penalty,omitzero"`
 	// Whether to return log probabilities of the output tokens or not. If true,
@@ -148,11 +147,6 @@ type ChatCompletionRequestParam struct {
 	// [explore more completion options](https://huggingface.co/blog/how-to-generate#beam-search).
 	// This is not supported by OpenAI.
 	UseBeamSearch param.Opt[bool] `json:"use_beam_search,omitzero"`
-	// If specified, the output will be exactly one of the choices.
-	GuidedChoice []string `json:"guided_choice,omitzero"`
-	// Must be a valid JSON schema. If specified, the output will follow the JSON
-	// schema.
-	GuidedJson map[string]any `json:"guided_json,omitzero"`
 	// How strictly `region` is applied. `preferred` (the default when `region` is set)
 	// tries that region first and falls back to another when the model cannot be
 	// served there, so a request that would have succeeded still succeeds. `strict`
@@ -177,9 +171,11 @@ type ChatCompletionRequestParam struct {
 	//
 	// Any of "USA", "EU", "AUS", "UAE".
 	Region ChatCompletionRequestRegion `json:"region,omitzero"`
-	// Use this is you want to guarantee a JSON output without defining a schema. For
-	// control over the schema, use `guided_json`.
-	ResponseFormat ChatCompletionRequestResponseFormatParam `json:"response_format,omitzero"`
+	// Controls the format of the model output. `json_object` guarantees valid JSON
+	// output without defining a schema; `json_schema` constrains the output to the
+	// JSON schema you supply via the `json_schema` property and is the supported way
+	// to get guaranteed structured output on Telnyx-hosted models.
+	ResponseFormat ChatCompletionRequestResponseFormatUnionParam `json:"response_format,omitzero"`
 	// Up to 4 sequences where the API will stop generating further tokens. The
 	// returned text will not contain the stop sequence.
 	Stop ChatCompletionRequestStopUnionParam `json:"stop,omitzero"`
@@ -315,28 +311,161 @@ const (
 	ChatCompletionRequestRegionUae ChatCompletionRequestRegion = "UAE"
 )
 
-// Use this is you want to guarantee a JSON output without defining a schema. For
-// control over the schema, use `guided_json`.
+// Only one field can be non-zero.
 //
-// The property Type is required.
-type ChatCompletionRequestResponseFormatParam struct {
-	// Any of "text", "json_object".
-	Type string `json:"type,omitzero" api:"required"`
-	paramObj
+// Use [param.IsOmitted] to confirm if a field is set.
+type ChatCompletionRequestResponseFormatUnionParam struct {
+	OfResponseFormatText       *ChatCompletionRequestResponseFormatResponseFormatTextParam            `json:",omitzero,inline"`
+	OfResponseFormatJsonObject *ChatCompletionRequestResponseFormatResponseFormatJsonObjectParam      `json:",omitzero,inline"`
+	OfResponseFormatJsonSchema *ChatCompletionRequestResponseFormatResponseFormatJsonSchemaParamParam `json:",omitzero,inline"`
+	paramUnion
 }
 
-func (r ChatCompletionRequestResponseFormatParam) MarshalJSON() (data []byte, err error) {
-	type shadow ChatCompletionRequestResponseFormatParam
-	return param.MarshalObject(r, (*shadow)(&r))
+func (u ChatCompletionRequestResponseFormatUnionParam) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfResponseFormatText, u.OfResponseFormatJsonObject, u.OfResponseFormatJsonSchema)
 }
-func (r *ChatCompletionRequestResponseFormatParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (u *ChatCompletionRequestResponseFormatUnionParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *ChatCompletionRequestResponseFormatUnionParam) asAny() any {
+	if !param.IsOmitted(u.OfResponseFormatText) {
+		return u.OfResponseFormatText
+	} else if !param.IsOmitted(u.OfResponseFormatJsonObject) {
+		return u.OfResponseFormatJsonObject
+	} else if !param.IsOmitted(u.OfResponseFormatJsonSchema) {
+		return u.OfResponseFormatJsonSchema
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ChatCompletionRequestResponseFormatUnionParam) GetJsonSchema() *ChatCompletionRequestResponseFormatResponseFormatJsonSchemaParamJsonSchemaParam {
+	if vt := u.OfResponseFormatJsonSchema; vt != nil {
+		return &vt.JsonSchema
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ChatCompletionRequestResponseFormatUnionParam) GetType() *string {
+	if vt := u.OfResponseFormatText; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfResponseFormatJsonObject; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfResponseFormatJsonSchema; vt != nil {
+		return (*string)(&vt.Type)
+	}
+	return nil
 }
 
 func init() {
-	apijson.RegisterFieldValidator[ChatCompletionRequestResponseFormatParam](
-		"type", "text", "json_object",
+	apijson.RegisterUnion[ChatCompletionRequestResponseFormatUnionParam](
+		"",
+		apijson.Variant[ChatCompletionRequestResponseFormatResponseFormatTextParam](gjson.JSON),
+		apijson.Variant[ChatCompletionRequestResponseFormatResponseFormatJsonObjectParam](gjson.JSON),
+		apijson.Variant[ChatCompletionRequestResponseFormatResponseFormatJsonSchemaParamParam](gjson.JSON),
 	)
+}
+
+func NewChatCompletionRequestResponseFormatResponseFormatTextParam() ChatCompletionRequestResponseFormatResponseFormatTextParam {
+	return ChatCompletionRequestResponseFormatResponseFormatTextParam{
+		Type: "text",
+	}
+}
+
+// Plain text output.
+//
+// This struct has a constant value, construct it with
+// [NewChatCompletionRequestResponseFormatResponseFormatTextParam].
+type ChatCompletionRequestResponseFormatResponseFormatTextParam struct {
+	Type constant.Text `json:"type" default:"text"`
+	paramObj
+}
+
+func (r ChatCompletionRequestResponseFormatResponseFormatTextParam) MarshalJSON() (data []byte, err error) {
+	type shadow ChatCompletionRequestResponseFormatResponseFormatTextParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ChatCompletionRequestResponseFormatResponseFormatTextParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func NewChatCompletionRequestResponseFormatResponseFormatJsonObjectParam() ChatCompletionRequestResponseFormatResponseFormatJsonObjectParam {
+	return ChatCompletionRequestResponseFormatResponseFormatJsonObjectParam{
+		Type: "json_object",
+	}
+}
+
+// JSON mode: the model output is valid JSON, without a schema.
+//
+// This struct has a constant value, construct it with
+// [NewChatCompletionRequestResponseFormatResponseFormatJsonObjectParam].
+type ChatCompletionRequestResponseFormatResponseFormatJsonObjectParam struct {
+	Type constant.JsonObject `json:"type" default:"json_object"`
+	paramObj
+}
+
+func (r ChatCompletionRequestResponseFormatResponseFormatJsonObjectParam) MarshalJSON() (data []byte, err error) {
+	type shadow ChatCompletionRequestResponseFormatResponseFormatJsonObjectParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ChatCompletionRequestResponseFormatResponseFormatJsonObjectParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Structured output: the model output is constrained to the JSON schema supplied
+// in `json_schema`.
+//
+// The properties JsonSchema, Type are required.
+type ChatCompletionRequestResponseFormatResponseFormatJsonSchemaParamParam struct {
+	// The JSON schema configuration, required when `type` is `json_schema`. Matches
+	// the
+	// [OpenAI structured outputs](https://platform.openai.com/docs/guides/structured-outputs)
+	// `json_schema` response format.
+	JsonSchema ChatCompletionRequestResponseFormatResponseFormatJsonSchemaParamJsonSchemaParam `json:"json_schema,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "json_schema".
+	Type constant.JsonSchema `json:"type" default:"json_schema"`
+	paramObj
+}
+
+func (r ChatCompletionRequestResponseFormatResponseFormatJsonSchemaParamParam) MarshalJSON() (data []byte, err error) {
+	type shadow ChatCompletionRequestResponseFormatResponseFormatJsonSchemaParamParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ChatCompletionRequestResponseFormatResponseFormatJsonSchemaParamParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The JSON schema configuration, required when `type` is `json_schema`. Matches
+// the
+// [OpenAI structured outputs](https://platform.openai.com/docs/guides/structured-outputs)
+// `json_schema` response format.
+//
+// The property Name is required.
+type ChatCompletionRequestResponseFormatResponseFormatJsonSchemaParamJsonSchemaParam struct {
+	// The name of the response format. Used for clarity only.
+	Name string `json:"name" api:"required"`
+	// A description of what the response format is for, typically used to guide the
+	// model.
+	Description param.Opt[string] `json:"description,omitzero"`
+	// Enables strict schema adherence when supported by the model. If the generated
+	// output does not match the provided schema, the request fails instead of
+	// returning non-conformant output.
+	Strict param.Opt[bool] `json:"strict,omitzero"`
+	// The JSON schema the model output must conform to. A valid
+	// [JSON Schema](https://json-schema.org) object, e.g. a Pydantic
+	// `model_json_schema()` export.
+	Schema map[string]any `json:"schema,omitzero"`
+	paramObj
+}
+
+func (r ChatCompletionRequestResponseFormatResponseFormatJsonSchemaParamJsonSchemaParam) MarshalJSON() (data []byte, err error) {
+	type shadow ChatCompletionRequestResponseFormatResponseFormatJsonSchemaParamJsonSchemaParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ChatCompletionRequestResponseFormatResponseFormatJsonSchemaParamJsonSchemaParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // Only one field can be non-zero.
