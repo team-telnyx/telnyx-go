@@ -27,6 +27,9 @@ import (
 // the [NewX402CreditAccountService] method instead.
 type X402CreditAccountService struct {
 	Options []option.RequestOption
+	// Operations for x402 cryptocurrency payment transactions. Fund your Telnyx
+	// account using USDC stablecoin payments via the x402 protocol.
+	Payments X402CreditAccountPaymentService
 }
 
 // NewX402CreditAccountService generates a new service that applies the given
@@ -35,6 +38,7 @@ type X402CreditAccountService struct {
 func NewX402CreditAccountService(opts ...option.RequestOption) (r X402CreditAccountService) {
 	r = X402CreditAccountService{}
 	r.Options = opts
+	r.Payments = NewX402CreditAccountPaymentService(opts...)
 	return
 }
 
