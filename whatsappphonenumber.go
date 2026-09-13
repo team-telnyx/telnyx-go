@@ -122,6 +122,20 @@ func (r *WhatsappPhoneNumberService) GetConversationWindow(ctx context.Context, 
 	return res, err
 }
 
+// Returns one WhatsApp phone number linked to the authenticated Telnyx account.
+// For a coexistence number in the `syncing` state, the response includes
+// `sync_progress`.
+func (r *WhatsappPhoneNumberService) GetPhoneNumber(ctx context.Context, phoneNumber string, opts ...option.RequestOption) (res *WhatsappPhoneNumberGetPhoneNumberResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if phoneNumber == "" {
+		err = errors.New("missing required phone_number parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("whatsapp/phone_numbers/%s", url.PathEscape(phoneNumber))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return res, err
+}
+
 // Submits the verification code received for the specified WhatsApp phone number.
 func (r *WhatsappPhoneNumberService) Verify(ctx context.Context, phoneNumber string, body WhatsappPhoneNumberVerifyParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
@@ -136,10 +150,20 @@ func (r *WhatsappPhoneNumberService) Verify(ctx context.Context, phoneNumber str
 }
 
 type WhatsappPhoneNumberListResponse struct {
-	CallingEnabled bool      `json:"calling_enabled"`
-	CreatedAt      time.Time `json:"created_at" format:"date-time"`
-	DisplayName    string    `json:"display_name"`
-	Enabled        bool      `json:"enabled"`
+	CallingEnabled bool `json:"calling_enabled"`
+	// Current lifecycle state for a coexistence number. This is null for a standard
+	// Cloud API number.
+	//
+	// Any of "pending_onboarding", "sync_pending", "syncing", "sync_complete",
+	// "active", "history_declined", "sync_deadline_expired", "offboarded",
+	// "disconnected".
+	CoexistenceState WhatsappPhoneNumberListResponseCoexistenceState `json:"coexistence_state" api:"nullable"`
+	CreatedAt        time.Time                                       `json:"created_at" format:"date-time"`
+	DisplayName      string                                          `json:"display_name"`
+	Enabled          bool                                            `json:"enabled"`
+	// Indicates whether the number is connected to both the WhatsApp Business app and
+	// Cloud API through WhatsApp Coexistence.
+	IsOnBizApp bool `json:"is_on_biz_app"`
 	// Phone number in E164 format
 	PhoneNumber string `json:"phone_number"`
 	// Whatsapp phone number ID
@@ -148,31 +172,83 @@ type WhatsappPhoneNumberListResponse struct {
 	QualityRating string `json:"quality_rating"`
 	RecordType    string `json:"record_type"`
 	Status        string `json:"status"`
+	// Deadline for initiating the current coexistence synchronization cycle. This is
+	// null when no deadline applies.
+	SyncDeadline time.Time `json:"sync_deadline" api:"nullable" format:"date-time"`
+	// Synchronization progress. This object is returned only while a coexistence
+	// number is synchronizing.
+	SyncProgress WhatsappPhoneNumberListResponseSyncProgress `json:"sync_progress" api:"nullable"`
 	// User ID
 	UserID string `json:"user_id"`
 	// WABA ID of Whatsapp business account
 	WabaID string `json:"waba_id"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		CallingEnabled respjson.Field
-		CreatedAt      respjson.Field
-		DisplayName    respjson.Field
-		Enabled        respjson.Field
-		PhoneNumber    respjson.Field
-		PhoneNumberID  respjson.Field
-		QualityRating  respjson.Field
-		RecordType     respjson.Field
-		Status         respjson.Field
-		UserID         respjson.Field
-		WabaID         respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
+		CallingEnabled   respjson.Field
+		CoexistenceState respjson.Field
+		CreatedAt        respjson.Field
+		DisplayName      respjson.Field
+		Enabled          respjson.Field
+		IsOnBizApp       respjson.Field
+		PhoneNumber      respjson.Field
+		PhoneNumberID    respjson.Field
+		QualityRating    respjson.Field
+		RecordType       respjson.Field
+		Status           respjson.Field
+		SyncDeadline     respjson.Field
+		SyncProgress     respjson.Field
+		UserID           respjson.Field
+		WabaID           respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
 func (r WhatsappPhoneNumberListResponse) RawJSON() string { return r.JSON.raw }
 func (r *WhatsappPhoneNumberListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Current lifecycle state for a coexistence number. This is null for a standard
+// Cloud API number.
+type WhatsappPhoneNumberListResponseCoexistenceState string
+
+const (
+	WhatsappPhoneNumberListResponseCoexistenceStatePendingOnboarding   WhatsappPhoneNumberListResponseCoexistenceState = "pending_onboarding"
+	WhatsappPhoneNumberListResponseCoexistenceStateSyncPending         WhatsappPhoneNumberListResponseCoexistenceState = "sync_pending"
+	WhatsappPhoneNumberListResponseCoexistenceStateSyncing             WhatsappPhoneNumberListResponseCoexistenceState = "syncing"
+	WhatsappPhoneNumberListResponseCoexistenceStateSyncComplete        WhatsappPhoneNumberListResponseCoexistenceState = "sync_complete"
+	WhatsappPhoneNumberListResponseCoexistenceStateActive              WhatsappPhoneNumberListResponseCoexistenceState = "active"
+	WhatsappPhoneNumberListResponseCoexistenceStateHistoryDeclined     WhatsappPhoneNumberListResponseCoexistenceState = "history_declined"
+	WhatsappPhoneNumberListResponseCoexistenceStateSyncDeadlineExpired WhatsappPhoneNumberListResponseCoexistenceState = "sync_deadline_expired"
+	WhatsappPhoneNumberListResponseCoexistenceStateOffboarded          WhatsappPhoneNumberListResponseCoexistenceState = "offboarded"
+	WhatsappPhoneNumberListResponseCoexistenceStateDisconnected        WhatsappPhoneNumberListResponseCoexistenceState = "disconnected"
+)
+
+// Synchronization progress. This object is returned only while a coexistence
+// number is synchronizing.
+type WhatsappPhoneNumberListResponseSyncProgress struct {
+	ContactsStatus    string `json:"contacts_status"`
+	HistoryChunkOrder int64  `json:"history_chunk_order" api:"nullable"`
+	HistoryPhase      int64  `json:"history_phase" api:"nullable"`
+	HistoryProgress   int64  `json:"history_progress" api:"nullable"`
+	HistoryStatus     string `json:"history_status"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ContactsStatus    respjson.Field
+		HistoryChunkOrder respjson.Field
+		HistoryPhase      respjson.Field
+		HistoryProgress   respjson.Field
+		HistoryStatus     respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappPhoneNumberListResponseSyncProgress) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappPhoneNumberListResponseSyncProgress) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -195,10 +271,20 @@ func (r *WhatsappPhoneNumberGetResponse) UnmarshalJSON(data []byte) error {
 }
 
 type WhatsappPhoneNumberGetResponseData struct {
-	CallingEnabled bool      `json:"calling_enabled"`
-	CreatedAt      time.Time `json:"created_at" format:"date-time"`
-	DisplayName    string    `json:"display_name"`
-	Enabled        bool      `json:"enabled"`
+	CallingEnabled bool `json:"calling_enabled"`
+	// Current lifecycle state for a coexistence number. This is null for a standard
+	// Cloud API number.
+	//
+	// Any of "pending_onboarding", "sync_pending", "syncing", "sync_complete",
+	// "active", "history_declined", "sync_deadline_expired", "offboarded",
+	// "disconnected".
+	CoexistenceState string    `json:"coexistence_state" api:"nullable"`
+	CreatedAt        time.Time `json:"created_at" format:"date-time"`
+	DisplayName      string    `json:"display_name"`
+	Enabled          bool      `json:"enabled"`
+	// Indicates whether the number is connected to both the WhatsApp Business app and
+	// Cloud API through WhatsApp Coexistence.
+	IsOnBizApp bool `json:"is_on_biz_app"`
 	// Phone number in E164 format
 	PhoneNumber string `json:"phone_number"`
 	// Whatsapp phone number ID
@@ -207,31 +293,67 @@ type WhatsappPhoneNumberGetResponseData struct {
 	QualityRating string `json:"quality_rating"`
 	RecordType    string `json:"record_type"`
 	Status        string `json:"status"`
+	// Deadline for initiating the current coexistence synchronization cycle. This is
+	// null when no deadline applies.
+	SyncDeadline time.Time `json:"sync_deadline" api:"nullable" format:"date-time"`
+	// Synchronization progress. This object is returned only while a coexistence
+	// number is synchronizing.
+	SyncProgress WhatsappPhoneNumberGetResponseDataSyncProgress `json:"sync_progress" api:"nullable"`
 	// User ID
 	UserID string `json:"user_id"`
 	// WABA ID of Whatsapp business account
 	WabaID string `json:"waba_id"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		CallingEnabled respjson.Field
-		CreatedAt      respjson.Field
-		DisplayName    respjson.Field
-		Enabled        respjson.Field
-		PhoneNumber    respjson.Field
-		PhoneNumberID  respjson.Field
-		QualityRating  respjson.Field
-		RecordType     respjson.Field
-		Status         respjson.Field
-		UserID         respjson.Field
-		WabaID         respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
+		CallingEnabled   respjson.Field
+		CoexistenceState respjson.Field
+		CreatedAt        respjson.Field
+		DisplayName      respjson.Field
+		Enabled          respjson.Field
+		IsOnBizApp       respjson.Field
+		PhoneNumber      respjson.Field
+		PhoneNumberID    respjson.Field
+		QualityRating    respjson.Field
+		RecordType       respjson.Field
+		Status           respjson.Field
+		SyncDeadline     respjson.Field
+		SyncProgress     respjson.Field
+		UserID           respjson.Field
+		WabaID           respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
 func (r WhatsappPhoneNumberGetResponseData) RawJSON() string { return r.JSON.raw }
 func (r *WhatsappPhoneNumberGetResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Synchronization progress. This object is returned only while a coexistence
+// number is synchronizing.
+type WhatsappPhoneNumberGetResponseDataSyncProgress struct {
+	ContactsStatus    string `json:"contacts_status"`
+	HistoryChunkOrder int64  `json:"history_chunk_order" api:"nullable"`
+	HistoryPhase      int64  `json:"history_phase" api:"nullable"`
+	HistoryProgress   int64  `json:"history_progress" api:"nullable"`
+	HistoryStatus     string `json:"history_status"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ContactsStatus    respjson.Field
+		HistoryChunkOrder respjson.Field
+		HistoryPhase      respjson.Field
+		HistoryProgress   respjson.Field
+		HistoryStatus     respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappPhoneNumberGetResponseDataSyncProgress) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappPhoneNumberGetResponseDataSyncProgress) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -274,6 +396,111 @@ type WhatsappPhoneNumberGetConversationWindowResponseData struct {
 // Returns the unmodified JSON received from the API
 func (r WhatsappPhoneNumberGetConversationWindowResponseData) RawJSON() string { return r.JSON.raw }
 func (r *WhatsappPhoneNumberGetConversationWindowResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappPhoneNumberGetPhoneNumberResponse struct {
+	Data WhatsappPhoneNumberGetPhoneNumberResponseData `json:"data" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappPhoneNumberGetPhoneNumberResponse) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappPhoneNumberGetPhoneNumberResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappPhoneNumberGetPhoneNumberResponseData struct {
+	CallingEnabled bool `json:"calling_enabled"`
+	// Current lifecycle state for a coexistence number. This is null for a standard
+	// Cloud API number.
+	//
+	// Any of "pending_onboarding", "sync_pending", "syncing", "sync_complete",
+	// "active", "history_declined", "sync_deadline_expired", "offboarded",
+	// "disconnected".
+	CoexistenceState string    `json:"coexistence_state" api:"nullable"`
+	CreatedAt        time.Time `json:"created_at" format:"date-time"`
+	DisplayName      string    `json:"display_name"`
+	Enabled          bool      `json:"enabled"`
+	// Indicates whether the number is connected to both the WhatsApp Business app and
+	// Cloud API through WhatsApp Coexistence.
+	IsOnBizApp bool `json:"is_on_biz_app"`
+	// Phone number in E164 format
+	PhoneNumber string `json:"phone_number"`
+	// Whatsapp phone number ID
+	PhoneNumberID string `json:"phone_number_id"`
+	// Whatsapp quality rating
+	QualityRating string `json:"quality_rating"`
+	RecordType    string `json:"record_type"`
+	Status        string `json:"status"`
+	// Deadline for initiating the current coexistence synchronization cycle. This is
+	// null when no deadline applies.
+	SyncDeadline time.Time `json:"sync_deadline" api:"nullable" format:"date-time"`
+	// Synchronization progress. This object is returned only while a coexistence
+	// number is synchronizing.
+	SyncProgress WhatsappPhoneNumberGetPhoneNumberResponseDataSyncProgress `json:"sync_progress" api:"nullable"`
+	// User ID
+	UserID string `json:"user_id"`
+	// WABA ID of Whatsapp business account
+	WabaID string `json:"waba_id"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CallingEnabled   respjson.Field
+		CoexistenceState respjson.Field
+		CreatedAt        respjson.Field
+		DisplayName      respjson.Field
+		Enabled          respjson.Field
+		IsOnBizApp       respjson.Field
+		PhoneNumber      respjson.Field
+		PhoneNumberID    respjson.Field
+		QualityRating    respjson.Field
+		RecordType       respjson.Field
+		Status           respjson.Field
+		SyncDeadline     respjson.Field
+		SyncProgress     respjson.Field
+		UserID           respjson.Field
+		WabaID           respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappPhoneNumberGetPhoneNumberResponseData) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappPhoneNumberGetPhoneNumberResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Synchronization progress. This object is returned only while a coexistence
+// number is synchronizing.
+type WhatsappPhoneNumberGetPhoneNumberResponseDataSyncProgress struct {
+	ContactsStatus    string `json:"contacts_status"`
+	HistoryChunkOrder int64  `json:"history_chunk_order" api:"nullable"`
+	HistoryPhase      int64  `json:"history_phase" api:"nullable"`
+	HistoryProgress   int64  `json:"history_progress" api:"nullable"`
+	HistoryStatus     string `json:"history_status"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ContactsStatus    respjson.Field
+		HistoryChunkOrder respjson.Field
+		HistoryPhase      respjson.Field
+		HistoryProgress   respjson.Field
+		HistoryStatus     respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappPhoneNumberGetPhoneNumberResponseDataSyncProgress) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *WhatsappPhoneNumberGetPhoneNumberResponseDataSyncProgress) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

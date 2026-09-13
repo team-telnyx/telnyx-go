@@ -80,7 +80,10 @@ type FqdnAuthentication struct {
 	IPAuthenticationMethod FqdnAuthenticationIPAuthenticationMethod `json:"ip_authentication_method"`
 	// Whether the connection is a Microsoft Teams SBC.
 	MicrosoftTeamsSbc bool `json:"microsoft_teams_sbc"`
-	// The password for authentication.
+	// The password for authentication. For primary accounts created on or after
+	// September 8, 2026, this password is returned as `********`. The password is
+	// returned in full on create, and on update only when that update changed the
+	// password. Accounts created before September 8, 2026 are unaffected.
 	Password string `json:"password"`
 	// Identifies the type of the resource.
 	RecordType string `json:"record_type"`

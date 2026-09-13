@@ -408,6 +408,11 @@ type EmailMessage struct {
 	// Present when a scheduled_at value was stored. Persists even after the scheduled
 	// send has been processed or cancelled.
 	ScheduledAt time.Time `json:"scheduled_at" format:"date-time"`
+	// Recipients excluded from delivery by suppression checks, with reasons. On batch
+	// items, present when that item had suppressed recipients; all other recipients of
+	// the item still receive the message. For single sends this information appears at
+	// the top level of the response instead (see EmailMessageResponse.suppressed).
+	Suppressed []SuppressedRecipient `json:"suppressed"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                respjson.Field
@@ -428,6 +433,7 @@ type EmailMessage struct {
 		RecipientStatuses respjson.Field
 		Sandbox           respjson.Field
 		ScheduledAt       respjson.Field
+		Suppressed        respjson.Field
 		ExtraFields       map[string]respjson.Field
 		raw               string
 	} `json:"-"`
