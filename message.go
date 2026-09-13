@@ -208,8 +208,11 @@ func (r *MessagingError0b38e7044bSource) UnmarshalJSON(data []byte) error {
 
 type MessagingInboundMessagePayload struct {
 	// Identifies the type of resource.
-	ID string                             `json:"id" format:"uuid"`
-	Cc []MessagingInboundMessagePayloadCc `json:"cc"`
+	ID string `json:"id" format:"uuid"`
+	// WhatsApp message body. For message edits and revocations, inspect `type` and the
+	// corresponding `edit` or `revoke` object.
+	Body MessagingInboundMessagePayloadBody `json:"body"`
+	Cc   []MessagingInboundMessagePayloadCc `json:"cc"`
 	// Not used for inbound messages.
 	CompletedAt time.Time                          `json:"completed_at" api:"nullable" format:"date-time"`
 	Cost        MessagingInboundMessagePayloadCost `json:"cost" api:"nullable"`
@@ -256,11 +259,13 @@ type MessagingInboundMessagePayload struct {
 	// Message body (i.e., content) as a non-empty string.
 	//
 	// **Required for SMS**
-	Text string                             `json:"text"`
-	To   []MessagingInboundMessagePayloadTo `json:"to"`
-	// The type of message. This value can be either 'sms' or 'mms'.
+	Text string `json:"text"`
+	// Receiving address. SMS and MMS webhooks use an array of recipients. WhatsApp
+	// webhooks use one E.164 phone number.
+	To MessagingInboundMessagePayloadToUnion `json:"to"`
+	// The messaging channel used for the message.
 	//
-	// Any of "SMS", "MMS".
+	// Any of "SMS", "MMS", "WHATSAPP".
 	Type MessagingInboundMessagePayloadType `json:"type"`
 	// Not used for inbound messages.
 	ValidUntil time.Time `json:"valid_until" api:"nullable" format:"date-time"`
@@ -272,6 +277,7 @@ type MessagingInboundMessagePayload struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                    respjson.Field
+		Body                  respjson.Field
 		Cc                    respjson.Field
 		CompletedAt           respjson.Field
 		Cost                  respjson.Field
@@ -310,6 +316,86 @@ func (r *MessagingInboundMessagePayload) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// WhatsApp message body. For message edits and revocations, inspect `type` and the
+// corresponding `edit` or `revoke` object.
+type MessagingInboundMessagePayloadBody struct {
+	// Telnyx identifier for this webhook message.
+	ID string `json:"id"`
+	// Details for an edited WhatsApp message.
+	Edit MessagingInboundMessagePayloadBodyEdit `json:"edit"`
+	// Meta WhatsApp message identifier for this webhook event.
+	ForeignID string `json:"foreign_id"`
+	// WhatsApp sender in E.164 format.
+	From string `json:"from"`
+	// Details for a revoked WhatsApp message.
+	Revoke MessagingInboundMessagePayloadBodyRevoke `json:"revoke"`
+	// Unix timestamp supplied by Meta.
+	Timestamp string `json:"timestamp"`
+	// WhatsApp message body type. Edit and revoke events use `edit` and `revoke`,
+	// respectively.
+	Type        string         `json:"type"`
+	ExtraFields map[string]any `json:"" api:"extrafields"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Edit        respjson.Field
+		ForeignID   respjson.Field
+		From        respjson.Field
+		Revoke      respjson.Field
+		Timestamp   respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessagingInboundMessagePayloadBody) RawJSON() string { return r.JSON.raw }
+func (r *MessagingInboundMessagePayloadBody) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Details for an edited WhatsApp message.
+type MessagingInboundMessagePayloadBodyEdit struct {
+	// Replacement WhatsApp message content. Its shape depends on the message type.
+	Message map[string]any `json:"message" api:"required"`
+	// Telnyx message ID when a mapping exists, otherwise the original Meta WhatsApp
+	// message ID. Treat this value as opaque.
+	OriginalMessageID string `json:"original_message_id" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Message           respjson.Field
+		OriginalMessageID respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessagingInboundMessagePayloadBodyEdit) RawJSON() string { return r.JSON.raw }
+func (r *MessagingInboundMessagePayloadBodyEdit) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Details for a revoked WhatsApp message.
+type MessagingInboundMessagePayloadBodyRevoke struct {
+	// Telnyx message ID when a mapping exists, otherwise the original Meta WhatsApp
+	// message ID. Treat this value as opaque.
+	OriginalMessageID string `json:"original_message_id" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		OriginalMessageID respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessagingInboundMessagePayloadBodyRevoke) RawJSON() string { return r.JSON.raw }
+func (r *MessagingInboundMessagePayloadBodyRevoke) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type MessagingInboundMessagePayloadCc struct {
 	// The carrier of the receiver.
 	Carrier string `json:"carrier"`
@@ -341,9 +427,9 @@ func (r *MessagingInboundMessagePayloadCc) UnmarshalJSON(data []byte) error {
 
 type MessagingInboundMessagePayloadCost struct {
 	// The amount deducted from your account.
-	Amount string `json:"amount"`
+	Amount string `json:"amount" api:"nullable"`
 	// The ISO 4217 currency identifier.
-	Currency string `json:"currency"`
+	Currency string `json:"currency" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Amount      respjson.Field
@@ -488,7 +574,44 @@ const (
 	MessagingInboundMessagePayloadRecordTypeMessage MessagingInboundMessagePayloadRecordType = "message"
 )
 
-type MessagingInboundMessagePayloadTo struct {
+// MessagingInboundMessagePayloadToUnion contains all possible properties and
+// values from [[]MessagingInboundMessagePayloadToArrayItem], [string].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfMessagingInboundMessagePayloadToArray OfString]
+type MessagingInboundMessagePayloadToUnion struct {
+	// This field will be present if the value is a
+	// [[]MessagingInboundMessagePayloadToArrayItem] instead of an object.
+	OfMessagingInboundMessagePayloadToArray []MessagingInboundMessagePayloadToArrayItem `json:",inline"`
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	JSON     struct {
+		OfMessagingInboundMessagePayloadToArray respjson.Field
+		OfString                                respjson.Field
+		raw                                     string
+	} `json:"-"`
+}
+
+func (u MessagingInboundMessagePayloadToUnion) AsMessagingInboundMessagePayloadToArray() (v []MessagingInboundMessagePayloadToArrayItem) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u MessagingInboundMessagePayloadToUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u MessagingInboundMessagePayloadToUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *MessagingInboundMessagePayloadToUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessagingInboundMessagePayloadToArrayItem struct {
 	// The carrier of the receiver.
 	Carrier string `json:"carrier"`
 	// The line-type of the receiver.
@@ -512,17 +635,18 @@ type MessagingInboundMessagePayloadTo struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r MessagingInboundMessagePayloadTo) RawJSON() string { return r.JSON.raw }
-func (r *MessagingInboundMessagePayloadTo) UnmarshalJSON(data []byte) error {
+func (r MessagingInboundMessagePayloadToArrayItem) RawJSON() string { return r.JSON.raw }
+func (r *MessagingInboundMessagePayloadToArrayItem) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The type of message. This value can be either 'sms' or 'mms'.
+// The messaging channel used for the message.
 type MessagingInboundMessagePayloadType string
 
 const (
-	MessagingInboundMessagePayloadTypeSMS MessagingInboundMessagePayloadType = "SMS"
-	MessagingInboundMessagePayloadTypeMms MessagingInboundMessagePayloadType = "MMS"
+	MessagingInboundMessagePayloadTypeSMS      MessagingInboundMessagePayloadType = "SMS"
+	MessagingInboundMessagePayloadTypeMms      MessagingInboundMessagePayloadType = "MMS"
+	MessagingInboundMessagePayloadTypeWhatsapp MessagingInboundMessagePayloadType = "WHATSAPP"
 )
 
 type MessagingOutboundMessagePayload struct {
@@ -3394,7 +3518,7 @@ type MessageGetResponseDataUnion struct {
 	TcrCampaignRegistered string   `json:"tcr_campaign_registered"`
 	Text                  string   `json:"text"`
 	// This field is a union of [[]MessagingOutboundMessagePayloadTo],
-	// [[]MessagingInboundMessagePayloadTo]
+	// [MessagingInboundMessagePayloadToUnion]
 	To         MessageGetResponseDataUnionTo `json:"to"`
 	Type       string                        `json:"type"`
 	ValidUntil time.Time                     `json:"valid_until"`
@@ -3402,7 +3526,9 @@ type MessageGetResponseDataUnion struct {
 	WaitSeconds        float64 `json:"wait_seconds"`
 	WebhookFailoverURL string  `json:"webhook_failover_url"`
 	WebhookURL         string  `json:"webhook_url"`
-	JSON               struct {
+	// This field is from variant [MessagingInboundMessagePayload].
+	Body MessagingInboundMessagePayloadBody `json:"body"`
+	JSON struct {
 		ID                    respjson.Field
 		Cc                    respjson.Field
 		CompletedAt           respjson.Field
@@ -3433,6 +3559,7 @@ type MessageGetResponseDataUnion struct {
 		WaitSeconds           respjson.Field
 		WebhookFailoverURL    respjson.Field
 		WebhookURL            respjson.Field
+		Body                  respjson.Field
 		raw                   string
 	} `json:"-"`
 }
@@ -3658,17 +3785,20 @@ func (r *MessageGetResponseDataUnionMedia) UnmarshalJSON(data []byte) error {
 //
 // If the underlying value is not a json object, one of the following properties
 // will be valid: OfMessagingOutboundMessagePayloadToArray
-// OfMessagingInboundMessagePayloadToArray]
+// OfMessagingInboundMessagePayloadToArray OfString]
 type MessageGetResponseDataUnionTo struct {
 	// This field will be present if the value is a
 	// [[]MessagingOutboundMessagePayloadTo] instead of an object.
 	OfMessagingOutboundMessagePayloadToArray []MessagingOutboundMessagePayloadTo `json:",inline"`
 	// This field will be present if the value is a
-	// [[]MessagingInboundMessagePayloadTo] instead of an object.
-	OfMessagingInboundMessagePayloadToArray []MessagingInboundMessagePayloadTo `json:",inline"`
-	JSON                                    struct {
+	// [[]MessagingInboundMessagePayloadToArrayItem] instead of an object.
+	OfMessagingInboundMessagePayloadToArray []MessagingInboundMessagePayloadToArrayItem `json:",inline"`
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	JSON     struct {
 		OfMessagingOutboundMessagePayloadToArray respjson.Field
 		OfMessagingInboundMessagePayloadToArray  respjson.Field
+		OfString                                 respjson.Field
 		raw                                      string
 	} `json:"-"`
 }

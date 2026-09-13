@@ -191,7 +191,10 @@ type FqdnConnection struct {
 	// be able to use T38 on just one leg of the call according to each leg's settings.
 	OnnetT38PassthroughEnabled bool         `json:"onnet_t38_passthrough_enabled"`
 	Outbound                   OutboundFqdn `json:"outbound"`
-	// The password for the FQDN connection.
+	// The password for the FQDN connection. For primary accounts created on or after
+	// September 8, 2026, this password is returned as `********`. The password is
+	// returned in full on create, and on update only when that update changed the
+	// password. Accounts created before September 8, 2026 are unaffected.
 	Password string `json:"password"`
 	// Identifies the type of the resource.
 	RecordType   string                 `json:"record_type"`
