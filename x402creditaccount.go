@@ -47,7 +47,7 @@ func NewX402CreditAccountService(opts ...option.RequestOption) (r X402CreditAcco
 // must be settled before it expires.
 func (r *X402CreditAccountService) NewQuote(ctx context.Context, body X402CreditAccountNewQuoteParams, opts ...option.RequestOption) (res *X402CreditAccountNewQuoteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := "v2/x402/credit_account/quote"
+	path := "x402/credit_account/quote"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -61,7 +61,7 @@ func (r *X402CreditAccountService) Settle(ctx context.Context, params X402Credit
 		opts = append(opts, option.WithHeader("PAYMENT-SIGNATURE", fmt.Sprintf("%v", params.HeaderPaymentSignature.Value)))
 	}
 	opts = slices.Concat(r.Options, opts)
-	path := "v2/x402/credit_account"
+	path := "x402/credit_account"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }

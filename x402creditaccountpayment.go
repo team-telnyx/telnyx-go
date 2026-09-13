@@ -52,7 +52,7 @@ func (r *X402CreditAccountPaymentService) Get(ctx context.Context, id string, op
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("v2/x402/credit_account/payments/%s", id)
+	path := fmt.Sprintf("x402/credit_account/payments/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -64,7 +64,7 @@ func (r *X402CreditAccountPaymentService) List(ctx context.Context, query X402Cr
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	path := "v2/x402/credit_account/payments"
+	path := "x402/credit_account/payments"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
 		return nil, err
