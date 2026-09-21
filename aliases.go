@@ -266,12 +266,6 @@ const InworldVoiceSettingsDeliveryModeBalanced = shared.InworldVoiceSettingsDeli
 // Equals "CREATIVE"
 const InworldVoiceSettingsDeliveryModeCreative = shared.InworldVoiceSettingsDeliveryModeCreative
 
-// This is an alias to an internal type.
-type MessagingError = shared.MessagingError
-
-// This is an alias to an internal type.
-type MessagingErrorSource = shared.MessagingErrorSource
-
 // The set of features available for a specific messaging use case (SMS or MMS).
 // Features can vary depending on the characteristics the phone number, as well as
 // its current product configuration.

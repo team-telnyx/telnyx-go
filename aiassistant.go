@@ -837,20 +837,24 @@ func (r *AssistantMcpServerParam) UnmarshalJSON(data []byte) error {
 }
 
 // AssistantToolUnion contains all possible properties and values from
-// [InferenceEmbeddingWebhookToolParamsResp], [AssistantToolClientSideTool],
-// [RetrievalTool], [AssistantToolHandoff], [HangupTool], [AssistantToolTransfer],
-// [AssistantToolInvite], [AssistantToolRefer], [AssistantToolSendDtmf],
-// [AssistantToolSendMessage], [AssistantToolSkipTurn], [AssistantToolPay],
+// [AssistantToolFunction], [InferenceEmbeddingWebhookToolParamsResp],
+// [AssistantToolClientSideTool], [RetrievalTool], [AssistantToolHandoff],
+// [AssistantToolHangup], [AssistantToolTransfer], [AssistantToolInvite],
+// [AssistantToolRefer], [AssistantToolSendDtmf], [AssistantToolSendMessage],
+// [AssistantToolSkipTurn], [AssistantToolPay],
 // [AssistantToolUpdateDynamicVariables].
 //
 // Use the [AssistantToolUnion.AsAny] method to switch on the variant.
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type AssistantToolUnion struct {
-	// Any of "webhook", "client_side_tool", "retrieval", "handoff", "hangup",
-	// "transfer", "invite", "refer", "send_dtmf", "send_message", "skip_turn", "pay",
-	// "update_dynamic_variables".
-	Type string `json:"type"`
+	// This field is from variant [AssistantToolFunction].
+	Function FunctionDefinition `json:"function"`
+	// Any of "function", "webhook", "client_side_tool", "retrieval", "handoff",
+	// "hangup", "transfer", "invite", "refer", "send_dtmf", "send_message",
+	// "skip_turn", "pay", "update_dynamic_variables".
+	Type   string `json:"type"`
+	Shared bool   `json:"shared"`
 	// This field is from variant [InferenceEmbeddingWebhookToolParamsResp].
 	Webhook InferenceEmbeddingWebhookToolParamsWebhookResp `json:"webhook"`
 	// This field is from variant [AssistantToolClientSideTool].
@@ -859,7 +863,7 @@ type AssistantToolUnion struct {
 	Retrieval BucketIDs `json:"retrieval"`
 	// This field is from variant [AssistantToolHandoff].
 	Handoff AssistantToolHandoffHandoff `json:"handoff"`
-	// This field is from variant [HangupTool].
+	// This field is from variant [AssistantToolHangup].
 	Hangup HangupToolParamsResp `json:"hangup"`
 	// This field is from variant [AssistantToolTransfer].
 	Transfer AssistantToolTransferTransfer `json:"transfer"`
@@ -878,7 +882,9 @@ type AssistantToolUnion struct {
 	// This field is from variant [AssistantToolUpdateDynamicVariables].
 	UpdateDynamicVariables UpdateDynamicVariablesToolParamsResp `json:"update_dynamic_variables"`
 	JSON                   struct {
+		Function               respjson.Field
 		Type                   respjson.Field
+		Shared                 respjson.Field
 		Webhook                respjson.Field
 		ClientSideTool         respjson.Field
 		Retrieval              respjson.Field
@@ -902,11 +908,12 @@ type anyAssistantTool interface {
 	implAssistantToolUnion()
 }
 
+func (AssistantToolFunction) implAssistantToolUnion()                   {}
 func (InferenceEmbeddingWebhookToolParamsResp) implAssistantToolUnion() {}
 func (AssistantToolClientSideTool) implAssistantToolUnion()             {}
 func (RetrievalTool) implAssistantToolUnion()                           {}
 func (AssistantToolHandoff) implAssistantToolUnion()                    {}
-func (HangupTool) implAssistantToolUnion()                              {}
+func (AssistantToolHangup) implAssistantToolUnion()                     {}
 func (AssistantToolTransfer) implAssistantToolUnion()                   {}
 func (AssistantToolInvite) implAssistantToolUnion()                     {}
 func (AssistantToolRefer) implAssistantToolUnion()                      {}
@@ -919,11 +926,12 @@ func (AssistantToolUpdateDynamicVariables) implAssistantToolUnion()     {}
 // Use the following switch statement to find the correct variant
 //
 //	switch variant := AssistantToolUnion.AsAny().(type) {
+//	case telnyx.AssistantToolFunction:
 //	case telnyx.InferenceEmbeddingWebhookToolParamsResp:
 //	case telnyx.AssistantToolClientSideTool:
 //	case telnyx.RetrievalTool:
 //	case telnyx.AssistantToolHandoff:
-//	case telnyx.HangupTool:
+//	case telnyx.AssistantToolHangup:
 //	case telnyx.AssistantToolTransfer:
 //	case telnyx.AssistantToolInvite:
 //	case telnyx.AssistantToolRefer:
@@ -937,6 +945,8 @@ func (AssistantToolUpdateDynamicVariables) implAssistantToolUnion()     {}
 //	}
 func (u AssistantToolUnion) AsAny() anyAssistantTool {
 	switch u.Type {
+	case "function":
+		return u.AsFunction()
 	case "webhook":
 		return u.AsWebhook()
 	case "client_side_tool":
@@ -967,6 +977,11 @@ func (u AssistantToolUnion) AsAny() anyAssistantTool {
 	return nil
 }
 
+func (u AssistantToolUnion) AsFunction() (v AssistantToolFunction) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
 func (u AssistantToolUnion) AsWebhook() (v InferenceEmbeddingWebhookToolParamsResp) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
@@ -987,7 +1002,7 @@ func (u AssistantToolUnion) AsHandoff() (v AssistantToolHandoff) {
 	return
 }
 
-func (u AssistantToolUnion) AsHangup() (v HangupTool) {
+func (u AssistantToolUnion) AsHangup() (v AssistantToolHangup) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -1048,13 +1063,49 @@ func (r AssistantToolUnion) ToParam() AssistantToolUnionParam {
 	return param.Override[AssistantToolUnionParam](json.RawMessage(r.RawJSON()))
 }
 
+type AssistantToolFunction struct {
+	Function FunctionDefinition `json:"function" api:"required"`
+	Type     constant.Function  `json:"type" default:"function"`
+	// Whether this tool comes from the shared Tools Library. Responses merge shared
+	// tools into `tools` with `shared: true`; inline tools carry `shared: false`.
+	// Read-only: set by the server, not accepted in requests. When updating an
+	// assistant, omit `shared: true` tools from the request `tools` array and manage
+	// them through `tool_ids` instead — re-sending their definitions creates an inline
+	// duplicate (rejected with error code 10015 when the type allows only one instance
+	// per assistant).
+	Shared bool `json:"shared"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Function    respjson.Field
+		Type        respjson.Field
+		Shared      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AssistantToolFunction) RawJSON() string { return r.JSON.raw }
+func (r *AssistantToolFunction) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type AssistantToolClientSideTool struct {
 	ClientSideTool AssistantToolClientSideToolClientSideTool `json:"client_side_tool" api:"required"`
 	Type           constant.ClientSideTool                   `json:"type" default:"client_side_tool"`
+	// Whether this tool comes from the shared Tools Library. Responses merge shared
+	// tools into `tools` with `shared: true`; inline tools carry `shared: false`.
+	// Read-only: set by the server, not accepted in requests. When updating an
+	// assistant, omit `shared: true` tools from the request `tools` array and manage
+	// them through `tool_ids` instead — re-sending their definitions creates an inline
+	// duplicate (rejected with error code 10015 when the type allows only one instance
+	// per assistant).
+	Shared bool `json:"shared"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ClientSideTool respjson.Field
 		Type           respjson.Field
+		Shared         respjson.Field
 		ExtraFields    map[string]respjson.Field
 		raw            string
 	} `json:"-"`
@@ -1123,10 +1174,19 @@ func (r *AssistantToolClientSideToolClientSideToolParameters) UnmarshalJSON(data
 type AssistantToolHandoff struct {
 	Handoff AssistantToolHandoffHandoff `json:"handoff" api:"required"`
 	Type    constant.Handoff            `json:"type" default:"handoff"`
+	// Whether this tool comes from the shared Tools Library. Responses merge shared
+	// tools into `tools` with `shared: true`; inline tools carry `shared: false`.
+	// Read-only: set by the server, not accepted in requests. When updating an
+	// assistant, omit `shared: true` tools from the request `tools` array and manage
+	// them through `tool_ids` instead — re-sending their definitions creates an inline
+	// duplicate (rejected with error code 10015 when the type allows only one instance
+	// per assistant).
+	Shared bool `json:"shared"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Handoff     respjson.Field
 		Type        respjson.Field
+		Shared      respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -1183,13 +1243,49 @@ func (r *AssistantToolHandoffHandoffAIAssistant) UnmarshalJSON(data []byte) erro
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type AssistantToolHangup struct {
+	Hangup HangupToolParamsResp `json:"hangup" api:"required"`
+	Type   constant.Hangup      `json:"type" default:"hangup"`
+	// Whether this tool comes from the shared Tools Library. Responses merge shared
+	// tools into `tools` with `shared: true`; inline tools carry `shared: false`.
+	// Read-only: set by the server, not accepted in requests. When updating an
+	// assistant, omit `shared: true` tools from the request `tools` array and manage
+	// them through `tool_ids` instead — re-sending their definitions creates an inline
+	// duplicate (rejected with error code 10015 when the type allows only one instance
+	// per assistant).
+	Shared bool `json:"shared"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Hangup      respjson.Field
+		Type        respjson.Field
+		Shared      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AssistantToolHangup) RawJSON() string { return r.JSON.raw }
+func (r *AssistantToolHangup) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type AssistantToolTransfer struct {
 	Transfer AssistantToolTransferTransfer `json:"transfer" api:"required"`
 	Type     constant.Transfer             `json:"type" default:"transfer"`
+	// Whether this tool comes from the shared Tools Library. Responses merge shared
+	// tools into `tools` with `shared: true`; inline tools carry `shared: false`.
+	// Read-only: set by the server, not accepted in requests. When updating an
+	// assistant, omit `shared: true` tools from the request `tools` array and manage
+	// them through `tool_ids` instead — re-sending their definitions creates an inline
+	// duplicate (rejected with error code 10015 when the type allows only one instance
+	// per assistant).
+	Shared bool `json:"shared"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Transfer    respjson.Field
 		Type        respjson.Field
+		Shared      respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -1531,10 +1627,19 @@ func (r *AssistantToolTransferTransferWarmTransferAcceptance) UnmarshalJSON(data
 type AssistantToolInvite struct {
 	Invite AssistantToolInviteInvite `json:"invite" api:"required"`
 	Type   constant.Invite           `json:"type" default:"invite"`
+	// Whether this tool comes from the shared Tools Library. Responses merge shared
+	// tools into `tools` with `shared: true`; inline tools carry `shared: false`.
+	// Read-only: set by the server, not accepted in requests. When updating an
+	// assistant, omit `shared: true` tools from the request `tools` array and manage
+	// them through `tool_ids` instead — re-sending their definitions creates an inline
+	// duplicate (rejected with error code 10015 when the type allows only one instance
+	// per assistant).
+	Shared bool `json:"shared"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Invite      respjson.Field
 		Type        respjson.Field
+		Shared      respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -1707,10 +1812,19 @@ func (r *AssistantToolInviteInviteVoicemailDetectionOnVoicemailDetected) Unmarsh
 type AssistantToolRefer struct {
 	Refer AssistantToolReferRefer `json:"refer" api:"required"`
 	Type  constant.Refer          `json:"type" default:"refer"`
+	// Whether this tool comes from the shared Tools Library. Responses merge shared
+	// tools into `tools` with `shared: true`; inline tools carry `shared: false`.
+	// Read-only: set by the server, not accepted in requests. When updating an
+	// assistant, omit `shared: true` tools from the request `tools` array and manage
+	// them through `tool_ids` instead — re-sending their definitions creates an inline
+	// duplicate (rejected with error code 10015 when the type allows only one instance
+	// per assistant).
+	Shared bool `json:"shared"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Refer       respjson.Field
 		Type        respjson.Field
+		Shared      respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -1821,10 +1935,19 @@ func (r *AssistantToolReferReferSipHeader) UnmarshalJSON(data []byte) error {
 type AssistantToolSendDtmf struct {
 	SendDtmf map[string]any    `json:"send_dtmf" api:"required"`
 	Type     constant.SendDtmf `json:"type" default:"send_dtmf"`
+	// Whether this tool comes from the shared Tools Library. Responses merge shared
+	// tools into `tools` with `shared: true`; inline tools carry `shared: false`.
+	// Read-only: set by the server, not accepted in requests. When updating an
+	// assistant, omit `shared: true` tools from the request `tools` array and manage
+	// them through `tool_ids` instead — re-sending their definitions creates an inline
+	// duplicate (rejected with error code 10015 when the type allows only one instance
+	// per assistant).
+	Shared bool `json:"shared"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		SendDtmf    respjson.Field
 		Type        respjson.Field
+		Shared      respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -1843,10 +1966,19 @@ func (r *AssistantToolSendDtmf) UnmarshalJSON(data []byte) error {
 type AssistantToolSendMessage struct {
 	SendMessage AssistantToolSendMessageSendMessage `json:"send_message" api:"required"`
 	Type        constant.SendMessage                `json:"type" default:"send_message"`
+	// Whether this tool comes from the shared Tools Library. Responses merge shared
+	// tools into `tools` with `shared: true`; inline tools carry `shared: false`.
+	// Read-only: set by the server, not accepted in requests. When updating an
+	// assistant, omit `shared: true` tools from the request `tools` array and manage
+	// them through `tool_ids` instead — re-sending their definitions creates an inline
+	// duplicate (rejected with error code 10015 when the type allows only one instance
+	// per assistant).
+	Shared bool `json:"shared"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		SendMessage respjson.Field
 		Type        respjson.Field
+		Shared      respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -1883,10 +2015,19 @@ func (r *AssistantToolSendMessageSendMessage) UnmarshalJSON(data []byte) error {
 type AssistantToolSkipTurn struct {
 	SkipTurn AssistantToolSkipTurnSkipTurn `json:"skip_turn" api:"required"`
 	Type     constant.SkipTurn             `json:"type" default:"skip_turn"`
+	// Whether this tool comes from the shared Tools Library. Responses merge shared
+	// tools into `tools` with `shared: true`; inline tools carry `shared: false`.
+	// Read-only: set by the server, not accepted in requests. When updating an
+	// assistant, omit `shared: true` tools from the request `tools` array and manage
+	// them through `tool_ids` instead — re-sending their definitions creates an inline
+	// duplicate (rejected with error code 10015 when the type allows only one instance
+	// per assistant).
+	Shared bool `json:"shared"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		SkipTurn    respjson.Field
 		Type        respjson.Field
+		Shared      respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -1922,10 +2063,19 @@ func (r *AssistantToolSkipTurnSkipTurn) UnmarshalJSON(data []byte) error {
 type AssistantToolPay struct {
 	Pay  PayToolParamsResp `json:"pay" api:"required"`
 	Type constant.Pay      `json:"type" default:"pay"`
+	// Whether this tool comes from the shared Tools Library. Responses merge shared
+	// tools into `tools` with `shared: true`; inline tools carry `shared: false`.
+	// Read-only: set by the server, not accepted in requests. When updating an
+	// assistant, omit `shared: true` tools from the request `tools` array and manage
+	// them through `tool_ids` instead — re-sending their definitions creates an inline
+	// duplicate (rejected with error code 10015 when the type allows only one instance
+	// per assistant).
+	Shared bool `json:"shared"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Pay         respjson.Field
 		Type        respjson.Field
+		Shared      respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -1946,10 +2096,19 @@ type AssistantToolUpdateDynamicVariables struct {
 	Type constant.UpdateDynamicVariables `json:"type" default:"update_dynamic_variables"`
 	// Configuration for an update_dynamic_variables tool.
 	UpdateDynamicVariables UpdateDynamicVariablesToolParamsResp `json:"update_dynamic_variables" api:"required"`
+	// Whether this tool comes from the shared Tools Library. Responses merge shared
+	// tools into `tools` with `shared: true`; inline tools carry `shared: false`.
+	// Read-only: set by the server, not accepted in requests. When updating an
+	// assistant, omit `shared: true` tools from the request `tools` array and manage
+	// them through `tool_ids` instead — re-sending their definitions creates an inline
+	// duplicate (rejected with error code 10015 when the type allows only one instance
+	// per assistant).
+	Shared bool `json:"shared"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Type                   respjson.Field
 		UpdateDynamicVariables respjson.Field
+		Shared                 respjson.Field
 		ExtraFields            map[string]respjson.Field
 		raw                    string
 	} `json:"-"`
@@ -1959,6 +2118,12 @@ type AssistantToolUpdateDynamicVariables struct {
 func (r AssistantToolUpdateDynamicVariables) RawJSON() string { return r.JSON.raw }
 func (r *AssistantToolUpdateDynamicVariables) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func AssistantToolParamOfFunction(function FunctionDefinitionParam) AssistantToolUnionParam {
+	var variant AssistantToolFunctionParam
+	variant.Function = function
+	return AssistantToolUnionParam{OfFunction: &variant}
 }
 
 func AssistantToolParamOfWebhook(webhook InferenceEmbeddingWebhookToolParamsWebhook) AssistantToolUnionParam {
@@ -1986,7 +2151,7 @@ func AssistantToolParamOfHandoff(handoff AssistantToolHandoffHandoffParam) Assis
 }
 
 func AssistantToolParamOfHangup(hangup HangupToolParams) AssistantToolUnionParam {
-	var variant HangupToolParam
+	var variant AssistantToolHangupParam
 	variant.Hangup = hangup
 	return AssistantToolUnionParam{OfHangup: &variant}
 }
@@ -2043,11 +2208,12 @@ func AssistantToolParamOfUpdateDynamicVariables(updateDynamicVariables UpdateDyn
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type AssistantToolUnionParam struct {
+	OfFunction               *AssistantToolFunctionParam               `json:",omitzero,inline"`
 	OfWebhook                *InferenceEmbeddingWebhookToolParams      `json:",omitzero,inline"`
 	OfClientSideTool         *AssistantToolClientSideToolParam         `json:",omitzero,inline"`
 	OfRetrieval              *RetrievalToolParam                       `json:",omitzero,inline"`
 	OfHandoff                *AssistantToolHandoffParam                `json:",omitzero,inline"`
-	OfHangup                 *HangupToolParam                          `json:",omitzero,inline"`
+	OfHangup                 *AssistantToolHangupParam                 `json:",omitzero,inline"`
 	OfTransfer               *AssistantToolTransferParam               `json:",omitzero,inline"`
 	OfInvite                 *AssistantToolInviteParam                 `json:",omitzero,inline"`
 	OfRefer                  *AssistantToolReferParam                  `json:",omitzero,inline"`
@@ -2060,7 +2226,8 @@ type AssistantToolUnionParam struct {
 }
 
 func (u AssistantToolUnionParam) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfWebhook,
+	return param.MarshalUnion(u, u.OfFunction,
+		u.OfWebhook,
 		u.OfClientSideTool,
 		u.OfRetrieval,
 		u.OfHandoff,
@@ -2079,7 +2246,9 @@ func (u *AssistantToolUnionParam) UnmarshalJSON(data []byte) error {
 }
 
 func (u *AssistantToolUnionParam) asAny() any {
-	if !param.IsOmitted(u.OfWebhook) {
+	if !param.IsOmitted(u.OfFunction) {
+		return u.OfFunction
+	} else if !param.IsOmitted(u.OfWebhook) {
 		return u.OfWebhook
 	} else if !param.IsOmitted(u.OfClientSideTool) {
 		return u.OfClientSideTool
@@ -2105,6 +2274,14 @@ func (u *AssistantToolUnionParam) asAny() any {
 		return u.OfPay
 	} else if !param.IsOmitted(u.OfUpdateDynamicVariables) {
 		return u.OfUpdateDynamicVariables
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AssistantToolUnionParam) GetFunction() *FunctionDefinitionParam {
+	if vt := u.OfFunction; vt != nil {
+		return &vt.Function
 	}
 	return nil
 }
@@ -2215,7 +2392,9 @@ func (u AssistantToolUnionParam) GetUpdateDynamicVariables() *UpdateDynamicVaria
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u AssistantToolUnionParam) GetType() *string {
-	if vt := u.OfWebhook; vt != nil {
+	if vt := u.OfFunction; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfWebhook; vt != nil {
 		return (*string)(&vt.Type)
 	} else if vt := u.OfClientSideTool; vt != nil {
 		return (*string)(&vt.Type)
@@ -2248,11 +2427,12 @@ func (u AssistantToolUnionParam) GetType() *string {
 func init() {
 	apijson.RegisterUnion[AssistantToolUnionParam](
 		"type",
+		apijson.Discriminator[AssistantToolFunctionParam]("function"),
 		apijson.Discriminator[InferenceEmbeddingWebhookToolParams]("webhook"),
 		apijson.Discriminator[AssistantToolClientSideToolParam]("client_side_tool"),
 		apijson.Discriminator[RetrievalToolParam]("retrieval"),
 		apijson.Discriminator[AssistantToolHandoffParam]("handoff"),
-		apijson.Discriminator[HangupToolParam]("hangup"),
+		apijson.Discriminator[AssistantToolHangupParam]("hangup"),
 		apijson.Discriminator[AssistantToolTransferParam]("transfer"),
 		apijson.Discriminator[AssistantToolInviteParam]("invite"),
 		apijson.Discriminator[AssistantToolReferParam]("refer"),
@@ -2262,6 +2442,22 @@ func init() {
 		apijson.Discriminator[AssistantToolPayParam]("pay"),
 		apijson.Discriminator[AssistantToolUpdateDynamicVariablesParam]("update_dynamic_variables"),
 	)
+}
+
+// The properties Function, Type are required.
+type AssistantToolFunctionParam struct {
+	Function FunctionDefinitionParam `json:"function,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "function".
+	Type constant.Function `json:"type" default:"function"`
+	paramObj
+}
+
+func (r AssistantToolFunctionParam) MarshalJSON() (data []byte, err error) {
+	type shadow AssistantToolFunctionParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AssistantToolFunctionParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // The properties ClientSideTool, Type are required.
@@ -2390,6 +2586,22 @@ func (r AssistantToolHandoffHandoffAIAssistantParam) MarshalJSON() (data []byte,
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *AssistantToolHandoffHandoffAIAssistantParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties Hangup, Type are required.
+type AssistantToolHangupParam struct {
+	Hangup HangupToolParams `json:"hangup,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "hangup".
+	Type constant.Hangup `json:"type" default:"hangup"`
+	paramObj
+}
+
+func (r AssistantToolHangupParam) MarshalJSON() (data []byte, err error) {
+	type shadow AssistantToolHangupParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AssistantToolHangupParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -4482,40 +4694,6 @@ const (
 	FlowNodeReqTypePrompt FlowNodeReqType = "prompt"
 )
 
-type HangupTool struct {
-	Hangup HangupToolParamsResp `json:"hangup" api:"required"`
-	// Any of "hangup".
-	Type HangupToolType `json:"type" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Hangup      respjson.Field
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r HangupTool) RawJSON() string { return r.JSON.raw }
-func (r *HangupTool) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// ToParam converts this HangupTool to a HangupToolParam.
-//
-// Warning: the fields of the param type will not be present. ToParam should only
-// be used at the last possible moment before sending a request. Test for this with
-// HangupToolParam.Overrides()
-func (r HangupTool) ToParam() HangupToolParam {
-	return param.Override[HangupToolParam](json.RawMessage(r.RawJSON()))
-}
-
-type HangupToolType string
-
-const (
-	HangupToolTypeHangup HangupToolType = "hangup"
-)
-
 // The properties Hangup, Type are required.
 type HangupToolParam struct {
 	Hangup HangupToolParams `json:"hangup,omitzero" api:"required"`
@@ -4531,6 +4709,12 @@ func (r HangupToolParam) MarshalJSON() (data []byte, err error) {
 func (r *HangupToolParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+type HangupToolType string
+
+const (
+	HangupToolTypeHangup HangupToolType = "hangup"
+)
 
 type HangupToolParamsResp struct {
 	// The description of the function that will be passed to the assistant.
@@ -4682,10 +4866,10 @@ type InferenceEmbedding struct {
 	ObservabilitySettings Observability        `json:"observability_settings"`
 	// Configuration for post-conversation processing. When enabled, the assistant
 	// receives one additional LLM turn after the conversation ends, allowing it to
-	// execute tool calls such as logging to a CRM or sending a summary. The assistant
-	// can execute multiple parallel or sequential tools during this phase.
-	// Telephony-control tools (e.g. hangup, transfer) are unavailable
-	// post-conversation. Beta feature.
+	// execute final tool calls such as sending a summary or updating a record via
+	// webhook or function tools. Integration and MCP server tools are not available
+	// post-conversation; call-control tools (e.g. hangup, transfer) are also
+	// unavailable. Beta feature.
 	PostConversationSettings PostConversationSettings `json:"post_conversation_settings"`
 	PrivacySettings          PrivacySettings          `json:"privacy_settings"`
 	// IDs of missions related to this assistant.
@@ -4694,9 +4878,12 @@ type InferenceEmbedding struct {
 	// tag endpoints.
 	Tags              []string          `json:"tags"`
 	TelephonySettings TelephonySettings `json:"telephony_settings"`
-	// Deprecated for new integrations. Inline tool definitions available to the
-	// assistant. Prefer `tool_ids` to attach shared tools created with the AI Tools
-	// endpoints.
+	// The assistant's tools. Responses merge the assistant's shared Tools Library
+	// tools into this array alongside inline tools, each flagged `shared: true`;
+	// inline tools carry `shared: false`. On update, a sent `tools` array fully
+	// replaces the inline tools only — shared tools stay attached unless `tool_ids`
+	// changes. Each tool type except `function`, `webhook`, and `client_side_tool`
+	// allows at most one instance per assistant across both sources.
 	Tools         []AssistantToolUnion  `json:"tools"`
 	Transcription TranscriptionSettings `json:"transcription"`
 	// Timestamp when this assistant version was created.
@@ -4768,6 +4955,9 @@ type InferenceEmbeddingInterruptionSettings struct {
 	DisableGreetingInterruption bool `json:"disable_greeting_interruption"`
 	// Whether users can interrupt the assistant while it is speaking.
 	Enable bool `json:"enable"`
+	// Interrupt-prediction sensitivity, from 0.0 to 1.0. Set to null or 0.0 to disable
+	// interrupt prediction.
+	InterruptPredictionThreshold float64 `json:"interrupt_prediction_threshold" api:"nullable"`
 	// Controls when the assistant starts speaking after the user stops. These
 	// thresholds primarily apply to non turn-taking transcription models. For
 	// turn-taking models like `deepgram/flux`, end-of-turn detection is driven by the
@@ -4775,11 +4965,12 @@ type InferenceEmbeddingInterruptionSettings struct {
 	StartSpeakingPlan StartSpeakingPlan `json:"start_speaking_plan"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		DisableGreetingInterruption respjson.Field
-		Enable                      respjson.Field
-		StartSpeakingPlan           respjson.Field
-		ExtraFields                 map[string]respjson.Field
-		raw                         string
+		DisableGreetingInterruption  respjson.Field
+		Enable                       respjson.Field
+		InterruptPredictionThreshold respjson.Field
+		StartSpeakingPlan            respjson.Field
+		ExtraFields                  map[string]respjson.Field
+		raw                          string
 	} `json:"-"`
 }
 
@@ -4806,6 +4997,9 @@ func (r InferenceEmbeddingInterruptionSettings) ToParam() InferenceEmbeddingInte
 // `transcription.settings` (`eot_threshold`, `eot_timeout_ms`,
 // `eager_eot_threshold`).
 type InferenceEmbeddingInterruptionSettingsParam struct {
+	// Interrupt-prediction sensitivity, from 0.0 to 1.0. Set to null or 0.0 to disable
+	// interrupt prediction.
+	InterruptPredictionThreshold param.Opt[float64] `json:"interrupt_prediction_threshold,omitzero"`
 	// When true, disables user interruptions while the assistant greeting is playing.
 	DisableGreetingInterruption param.Opt[bool] `json:"disable_greeting_interruption,omitzero"`
 	// Whether users can interrupt the assistant while it is speaking.
@@ -4830,10 +5024,19 @@ type InferenceEmbeddingWebhookToolParamsResp struct {
 	// Any of "webhook".
 	Type    InferenceEmbeddingWebhookToolParamsType        `json:"type" api:"required"`
 	Webhook InferenceEmbeddingWebhookToolParamsWebhookResp `json:"webhook" api:"required"`
+	// Whether this tool comes from the shared Tools Library. Responses merge shared
+	// tools into `tools` with `shared: true`; inline tools carry `shared: false`.
+	// Read-only: set by the server, not accepted in requests. When updating an
+	// assistant, omit `shared: true` tools from the request `tools` array and manage
+	// them through `tool_ids` instead — re-sending their definitions creates an inline
+	// duplicate (rejected with error code 10015 when the type allows only one instance
+	// per assistant).
+	Shared bool `json:"shared"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Type        respjson.Field
 		Webhook     respjson.Field
+		Shared      respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -5748,10 +5951,10 @@ const (
 
 // Configuration for post-conversation processing. When enabled, the assistant
 // receives one additional LLM turn after the conversation ends, allowing it to
-// execute tool calls such as logging to a CRM or sending a summary. The assistant
-// can execute multiple parallel or sequential tools during this phase.
-// Telephony-control tools (e.g. hangup, transfer) are unavailable
-// post-conversation. Beta feature.
+// execute final tool calls such as sending a summary or updating a record via
+// webhook or function tools. Integration and MCP server tools are not available
+// post-conversation; call-control tools (e.g. hangup, transfer) are also
+// unavailable. Beta feature.
 type PostConversationSettings struct {
 	// Whether post-conversation processing is enabled. When true, the assistant will
 	// be invoked after the conversation ends to perform any final tool calls. Defaults
@@ -5773,10 +5976,10 @@ func (r *PostConversationSettings) UnmarshalJSON(data []byte) error {
 
 // Configuration for post-conversation processing. When enabled, the assistant
 // receives one additional LLM turn after the conversation ends, allowing it to
-// execute tool calls such as logging to a CRM or sending a summary. The assistant
-// can execute multiple parallel or sequential tools during this phase.
-// Telephony-control tools (e.g. hangup, transfer) are unavailable
-// post-conversation. Beta feature.
+// execute final tool calls such as sending a summary or updating a record via
+// webhook or function tools. Integration and MCP server tools are not available
+// post-conversation; call-control tools (e.g. hangup, transfer) are also
+// unavailable. Beta feature.
 type PostConversationSettingsReqParam struct {
 	// Whether post-conversation processing is enabled. When true, the assistant will
 	// be invoked after the conversation ends to perform any final tool calls. Defaults
@@ -5801,11 +6004,25 @@ type PrivacySettings struct {
 	// account, number, or application level. All such external settings remain in
 	// force regardless of your selection here.
 	DataRetention bool `json:"data_retention"`
+	// Requires every model call made for a web chat turn to be received and served
+	// inside your organization's data-locality region, rather than only stored there.
+	// Applies to web chat only — voice and messaging assistants are unaffected.
+	// Enabling it requires a data-locality region with in-region inference (USA, EU,
+	// AUS, UAE; see
+	// [Inference regions](https://developers.telnyx.com/docs/inference/models/regions))
+	// and Telnyx-hosted models for the assistant, its fallback, and any
+	// conversation-flow node that overrides the model; the request is rejected
+	// otherwise. Once enabled, send chat requests to your region's API hostname: a
+	// request entering the platform in another region is rejected rather than
+	// forwarded, because forwarding it would already have moved the content across the
+	// border. Defaults to false.
+	InTransitDataLocality bool `json:"in_transit_data_locality"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		DataRetention respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
+		DataRetention         respjson.Field
+		InTransitDataLocality respjson.Field
+		ExtraFields           map[string]respjson.Field
+		raw                   string
 	} `json:"-"`
 }
 
@@ -5832,6 +6049,19 @@ type PrivacySettingsParam struct {
 	// account, number, or application level. All such external settings remain in
 	// force regardless of your selection here.
 	DataRetention param.Opt[bool] `json:"data_retention,omitzero"`
+	// Requires every model call made for a web chat turn to be received and served
+	// inside your organization's data-locality region, rather than only stored there.
+	// Applies to web chat only — voice and messaging assistants are unaffected.
+	// Enabling it requires a data-locality region with in-region inference (USA, EU,
+	// AUS, UAE; see
+	// [Inference regions](https://developers.telnyx.com/docs/inference/models/regions))
+	// and Telnyx-hosted models for the assistant, its fallback, and any
+	// conversation-flow node that overrides the model; the request is rejected
+	// otherwise. Once enabled, send chat requests to your region's API hostname: a
+	// request entering the platform in another region is rejected rather than
+	// forwarded, because forwarding it would already have moved the content across the
+	// border. Defaults to false.
+	InTransitDataLocality param.Opt[bool] `json:"in_transit_data_locality,omitzero"`
 	paramObj
 }
 
@@ -5859,10 +6089,19 @@ type RetrievalTool struct {
 	Retrieval BucketIDs `json:"retrieval" api:"required"`
 	// Any of "retrieval".
 	Type RetrievalToolType `json:"type" api:"required"`
+	// Whether this tool comes from the shared Tools Library. Responses merge shared
+	// tools into `tools` with `shared: true`; inline tools carry `shared: false`.
+	// Read-only: set by the server, not accepted in requests. When updating an
+	// assistant, omit `shared: true` tools from the request `tools` array and manage
+	// them through `tool_ids` instead — re-sending their definitions creates an inline
+	// duplicate (rejected with error code 10015 when the type allows only one instance
+	// per assistant).
+	Shared bool `json:"shared"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Retrieval   respjson.Field
 		Type        respjson.Field
+		Shared      respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -6072,13 +6311,16 @@ type TelephonySettings struct {
 	// detected), and it does not fire when the assistant already transferred or
 	// bridged the call.
 	FallbackDestination string `json:"fallback_destination"`
-	// The noise suppression engine to use. Use 'disabled' to turn off noise
-	// suppression.
+	// The noise suppression engine to use. 'aicoustics' is STT-optimized and
+	// recommended for AI assistants (configure through noise_suppression_config). Use
+	// 'disabled' to turn off noise suppression.
 	//
-	// Any of "krisp", "deepfilternet", "disabled".
+	// Any of "aicoustics", "krisp", "deepfilternet", "disabled".
 	NoiseSuppression TelephonySettingsNoiseSuppression `json:"noise_suppression"`
-	// Configuration for noise suppression. Only applicable when noise_suppression is
-	// 'deepfilternet'.
+	// Configuration for noise suppression. Applicable fields depend on the engine:
+	// 'attenuation_limit' and 'mode' only when noise_suppression is 'deepfilternet';
+	// 'family', 'size' and 'enhancement_level' only when noise_suppression is
+	// 'aicoustics'.
 	NoiseSuppressionConfig TelephonySettingsNoiseSuppressionConfig `json:"noise_suppression_config"`
 	// Configuration for call recording format and channel settings.
 	RecordingSettings TelephonySettingsRecordingSettings `json:"recording_settings"`
@@ -6150,29 +6392,52 @@ func (r TelephonySettings) ToParam() TelephonySettingsParam {
 	return param.Override[TelephonySettingsParam](json.RawMessage(r.RawJSON()))
 }
 
-// The noise suppression engine to use. Use 'disabled' to turn off noise
-// suppression.
+// The noise suppression engine to use. 'aicoustics' is STT-optimized and
+// recommended for AI assistants (configure through noise_suppression_config). Use
+// 'disabled' to turn off noise suppression.
 type TelephonySettingsNoiseSuppression string
 
 const (
+	TelephonySettingsNoiseSuppressionAicoustics    TelephonySettingsNoiseSuppression = "aicoustics"
 	TelephonySettingsNoiseSuppressionKrisp         TelephonySettingsNoiseSuppression = "krisp"
 	TelephonySettingsNoiseSuppressionDeepfilternet TelephonySettingsNoiseSuppression = "deepfilternet"
 	TelephonySettingsNoiseSuppressionDisabled      TelephonySettingsNoiseSuppression = "disabled"
 )
 
-// Configuration for noise suppression. Only applicable when noise_suppression is
-// 'deepfilternet'.
+// Configuration for noise suppression. Applicable fields depend on the engine:
+// 'attenuation_limit' and 'mode' only when noise_suppression is 'deepfilternet';
+// 'family', 'size' and 'enhancement_level' only when noise_suppression is
+// 'aicoustics'.
 type TelephonySettingsNoiseSuppressionConfig struct {
-	// Attenuation limit for noise suppression. Range: 0-100.
+	// Attenuation limit for noise suppression. Range: 0-100. Only applicable when
+	// noise_suppression is 'deepfilternet'.
 	AttenuationLimit int64 `json:"attenuation_limit"`
-	// Mode for noise suppression configuration.
+	// AiCoustics enhancement intensity. Range: 0-1. Only applicable when
+	// noise_suppression is 'aicoustics'.
+	EnhancementLevel float64 `json:"enhancement_level"`
+	// AiCoustics model family optimized for Voice AI and STT. Only applicable when
+	// noise_suppression is 'aicoustics'.
+	//
+	// Any of "quail".
+	Family string `json:"family"`
+	// Mode for noise suppression configuration. Only applicable when noise_suppression
+	// is 'deepfilternet'.
 	//
 	// Any of "advanced".
 	Mode string `json:"mode"`
+	// AiCoustics model size. 'vf' tracks the latest model release; 'vf_2_0_l' is
+	// pinned to version 2.0 for consistent, predictable behavior. Only applicable when
+	// noise_suppression is 'aicoustics'.
+	//
+	// Any of "vf", "vf_2_0_l".
+	Size string `json:"size"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AttenuationLimit respjson.Field
+		EnhancementLevel respjson.Field
+		Family           respjson.Field
 		Mode             respjson.Field
+		Size             respjson.Field
 		ExtraFields      map[string]respjson.Field
 		raw              string
 	} `json:"-"`
@@ -6341,13 +6606,16 @@ type TelephonySettingsParam struct {
 	// a call without an active assistant (for instance, a call transferred to a human
 	// representative).
 	UserIdleTimeoutSecs param.Opt[int64] `json:"user_idle_timeout_secs,omitzero"`
-	// The noise suppression engine to use. Use 'disabled' to turn off noise
-	// suppression.
+	// The noise suppression engine to use. 'aicoustics' is STT-optimized and
+	// recommended for AI assistants (configure through noise_suppression_config). Use
+	// 'disabled' to turn off noise suppression.
 	//
-	// Any of "krisp", "deepfilternet", "disabled".
+	// Any of "aicoustics", "krisp", "deepfilternet", "disabled".
 	NoiseSuppression TelephonySettingsNoiseSuppression `json:"noise_suppression,omitzero"`
-	// Configuration for noise suppression. Only applicable when noise_suppression is
-	// 'deepfilternet'.
+	// Configuration for noise suppression. Applicable fields depend on the engine:
+	// 'attenuation_limit' and 'mode' only when noise_suppression is 'deepfilternet';
+	// 'family', 'size' and 'enhancement_level' only when noise_suppression is
+	// 'aicoustics'.
 	NoiseSuppressionConfig TelephonySettingsNoiseSuppressionConfigParam `json:"noise_suppression_config,omitzero"`
 	// Configuration for call recording format and channel settings.
 	RecordingSettings TelephonySettingsRecordingSettingsParam `json:"recording_settings,omitzero"`
@@ -6369,15 +6637,33 @@ func (r *TelephonySettingsParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Configuration for noise suppression. Only applicable when noise_suppression is
-// 'deepfilternet'.
+// Configuration for noise suppression. Applicable fields depend on the engine:
+// 'attenuation_limit' and 'mode' only when noise_suppression is 'deepfilternet';
+// 'family', 'size' and 'enhancement_level' only when noise_suppression is
+// 'aicoustics'.
 type TelephonySettingsNoiseSuppressionConfigParam struct {
-	// Attenuation limit for noise suppression. Range: 0-100.
+	// Attenuation limit for noise suppression. Range: 0-100. Only applicable when
+	// noise_suppression is 'deepfilternet'.
 	AttenuationLimit param.Opt[int64] `json:"attenuation_limit,omitzero"`
-	// Mode for noise suppression configuration.
+	// AiCoustics enhancement intensity. Range: 0-1. Only applicable when
+	// noise_suppression is 'aicoustics'.
+	EnhancementLevel param.Opt[float64] `json:"enhancement_level,omitzero"`
+	// AiCoustics model family optimized for Voice AI and STT. Only applicable when
+	// noise_suppression is 'aicoustics'.
+	//
+	// Any of "quail".
+	Family string `json:"family,omitzero"`
+	// Mode for noise suppression configuration. Only applicable when noise_suppression
+	// is 'deepfilternet'.
 	//
 	// Any of "advanced".
 	Mode string `json:"mode,omitzero"`
+	// AiCoustics model size. 'vf' tracks the latest model release; 'vf_2_0_l' is
+	// pinned to version 2.0 for consistent, predictable behavior. Only applicable when
+	// noise_suppression is 'aicoustics'.
+	//
+	// Any of "vf", "vf_2_0_l".
+	Size string `json:"size,omitzero"`
 	paramObj
 }
 
@@ -6391,7 +6677,13 @@ func (r *TelephonySettingsNoiseSuppressionConfigParam) UnmarshalJSON(data []byte
 
 func init() {
 	apijson.RegisterFieldValidator[TelephonySettingsNoiseSuppressionConfigParam](
+		"family", "quail",
+	)
+	apijson.RegisterFieldValidator[TelephonySettingsNoiseSuppressionConfigParam](
 		"mode", "advanced",
+	)
+	apijson.RegisterFieldValidator[TelephonySettingsNoiseSuppressionConfigParam](
+		"size", "vf", "vf_2_0_l",
 	)
 }
 
@@ -6695,14 +6987,17 @@ type TranscriptionSettings struct {
 	//   - `deepgram/nova-3` is multilingual with automatic language detection.
 	//   - `deepgram/nova-2` is Deepgram's previous-generation multilingual model.
 	//   - `azure/fast` is a multilingual Azure transcription model.
-	//   - `assemblyai/universal-streaming` is a multilingual streaming model with
-	//     configurable turn detection.
+	//   - `assemblyai/universal-3-5-pro` is a multilingual streaming model with
+	//     configurable turn detection. The legacy alias `assemblyai/universal-streaming`
+	//     is still accepted and resolves to the same model.
 	//   - `xai/grok-stt` is a multilingual Grok STT model.
 	//   - `soniox/stt-rt-v4` and `soniox/stt-rt-v5` are multilingual streaming models
 	//     with automatic language detection, configurable endpointing, term biasing
 	//     (`context`), and `language_hints`.
 	//   - `nvidia/parakeet-v3` is a multilingual transcription model with automatic
 	//     language detection.
+	//   - `omi-health/omi-med-stt-v1` is an English-only medical transcription model
+	//     (Parakeet-based).
 	//   - `humain/realtime` is a streaming model with native Arabic and Arabic/English
 	//     code-switching support.
 	//   - `reson8/turns` is a turn-based streaming model covering 10 European languages
@@ -6710,10 +7005,10 @@ type TranscriptionSettings struct {
 	//   - `cohere/ar-stt` is a non-streaming Arabic and English transcription model.
 	//
 	// Any of "deepgram/flux", "deepgram/nova-3", "deepgram/nova-2", "azure/fast",
-	// "assemblyai/universal-streaming", "xai/grok-stt", "soniox/stt-rt-v4",
-	// "soniox/stt-rt-v5", "nvidia/parakeet-v3", "humain/realtime", "reson8/turns",
-	// "cohere/ar-stt", "distil-whisper/distil-large-v2",
-	// "openai/whisper-large-v3-turbo".
+	// "assemblyai/universal-3-5-pro", "assemblyai/universal-streaming",
+	// "xai/grok-stt", "soniox/stt-rt-v4", "soniox/stt-rt-v5", "nvidia/parakeet-v3",
+	// "omi-health/omi-med-stt-v1", "humain/realtime", "reson8/turns", "cohere/ar-stt",
+	// "distil-whisper/distil-large-v2", "openai/whisper-large-v3-turbo".
 	Model TranscriptionSettingsModel `json:"model"`
 	// Region on third party cloud providers (currently Azure) if using one of their
 	// models. Some regions require `api_key_ref`.
@@ -6753,14 +7048,17 @@ func (r TranscriptionSettings) ToParam() TranscriptionSettingsParam {
 //   - `deepgram/nova-3` is multilingual with automatic language detection.
 //   - `deepgram/nova-2` is Deepgram's previous-generation multilingual model.
 //   - `azure/fast` is a multilingual Azure transcription model.
-//   - `assemblyai/universal-streaming` is a multilingual streaming model with
-//     configurable turn detection.
+//   - `assemblyai/universal-3-5-pro` is a multilingual streaming model with
+//     configurable turn detection. The legacy alias `assemblyai/universal-streaming`
+//     is still accepted and resolves to the same model.
 //   - `xai/grok-stt` is a multilingual Grok STT model.
 //   - `soniox/stt-rt-v4` and `soniox/stt-rt-v5` are multilingual streaming models
 //     with automatic language detection, configurable endpointing, term biasing
 //     (`context`), and `language_hints`.
 //   - `nvidia/parakeet-v3` is a multilingual transcription model with automatic
 //     language detection.
+//   - `omi-health/omi-med-stt-v1` is an English-only medical transcription model
+//     (Parakeet-based).
 //   - `humain/realtime` is a streaming model with native Arabic and Arabic/English
 //     code-switching support.
 //   - `reson8/turns` is a turn-based streaming model covering 10 European languages
@@ -6773,11 +7071,13 @@ const (
 	TranscriptionSettingsModelDeepgramNova3                TranscriptionSettingsModel = "deepgram/nova-3"
 	TranscriptionSettingsModelDeepgramNova2                TranscriptionSettingsModel = "deepgram/nova-2"
 	TranscriptionSettingsModelAzureFast                    TranscriptionSettingsModel = "azure/fast"
+	TranscriptionSettingsModelAssemblyaiUniversal3_5Pro    TranscriptionSettingsModel = "assemblyai/universal-3-5-pro"
 	TranscriptionSettingsModelAssemblyaiUniversalStreaming TranscriptionSettingsModel = "assemblyai/universal-streaming"
 	TranscriptionSettingsModelXaiGrokStt                   TranscriptionSettingsModel = "xai/grok-stt"
 	TranscriptionSettingsModelSonioxSttRtV4                TranscriptionSettingsModel = "soniox/stt-rt-v4"
 	TranscriptionSettingsModelSonioxSttRtV5                TranscriptionSettingsModel = "soniox/stt-rt-v5"
 	TranscriptionSettingsModelNvidiaParakeetV3             TranscriptionSettingsModel = "nvidia/parakeet-v3"
+	TranscriptionSettingsModelOmiHealthOmiMedSttV1         TranscriptionSettingsModel = "omi-health/omi-med-stt-v1"
 	TranscriptionSettingsModelHumainRealtime               TranscriptionSettingsModel = "humain/realtime"
 	TranscriptionSettingsModelReson8Turns                  TranscriptionSettingsModel = "reson8/turns"
 	TranscriptionSettingsModelCohereArStt                  TranscriptionSettingsModel = "cohere/ar-stt"
@@ -6817,14 +7117,17 @@ type TranscriptionSettingsParam struct {
 	//   - `deepgram/nova-3` is multilingual with automatic language detection.
 	//   - `deepgram/nova-2` is Deepgram's previous-generation multilingual model.
 	//   - `azure/fast` is a multilingual Azure transcription model.
-	//   - `assemblyai/universal-streaming` is a multilingual streaming model with
-	//     configurable turn detection.
+	//   - `assemblyai/universal-3-5-pro` is a multilingual streaming model with
+	//     configurable turn detection. The legacy alias `assemblyai/universal-streaming`
+	//     is still accepted and resolves to the same model.
 	//   - `xai/grok-stt` is a multilingual Grok STT model.
 	//   - `soniox/stt-rt-v4` and `soniox/stt-rt-v5` are multilingual streaming models
 	//     with automatic language detection, configurable endpointing, term biasing
 	//     (`context`), and `language_hints`.
 	//   - `nvidia/parakeet-v3` is a multilingual transcription model with automatic
 	//     language detection.
+	//   - `omi-health/omi-med-stt-v1` is an English-only medical transcription model
+	//     (Parakeet-based).
 	//   - `humain/realtime` is a streaming model with native Arabic and Arabic/English
 	//     code-switching support.
 	//   - `reson8/turns` is a turn-based streaming model covering 10 European languages
@@ -6832,10 +7135,10 @@ type TranscriptionSettingsParam struct {
 	//   - `cohere/ar-stt` is a non-streaming Arabic and English transcription model.
 	//
 	// Any of "deepgram/flux", "deepgram/nova-3", "deepgram/nova-2", "azure/fast",
-	// "assemblyai/universal-streaming", "xai/grok-stt", "soniox/stt-rt-v4",
-	// "soniox/stt-rt-v5", "nvidia/parakeet-v3", "humain/realtime", "reson8/turns",
-	// "cohere/ar-stt", "distil-whisper/distil-large-v2",
-	// "openai/whisper-large-v3-turbo".
+	// "assemblyai/universal-3-5-pro", "assemblyai/universal-streaming",
+	// "xai/grok-stt", "soniox/stt-rt-v4", "soniox/stt-rt-v5", "nvidia/parakeet-v3",
+	// "omi-health/omi-med-stt-v1", "humain/realtime", "reson8/turns", "cohere/ar-stt",
+	// "distil-whisper/distil-large-v2", "openai/whisper-large-v3-turbo".
 	Model    TranscriptionSettingsModel       `json:"model,omitzero"`
 	Settings TranscriptionSettingsConfigParam `json:"settings,omitzero"`
 	paramObj
@@ -6866,9 +7169,9 @@ type TranscriptionSettingsConfig struct {
 	// emits end-of-utterance events at the cadence configured by
 	// `max_endpoint_delay_ms`.
 	EnableEndpointDetection bool `json:"enable_endpoint_detection"`
-	// Available only for assemblyai/universal-streaming. Confidence level required to
-	// trigger an end of turn. Higher values require more certainty before ending a
-	// turn.
+	// Available only for assemblyai/universal-3-5-pro (and its legacy alias
+	// assemblyai/universal-streaming). Confidence level required to trigger an end of
+	// turn. Higher values require more certainty before ending a turn.
 	EndOfTurnConfidenceThreshold float64 `json:"end_of_turn_confidence_threshold"`
 	// Available only for deepgram/flux. Confidence required to trigger an end of turn.
 	// Higher values = more reliable turn detection but slightly increased latency.
@@ -6895,12 +7198,13 @@ type TranscriptionSettingsConfig struct {
 	// milliseconds) before Soniox emits an end-of-utterance event. Only honored when
 	// `enable_endpoint_detection` is true.
 	MaxEndpointDelayMs int64 `json:"max_endpoint_delay_ms"`
-	// Available only for assemblyai/universal-streaming. Maximum duration of silence
-	// in milliseconds before forcing an end of turn.
+	// Available only for assemblyai/universal-3-5-pro (and its legacy alias
+	// assemblyai/universal-streaming). Maximum duration of silence in milliseconds
+	// before forcing an end of turn.
 	MaxTurnSilence int64 `json:"max_turn_silence"`
-	// Available only for assemblyai/universal-streaming. Minimum duration of silence
-	// in milliseconds before a turn can end. Must be less than or equal to
-	// max_turn_silence.
+	// Available only for assemblyai/universal-3-5-pro (and its legacy alias
+	// assemblyai/universal-streaming). Minimum duration of silence in milliseconds
+	// before a turn can end. Must be less than or equal to max_turn_silence.
 	MinTurnSilence int64 `json:"min_turn_silence"`
 	Numerals       bool  `json:"numerals"`
 	SmartFormat    bool  `json:"smart_format"`
@@ -6958,9 +7262,9 @@ type TranscriptionSettingsConfigParam struct {
 	// emits end-of-utterance events at the cadence configured by
 	// `max_endpoint_delay_ms`.
 	EnableEndpointDetection param.Opt[bool] `json:"enable_endpoint_detection,omitzero"`
-	// Available only for assemblyai/universal-streaming. Confidence level required to
-	// trigger an end of turn. Higher values require more certainty before ending a
-	// turn.
+	// Available only for assemblyai/universal-3-5-pro (and its legacy alias
+	// assemblyai/universal-streaming). Confidence level required to trigger an end of
+	// turn. Higher values require more certainty before ending a turn.
 	EndOfTurnConfidenceThreshold param.Opt[float64] `json:"end_of_turn_confidence_threshold,omitzero"`
 	// Available only for deepgram/flux. Confidence required to trigger an end of turn.
 	// Higher values = more reliable turn detection but slightly increased latency.
@@ -6983,12 +7287,13 @@ type TranscriptionSettingsConfigParam struct {
 	// milliseconds) before Soniox emits an end-of-utterance event. Only honored when
 	// `enable_endpoint_detection` is true.
 	MaxEndpointDelayMs param.Opt[int64] `json:"max_endpoint_delay_ms,omitzero"`
-	// Available only for assemblyai/universal-streaming. Maximum duration of silence
-	// in milliseconds before forcing an end of turn.
+	// Available only for assemblyai/universal-3-5-pro (and its legacy alias
+	// assemblyai/universal-streaming). Maximum duration of silence in milliseconds
+	// before forcing an end of turn.
 	MaxTurnSilence param.Opt[int64] `json:"max_turn_silence,omitzero"`
-	// Available only for assemblyai/universal-streaming. Minimum duration of silence
-	// in milliseconds before a turn can end. Must be less than or equal to
-	// max_turn_silence.
+	// Available only for assemblyai/universal-3-5-pro (and its legacy alias
+	// assemblyai/universal-streaming). Minimum duration of silence in milliseconds
+	// before a turn can end. Must be less than or equal to max_turn_silence.
 	MinTurnSilence param.Opt[int64] `json:"min_turn_silence,omitzero"`
 	Numerals       param.Opt[bool]  `json:"numerals,omitzero"`
 	SmartFormat    param.Opt[bool]  `json:"smart_format,omitzero"`
@@ -8025,10 +8330,10 @@ type AIAssistantNewParams struct {
 	ObservabilitySettings ObservabilityReqParam     `json:"observability_settings,omitzero"`
 	// Configuration for post-conversation processing. When enabled, the assistant
 	// receives one additional LLM turn after the conversation ends, allowing it to
-	// execute tool calls such as logging to a CRM or sending a summary. The assistant
-	// can execute multiple parallel or sequential tools during this phase.
-	// Telephony-control tools (e.g. hangup, transfer) are unavailable
-	// post-conversation. Beta feature.
+	// execute final tool calls such as sending a summary or updating a record via
+	// webhook or function tools. Integration and MCP server tools are not available
+	// post-conversation; call-control tools (e.g. hangup, transfer) are also
+	// unavailable. Beta feature.
 	PostConversationSettings PostConversationSettingsReqParam `json:"post_conversation_settings,omitzero"`
 	PrivacySettings          PrivacySettingsParam             `json:"privacy_settings,omitzero"`
 	// Tags associated with the assistant. Tags can also be managed with the assistant
@@ -8163,10 +8468,10 @@ type AIAssistantUpdateParams struct {
 	ObservabilitySettings ObservabilityReqParam     `json:"observability_settings,omitzero"`
 	// Configuration for post-conversation processing. When enabled, the assistant
 	// receives one additional LLM turn after the conversation ends, allowing it to
-	// execute tool calls such as logging to a CRM or sending a summary. The assistant
-	// can execute multiple parallel or sequential tools during this phase.
-	// Telephony-control tools (e.g. hangup, transfer) are unavailable
-	// post-conversation. Beta feature.
+	// execute final tool calls such as sending a summary or updating a record via
+	// webhook or function tools. Integration and MCP server tools are not available
+	// post-conversation; call-control tools (e.g. hangup, transfer) are also
+	// unavailable. Beta feature.
 	PostConversationSettings PostConversationSettingsReqParam `json:"post_conversation_settings,omitzero"`
 	PrivacySettings          PrivacySettingsParam             `json:"privacy_settings,omitzero"`
 	// Tags associated with the assistant. Tags can also be managed with the assistant
@@ -8174,11 +8479,22 @@ type AIAssistantUpdateParams struct {
 	Tags              []string               `json:"tags,omitzero"`
 	TelephonySettings TelephonySettingsParam `json:"telephony_settings,omitzero"`
 	// IDs of shared tools to attach to the assistant. New integrations should prefer
-	// `tool_ids` over inline `tools`.
+	// `tool_ids` over inline `tools`. On update, a sent `tool_ids` array fully
+	// replaces the assistant's attached shared tools; omit the field to leave them
+	// unchanged. Single-instance tool types are counted across inline `tools` and
+	// `tool_ids` combined, so attaching a shared tool of such a type when an instance
+	// already exists returns HTTP 400 with error code 10015.
 	ToolIDs []string `json:"tool_ids,omitzero"`
 	// Deprecated for new integrations. Inline tool definitions available to the
 	// assistant. Prefer `tool_ids` to attach shared tools created with the AI Tools
-	// endpoints.
+	// endpoints. On update, a sent `tools` array fully replaces the assistant's inline
+	// tools; omit the field to leave the inline tools unchanged. Each tool type except
+	// `function`, `webhook`, and `client_side_tool` allows at most one instance per
+	// assistant, counted across inline `tools` and shared `tool_ids` combined —
+	// sending a duplicate of such a type returns HTTP 400 with error code 10015.
+	// Responses merge shared tools into `tools` with `shared: true`; when updating,
+	// omit those tools from the `tools` array and manage them through `tool_ids`
+	// instead.
 	Tools         []AssistantToolUnionParam  `json:"tools,omitzero"`
 	Transcription TranscriptionSettingsParam `json:"transcription,omitzero"`
 	VoiceSettings VoiceSettingsParam         `json:"voice_settings,omitzero"`

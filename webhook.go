@@ -9,7 +9,6 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/v4/option"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
-	"github.com/team-telnyx/telnyx-go/v4/shared"
 )
 
 // WebhookService contains methods and other services that help with interacting
@@ -5379,12 +5378,58 @@ const (
 	InboundSipHeaderNameDiversion  InboundSipHeaderName = "Diversion"
 )
 
+type MessagingInboundMessage struct {
+	// Identifies the type of resource.
+	ID string `json:"id" format:"uuid"`
+	// The type of event being delivered.
+	//
+	// Any of "message.received".
+	EventType MessagingInboundMessageEventType `json:"event_type"`
+	// ISO 8601 formatted date indicating when the resource was created.
+	OccurredAt time.Time                      `json:"occurred_at" format:"date-time"`
+	Payload    MessagingInboundMessagePayload `json:"payload"`
+	// Identifies the type of the resource.
+	//
+	// Any of "event".
+	RecordType MessagingInboundMessageRecordType `json:"record_type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		EventType   respjson.Field
+		OccurredAt  respjson.Field
+		Payload     respjson.Field
+		RecordType  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessagingInboundMessage) RawJSON() string { return r.JSON.raw }
+func (r *MessagingInboundMessage) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The type of event being delivered.
+type MessagingInboundMessageEventType string
+
+const (
+	MessagingInboundMessageEventTypeMessageReceived MessagingInboundMessageEventType = "message.received"
+)
+
+// Identifies the type of the resource.
+type MessagingInboundMessageRecordType string
+
+const (
+	MessagingInboundMessageRecordTypeEvent MessagingInboundMessageRecordType = "event"
+)
+
 type OutboundMessage struct {
 	// Identifies the type of resource.
 	ID string `json:"id" format:"uuid"`
 	// The type of event being delivered.
 	//
-	// Any of "message.sent", "message.finalized".
+	// Any of "message.sent", "message.finalized", "message.read".
 	EventType OutboundMessageEventType `json:"event_type"`
 	// ISO 8601 formatted date indicating when the resource was created.
 	OccurredAt time.Time              `json:"occurred_at" format:"date-time"`
@@ -5417,6 +5462,7 @@ type OutboundMessageEventType string
 const (
 	OutboundMessageEventTypeMessageSent      OutboundMessageEventType = "message.sent"
 	OutboundMessageEventTypeMessageFinalized OutboundMessageEventType = "message.finalized"
+	OutboundMessageEventTypeMessageRead      OutboundMessageEventType = "message.read"
 )
 
 // Identifies the type of the resource.
@@ -7720,7 +7766,7 @@ func (r *HostedNumberOrderEventWebhookEventDataPayloadNumber) UnmarshalJSON(data
 }
 
 type InboundMessageWebhookEvent struct {
-	Data InboundMessageWebhookEventData `json:"data"`
+	Data MessagingInboundMessage `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -7732,38 +7778,6 @@ type InboundMessageWebhookEvent struct {
 // Returns the unmodified JSON received from the API
 func (r InboundMessageWebhookEvent) RawJSON() string { return r.JSON.raw }
 func (r *InboundMessageWebhookEvent) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type InboundMessageWebhookEventData struct {
-	// Identifies the type of resource.
-	ID string `json:"id" format:"uuid"`
-	// The type of event being delivered.
-	//
-	// Any of "message.received".
-	EventType string `json:"event_type"`
-	// ISO 8601 formatted date indicating when the resource was created.
-	OccurredAt time.Time                      `json:"occurred_at" format:"date-time"`
-	Payload    MessagingInboundMessagePayload `json:"payload"`
-	// Identifies the type of the resource.
-	//
-	// Any of "event".
-	RecordType string `json:"record_type"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		EventType   respjson.Field
-		OccurredAt  respjson.Field
-		Payload     respjson.Field
-		RecordType  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r InboundMessageWebhookEventData) RawJSON() string { return r.JSON.raw }
-func (r *InboundMessageWebhookEventData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -8262,7 +8276,7 @@ type UnsafeUnwrapWebhookEventUnion struct {
 	// [ConferenceRecordingSaved], [ConferenceSpeakEnded], [ConferenceSpeakStarted],
 	// [OutboundMessage], [FaxDeliveredData], [FaxFailedData], [FaxMediaProcessedData],
 	// [FaxQueuedData], [FaxSendingStartedData],
-	// [HostedNumberOrderEventWebhookEventData], [InboundMessageWebhookEventData],
+	// [HostedNumberOrderEventWebhookEventData], [MessagingInboundMessage],
 	// [NumberOrderStatusUpdateWebhookEventData], [RecordingAvailableWebhookEventData],
 	// [ReplacedLinkClick], [SessionStatusChangedWebhookEventData],
 	// [TranscriptCompletedWebhookEventData], [Transcription],
@@ -8983,6 +8997,9 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 	// This field is from variant [ConferenceRecordingSavedPayload].
 	Format string `json:"format"`
 	ID     string `json:"id"`
+	// This field is a union of [OutboundMessagePayloadBody],
+	// [MessagingInboundMessagePayloadBody], [WhatsappMessageEchoDataPayloadBody]
+	Body UnsafeUnwrapWebhookEventUnionDataPayloadBody `json:"body"`
 	// This field is a union of [[]OutboundMessagePayloadCc],
 	// [[]MessagingInboundMessagePayloadCc]
 	Cc          UnsafeUnwrapWebhookEventUnionDataPayloadCc `json:"cc"`
@@ -8994,9 +9011,7 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 	// [MessagingInboundMessagePayloadCostBreakdown]
 	CostBreakdown UnsafeUnwrapWebhookEventUnionDataPayloadCostBreakdown `json:"cost_breakdown"`
 	Encoding      string                                                `json:"encoding"`
-	// This field is a union of [[]shared.MessagingError],
-	// [[]MessagingError0b38e7044b], [[]MessagingError0b38e7044b]
-	Errors UnsafeUnwrapWebhookEventUnionDataPayloadErrors `json:"errors"`
+	Errors        []MessagingError0b38e7044b                            `json:"errors"`
 	// This field is a union of [[]OutboundMessagePayloadMedia],
 	// [[]MessagingInboundMessagePayloadMedia]
 	Media              UnsafeUnwrapWebhookEventUnionDataPayloadMedia `json:"media"`
@@ -9041,9 +9056,6 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 	OrderStatus string `json:"order_status"`
 	// This field is from variant [HostedNumberOrderEventWebhookEventDataPayload].
 	ProfileID string `json:"profile_id"`
-	// This field is a union of [MessagingInboundMessagePayloadBody],
-	// [WhatsappMessageEchoDataPayloadBody]
-	Body UnsafeUnwrapWebhookEventUnionDataPayloadBody `json:"body"`
 	// This field is from variant [NumberOrderStatusUpdateWebhookEventDataPayload].
 	CreatedAt time.Time `json:"created_at"`
 	// This field is from variant [NumberOrderStatusUpdateWebhookEventDataPayload].
@@ -9164,6 +9176,7 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 		CreatorCallSessionID     respjson.Field
 		Format                   respjson.Field
 		ID                       respjson.Field
+		Body                     respjson.Field
 		Cc                       respjson.Field
 		CompletedAt              respjson.Field
 		Cost                     respjson.Field
@@ -9201,7 +9214,6 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 		OrderID                  respjson.Field
 		OrderStatus              respjson.Field
 		ProfileID                respjson.Field
-		Body                     respjson.Field
 		CreatedAt                respjson.Field
 		CustomerReference        respjson.Field
 		PhoneNumbers             respjson.Field
@@ -9232,7 +9244,11 @@ func (r *UnsafeUnwrapWebhookEventUnionDataPayload) UnmarshalJSON(data []byte) er
 // will be valid: OfString]
 type UnsafeUnwrapWebhookEventUnionDataPayloadFrom struct {
 	// This field will be present if the value is a [string] instead of an object.
-	OfString    string `json:",inline"`
+	OfString string `json:",inline"`
+	// This field is from variant [OutboundMessagePayloadFrom].
+	AgentID string `json:"agent_id"`
+	// This field is from variant [OutboundMessagePayloadFrom].
+	AgentName   string `json:"agent_name"`
 	Carrier     string `json:"carrier"`
 	LineType    string `json:"line_type"`
 	PhoneNumber string `json:"phone_number"`
@@ -9240,6 +9256,8 @@ type UnsafeUnwrapWebhookEventUnionDataPayloadFrom struct {
 	Status string `json:"status"`
 	JSON   struct {
 		OfString    respjson.Field
+		AgentID     respjson.Field
+		AgentName   respjson.Field
 		Carrier     respjson.Field
 		LineType    respjson.Field
 		PhoneNumber respjson.Field
@@ -9385,6 +9403,79 @@ func (r *UnsafeUnwrapWebhookEventUnionDataPayloadRecordingURLs) UnmarshalJSON(da
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// UnsafeUnwrapWebhookEventUnionDataPayloadBody is an implicit subunion of
+// [UnsafeUnwrapWebhookEventUnion]. UnsafeUnwrapWebhookEventUnionDataPayloadBody
+// provides convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [UnsafeUnwrapWebhookEventUnion].
+type UnsafeUnwrapWebhookEventUnionDataPayloadBody struct {
+	// This field is a union of [string], [MessagingInboundMessagePayloadBodyTextUnion]
+	Text UnsafeUnwrapWebhookEventUnionDataPayloadBodyText `json:"text"`
+	ID   string                                           `json:"id"`
+	// This field is from variant [MessagingInboundMessagePayloadBody].
+	Edit      MessagingInboundMessagePayloadBodyEdit `json:"edit"`
+	ForeignID string                                 `json:"foreign_id"`
+	From      string                                 `json:"from"`
+	// This field is from variant [MessagingInboundMessagePayloadBody].
+	Location MessagingInboundMessagePayloadBodyLocation `json:"location"`
+	// This field is from variant [MessagingInboundMessagePayloadBody].
+	Revoke MessagingInboundMessagePayloadBodyRevoke `json:"revoke"`
+	// This field is from variant [MessagingInboundMessagePayloadBody].
+	SuggestionResponse MessagingInboundMessagePayloadBodySuggestionResponse `json:"suggestion_response"`
+	Timestamp          string                                               `json:"timestamp"`
+	Type               string                                               `json:"type"`
+	// This field is from variant [MessagingInboundMessagePayloadBody].
+	UserFile MessagingInboundMessagePayloadBodyUserFile `json:"user_file"`
+	// This field is from variant [WhatsappMessageEchoDataPayloadBody].
+	FromUserID string `json:"from_user_id"`
+	JSON       struct {
+		Text               respjson.Field
+		ID                 respjson.Field
+		Edit               respjson.Field
+		ForeignID          respjson.Field
+		From               respjson.Field
+		Location           respjson.Field
+		Revoke             respjson.Field
+		SuggestionResponse respjson.Field
+		Timestamp          respjson.Field
+		Type               respjson.Field
+		UserFile           respjson.Field
+		FromUserID         respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+func (r *UnsafeUnwrapWebhookEventUnionDataPayloadBody) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// UnsafeUnwrapWebhookEventUnionDataPayloadBodyText is an implicit subunion of
+// [UnsafeUnwrapWebhookEventUnion].
+// UnsafeUnwrapWebhookEventUnionDataPayloadBodyText provides convenient access to
+// the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [UnsafeUnwrapWebhookEventUnion].
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString]
+type UnsafeUnwrapWebhookEventUnionDataPayloadBodyText struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field is from variant [MessagingInboundMessagePayloadBodyTextUnion].
+	Body string `json:"body"`
+	JSON struct {
+		OfString respjson.Field
+		Body     respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (r *UnsafeUnwrapWebhookEventUnionDataPayloadBodyText) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // UnsafeUnwrapWebhookEventUnionDataPayloadCc is an implicit subunion of
 // [UnsafeUnwrapWebhookEventUnion]. UnsafeUnwrapWebhookEventUnionDataPayloadCc
 // provides convenient access to the sub-properties of the union.
@@ -9500,33 +9591,6 @@ func (r *UnsafeUnwrapWebhookEventUnionDataPayloadCostBreakdownRate) UnmarshalJSO
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// UnsafeUnwrapWebhookEventUnionDataPayloadErrors is an implicit subunion of
-// [UnsafeUnwrapWebhookEventUnion]. UnsafeUnwrapWebhookEventUnionDataPayloadErrors
-// provides convenient access to the sub-properties of the union.
-//
-// For type safety it is recommended to directly use a variant of the
-// [UnsafeUnwrapWebhookEventUnion].
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfMessagingErrorArray OfMessagingError0b38e7044bArray]
-type UnsafeUnwrapWebhookEventUnionDataPayloadErrors struct {
-	// This field will be present if the value is a [[]shared.MessagingError] instead
-	// of an object.
-	OfMessagingErrorArray []shared.MessagingError `json:",inline"`
-	// This field will be present if the value is a [[]MessagingError0b38e7044b]
-	// instead of an object.
-	OfMessagingError0b38e7044bArray []MessagingError0b38e7044b `json:",inline"`
-	JSON                            struct {
-		OfMessagingErrorArray           respjson.Field
-		OfMessagingError0b38e7044bArray respjson.Field
-		raw                             string
-	} `json:"-"`
-}
-
-func (r *UnsafeUnwrapWebhookEventUnionDataPayloadErrors) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // UnsafeUnwrapWebhookEventUnionDataPayloadMedia is an implicit subunion of
 // [UnsafeUnwrapWebhookEventUnion]. UnsafeUnwrapWebhookEventUnionDataPayloadMedia
 // provides convenient access to the sub-properties of the union.
@@ -9552,41 +9616,6 @@ type UnsafeUnwrapWebhookEventUnionDataPayloadMedia struct {
 }
 
 func (r *UnsafeUnwrapWebhookEventUnionDataPayloadMedia) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// UnsafeUnwrapWebhookEventUnionDataPayloadBody is an implicit subunion of
-// [UnsafeUnwrapWebhookEventUnion]. UnsafeUnwrapWebhookEventUnionDataPayloadBody
-// provides convenient access to the sub-properties of the union.
-//
-// For type safety it is recommended to directly use a variant of the
-// [UnsafeUnwrapWebhookEventUnion].
-type UnsafeUnwrapWebhookEventUnionDataPayloadBody struct {
-	ID string `json:"id"`
-	// This field is from variant [MessagingInboundMessagePayloadBody].
-	Edit      MessagingInboundMessagePayloadBodyEdit `json:"edit"`
-	ForeignID string                                 `json:"foreign_id"`
-	From      string                                 `json:"from"`
-	// This field is from variant [MessagingInboundMessagePayloadBody].
-	Revoke    MessagingInboundMessagePayloadBodyRevoke `json:"revoke"`
-	Timestamp string                                   `json:"timestamp"`
-	Type      string                                   `json:"type"`
-	// This field is from variant [WhatsappMessageEchoDataPayloadBody].
-	FromUserID string `json:"from_user_id"`
-	JSON       struct {
-		ID         respjson.Field
-		Edit       respjson.Field
-		ForeignID  respjson.Field
-		From       respjson.Field
-		Revoke     respjson.Field
-		Timestamp  respjson.Field
-		Type       respjson.Field
-		FromUserID respjson.Field
-		raw        string
-	} `json:"-"`
-}
-
-func (r *UnsafeUnwrapWebhookEventUnionDataPayloadBody) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -9680,7 +9709,7 @@ type UnwrapWebhookEventUnion struct {
 	// [ConferenceRecordingSaved], [ConferenceSpeakEnded], [ConferenceSpeakStarted],
 	// [OutboundMessage], [FaxDeliveredData], [FaxFailedData], [FaxMediaProcessedData],
 	// [FaxQueuedData], [FaxSendingStartedData],
-	// [HostedNumberOrderEventWebhookEventData], [InboundMessageWebhookEventData],
+	// [HostedNumberOrderEventWebhookEventData], [MessagingInboundMessage],
 	// [NumberOrderStatusUpdateWebhookEventData], [RecordingAvailableWebhookEventData],
 	// [ReplacedLinkClick], [SessionStatusChangedWebhookEventData],
 	// [TranscriptCompletedWebhookEventData], [Transcription],
@@ -10401,6 +10430,9 @@ type UnwrapWebhookEventUnionDataPayload struct {
 	// This field is from variant [ConferenceRecordingSavedPayload].
 	Format string `json:"format"`
 	ID     string `json:"id"`
+	// This field is a union of [OutboundMessagePayloadBody],
+	// [MessagingInboundMessagePayloadBody], [WhatsappMessageEchoDataPayloadBody]
+	Body UnwrapWebhookEventUnionDataPayloadBody `json:"body"`
 	// This field is a union of [[]OutboundMessagePayloadCc],
 	// [[]MessagingInboundMessagePayloadCc]
 	Cc          UnwrapWebhookEventUnionDataPayloadCc `json:"cc"`
@@ -10412,9 +10444,7 @@ type UnwrapWebhookEventUnionDataPayload struct {
 	// [MessagingInboundMessagePayloadCostBreakdown]
 	CostBreakdown UnwrapWebhookEventUnionDataPayloadCostBreakdown `json:"cost_breakdown"`
 	Encoding      string                                          `json:"encoding"`
-	// This field is a union of [[]shared.MessagingError],
-	// [[]MessagingError0b38e7044b], [[]MessagingError0b38e7044b]
-	Errors UnwrapWebhookEventUnionDataPayloadErrors `json:"errors"`
+	Errors        []MessagingError0b38e7044b                      `json:"errors"`
 	// This field is a union of [[]OutboundMessagePayloadMedia],
 	// [[]MessagingInboundMessagePayloadMedia]
 	Media              UnwrapWebhookEventUnionDataPayloadMedia `json:"media"`
@@ -10459,9 +10489,6 @@ type UnwrapWebhookEventUnionDataPayload struct {
 	OrderStatus string `json:"order_status"`
 	// This field is from variant [HostedNumberOrderEventWebhookEventDataPayload].
 	ProfileID string `json:"profile_id"`
-	// This field is a union of [MessagingInboundMessagePayloadBody],
-	// [WhatsappMessageEchoDataPayloadBody]
-	Body UnwrapWebhookEventUnionDataPayloadBody `json:"body"`
 	// This field is from variant [NumberOrderStatusUpdateWebhookEventDataPayload].
 	CreatedAt time.Time `json:"created_at"`
 	// This field is from variant [NumberOrderStatusUpdateWebhookEventDataPayload].
@@ -10582,6 +10609,7 @@ type UnwrapWebhookEventUnionDataPayload struct {
 		CreatorCallSessionID     respjson.Field
 		Format                   respjson.Field
 		ID                       respjson.Field
+		Body                     respjson.Field
 		Cc                       respjson.Field
 		CompletedAt              respjson.Field
 		Cost                     respjson.Field
@@ -10619,7 +10647,6 @@ type UnwrapWebhookEventUnionDataPayload struct {
 		OrderID                  respjson.Field
 		OrderStatus              respjson.Field
 		ProfileID                respjson.Field
-		Body                     respjson.Field
 		CreatedAt                respjson.Field
 		CustomerReference        respjson.Field
 		PhoneNumbers             respjson.Field
@@ -10650,7 +10677,11 @@ func (r *UnwrapWebhookEventUnionDataPayload) UnmarshalJSON(data []byte) error {
 // will be valid: OfString]
 type UnwrapWebhookEventUnionDataPayloadFrom struct {
 	// This field will be present if the value is a [string] instead of an object.
-	OfString    string `json:",inline"`
+	OfString string `json:",inline"`
+	// This field is from variant [OutboundMessagePayloadFrom].
+	AgentID string `json:"agent_id"`
+	// This field is from variant [OutboundMessagePayloadFrom].
+	AgentName   string `json:"agent_name"`
 	Carrier     string `json:"carrier"`
 	LineType    string `json:"line_type"`
 	PhoneNumber string `json:"phone_number"`
@@ -10658,6 +10689,8 @@ type UnwrapWebhookEventUnionDataPayloadFrom struct {
 	Status string `json:"status"`
 	JSON   struct {
 		OfString    respjson.Field
+		AgentID     respjson.Field
+		AgentName   respjson.Field
 		Carrier     respjson.Field
 		LineType    respjson.Field
 		PhoneNumber respjson.Field
@@ -10800,6 +10833,78 @@ func (r *UnwrapWebhookEventUnionDataPayloadRecordingURLs) UnmarshalJSON(data []b
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// UnwrapWebhookEventUnionDataPayloadBody is an implicit subunion of
+// [UnwrapWebhookEventUnion]. UnwrapWebhookEventUnionDataPayloadBody provides
+// convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [UnwrapWebhookEventUnion].
+type UnwrapWebhookEventUnionDataPayloadBody struct {
+	// This field is a union of [string], [MessagingInboundMessagePayloadBodyTextUnion]
+	Text UnwrapWebhookEventUnionDataPayloadBodyText `json:"text"`
+	ID   string                                     `json:"id"`
+	// This field is from variant [MessagingInboundMessagePayloadBody].
+	Edit      MessagingInboundMessagePayloadBodyEdit `json:"edit"`
+	ForeignID string                                 `json:"foreign_id"`
+	From      string                                 `json:"from"`
+	// This field is from variant [MessagingInboundMessagePayloadBody].
+	Location MessagingInboundMessagePayloadBodyLocation `json:"location"`
+	// This field is from variant [MessagingInboundMessagePayloadBody].
+	Revoke MessagingInboundMessagePayloadBodyRevoke `json:"revoke"`
+	// This field is from variant [MessagingInboundMessagePayloadBody].
+	SuggestionResponse MessagingInboundMessagePayloadBodySuggestionResponse `json:"suggestion_response"`
+	Timestamp          string                                               `json:"timestamp"`
+	Type               string                                               `json:"type"`
+	// This field is from variant [MessagingInboundMessagePayloadBody].
+	UserFile MessagingInboundMessagePayloadBodyUserFile `json:"user_file"`
+	// This field is from variant [WhatsappMessageEchoDataPayloadBody].
+	FromUserID string `json:"from_user_id"`
+	JSON       struct {
+		Text               respjson.Field
+		ID                 respjson.Field
+		Edit               respjson.Field
+		ForeignID          respjson.Field
+		From               respjson.Field
+		Location           respjson.Field
+		Revoke             respjson.Field
+		SuggestionResponse respjson.Field
+		Timestamp          respjson.Field
+		Type               respjson.Field
+		UserFile           respjson.Field
+		FromUserID         respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+func (r *UnwrapWebhookEventUnionDataPayloadBody) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// UnwrapWebhookEventUnionDataPayloadBodyText is an implicit subunion of
+// [UnwrapWebhookEventUnion]. UnwrapWebhookEventUnionDataPayloadBodyText provides
+// convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [UnwrapWebhookEventUnion].
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString]
+type UnwrapWebhookEventUnionDataPayloadBodyText struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field is from variant [MessagingInboundMessagePayloadBodyTextUnion].
+	Body string `json:"body"`
+	JSON struct {
+		OfString respjson.Field
+		Body     respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (r *UnwrapWebhookEventUnionDataPayloadBodyText) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // UnwrapWebhookEventUnionDataPayloadCc is an implicit subunion of
 // [UnwrapWebhookEventUnion]. UnwrapWebhookEventUnionDataPayloadCc provides
 // convenient access to the sub-properties of the union.
@@ -10913,33 +11018,6 @@ func (r *UnwrapWebhookEventUnionDataPayloadCostBreakdownRate) UnmarshalJSON(data
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// UnwrapWebhookEventUnionDataPayloadErrors is an implicit subunion of
-// [UnwrapWebhookEventUnion]. UnwrapWebhookEventUnionDataPayloadErrors provides
-// convenient access to the sub-properties of the union.
-//
-// For type safety it is recommended to directly use a variant of the
-// [UnwrapWebhookEventUnion].
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfMessagingErrorArray OfMessagingError0b38e7044bArray]
-type UnwrapWebhookEventUnionDataPayloadErrors struct {
-	// This field will be present if the value is a [[]shared.MessagingError] instead
-	// of an object.
-	OfMessagingErrorArray []shared.MessagingError `json:",inline"`
-	// This field will be present if the value is a [[]MessagingError0b38e7044b]
-	// instead of an object.
-	OfMessagingError0b38e7044bArray []MessagingError0b38e7044b `json:",inline"`
-	JSON                            struct {
-		OfMessagingErrorArray           respjson.Field
-		OfMessagingError0b38e7044bArray respjson.Field
-		raw                             string
-	} `json:"-"`
-}
-
-func (r *UnwrapWebhookEventUnionDataPayloadErrors) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // UnwrapWebhookEventUnionDataPayloadMedia is an implicit subunion of
 // [UnwrapWebhookEventUnion]. UnwrapWebhookEventUnionDataPayloadMedia provides
 // convenient access to the sub-properties of the union.
@@ -10965,41 +11043,6 @@ type UnwrapWebhookEventUnionDataPayloadMedia struct {
 }
 
 func (r *UnwrapWebhookEventUnionDataPayloadMedia) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// UnwrapWebhookEventUnionDataPayloadBody is an implicit subunion of
-// [UnwrapWebhookEventUnion]. UnwrapWebhookEventUnionDataPayloadBody provides
-// convenient access to the sub-properties of the union.
-//
-// For type safety it is recommended to directly use a variant of the
-// [UnwrapWebhookEventUnion].
-type UnwrapWebhookEventUnionDataPayloadBody struct {
-	ID string `json:"id"`
-	// This field is from variant [MessagingInboundMessagePayloadBody].
-	Edit      MessagingInboundMessagePayloadBodyEdit `json:"edit"`
-	ForeignID string                                 `json:"foreign_id"`
-	From      string                                 `json:"from"`
-	// This field is from variant [MessagingInboundMessagePayloadBody].
-	Revoke    MessagingInboundMessagePayloadBodyRevoke `json:"revoke"`
-	Timestamp string                                   `json:"timestamp"`
-	Type      string                                   `json:"type"`
-	// This field is from variant [WhatsappMessageEchoDataPayloadBody].
-	FromUserID string `json:"from_user_id"`
-	JSON       struct {
-		ID         respjson.Field
-		Edit       respjson.Field
-		ForeignID  respjson.Field
-		From       respjson.Field
-		Revoke     respjson.Field
-		Timestamp  respjson.Field
-		Type       respjson.Field
-		FromUserID respjson.Field
-		raw        string
-	} `json:"-"`
-}
-
-func (r *UnwrapWebhookEventUnionDataPayloadBody) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

@@ -683,50 +683,6 @@ const (
 	InworldVoiceSettingsDeliveryModeCreative InworldVoiceSettingsDeliveryMode = "CREATIVE"
 )
 
-type MessagingError struct {
-	Code   string               `json:"code" api:"required"`
-	Title  string               `json:"title" api:"required"`
-	Detail string               `json:"detail"`
-	Meta   map[string]any       `json:"meta"`
-	Source MessagingErrorSource `json:"source"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Code        respjson.Field
-		Title       respjson.Field
-		Detail      respjson.Field
-		Meta        respjson.Field
-		Source      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r MessagingError) RawJSON() string { return r.JSON.raw }
-func (r *MessagingError) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type MessagingErrorSource struct {
-	// Indicates which query parameter caused the error.
-	Parameter string `json:"parameter"`
-	// JSON pointer (RFC6901) to the offending entity.
-	Pointer string `json:"pointer" format:"json-pointer"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Parameter   respjson.Field
-		Pointer     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r MessagingErrorSource) RawJSON() string { return r.JSON.raw }
-func (r *MessagingErrorSource) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // The set of features available for a specific messaging use case (SMS or MMS).
 // Features can vary depending on the characteristics the phone number, as well as
 // its current product configuration.

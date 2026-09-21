@@ -284,8 +284,9 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 					AllowedList:   []string{"string"},
 				}},
 				InterruptionSettings: telnyx.InferenceEmbeddingInterruptionSettingsParam{
-					DisableGreetingInterruption: telnyx.Bool(true),
-					Enable:                      telnyx.Bool(true),
+					DisableGreetingInterruption:  telnyx.Bool(true),
+					Enable:                       telnyx.Bool(true),
+					InterruptPredictionThreshold: telnyx.Float(0),
 					StartSpeakingPlan: telnyx.StartSpeakingPlanParam{
 						TranscriptionEndpointingPlan: telnyx.TranscriptionEndpointingPlanParam{
 							OnNoPunctuationSeconds: telnyx.Float(0),
@@ -321,17 +322,21 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 					Enabled: telnyx.Bool(true),
 				},
 				PrivacySettings: telnyx.PrivacySettingsParam{
-					DataRetention: telnyx.Bool(true),
+					DataRetention:         telnyx.Bool(true),
+					InTransitDataLocality: telnyx.Bool(true),
 				},
 				Tags: []string{"string"},
 				TelephonySettings: telnyx.TelephonySettingsParam{
 					DefaultTexmlAppID:   telnyx.String("default_texml_app_id"),
 					DisableDtmf:         telnyx.Bool(true),
 					FallbackDestination: telnyx.String("fallback_destination"),
-					NoiseSuppression:    telnyx.TelephonySettingsNoiseSuppressionKrisp,
+					NoiseSuppression:    telnyx.TelephonySettingsNoiseSuppressionAicoustics,
 					NoiseSuppressionConfig: telnyx.TelephonySettingsNoiseSuppressionConfigParam{
 						AttenuationLimit: telnyx.Int(0),
+						EnhancementLevel: telnyx.Float(0),
+						Family:           "quail",
 						Mode:             "advanced",
+						Size:             "vf",
 					},
 					RecordingSettings: telnyx.TelephonySettingsRecordingSettingsParam{
 						Channels:              "single",
@@ -357,65 +362,13 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 				},
 				ToolIDs: []string{"string"},
 				Tools: []telnyx.AssistantToolUnionParam{{
-					OfWebhook: &telnyx.InferenceEmbeddingWebhookToolParams{
-						Type: telnyx.InferenceEmbeddingWebhookToolParamsTypeWebhook,
-						Webhook: telnyx.InferenceEmbeddingWebhookToolParamsWebhook{
-							Description:    "description",
-							Name:           "name",
-							URL:            "https://example.com/api/v1/function",
-							Async:          telnyx.Bool(true),
-							AsyncTimeoutMs: telnyx.Int(1),
-							BodyParameters: telnyx.InferenceEmbeddingWebhookToolParamsWebhookBodyParameters{
-								Properties: map[string]any{
-									"age":      "bar",
-									"location": "bar",
-								},
-								Required: []string{"age", "location"},
-								Type:     "object",
+					OfFunction: &telnyx.AssistantToolFunctionParam{
+						Function: telnyx.FunctionDefinitionParam{
+							Name:        "name",
+							Description: telnyx.String("description"),
+							Parameters: map[string]any{
+								"foo": "bar",
 							},
-							Headers: []telnyx.InferenceEmbeddingWebhookToolParamsWebhookHeader{{
-								Name:  telnyx.String("name"),
-								Value: telnyx.String("value"),
-							}},
-							Messages: []telnyx.InferenceEmbeddingWebhookToolParamsWebhookMessagesUnion{{
-								OfWebhookToolRequestStartMessage: &telnyx.InferenceEmbeddingWebhookToolParamsWebhookMessagesWebhookToolRequestStartMessage{
-									Content:  "Let me look that up for you.",
-									TimingMs: telnyx.Int(100),
-								},
-							}, {
-								OfWebhookToolRequestResponseDelayedMessage: &telnyx.InferenceEmbeddingWebhookToolParamsWebhookMessagesWebhookToolRequestResponseDelayedMessage{
-									Content:  "Still working on that.",
-									TimingMs: 5000,
-								},
-							}},
-							Method: "GET",
-							PathParameters: telnyx.InferenceEmbeddingWebhookToolParamsWebhookPathParameters{
-								Properties: map[string]any{
-									"id": "bar",
-								},
-								Required: []string{"id"},
-								Type:     "object",
-							},
-							PresetBodyFields: map[string]any{
-								"account_id": "bar",
-								"source":     "bar",
-							},
-							PresetQueryParams: map[string]any{
-								"caller":  "bar",
-								"channel": "bar",
-							},
-							QueryParameters: telnyx.InferenceEmbeddingWebhookToolParamsWebhookQueryParameters{
-								Properties: map[string]any{
-									"page": "bar",
-								},
-								Required: []string{"page"},
-								Type:     "object",
-							},
-							StoreFieldsAsVariables: []telnyx.InferenceEmbeddingWebhookToolParamsWebhookStoreFieldsAsVariable{{
-								Name:      "x",
-								ValuePath: "x",
-							}},
-							TimeoutMs: telnyx.Int(500),
 						},
 					},
 				}},

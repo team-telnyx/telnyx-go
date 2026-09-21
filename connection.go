@@ -4,6 +4,7 @@ package telnyx
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -103,6 +104,16 @@ func (r *ConnectionService) ListActiveCalls(ctx context.Context, connectionID st
 // Returned results are cursor paginated.
 func (r *ConnectionService) ListActiveCallsAutoPaging(ctx context.Context, connectionID string, query ConnectionListActiveCallsParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[ConnectionListActiveCallsResponse] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.ListActiveCalls(ctx, connectionID, query, opts...))
+}
+
+// Returns the number of connections associated with the authenticated user,
+// grouped by connection type, together with the connection limits that apply to
+// the user. Forward-only connections are excluded from the counts.
+func (r *ConnectionService) GetCount(ctx context.Context, opts ...option.RequestOption) (res *ConnectionGetCountResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := "connections/count"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return res, err
 }
 
 type Connection struct {
@@ -226,6 +237,191 @@ type ConnectionListActiveCallsResponseRecordType string
 const (
 	ConnectionListActiveCallsResponseRecordTypeCall ConnectionListActiveCallsResponseRecordType = "call"
 )
+
+type ConnectionGetCountResponse struct {
+	Data ConnectionGetCountResponseData `json:"data" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConnectionGetCountResponse) RawJSON() string { return r.JSON.raw }
+func (r *ConnectionGetCountResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ConnectionGetCountResponseData struct {
+	// Counts of the authenticated user's connections, grouped by connection type.
+	// Forward-only connections are excluded.
+	Counts ConnectionGetCountResponseDataCounts `json:"counts" api:"required"`
+	// Connection limits that apply to the user. Contains a single global_limit when a
+	// global connection limit applies, or per-type limits (standard_limit, texml_limit
+	// and uac_limit) when the user has per-type connection count capabilities.
+	Limits ConnectionGetCountResponseDataLimitsUnion `json:"limits" api:"required"`
+	// Identifies the type of the resource.
+	RecordType string `json:"record_type" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Counts      respjson.Field
+		Limits      respjson.Field
+		RecordType  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConnectionGetCountResponseData) RawJSON() string { return r.JSON.raw }
+func (r *ConnectionGetCountResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Counts of the authenticated user's connections, grouped by connection type.
+// Forward-only connections are excluded.
+type ConnectionGetCountResponseDataCounts struct {
+	// Number of Call Control applications.
+	CallControlApplications int64 `json:"call_control_applications" api:"required"`
+	// Number of credential connections.
+	CredentialConnections int64 `json:"credential_connections" api:"required"`
+	// Number of external connections.
+	ExternalConnections int64 `json:"external_connections" api:"required"`
+	// Number of Fax applications.
+	FaxConnections int64 `json:"fax_connections" api:"required"`
+	// Number of FQDN connections.
+	FqdnConnections int64 `json:"fqdn_connections" api:"required"`
+	// Number of IP connections.
+	IPConnections int64 `json:"ip_connections" api:"required"`
+	// Number of Microsoft Teams SBC (direct routing) connections.
+	MicrosoftTeamsSbcConnections int64 `json:"microsoft_teams_sbc_connections" api:"required"`
+	// Number of mobile voice (IMS) connections.
+	MobileVoiceConnections int64 `json:"mobile_voice_connections" api:"required"`
+	// Number of Microsoft Operator Connect connections.
+	OperatorConnectConnections int64 `json:"operator_connect_connections" api:"required"`
+	// Number of TeXML applications.
+	TexmlApplications int64 `json:"texml_applications" api:"required"`
+	// Number of third-party provider connections.
+	ThirdPartyProviderConnections int64 `json:"third_party_provider_connections" api:"required"`
+	// Number of UAC connections.
+	UacConnections int64 `json:"uac_connections" api:"required"`
+	// Number of Zoom SBC connections.
+	ZoomSbcConnections int64 `json:"zoom_sbc_connections" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CallControlApplications       respjson.Field
+		CredentialConnections         respjson.Field
+		ExternalConnections           respjson.Field
+		FaxConnections                respjson.Field
+		FqdnConnections               respjson.Field
+		IPConnections                 respjson.Field
+		MicrosoftTeamsSbcConnections  respjson.Field
+		MobileVoiceConnections        respjson.Field
+		OperatorConnectConnections    respjson.Field
+		TexmlApplications             respjson.Field
+		ThirdPartyProviderConnections respjson.Field
+		UacConnections                respjson.Field
+		ZoomSbcConnections            respjson.Field
+		ExtraFields                   map[string]respjson.Field
+		raw                           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConnectionGetCountResponseDataCounts) RawJSON() string { return r.JSON.raw }
+func (r *ConnectionGetCountResponseDataCounts) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ConnectionGetCountResponseDataLimitsUnion contains all possible properties and
+// values from [ConnectionGetCountResponseDataLimitsGlobalConnectionLimit],
+// [ConnectionGetCountResponseDataLimitsPerTypeConnectionLimits].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type ConnectionGetCountResponseDataLimitsUnion struct {
+	// This field is from variant
+	// [ConnectionGetCountResponseDataLimitsGlobalConnectionLimit].
+	GlobalLimit int64 `json:"global_limit"`
+	// This field is from variant
+	// [ConnectionGetCountResponseDataLimitsPerTypeConnectionLimits].
+	StandardLimit int64 `json:"standard_limit"`
+	// This field is from variant
+	// [ConnectionGetCountResponseDataLimitsPerTypeConnectionLimits].
+	TexmlLimit int64 `json:"texml_limit"`
+	// This field is from variant
+	// [ConnectionGetCountResponseDataLimitsPerTypeConnectionLimits].
+	UacLimit int64 `json:"uac_limit"`
+	JSON     struct {
+		GlobalLimit   respjson.Field
+		StandardLimit respjson.Field
+		TexmlLimit    respjson.Field
+		UacLimit      respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+func (u ConnectionGetCountResponseDataLimitsUnion) AsGlobalConnectionLimit() (v ConnectionGetCountResponseDataLimitsGlobalConnectionLimit) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u ConnectionGetCountResponseDataLimitsUnion) AsPerTypeConnectionLimits() (v ConnectionGetCountResponseDataLimitsPerTypeConnectionLimits) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u ConnectionGetCountResponseDataLimitsUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *ConnectionGetCountResponseDataLimitsUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ConnectionGetCountResponseDataLimitsGlobalConnectionLimit struct {
+	// Maximum total number of connections allowed, when a global limit applies.
+	GlobalLimit int64 `json:"global_limit" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		GlobalLimit respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConnectionGetCountResponseDataLimitsGlobalConnectionLimit) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *ConnectionGetCountResponseDataLimitsGlobalConnectionLimit) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ConnectionGetCountResponseDataLimitsPerTypeConnectionLimits struct {
+	// Maximum number of standard connections allowed, when per-type limits apply.
+	StandardLimit int64 `json:"standard_limit" api:"required"`
+	// Maximum number of TeXML applications allowed, when per-type limits apply.
+	TexmlLimit int64 `json:"texml_limit" api:"required"`
+	// Maximum number of UAC connections allowed, when per-type limits apply.
+	UacLimit int64 `json:"uac_limit" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		StandardLimit respjson.Field
+		TexmlLimit    respjson.Field
+		UacLimit      respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConnectionGetCountResponseDataLimitsPerTypeConnectionLimits) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *ConnectionGetCountResponseDataLimitsPerTypeConnectionLimits) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type ConnectionListParams struct {
 	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`

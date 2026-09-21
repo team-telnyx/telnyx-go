@@ -1612,7 +1612,8 @@ type TranscriptionConfigParam struct {
 	// hints `en`, `es`, `fr`, `de`, `hi`, `ru`, `pt`, `ja`, `it`, and `nl`. For
 	// `soniox/stt-rt-v4`, `auto` omits the language hint and lets Soniox auto-detect;
 	// ISO 639-1 codes (e.g. `en`, `es`) bias detection toward that language. For
-	// `assemblyai/universal-streaming`, `auto` (or unset) enables native multilingual
+	// `assemblyai/universal-3-5-pro` (and its legacy alias
+	// `assemblyai/universal-streaming`), `auto` (or unset) enables native multilingual
 	// code-switching; ISO 639-1 codes (`en`, `es`, `de`, `fr`, `pt`, `it`, `tr`, `nl`,
 	// `sv`, `no`, `da`, `fi`, `hi`, `vi`, `ar`, `he`, `ja`, `zh`) bias the session to
 	// that language. For `humain/realtime`, supported values are `ar`, `en`,
@@ -1632,12 +1633,16 @@ type TranscriptionConfigParam struct {
 	//   - `deepgram/nova-3` and `deepgram/nova-2` for live streaming transcription.
 	//   - `speechmatics/standard` and `speechmatics/enhanced` for live streaming
 	//     transcription.
-	//   - `assemblyai/universal-streaming` for live streaming transcription.
+	//   - `assemblyai/universal-3-5-pro` for live streaming transcription. The legacy
+	//     alias `assemblyai/universal-streaming` is still accepted and resolves to the
+	//     same model.
 	//   - `xai/grok-stt` for live streaming transcription.
 	//   - `soniox/stt-rt-v4` for live streaming multilingual transcription with
 	//     automatic language detection.
 	//   - `nvidia/parakeet-v3` for multilingual transcription with automatic language
 	//     detection.
+	//   - `omi-health/omi-med-stt-v1` for English-only medical transcription
+	//     (Parakeet-based).
 	//   - `humain/realtime` for live streaming transcription with native Arabic and
 	//     Arabic/English code-switching support.
 	//   - `reson8/turns` for live streaming turn-based transcription of 10 European
@@ -1653,8 +1658,9 @@ type TranscriptionConfigParam struct {
 	//
 	// Any of "deepgram/flux", "flux", "deepgram/nova-3", "deepgram/nova-2",
 	// "speechmatics/standard", "speechmatics/enhanced",
-	// "assemblyai/universal-streaming", "xai/grok-stt", "soniox/stt-rt-v4",
-	// "nvidia/parakeet-v3", "humain/realtime", "reson8/turns", "cohere/ar-stt",
+	// "assemblyai/universal-3-5-pro", "assemblyai/universal-streaming",
+	// "xai/grok-stt", "soniox/stt-rt-v4", "nvidia/parakeet-v3",
+	// "omi-health/omi-med-stt-v1", "humain/realtime", "reson8/turns", "cohere/ar-stt",
 	// "azure/fast", "azure/realtime", "google/latest_long",
 	// "distil-whisper/distil-large-v2", "openai/whisper-large-v3-turbo".
 	Model TranscriptionConfigModel `json:"model,omitzero"`
@@ -1676,12 +1682,16 @@ func (r *TranscriptionConfigParam) UnmarshalJSON(data []byte) error {
 //   - `deepgram/nova-3` and `deepgram/nova-2` for live streaming transcription.
 //   - `speechmatics/standard` and `speechmatics/enhanced` for live streaming
 //     transcription.
-//   - `assemblyai/universal-streaming` for live streaming transcription.
+//   - `assemblyai/universal-3-5-pro` for live streaming transcription. The legacy
+//     alias `assemblyai/universal-streaming` is still accepted and resolves to the
+//     same model.
 //   - `xai/grok-stt` for live streaming transcription.
 //   - `soniox/stt-rt-v4` for live streaming multilingual transcription with
 //     automatic language detection.
 //   - `nvidia/parakeet-v3` for multilingual transcription with automatic language
 //     detection.
+//   - `omi-health/omi-med-stt-v1` for English-only medical transcription
+//     (Parakeet-based).
 //   - `humain/realtime` for live streaming transcription with native Arabic and
 //     Arabic/English code-switching support.
 //   - `reson8/turns` for live streaming turn-based transcription of 10 European
@@ -1703,10 +1713,12 @@ const (
 	TranscriptionConfigModelDeepgramNova2                TranscriptionConfigModel = "deepgram/nova-2"
 	TranscriptionConfigModelSpeechmaticsStandard         TranscriptionConfigModel = "speechmatics/standard"
 	TranscriptionConfigModelSpeechmaticsEnhanced         TranscriptionConfigModel = "speechmatics/enhanced"
+	TranscriptionConfigModelAssemblyaiUniversal3_5Pro    TranscriptionConfigModel = "assemblyai/universal-3-5-pro"
 	TranscriptionConfigModelAssemblyaiUniversalStreaming TranscriptionConfigModel = "assemblyai/universal-streaming"
 	TranscriptionConfigModelXaiGrokStt                   TranscriptionConfigModel = "xai/grok-stt"
 	TranscriptionConfigModelSonioxSttRtV4                TranscriptionConfigModel = "soniox/stt-rt-v4"
 	TranscriptionConfigModelNvidiaParakeetV3             TranscriptionConfigModel = "nvidia/parakeet-v3"
+	TranscriptionConfigModelOmiHealthOmiMedSttV1         TranscriptionConfigModel = "omi-health/omi-med-stt-v1"
 	TranscriptionConfigModelHumainRealtime               TranscriptionConfigModel = "humain/realtime"
 	TranscriptionConfigModelReson8Turns                  TranscriptionConfigModel = "reson8/turns"
 	TranscriptionConfigModelCohereArStt                  TranscriptionConfigModel = "cohere/ar-stt"
@@ -1809,9 +1821,10 @@ type TranscriptionEngineAssemblyaiConfigParam struct {
 	//
 	// Any of "AssemblyAI".
 	TranscriptionEngine TranscriptionEngineAssemblyaiConfigTranscriptionEngine `json:"transcription_engine,omitzero"`
-	// The model to use for transcription.
+	// The model to use for transcription. `assemblyai/universal-streaming` is a legacy
+	// alias of `assemblyai/universal-3-5-pro` and resolves to the same model.
 	//
-	// Any of "assemblyai/universal-streaming".
+	// Any of "assemblyai/universal-3-5-pro", "assemblyai/universal-streaming".
 	TranscriptionModel TranscriptionEngineAssemblyaiConfigTranscriptionModel `json:"transcription_model,omitzero"`
 	paramObj
 }
@@ -1831,10 +1844,12 @@ const (
 	TranscriptionEngineAssemblyaiConfigTranscriptionEngineAssemblyAI TranscriptionEngineAssemblyaiConfigTranscriptionEngine = "AssemblyAI"
 )
 
-// The model to use for transcription.
+// The model to use for transcription. `assemblyai/universal-streaming` is a legacy
+// alias of `assemblyai/universal-3-5-pro` and resolves to the same model.
 type TranscriptionEngineAssemblyaiConfigTranscriptionModel string
 
 const (
+	TranscriptionEngineAssemblyaiConfigTranscriptionModelAssemblyaiUniversal3_5Pro    TranscriptionEngineAssemblyaiConfigTranscriptionModel = "assemblyai/universal-3-5-pro"
 	TranscriptionEngineAssemblyaiConfigTranscriptionModelAssemblyaiUniversalStreaming TranscriptionEngineAssemblyaiConfigTranscriptionModel = "assemblyai/universal-streaming"
 )
 
@@ -2212,7 +2227,7 @@ type TranscriptionEngineParakeetConfigParam struct {
 	TranscriptionEngine TranscriptionEngineParakeetConfigTranscriptionEngine `json:"transcription_engine,omitzero"`
 	// The model to use for transcription.
 	//
-	// Any of "nvidia/parakeet-v3".
+	// Any of "nvidia/parakeet-v3", "omi-health/omi-med-stt-v1".
 	TranscriptionModel TranscriptionEngineParakeetConfigTranscriptionModel `json:"transcription_model,omitzero"`
 	paramObj
 }
@@ -2236,7 +2251,8 @@ const (
 type TranscriptionEngineParakeetConfigTranscriptionModel string
 
 const (
-	TranscriptionEngineParakeetConfigTranscriptionModelNvidiaParakeetV3 TranscriptionEngineParakeetConfigTranscriptionModel = "nvidia/parakeet-v3"
+	TranscriptionEngineParakeetConfigTranscriptionModelNvidiaParakeetV3     TranscriptionEngineParakeetConfigTranscriptionModel = "nvidia/parakeet-v3"
+	TranscriptionEngineParakeetConfigTranscriptionModelOmiHealthOmiMedSttV1 TranscriptionEngineParakeetConfigTranscriptionModel = "omi-health/omi-med-stt-v1"
 )
 
 type TranscriptionEngineReson8ConfigParam struct {
@@ -7335,11 +7351,12 @@ type CallActionTransferParams struct {
 	// Use this field to avoid duplicate commands. Telnyx will ignore any command with
 	// the same `command_id` for the same `call_control_id`.
 	CommandID param.Opt[string] `json:"command_id,omitzero"`
-	// The number the inbound call being transferred was originally received on, in
-	// +E164 format. Supplying it lets an unverified non-Telnyx `from` be used as the
-	// caller id, provided that number is still on an active inbound call to this
-	// `diversion` number for your account. The `diversion` number itself must be one
-	// you own or have verified.
+	// The `to` number of an active inbound call, in +E164 format. Telnyx checks
+	// whether there is currently an active inbound call where `to` matches this
+	// `diversion` value and `from` matches the `from` number supplied for this
+	// request. If such a call exists, the `from` number is treated as verified (since
+	// it is already on an active inbound call to you) and can be used as the caller id
+	// for this outbound call.
 	Diversion param.Opt[string] `json:"diversion,omitzero"`
 	// If set to false, early media will not be passed to the originating leg.
 	EarlyMedia param.Opt[bool] `json:"early_media,omitzero"`

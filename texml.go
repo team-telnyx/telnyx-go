@@ -28,6 +28,8 @@ import (
 type TexmlService struct {
 	Options []option.RequestOption
 	// TeXML REST Commands
+	Calls TexmlCallService
+	// TeXML REST Commands
 	Accounts TexmlAccountService
 }
 
@@ -37,6 +39,7 @@ type TexmlService struct {
 func NewTexmlService(opts ...option.RequestOption) (r TexmlService) {
 	r = TexmlService{}
 	r.Options = opts
+	r.Calls = NewTexmlCallService(opts...)
 	r.Accounts = NewTexmlAccountService(opts...)
 	return
 }

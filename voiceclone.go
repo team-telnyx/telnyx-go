@@ -104,8 +104,10 @@ func (r *VoiceCloneService) Delete(ctx context.Context, id string, opts ...optio
 }
 
 // Creates a new voice clone by uploading an audio file directly. Supported
-// formats: WAV, MP3, FLAC, OGG, M4A. For best results, provide 5–10 seconds of
-// clear speech. Maximum file size: 5MB for Telnyx, 20MB for Minimax.
+// formats: WAV, MP3, FLAC, OGG, M4A. For best results, provide 5–60 seconds of
+// clear speech (Ultra accepts up to 60 seconds; Qwen3TTS auto-trims to 10 seconds;
+// Minimax accepts up to 5 minutes). Maximum file size: 5MB for Telnyx, 20MB for
+// Minimax.
 func (r *VoiceCloneService) NewFromUpload(ctx context.Context, body VoiceCloneNewFromUploadParams, opts ...option.RequestOption) (res *VoiceCloneResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "voice_clones/from_upload"
@@ -555,8 +557,8 @@ func init() {
 // required.
 type VoiceCloneNewFromUploadParamsVoiceCloneUploadRequestTelnyxUltraClone struct {
 	// Audio file to clone the voice from. Supported formats: WAV, MP3, FLAC, OGG, M4A.
-	// For best quality, provide 5–10 seconds of clear, uninterrupted speech. Maximum
-	// size: 5MB.
+	// For best quality, provide up to 60 seconds of clear, uninterrupted speech.
+	// Maximum size: 5MB.
 	AudioFile io.Reader `json:"audio_file,omitzero" api:"required" format:"binary"`
 	// Gender of the voice clone.
 	//
