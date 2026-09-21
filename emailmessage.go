@@ -121,7 +121,9 @@ func (r *EmailMessageService) Delete(ctx context.Context, id string, opts ...opt
 	return err
 }
 
-// Creates up to 50 email messages in a single request.
+// Creates up to 1,000 email messages in a single request. Each message is
+// validated and sent independently; per-message failures do not affect other
+// messages in the batch. All responses use 207 Multi-Status.
 func (r *EmailMessageService) Batch(ctx context.Context, params EmailMessageBatchParams, opts ...option.RequestOption) (res *EmailMessageBatchResponse, err error) {
 	if !param.IsOmitted(params.IdempotencyKey) {
 		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey.Value)))
@@ -375,7 +377,8 @@ type EmailMessageBatchResponseError struct {
 	// Batch item errors use `message` (not `detail`) for the human-readable text.
 	//
 	// Any of "bad_request", "not_found", "forbidden", "service_unavailable",
-	// "validation_error", "recipient_suppressed", "reputation_suspended".
+	// "unprocessable_entity", "validation_error", "recipient_suppressed",
+	// "reputation_suspended".
 	Code string `json:"code" api:"required"`
 	// Zero-based index of the failed message in the request array.
 	Index   int64  `json:"index" api:"required"`
@@ -528,6 +531,9 @@ func (r EmailMessageListParams) URLQuery() (v url.Values, err error) {
 }
 
 type EmailMessageBatchParams struct {
+	// Array of email messages to send. Up to 1,000 messages per batch request. Each
+	// message is validated and sent independently; per-message failures do not affect
+	// other messages in the batch.
 	Messages []EmailMessageBatchParamsMessage `json:"messages,omitzero" api:"required"`
 	// Applies sandbox mode to all messages in the batch. Overrides any per-message
 	// sandbox_mode in the messages array.
