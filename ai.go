@@ -49,6 +49,7 @@ type AIService struct {
 	Tools     AIToolService
 	Anthropic AIAnthropicService
 	Knowledge AIKnowledgeService
+	Typesafe  AITypesafeService
 }
 
 // NewAIService generates a new service that applies the given options to each
@@ -72,6 +73,7 @@ func NewAIService(opts ...option.RequestOption) (r AIService) {
 	r.Tools = NewAIToolService(opts...)
 	r.Anthropic = NewAIAnthropicService(opts...)
 	r.Knowledge = NewAIKnowledgeService(opts...)
+	r.Typesafe = NewAITypesafeService(opts...)
 	return
 }
 

@@ -1284,6 +1284,18 @@ Methods:
 
 - <code title="get /ai/knowledge/collections/{slug}/documents">client.AI.Knowledge.Collections.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIKnowledgeCollectionService.GetDocuments">GetDocuments</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, slug <a href="https://pkg.go.dev/builtin#string">string</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIKnowledgeCollectionGetDocumentsParams">AIKnowledgeCollectionGetDocumentsParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIKnowledgeCollectionGetDocumentsResponse">AIKnowledgeCollectionGetDocumentsResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
+## Typesafe
+
+### V1
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AITypesafeV1SystemoneResponse">AITypesafeV1SystemoneResponse</a>
+
+Methods:
+
+- <code title="post /ai/typesafe/v1/systemone">client.AI.Typesafe.V1.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AITypesafeV1Service.Systemone">Systemone</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AITypesafeV1SystemoneParams">AITypesafeV1SystemoneParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AITypesafeV1SystemoneResponse">AITypesafeV1SystemoneResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
 # AuditEvents
 
 Response Types:

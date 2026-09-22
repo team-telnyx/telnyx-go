@@ -24,6 +24,7 @@ type Arithmetic string             // Always "arithmetic"
 type Assistant string              // Always "assistant"
 type BoolLiteral string            // Always "bool_literal"
 type BoolOp string                 // Always "bool_op"
+type Choice string                 // Always "choice"
 type ClientSideTool string         // Always "client_side_tool"
 type Comparative string            // Always "comparative"
 type Comparison string             // Always "comparison"
@@ -42,6 +43,7 @@ type Llm string                    // Always "llm"
 type MediaName string              // Always "media_name"
 type MediaURL string               // Always "media_url"
 type Node string                   // Always "node"
+type Noul string                   // Always "noul"
 type NumberLiteral string          // Always "number_literal"
 type Pay string                    // Always "pay"
 type PredefinedMedia string        // Always "predefined_media"
@@ -51,6 +53,7 @@ type Refer string                  // Always "refer"
 type RequestResponseDelayed string // Always "request_response_delayed"
 type RequestStart string           // Always "request_start"
 type Retrieval string              // Always "retrieval"
+type Score string                  // Always "score"
 type SendDtmf string               // Always "send_dtmf"
 type SendMessage string            // Always "send_message"
 type Simple string                 // Always "simple"
@@ -68,6 +71,7 @@ func (c Arithmetic) Default() Arithmetic                         { return "arith
 func (c Assistant) Default() Assistant                           { return "assistant" }
 func (c BoolLiteral) Default() BoolLiteral                       { return "bool_literal" }
 func (c BoolOp) Default() BoolOp                                 { return "bool_op" }
+func (c Choice) Default() Choice                                 { return "choice" }
 func (c ClientSideTool) Default() ClientSideTool                 { return "client_side_tool" }
 func (c Comparative) Default() Comparative                       { return "comparative" }
 func (c Comparison) Default() Comparison                         { return "comparison" }
@@ -86,6 +90,7 @@ func (c Llm) Default() Llm                                       { return "llm" 
 func (c MediaName) Default() MediaName                           { return "media_name" }
 func (c MediaURL) Default() MediaURL                             { return "media_url" }
 func (c Node) Default() Node                                     { return "node" }
+func (c Noul) Default() Noul                                     { return "noul" }
 func (c NumberLiteral) Default() NumberLiteral                   { return "number_literal" }
 func (c Pay) Default() Pay                                       { return "pay" }
 func (c PredefinedMedia) Default() PredefinedMedia               { return "predefined_media" }
@@ -95,6 +100,7 @@ func (c Refer) Default() Refer                                   { return "refer
 func (c RequestResponseDelayed) Default() RequestResponseDelayed { return "request_response_delayed" }
 func (c RequestStart) Default() RequestStart                     { return "request_start" }
 func (c Retrieval) Default() Retrieval                           { return "retrieval" }
+func (c Score) Default() Score                                   { return "score" }
 func (c SendDtmf) Default() SendDtmf                             { return "send_dtmf" }
 func (c SendMessage) Default() SendMessage                       { return "send_message" }
 func (c Simple) Default() Simple                                 { return "simple" }
@@ -112,6 +118,7 @@ func (c Arithmetic) MarshalJSON() ([]byte, error)             { return marshalSt
 func (c Assistant) MarshalJSON() ([]byte, error)              { return marshalString(c) }
 func (c BoolLiteral) MarshalJSON() ([]byte, error)            { return marshalString(c) }
 func (c BoolOp) MarshalJSON() ([]byte, error)                 { return marshalString(c) }
+func (c Choice) MarshalJSON() ([]byte, error)                 { return marshalString(c) }
 func (c ClientSideTool) MarshalJSON() ([]byte, error)         { return marshalString(c) }
 func (c Comparative) MarshalJSON() ([]byte, error)            { return marshalString(c) }
 func (c Comparison) MarshalJSON() ([]byte, error)             { return marshalString(c) }
@@ -130,6 +137,7 @@ func (c Llm) MarshalJSON() ([]byte, error)                    { return marshalSt
 func (c MediaName) MarshalJSON() ([]byte, error)              { return marshalString(c) }
 func (c MediaURL) MarshalJSON() ([]byte, error)               { return marshalString(c) }
 func (c Node) MarshalJSON() ([]byte, error)                   { return marshalString(c) }
+func (c Noul) MarshalJSON() ([]byte, error)                   { return marshalString(c) }
 func (c NumberLiteral) MarshalJSON() ([]byte, error)          { return marshalString(c) }
 func (c Pay) MarshalJSON() ([]byte, error)                    { return marshalString(c) }
 func (c PredefinedMedia) MarshalJSON() ([]byte, error)        { return marshalString(c) }
@@ -139,6 +147,7 @@ func (c Refer) MarshalJSON() ([]byte, error)                  { return marshalSt
 func (c RequestResponseDelayed) MarshalJSON() ([]byte, error) { return marshalString(c) }
 func (c RequestStart) MarshalJSON() ([]byte, error)           { return marshalString(c) }
 func (c Retrieval) MarshalJSON() ([]byte, error)              { return marshalString(c) }
+func (c Score) MarshalJSON() ([]byte, error)                  { return marshalString(c) }
 func (c SendDtmf) MarshalJSON() ([]byte, error)               { return marshalString(c) }
 func (c SendMessage) MarshalJSON() ([]byte, error)            { return marshalString(c) }
 func (c Simple) MarshalJSON() ([]byte, error)                 { return marshalString(c) }
