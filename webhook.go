@@ -7803,6 +7803,8 @@ type NumberOrderStatusUpdateWebhookEventData struct {
 	// Unique identifier for the event
 	ID string `json:"id" api:"required" format:"uuid"`
 	// The type of event being sent
+	//
+	// Any of "number_order.complete".
 	EventType string `json:"event_type" api:"required"`
 	// ISO 8601 timestamp of when the event occurred
 	OccurredAt time.Time `json:"occurred_at" api:"required" format:"date-time"`
@@ -9056,6 +9058,8 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 	OrderStatus string `json:"order_status"`
 	// This field is from variant [HostedNumberOrderEventWebhookEventDataPayload].
 	ProfileID string `json:"profile_id"`
+	// This field is from variant [MessagingInboundMessagePayload].
+	AutoresponseType string `json:"autoresponse_type"`
 	// This field is from variant [NumberOrderStatusUpdateWebhookEventDataPayload].
 	CreatedAt time.Time `json:"created_at"`
 	// This field is from variant [NumberOrderStatusUpdateWebhookEventDataPayload].
@@ -9214,6 +9218,7 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 		OrderID                  respjson.Field
 		OrderStatus              respjson.Field
 		ProfileID                respjson.Field
+		AutoresponseType         respjson.Field
 		CreatedAt                respjson.Field
 		CustomerReference        respjson.Field
 		PhoneNumbers             respjson.Field
@@ -10489,6 +10494,8 @@ type UnwrapWebhookEventUnionDataPayload struct {
 	OrderStatus string `json:"order_status"`
 	// This field is from variant [HostedNumberOrderEventWebhookEventDataPayload].
 	ProfileID string `json:"profile_id"`
+	// This field is from variant [MessagingInboundMessagePayload].
+	AutoresponseType string `json:"autoresponse_type"`
 	// This field is from variant [NumberOrderStatusUpdateWebhookEventDataPayload].
 	CreatedAt time.Time `json:"created_at"`
 	// This field is from variant [NumberOrderStatusUpdateWebhookEventDataPayload].
@@ -10647,6 +10654,7 @@ type UnwrapWebhookEventUnionDataPayload struct {
 		OrderID                  respjson.Field
 		OrderStatus              respjson.Field
 		ProfileID                respjson.Field
+		AutoresponseType         respjson.Field
 		CreatedAt                respjson.Field
 		CustomerReference        respjson.Field
 		PhoneNumbers             respjson.Field

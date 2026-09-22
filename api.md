@@ -6279,6 +6279,18 @@ Methods:
 - <code title="get /compute/funcs/{id}/revisions">client.Compute.Funcs.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ComputeFuncService.GetRevisions">GetRevisions</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ComputeFuncGetRevisionsParams">ComputeFuncGetRevisionsParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ComputeFuncGetRevisionsResponse">ComputeFuncGetRevisionsResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /compute/funcs/{id}/ship_inspection">client.Compute.Funcs.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ComputeFuncService.GetShipInspection">GetShipInspection</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ComputeFuncGetShipInspectionResponse">ComputeFuncGetShipInspectionResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
+### Export
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#FuncLogExportConfigResponse">FuncLogExportConfigResponse</a>
+
+Methods:
+
+- <code title="put /compute/funcs/{id}/logs/export">client.Compute.Funcs.Export.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ComputeFuncExportService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ComputeFuncExportNewParams">ComputeFuncExportNewParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#FuncLogExportConfigResponse">FuncLogExportConfigResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /compute/funcs/{id}/logs/export">client.Compute.Funcs.Export.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ComputeFuncExportService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#FuncLogExportConfigResponse">FuncLogExportConfigResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="delete /compute/funcs/{id}/logs/export">client.Compute.Funcs.Export.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ComputeFuncExportService.DeleteAll">DeleteAll</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
+
 # NoiseSuppressionEngines
 
 Response Types:

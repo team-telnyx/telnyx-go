@@ -90,7 +90,8 @@ func (r *AudioTranscriptionResponseWord) UnmarshalJSON(data []byte) error {
 // `duration`, and `segments` in `verbose_json` mode.
 // `openai/whisper-large-v3-turbo` returns `text` only. The `deepgram/*` models
 // return `text` and, depending on `model_config`, may include `words` with
-// per-word timestamps and speaker labels.
+// per-word timestamps and speaker labels. The Parakeet models
+// (`nvidia/parakeet-v3`, `omi-health/omi-med-stt-v1`) return `text` only.
 type AIAudioTranscribeResponse struct {
 	// The transcribed text for the audio file.
 	Text string `json:"text" api:"required"`
@@ -165,10 +166,12 @@ type AIAudioTranscribeParams struct {
 	// `deepgram/nova-3` covers ~49 languages plus `multi` and `deepgram/nova-2` covers
 	// ~33, while the `-medical` variants are tuned for clinical vocabulary and accept
 	// English only (`en` and its regional variants, e.g. `en-US`, `en-GB`).
+	// `nvidia/parakeet-v3` is multilingual with automatic language detection;
+	// `omi-health/omi-med-stt-v1` is a medical model, English only.
 	//
 	// Any of "distil-whisper/distil-large-v2", "openai/whisper-large-v3-turbo",
 	// "deepgram/nova-2", "deepgram/nova-2-medical", "deepgram/nova-3",
-	// "deepgram/nova-3-medical".
+	// "deepgram/nova-3-medical", "nvidia/parakeet-v3", "omi-health/omi-med-stt-v1".
 	Model AIAudioTranscribeParamsModel `json:"model,omitzero" api:"required"`
 	// Link to audio file in one of these formats: flac, mp3, mp4, mpeg, mpga, m4a,
 	// ogg, wav, or webm. Support for hosted files is limited to 100MB. Cannot be used
@@ -183,6 +186,8 @@ type AIAudioTranscribeParams struct {
 	// the base language is supported; an unsupported language returns a 400. For
 	// `openai/whisper-large-v3-turbo`, supports multiple languages.
 	// `distil-whisper/distil-large-v2` does not support language parameter.
+	// `nvidia/parakeet-v3` detects the language automatically;
+	// `omi-health/omi-med-stt-v1` is English only.
 	Language param.Opt[string] `json:"language,omitzero"`
 	// The audio file object to transcribe, in one of these formats: flac, mp3, mp4,
 	// mpeg, mpga, m4a, ogg, wav, or webm. File uploads are limited to 100 MB. Cannot
@@ -233,6 +238,8 @@ func (r AIAudioTranscribeParams) MarshalMultipart() (data []byte, contentType st
 // `deepgram/nova-3` covers ~49 languages plus `multi` and `deepgram/nova-2` covers
 // ~33, while the `-medical` variants are tuned for clinical vocabulary and accept
 // English only (`en` and its regional variants, e.g. `en-US`, `en-GB`).
+// `nvidia/parakeet-v3` is multilingual with automatic language detection;
+// `omi-health/omi-med-stt-v1` is a medical model, English only.
 type AIAudioTranscribeParamsModel string
 
 const (
@@ -242,6 +249,8 @@ const (
 	AIAudioTranscribeParamsModelDeepgramNova2Medical       AIAudioTranscribeParamsModel = "deepgram/nova-2-medical"
 	AIAudioTranscribeParamsModelDeepgramNova3              AIAudioTranscribeParamsModel = "deepgram/nova-3"
 	AIAudioTranscribeParamsModelDeepgramNova3Medical       AIAudioTranscribeParamsModel = "deepgram/nova-3-medical"
+	AIAudioTranscribeParamsModelNvidiaParakeetV3           AIAudioTranscribeParamsModel = "nvidia/parakeet-v3"
+	AIAudioTranscribeParamsModelOmiHealthOmiMedSttV1       AIAudioTranscribeParamsModel = "omi-health/omi-med-stt-v1"
 )
 
 // The format of the transcript output. Use `verbose_json` to take advantage of

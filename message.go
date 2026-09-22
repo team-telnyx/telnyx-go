@@ -208,6 +208,9 @@ func (r *MessagingError0b38e7044bSource) UnmarshalJSON(data []byte) error {
 type MessagingInboundMessagePayload struct {
 	// Identifies the type of resource.
 	ID string `json:"id" format:"uuid"`
+	// Automatic response type triggered by an inbound opt-in, opt-out, or help
+	// keyword. Examples include START, STOP, and HELP.
+	AutoresponseType string `json:"autoresponse_type"`
 	// Message body for RCS and WhatsApp. RCS messages contain text, user_file,
 	// location, or suggestion_response. For WhatsApp edits and revocations, inspect
 	// type and the corresponding edit or revoke object.
@@ -278,6 +281,7 @@ type MessagingInboundMessagePayload struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                    respjson.Field
+		AutoresponseType      respjson.Field
 		Body                  respjson.Field
 		Cc                    respjson.Field
 		CompletedAt           respjson.Field
@@ -3402,7 +3406,9 @@ type MessageGetResponseDataUnion struct {
 	WaitSeconds        float64 `json:"wait_seconds"`
 	WebhookFailoverURL string  `json:"webhook_failover_url"`
 	WebhookURL         string  `json:"webhook_url"`
-	JSON               struct {
+	// This field is from variant [MessagingInboundMessagePayload].
+	AutoresponseType string `json:"autoresponse_type"`
+	JSON             struct {
 		ID                    respjson.Field
 		Body                  respjson.Field
 		Cc                    respjson.Field
@@ -3434,6 +3440,7 @@ type MessageGetResponseDataUnion struct {
 		WaitSeconds           respjson.Field
 		WebhookFailoverURL    respjson.Field
 		WebhookURL            respjson.Field
+		AutoresponseType      respjson.Field
 		raw                   string
 	} `json:"-"`
 }
