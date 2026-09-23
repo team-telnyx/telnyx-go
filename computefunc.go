@@ -28,6 +28,7 @@ import (
 // the [NewComputeFuncService] method instead.
 type ComputeFuncService struct {
 	Options []option.RequestOption
+	Export  ComputeFuncExportService
 }
 
 // NewComputeFuncService generates a new service that applies the given options to
@@ -36,6 +37,7 @@ type ComputeFuncService struct {
 func NewComputeFuncService(opts ...option.RequestOption) (r ComputeFuncService) {
 	r = ComputeFuncService{}
 	r.Options = opts
+	r.Export = NewComputeFuncExportService(opts...)
 	return
 }
 

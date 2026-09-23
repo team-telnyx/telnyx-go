@@ -13,7 +13,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
-func TestConnectionGet(t *testing.T) {
+func TestComputeFuncExportNew(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -26,69 +26,16 @@ func TestConnectionGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Connections.Get(context.TODO(), "id")
-	if err != nil {
-		var apierr *telnyx.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestConnectionListWithOptionalParams(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := telnyx.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	_, err := client.Connections.List(context.TODO(), telnyx.ConnectionListParams{
-		Filter: telnyx.ConnectionListParamsFilter{
-			ConnectionName: telnyx.ConnectionListParamsFilterConnectionName{
-				Contains: telnyx.String("contains"),
-			},
-			Fqdn:                   telnyx.String("fqdn"),
-			OutboundVoiceProfileID: telnyx.String("1293384261075731499"),
-		},
-		PageNumber: telnyx.Int(0),
-		PageSize:   telnyx.Int(0),
-		Sort:       telnyx.ConnectionListParamsSortConnectionName,
-	})
-	if err != nil {
-		var apierr *telnyx.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestConnectionListActiveCallsWithOptionalParams(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := telnyx.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	_, err := client.Connections.ListActiveCalls(
+	_, err := client.Compute.Funcs.Export.New(
 		context.TODO(),
-		"1293384261075731461",
-		telnyx.ConnectionListActiveCallsParams{
-			PageNumber: telnyx.Int(0),
-			PageSize:   telnyx.Int(0),
+		"id",
+		telnyx.ComputeFuncExportNewParams{
+			Endpoint: "https://api.honeycomb.io/v1/logs",
+			Headers: map[string]string{
+				"x-honeycomb-team": "abc123",
+			},
+			InvocationExportEnabled: true,
+			RuntimeExportEnabled:    true,
 		},
 	)
 	if err != nil {
@@ -100,7 +47,7 @@ func TestConnectionListActiveCallsWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestConnectionGetCount(t *testing.T) {
+func TestComputeFuncExportList(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -113,7 +60,30 @@ func TestConnectionGetCount(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Connections.GetCount(context.TODO())
+	_, err := client.Compute.Funcs.Export.List(context.TODO(), "id")
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestComputeFuncExportDeleteAll(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := telnyx.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	err := client.Compute.Funcs.Export.DeleteAll(context.TODO(), "id")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {

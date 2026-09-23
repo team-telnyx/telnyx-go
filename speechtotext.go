@@ -289,8 +289,8 @@ type SpeechToTextGetTranscriptionParams struct {
 	// "latest_short", "command_and_search", "phone_call", "video", "default",
 	// "medical_conversation", "medical_dictation", "openai/whisper-tiny",
 	// "openai/whisper-large-v3-turbo", "xai/grok-stt", "speechmatics/standard",
-	// "soniox/stt-rt-v4", "nvidia/parakeet-v3", "humain/realtime", "reson8/turns",
-	// "cohere/ar-stt".
+	// "soniox/stt-rt-v4", "nvidia/parakeet-v3", "omi-health/omi-med-stt-v1",
+	// "humain/realtime", "reson8/turns", "cohere/ar-stt".
 	Model SpeechToTextGetTranscriptionParamsModel `query:"model,omitzero" json:"-"`
 	paramObj
 }
@@ -352,6 +352,7 @@ const (
 	SpeechToTextGetTranscriptionParamsModelSpeechmaticsStandard      SpeechToTextGetTranscriptionParamsModel = "speechmatics/standard"
 	SpeechToTextGetTranscriptionParamsModelSonioxSttRtV4             SpeechToTextGetTranscriptionParamsModel = "soniox/stt-rt-v4"
 	SpeechToTextGetTranscriptionParamsModelNvidiaParakeetV3          SpeechToTextGetTranscriptionParamsModel = "nvidia/parakeet-v3"
+	SpeechToTextGetTranscriptionParamsModelOmiHealthOmiMedSttV1      SpeechToTextGetTranscriptionParamsModel = "omi-health/omi-med-stt-v1"
 	SpeechToTextGetTranscriptionParamsModelHumainRealtime            SpeechToTextGetTranscriptionParamsModel = "humain/realtime"
 	SpeechToTextGetTranscriptionParamsModelReson8Turns               SpeechToTextGetTranscriptionParamsModel = "reson8/turns"
 	SpeechToTextGetTranscriptionParamsModelCohereArStt               SpeechToTextGetTranscriptionParamsModel = "cohere/ar-stt"

@@ -527,7 +527,7 @@ func (u *ChatCompletionRequestToolsUnionParam) asAny() any {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u ChatCompletionRequestToolsUnionParam) GetFunction() *ChatCompletionRequestToolsFunctionFunctionParam {
+func (u ChatCompletionRequestToolsUnionParam) GetFunction() *FunctionDefinitionParam {
 	if vt := u.OfFunction; vt != nil {
 		return &vt.Function
 	}
@@ -562,7 +562,7 @@ func init() {
 
 // The properties Function, Type are required.
 type ChatCompletionRequestToolsFunctionParam struct {
-	Function ChatCompletionRequestToolsFunctionFunctionParam `json:"function,omitzero" api:"required"`
+	Function FunctionDefinitionParam `json:"function,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "function".
 	Type constant.Function `json:"type" default:"function"`
 	paramObj
@@ -573,22 +573,6 @@ func (r ChatCompletionRequestToolsFunctionParam) MarshalJSON() (data []byte, err
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *ChatCompletionRequestToolsFunctionParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The property Name is required.
-type ChatCompletionRequestToolsFunctionFunctionParam struct {
-	Name        string            `json:"name" api:"required"`
-	Description param.Opt[string] `json:"description,omitzero"`
-	Parameters  map[string]any    `json:"parameters,omitzero"`
-	paramObj
-}
-
-func (r ChatCompletionRequestToolsFunctionFunctionParam) MarshalJSON() (data []byte, err error) {
-	type shadow ChatCompletionRequestToolsFunctionFunctionParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ChatCompletionRequestToolsFunctionFunctionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
