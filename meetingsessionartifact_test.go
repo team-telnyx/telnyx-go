@@ -30,7 +30,9 @@ func TestMeetingSessionArtifactNew(t *testing.T) {
 		context.TODO(),
 		"mtgsess_a1b2c3d4-e5f6-7890-abcd-ef1234567890",
 		telnyx.MeetingSessionArtifactNewParams{
-			Type: telnyx.MeetingSessionArtifactNewParamsTypeSummary,
+			OfNamedArtifact: &telnyx.MeetingSessionArtifactNewParamsBodyNamedArtifact{
+				Type: "summary",
+			},
 		},
 	)
 	if err != nil {

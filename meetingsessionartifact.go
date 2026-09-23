@@ -16,6 +16,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/option"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/shared/constant"
 )
 
 // Create and retrieve asynchronous summaries and action-item artifacts.
@@ -39,11 +40,17 @@ func NewMeetingSessionArtifactService(opts ...option.RequestOption) (r MeetingSe
 	return
 }
 
-// Requests asynchronous generation of one `summary` or `action_items` artifact.
-// Each type requires its own request. Generation requires transcript content and
-// configured inference and currently reads at most the first 10,000 segments, so
-// exceptionally long transcripts may produce incomplete artifacts or fail model
-// limits.
+// Requests asynchronous generation of one artifact: `summary`, `action_items`,
+// `decisions`, `topics`, `open_questions`, or `custom`. Each request produces one
+// artifact. `custom` is answered from a `prompt` you supply, which is required for
+// `custom` and rejected on the five named types. Generation requires transcript
+// content and configured inference and currently reads at most the first 10,000
+// segments, so exceptionally long transcripts may produce incomplete artifacts or
+// fail model limits. **Not idempotent, and every call is billed**: each request is
+// a separate inference run, so a retry or a duplicate POST produces a second
+// artifact and a second charge. Guard the call rather than relying on the service
+// to collapse it. The automatic `summarize_on_end` attempt is billed on the same
+// basis.
 func (r *MeetingSessionArtifactService) New(ctx context.Context, id string, body MeetingSessionArtifactNewParams, opts ...option.RequestOption) (res *MeetingSessionArtifactResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -89,10 +96,14 @@ type MeetingSessionArtifact struct {
 	CreatedAt       time.Time                             `json:"created_at" api:"required" format:"date-time"`
 	FailureReason   string                                `json:"failure_reason" api:"required"`
 	ModelProvenance MeetingSessionArtifactModelProvenance `json:"model_provenance" api:"required"`
-	SessionID       string                                `json:"session_id" api:"required"`
+	// The prompt that produced this artifact, or null for a named type. Non-null only
+	// when `type` is `custom`; the five named types always return `null`.
+	Prompt    string `json:"prompt" api:"required"`
+	SessionID string `json:"session_id" api:"required"`
 	// Any of "pending", "completed", "failed".
 	Status MeetingSessionArtifactStatus `json:"status" api:"required"`
-	// Any of "summary", "action_items".
+	// Any of "summary", "action_items", "decisions", "topics", "open_questions",
+	// "custom".
 	Type      MeetingSessionArtifactType `json:"type" api:"required"`
 	UpdatedAt time.Time                  `json:"updated_at" api:"required" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -102,6 +113,7 @@ type MeetingSessionArtifact struct {
 		CreatedAt       respjson.Field
 		FailureReason   respjson.Field
 		ModelProvenance respjson.Field
+		Prompt          respjson.Field
 		SessionID       respjson.Field
 		Status          respjson.Field
 		Type            respjson.Field
@@ -162,8 +174,12 @@ const (
 type MeetingSessionArtifactType string
 
 const (
-	MeetingSessionArtifactTypeSummary     MeetingSessionArtifactType = "summary"
-	MeetingSessionArtifactTypeActionItems MeetingSessionArtifactType = "action_items"
+	MeetingSessionArtifactTypeSummary       MeetingSessionArtifactType = "summary"
+	MeetingSessionArtifactTypeActionItems   MeetingSessionArtifactType = "action_items"
+	MeetingSessionArtifactTypeDecisions     MeetingSessionArtifactType = "decisions"
+	MeetingSessionArtifactTypeTopics        MeetingSessionArtifactType = "topics"
+	MeetingSessionArtifactTypeOpenQuestions MeetingSessionArtifactType = "open_questions"
+	MeetingSessionArtifactTypeCustom        MeetingSessionArtifactType = "custom"
 )
 
 type MeetingSessionArtifactResponse struct {
@@ -199,28 +215,70 @@ func (r *MeetingSessionArtifactListResponse) UnmarshalJSON(data []byte) error {
 }
 
 type MeetingSessionArtifactNewParams struct {
-	// Type of artifact to generate from the session.
+
 	//
-	// Any of "summary", "action_items".
-	Type MeetingSessionArtifactNewParamsType `json:"type,omitzero" api:"required"`
+	// Request body variants
+	//
+
+	// This field is a request body variant, only one variant field can be set.
+	OfNamedArtifact *MeetingSessionArtifactNewParamsBodyNamedArtifact `json:",inline"`
+	// This field is a request body variant, only one variant field can be set.
+	OfCustomArtifact *MeetingSessionArtifactNewParamsBodyCustomArtifact `json:",inline"`
+
 	paramObj
 }
 
-func (r MeetingSessionArtifactNewParams) MarshalJSON() (data []byte, err error) {
-	type shadow MeetingSessionArtifactNewParams
-	return param.MarshalObject(r, (*shadow)(&r))
+func (u MeetingSessionArtifactNewParams) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfNamedArtifact, u.OfCustomArtifact)
 }
 func (r *MeetingSessionArtifactNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Type of artifact to generate from the session.
-type MeetingSessionArtifactNewParamsType string
+// The property Type is required.
+type MeetingSessionArtifactNewParamsBodyNamedArtifact struct {
+	// What to generate from the transcript. `custom` is answered from a `prompt` you
+	// supply; the five named types need none.
+	//
+	// Any of "summary", "action_items", "decisions", "topics", "open_questions".
+	Type string `json:"type,omitzero" api:"required"`
+	paramObj
+}
 
-const (
-	MeetingSessionArtifactNewParamsTypeSummary     MeetingSessionArtifactNewParamsType = "summary"
-	MeetingSessionArtifactNewParamsTypeActionItems MeetingSessionArtifactNewParamsType = "action_items"
-)
+func (r MeetingSessionArtifactNewParamsBodyNamedArtifact) MarshalJSON() (data []byte, err error) {
+	type shadow MeetingSessionArtifactNewParamsBodyNamedArtifact
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MeetingSessionArtifactNewParamsBodyNamedArtifact) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[MeetingSessionArtifactNewParamsBodyNamedArtifact](
+		"type", "summary", "action_items", "decisions", "topics", "open_questions",
+	)
+}
+
+// The properties Prompt, Type are required.
+type MeetingSessionArtifactNewParamsBodyCustomArtifact struct {
+	// An open-ended request answered from the transcript. Required when `type` is
+	// `custom`, and rejected with 400 on any named type. Trimmed before storage and
+	// echoed back in artifact responses and the `artifact.completed` webhook.
+	Prompt string `json:"prompt" api:"required"`
+	// Answered from the `prompt` below rather than a fixed question.
+	//
+	// This field can be elided, and will marshal its zero value as "custom".
+	Type constant.Custom `json:"type" default:"custom"`
+	paramObj
+}
+
+func (r MeetingSessionArtifactNewParamsBodyCustomArtifact) MarshalJSON() (data []byte, err error) {
+	type shadow MeetingSessionArtifactNewParamsBodyCustomArtifact
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MeetingSessionArtifactNewParamsBodyCustomArtifact) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type MeetingSessionArtifactGetParams struct {
 	ID string `path:"id" api:"required" json:"-"`

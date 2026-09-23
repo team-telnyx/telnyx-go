@@ -30,11 +30,13 @@ func TestMeetingSessionNewWithOptionalParams(t *testing.T) {
 	_, err := client.MeetingSessions.New(context.TODO(), telnyx.MeetingSessionNewParams{
 		MeetingURL: "https://zoom.us/j/1234567890",
 		Assistant: telnyx.MeetingSessionNewParamsAssistant{
-			ID:                      "asst_fake-uuid-1234",
-			CallControlConnectionID: "conn-fake-abcdef",
-			From:                    "+12025550199",
-			LoopbackSipUri:          "sip:loopback@example.invalid",
-			AudioGate:               "half_duplex",
+			ID:        "asst_fake-uuid-1234",
+			AudioGate: "half_duplex",
+			DynamicVariables: map[string]string{
+				"candidate_name": "Ada Lovelace",
+				"role":           "Staff Engineer",
+			},
+			LeaveOnEnd: telnyx.Bool(true),
 		},
 		Avatar: telnyx.MeetingSessionNewParamsAvatar{
 			APIKey:   "fake_avatar_api_key_do_not_use",
@@ -47,6 +49,7 @@ func TestMeetingSessionNewWithOptionalParams(t *testing.T) {
 				Base64Data: "/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/wAALCAACAAIBAREA/8QAFAABAAAAAAAAAAAAAAAAAAAACP/EAB4QAAAEBwAAAAAAAAAAAAAAAAAEBgcCFic1RVNi/9oACAEBAAA/AH8hGJbWR09TxKW4vhC2qHgf/9k=",
 			},
 		},
+		ChatOnEnter:    telnyx.String("x"),
 		IdempotencyKey: telnyx.String("x"),
 		JoinAt:         telnyx.Time(time.Now()),
 		Metadata: map[string]any{

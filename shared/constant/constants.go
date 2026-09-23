@@ -28,6 +28,7 @@ type Choice string                 // Always "choice"
 type ClientSideTool string         // Always "client_side_tool"
 type Comparative string            // Always "comparative"
 type Comparison string             // Always "comparison"
+type Custom string                 // Always "custom"
 type Default string                // Always "default"
 type Ein string                    // Always "EIN"
 type Expression string             // Always "expression"
@@ -75,6 +76,7 @@ func (c Choice) Default() Choice                                 { return "choic
 func (c ClientSideTool) Default() ClientSideTool                 { return "client_side_tool" }
 func (c Comparative) Default() Comparative                       { return "comparative" }
 func (c Comparison) Default() Comparison                         { return "comparison" }
+func (c Custom) Default() Custom                                 { return "custom" }
 func (c Default) Default() Default                               { return "default" }
 func (c Ein) Default() Ein                                       { return "EIN" }
 func (c Expression) Default() Expression                         { return "expression" }
@@ -122,6 +124,7 @@ func (c Choice) MarshalJSON() ([]byte, error)                 { return marshalSt
 func (c ClientSideTool) MarshalJSON() ([]byte, error)         { return marshalString(c) }
 func (c Comparative) MarshalJSON() ([]byte, error)            { return marshalString(c) }
 func (c Comparison) MarshalJSON() ([]byte, error)             { return marshalString(c) }
+func (c Custom) MarshalJSON() ([]byte, error)                 { return marshalString(c) }
 func (c Default) MarshalJSON() ([]byte, error)                { return marshalString(c) }
 func (c Ein) MarshalJSON() ([]byte, error)                    { return marshalString(c) }
 func (c Expression) MarshalJSON() ([]byte, error)             { return marshalString(c) }

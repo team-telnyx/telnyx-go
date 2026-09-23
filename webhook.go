@@ -5942,17 +5942,22 @@ type ArtifactCompletedWebhookEventData struct {
 	Content ArtifactCompletedWebhookEventDataContent `json:"content" api:"required"`
 	// Model that generated the artifact.
 	ModelProvenance ArtifactCompletedWebhookEventDataModelProvenance `json:"model_provenance" api:"required"`
+	// The prompt that produced this artifact, or null for a named type. Non-null only
+	// when `type` is `custom`; the five named types always return `null`.
+	Prompt string `json:"prompt" api:"required"`
 	// The meeting session this event belongs to.
 	SessionID string `json:"session_id" api:"required"`
 	// Type of the completed artifact.
 	//
-	// Any of "summary", "action_items".
+	// Any of "summary", "action_items", "decisions", "topics", "open_questions",
+	// "custom".
 	Type string `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ArtifactID      respjson.Field
 		Content         respjson.Field
 		ModelProvenance respjson.Field
+		Prompt          respjson.Field
 		SessionID       respjson.Field
 		Type            respjson.Field
 		ExtraFields     map[string]respjson.Field
@@ -6049,7 +6054,8 @@ type ArtifactFailedWebhookEventData struct {
 	SessionID string `json:"session_id" api:"required"`
 	// Type of the failed artifact.
 	//
-	// Any of "summary", "action_items".
+	// Any of "summary", "action_items", "decisions", "topics", "open_questions",
+	// "custom".
 	Type string `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -8770,8 +8776,10 @@ type UnsafeUnwrapWebhookEventUnionData struct {
 	Content ArtifactCompletedWebhookEventDataContent `json:"content"`
 	// This field is from variant [ArtifactCompletedWebhookEventData].
 	ModelProvenance ArtifactCompletedWebhookEventDataModelProvenance `json:"model_provenance"`
-	SessionID       string                                           `json:"session_id"`
-	Type            string                                           `json:"type"`
+	// This field is from variant [ArtifactCompletedWebhookEventData].
+	Prompt    string `json:"prompt"`
+	SessionID string `json:"session_id"`
+	Type      string `json:"type"`
 	// This field is from variant [CallConversationEnded].
 	CreatedAt time.Time `json:"created_at"`
 	// This field is from variant [RecordingAvailableWebhookEventData].
@@ -8805,6 +8813,7 @@ type UnsafeUnwrapWebhookEventUnionData struct {
 		ArtifactID      respjson.Field
 		Content         respjson.Field
 		ModelProvenance respjson.Field
+		Prompt          respjson.Field
 		SessionID       respjson.Field
 		Type            respjson.Field
 		CreatedAt       respjson.Field
@@ -10206,8 +10215,10 @@ type UnwrapWebhookEventUnionData struct {
 	Content ArtifactCompletedWebhookEventDataContent `json:"content"`
 	// This field is from variant [ArtifactCompletedWebhookEventData].
 	ModelProvenance ArtifactCompletedWebhookEventDataModelProvenance `json:"model_provenance"`
-	SessionID       string                                           `json:"session_id"`
-	Type            string                                           `json:"type"`
+	// This field is from variant [ArtifactCompletedWebhookEventData].
+	Prompt    string `json:"prompt"`
+	SessionID string `json:"session_id"`
+	Type      string `json:"type"`
 	// This field is from variant [CallConversationEnded].
 	CreatedAt time.Time `json:"created_at"`
 	// This field is from variant [RecordingAvailableWebhookEventData].
@@ -10241,6 +10252,7 @@ type UnwrapWebhookEventUnionData struct {
 		ArtifactID      respjson.Field
 		Content         respjson.Field
 		ModelProvenance respjson.Field
+		Prompt          respjson.Field
 		SessionID       respjson.Field
 		Type            respjson.Field
 		CreatedAt       respjson.Field

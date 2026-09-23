@@ -50,7 +50,13 @@ func (r *MeetingSessionActionService) SendChat(ctx context.Context, id string, b
 	return res, err
 }
 
-// Sends audio / text-to-speech into a meeting session.
+// Sends audio / text-to-speech into a meeting session. With a Telnyx AI Assistant
+// (or avatar) attached, the bot is a webpage-output bot: the speak audio routes
+// through the assistant's output page rather than the bot mic and plays once the
+// assistant is connected -- it is not refused. If that page cannot be reached,
+// delivery fails with the 502 below, which may arrive without an error envelope,
+// so branch on the status code before parsing a body. The assistant is designed to
+// own the conversation, so prefer letting it speak or use `send_chat`.
 func (r *MeetingSessionActionService) Speak(ctx context.Context, id string, body MeetingSessionActionSpeakParams, opts ...option.RequestOption) (res *ActionAcceptedResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
