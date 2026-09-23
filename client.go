@@ -384,6 +384,10 @@ type Client struct {
 	// All endpoints are public and unauthenticated; signup endpoints are additionally
 	// gated by the freemium feature flags and per-country availability.
 	BotSignup BotSignupService
+	// Machine payment (MPP) account-credit operations. Fund your Telnyx account
+	// programmatically from a machine or agent using the Machine Payment Protocol, an
+	// HTTP-402 flow settled via Stripe or Tempo.
+	MachinePayments MachinePaymentService
 }
 
 // DefaultClientOptions read from the environment (TELNYX_API_KEY,
@@ -614,6 +618,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.BotChallenge = NewBotChallengeService(opts...)
 	r.BotSessions = NewBotSessionService(opts...)
 	r.BotSignup = NewBotSignupService(opts...)
+	r.MachinePayments = NewMachinePaymentService(opts...)
 
 	return
 }

@@ -6343,3 +6343,13 @@ Methods:
 
 - <code title="post /v2/bot_signup">client.BotSignup.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#BotSignupService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#BotSignupNewParams">BotSignupNewParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SuccessResponse">SuccessResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="post /v2/bot_signup/resend_magic_link">client.BotSignup.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#BotSignupService.ResendMagicLink">ResendMagicLink</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#BotSignupResendMagicLinkParams">BotSignupResendMagicLinkParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SuccessResponse">SuccessResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
+# MachinePayments
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#MachinePaymentAccountCreditResponse">MachinePaymentAccountCreditResponse</a>
+
+Methods:
+
+- <code title="post /machine-payments/account-credit">client.MachinePayments.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#MachinePaymentService.AccountCredit">AccountCredit</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#MachinePaymentAccountCreditParams">MachinePaymentAccountCreditParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#MachinePaymentAccountCreditResponse">MachinePaymentAccountCreditResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
