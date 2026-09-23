@@ -1902,6 +1902,13 @@ func TestCallActionTransferWithOptionalParams(t *testing.T) {
 			AnsweringMachineDetectionConfig: telnyx.CallActionTransferParamsAnsweringMachineDetectionConfig{
 				AfterGreetingSilenceMillis:      telnyx.Int(1000),
 				BeepDetectionProfile:            "freq_only",
+				BeepMaxFrequencyHz:              telnyx.Int(2000),
+				BeepMinFrequencyHz:              telnyx.Int(550),
+				BeepMinToneDurationMillis:       telnyx.Int(300),
+				BeepSpectralConfirmation:        telnyx.Bool(true),
+				BeepSpectralMinPurity:           telnyx.Float(0.8),
+				BeepSpectralRejectFaxCng:        telnyx.Bool(true),
+				BeepSpectralWindowMillis:        telnyx.Int(100),
 				BetweenWordsSilenceMillis:       telnyx.Int(1000),
 				GreetingDurationMillis:          telnyx.Int(1000),
 				GreetingSilenceDurationMillis:   telnyx.Int(2000),

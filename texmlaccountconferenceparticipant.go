@@ -426,6 +426,31 @@ type TexmlAccountConferenceParticipantParticipantsParams struct {
 	// label can be used to reference the participant for updates via the TeXML REST
 	// API.
 	Label param.Opt[string] `json:"Label,omitzero"`
+	// Highest frequency, in Hz, that a tone can reach and still be treated as a beep.
+	// Only used when MachineDetection is enabled.
+	MachineDetectionBeepMaxFrequency param.Opt[int64] `json:"MachineDetectionBeepMaxFrequency,omitzero"`
+	// Lowest frequency, in Hz, that a tone must reach to be treated as a beep. Raising
+	// it above 480 excludes North American ringback (440 + 480 Hz), which can
+	// otherwise be reported as a beep when the `freq_only` profile is in use. Only
+	// used when MachineDetection is enabled.
+	MachineDetectionBeepMinFrequency param.Opt[int64] `json:"MachineDetectionBeepMinFrequency,omitzero"`
+	// Shortest tone, in milliseconds, that can be treated as a beep. Raising it
+	// rejects brief tones such as call-progress blips. Only used when MachineDetection
+	// is enabled.
+	MachineDetectionBeepMinToneDuration param.Opt[int64] `json:"MachineDetectionBeepMinToneDuration,omitzero"`
+	// When enabled, a candidate beep must pass an additional spectral check before it
+	// is reported. Only used when MachineDetection is enabled.
+	MachineDetectionBeepSpectralConfirmation param.Opt[bool] `json:"MachineDetectionBeepSpectralConfirmation,omitzero"`
+	// Minimum spectral purity, from 0 to 1, for a tone to be treated as a beep.
+	// Raising it rejects mixed tones such as ringback, which combines two frequencies.
+	// Only used when MachineDetection is enabled.
+	MachineDetectionBeepSpectralMinPurity param.Opt[float64] `json:"MachineDetectionBeepSpectralMinPurity,omitzero"`
+	// When enabled, the fax CNG tone is rejected rather than reported as a beep. Only
+	// used when MachineDetection is enabled.
+	MachineDetectionBeepSpectralRejectFaxCng param.Opt[bool] `json:"MachineDetectionBeepSpectralRejectFaxCng,omitzero"`
+	// Length of the spectral confirmation window, in milliseconds. Only used when
+	// MachineDetection is enabled.
+	MachineDetectionBeepSpectralWindow param.Opt[int64] `json:"MachineDetectionBeepSpectralWindow,omitzero"`
 	// If initial silence duration is greater than this value, consider it a machine.
 	// Ignored when `premium` detection is used.
 	MachineDetectionSilenceTimeout param.Opt[int64] `json:"MachineDetectionSilenceTimeout,omitzero"`
