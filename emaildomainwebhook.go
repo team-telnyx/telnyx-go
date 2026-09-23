@@ -173,31 +173,36 @@ const (
 	EmailWebhookRecordTypeEmailWebhook EmailWebhookRecordType = "email_webhook"
 )
 
-// Event types a webhook may subscribe to. The union of email._ events (published
-// by email-api) and email_domain._ lifecycle events (published by this service).
-// An event not listed here can never be subscribed to and is silently dropped.
+// Event types accepted by domain webhook subscriptions. Allowlists match the
+// legacy event_type, not canonical_event_type. Of the 22 accepted types,
+// email.sending is stored but intentionally not published. Cancellation,
+// daily-limit failures, and system failures publish after commit when a matching
+// domain webhook is configured.
 type EmailWebhookEvent string
 
 const (
-	EmailWebhookEventEmailScheduled       EmailWebhookEvent = "email.scheduled"
-	EmailWebhookEventEmailSandbox         EmailWebhookEvent = "email.sandbox"
-	EmailWebhookEventEmailQueued          EmailWebhookEvent = "email.queued"
-	EmailWebhookEventEmailSending         EmailWebhookEvent = "email.sending"
-	EmailWebhookEventEmailSent            EmailWebhookEvent = "email.sent"
-	EmailWebhookEventEmailDelivered       EmailWebhookEvent = "email.delivered"
-	EmailWebhookEventEmailDeferred        EmailWebhookEvent = "email.deferred"
-	EmailWebhookEventEmailBounced         EmailWebhookEvent = "email.bounced"
-	EmailWebhookEventEmailFailed          EmailWebhookEvent = "email.failed"
-	EmailWebhookEventEmailComplained      EmailWebhookEvent = "email.complained"
-	EmailWebhookEventEmailOpened          EmailWebhookEvent = "email.opened"
-	EmailWebhookEventEmailClicked         EmailWebhookEvent = "email.clicked"
-	EmailWebhookEventEmailUnsubscribed    EmailWebhookEvent = "email.unsubscribed"
-	EmailWebhookEventEmailReceived        EmailWebhookEvent = "email.received"
-	EmailWebhookEventEmailDomainCreated   EmailWebhookEvent = "email_domain.created"
-	EmailWebhookEventEmailDomainVerified  EmailWebhookEvent = "email_domain.verified"
-	EmailWebhookEventEmailDomainDegraded  EmailWebhookEvent = "email_domain.degraded"
-	EmailWebhookEventEmailDomainSuspended EmailWebhookEvent = "email_domain.suspended"
-	EmailWebhookEventEmailDomainDeleted   EmailWebhookEvent = "email_domain.deleted"
+	EmailWebhookEventEmailScheduled          EmailWebhookEvent = "email.scheduled"
+	EmailWebhookEventEmailSandbox            EmailWebhookEvent = "email.sandbox"
+	EmailWebhookEventEmailQueued             EmailWebhookEvent = "email.queued"
+	EmailWebhookEventEmailSending            EmailWebhookEvent = "email.sending"
+	EmailWebhookEventEmailSent               EmailWebhookEvent = "email.sent"
+	EmailWebhookEventEmailDelivered          EmailWebhookEvent = "email.delivered"
+	EmailWebhookEventEmailDeferred           EmailWebhookEvent = "email.deferred"
+	EmailWebhookEventEmailBounced            EmailWebhookEvent = "email.bounced"
+	EmailWebhookEventEmailFailed             EmailWebhookEvent = "email.failed"
+	EmailWebhookEventEmailComplained         EmailWebhookEvent = "email.complained"
+	EmailWebhookEventEmailOpened             EmailWebhookEvent = "email.opened"
+	EmailWebhookEventEmailClicked            EmailWebhookEvent = "email.clicked"
+	EmailWebhookEventEmailUnsubscribed       EmailWebhookEvent = "email.unsubscribed"
+	EmailWebhookEventEmailReceived           EmailWebhookEvent = "email.received"
+	EmailWebhookEventEmailCancelled          EmailWebhookEvent = "email.cancelled"
+	EmailWebhookEventEmailDailyLimitExceeded EmailWebhookEvent = "email.daily_limit_exceeded"
+	EmailWebhookEventEmailDomainCreated      EmailWebhookEvent = "email_domain.created"
+	EmailWebhookEventEmailDomainVerified     EmailWebhookEvent = "email_domain.verified"
+	EmailWebhookEventEmailDomainDegraded     EmailWebhookEvent = "email_domain.degraded"
+	EmailWebhookEventEmailDomainSuspended    EmailWebhookEvent = "email_domain.suspended"
+	EmailWebhookEventEmailDomainDeleted      EmailWebhookEvent = "email_domain.deleted"
+	EmailWebhookEventEmailDomainDkimRotated  EmailWebhookEvent = "email_domain.dkim_rotated"
 )
 
 type EmailWebhookResponse struct {

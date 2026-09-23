@@ -118,6 +118,12 @@ func (r *EmailTemplateService) Delete(ctx context.Context, id string, opts ...op
 
 // Renders a template using the provided Liquid variables. Missing
 // `template_variables` defaults to `{}`.
+//
+// When the template has `strict_variables` enabled and a required variable (per
+// `variable_schema`) is missing, returns 422 naming the variable. When the
+// template has `autoescape` enabled, the rendered `html_body` expression output is
+// HTML-escaped at the output boundary; `subject` and `text_body` are not
+// autoescaped.
 func (r *EmailTemplateService) Render(ctx context.Context, id string, body EmailTemplateRenderParams, opts ...option.RequestOption) (res *EmailTemplateRenderResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -143,29 +149,44 @@ func (r *EmailTemplateService) Replace(ctx context.Context, id string, body Emai
 }
 
 type EmailTemplate struct {
-	ID        string    `json:"id" api:"required" format:"uuid"`
-	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
-	HTMLBody  string    `json:"html_body" api:"required"`
-	Name      string    `json:"name" api:"required"`
+	ID string `json:"id" api:"required" format:"uuid"`
+	// Whether HTML autoescaping is enabled for this template. When `true`, only
+	// rendered `html_body` expression output is HTML-escaped at the output boundary;
+	// `subject` and `text_body` are never autoescaped.
+	Autoescape bool      `json:"autoescape" api:"required"`
+	CreatedAt  time.Time `json:"created_at" api:"required" format:"date-time"`
+	HTMLBody   string    `json:"html_body" api:"required"`
+	Name       string    `json:"name" api:"required"`
 	// Any of "email_template".
 	RecordType EmailTemplateRecordType `json:"record_type" api:"required"`
-	Subject    string                  `json:"subject" api:"required"`
-	TextBody   string                  `json:"text_body" api:"required"`
-	UpdatedAt  time.Time               `json:"updated_at" api:"required" format:"date-time"`
-	Variables  []string                `json:"variables" api:"required"`
+	// Whether strict variable validation is enabled for this template. When `true`,
+	// sends and renders that are missing a variable marked `required: true` in
+	// `variable_schema` fail with 422 naming the variable.
+	StrictVariables bool      `json:"strict_variables" api:"required"`
+	Subject         string    `json:"subject" api:"required"`
+	TextBody        string    `json:"text_body" api:"required"`
+	UpdatedAt       time.Time `json:"updated_at" api:"required" format:"date-time"`
+	// Structured variable requirements, or `null` when the template uses only the
+	// legacy `variables` array.
+	VariableSchema map[string]EmailTemplateVariableSchema `json:"variable_schema" api:"required"`
+	// Legacy unstructured variable names. This path remains supported unchanged.
+	Variables []string `json:"variables" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		CreatedAt   respjson.Field
-		HTMLBody    respjson.Field
-		Name        respjson.Field
-		RecordType  respjson.Field
-		Subject     respjson.Field
-		TextBody    respjson.Field
-		UpdatedAt   respjson.Field
-		Variables   respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		ID              respjson.Field
+		Autoescape      respjson.Field
+		CreatedAt       respjson.Field
+		HTMLBody        respjson.Field
+		Name            respjson.Field
+		RecordType      respjson.Field
+		StrictVariables respjson.Field
+		Subject         respjson.Field
+		TextBody        respjson.Field
+		UpdatedAt       respjson.Field
+		VariableSchema  respjson.Field
+		Variables       respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
 	} `json:"-"`
 }
 
@@ -180,6 +201,27 @@ type EmailTemplateRecordType string
 const (
 	EmailTemplateRecordTypeEmailTemplate EmailTemplateRecordType = "email_template"
 )
+
+type EmailTemplateVariableSchema struct {
+	// Whether the variable must be supplied when strict variable validation is
+	// enabled.
+	Required bool `json:"required" api:"required"`
+	// Default value for an optional variable. Rejected when `required` is `true`.
+	Default string `json:"default"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Required    respjson.Field
+		Default     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EmailTemplateVariableSchema) RawJSON() string { return r.JSON.raw }
+func (r *EmailTemplateVariableSchema) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type EmailTemplateResponse struct {
 	Data EmailTemplate `json:"data" api:"required"`
@@ -203,9 +245,16 @@ type UpdateEmailTemplateRequestParam struct {
 	// Liquid template subject.
 	Subject param.Opt[string] `json:"subject,omitzero"`
 	// Liquid template text body.
-	TextBody  param.Opt[string] `json:"text_body,omitzero"`
-	Name      param.Opt[string] `json:"name,omitzero"`
-	Variables []string          `json:"variables,omitzero"`
+	TextBody param.Opt[string] `json:"text_body,omitzero"`
+	// Per-template HTML autoescaping setting.
+	Autoescape param.Opt[bool]   `json:"autoescape,omitzero"`
+	Name       param.Opt[string] `json:"name,omitzero"`
+	// Per-template strict variable-validation setting.
+	StrictVariables param.Opt[bool] `json:"strict_variables,omitzero"`
+	// Structured variable requirements. Required variables cannot define defaults;
+	// invalid combinations return 422. Set to `null` to clear the schema.
+	VariableSchema map[string]UpdateEmailTemplateRequestVariableSchemaParam `json:"variable_schema,omitzero"`
+	Variables      []string                                                 `json:"variables,omitzero"`
 	paramObj
 }
 
@@ -214,6 +263,24 @@ func (r UpdateEmailTemplateRequestParam) MarshalJSON() (data []byte, err error) 
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *UpdateEmailTemplateRequestParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The property Required is required.
+type UpdateEmailTemplateRequestVariableSchemaParam struct {
+	// Whether the variable must be supplied when strict variable validation is
+	// enabled.
+	Required bool `json:"required" api:"required"`
+	// Default value for an optional variable. Rejected when `required` is `true`.
+	Default param.Opt[string] `json:"default,omitzero"`
+	paramObj
+}
+
+func (r UpdateEmailTemplateRequestVariableSchemaParam) MarshalJSON() (data []byte, err error) {
+	type shadow UpdateEmailTemplateRequestVariableSchemaParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *UpdateEmailTemplateRequestVariableSchemaParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -262,8 +329,32 @@ type EmailTemplateNewParams struct {
 	// Liquid template subject.
 	Subject param.Opt[string] `json:"subject,omitzero"`
 	// Liquid template text body.
-	TextBody       param.Opt[string] `json:"text_body,omitzero"`
-	IdempotencyKey param.Opt[string] `header:"Idempotency-Key,omitzero" json:"-"`
+	TextBody param.Opt[string] `json:"text_body,omitzero"`
+	// Per-template HTML autoescaping setting. Defaults to `false` for backward
+	// compatibility. When `true`, the rendered `html_body` HTML-escapes each Liquid
+	// expression's output at the output boundary (after its filters run, before
+	// concatenation with literal template markup). Input values are never mutated and
+	// `subject`/`text_body` are never autoescaped. The boundary escape is idempotent:
+	// HTML entities already present in the output (e.g. from an explicit `escape`
+	// filter) are preserved, so an explicit `escape`/`escape_once` is never
+	// double-escaped, and markup introduced by any later filter in the chain is still
+	// escaped.
+	Autoescape param.Opt[bool] `json:"autoescape,omitzero"`
+	// Per-template strict variable-validation setting. Defaults to `false` for
+	// backward compatibility. When `true`, a send or render that is missing a variable
+	// marked `required: true` in `variable_schema` fails with 422 naming the variable.
+	// Missing optional variables never fail; their schema `default` (when set) is
+	// applied to the render.
+	StrictVariables param.Opt[bool]   `json:"strict_variables,omitzero"`
+	IdempotencyKey  param.Opt[string] `header:"Idempotency-Key,omitzero" json:"-"`
+	// Structured variable requirements. Required variables cannot define defaults;
+	// invalid combinations return 422. This is independent of the legacy `variables`
+	// array. On render with `strict_variables` enabled: `required` variables must be
+	// supplied as non-empty values — absent, `null`, empty string, empty object `{}`,
+	// and empty array `[]` all fail with 422 naming the variable, while present values
+	// such as `false` and `0` pass (they are present, not empty). Optional variables
+	// fall back to their `default` when absent.
+	VariableSchema map[string]EmailTemplateNewParamsVariableSchema `json:"variable_schema,omitzero"`
 	// Template variables. Auto-extracted from subject/body fields when absent.
 	Variables []string `json:"variables,omitzero"`
 	paramObj
@@ -274,6 +365,24 @@ func (r EmailTemplateNewParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *EmailTemplateNewParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The property Required is required.
+type EmailTemplateNewParamsVariableSchema struct {
+	// Whether the variable must be supplied when strict variable validation is
+	// enabled.
+	Required bool `json:"required" api:"required"`
+	// Default value for an optional variable. Rejected when `required` is `true`.
+	Default param.Opt[string] `json:"default,omitzero"`
+	paramObj
+}
+
+func (r EmailTemplateNewParamsVariableSchema) MarshalJSON() (data []byte, err error) {
+	type shadow EmailTemplateNewParamsVariableSchema
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *EmailTemplateNewParamsVariableSchema) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

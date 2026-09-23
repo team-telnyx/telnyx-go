@@ -174,9 +174,11 @@ func (r *EmailBlockService) GetEventsAutoPaging(ctx context.Context, id string, 
 // stream `ORDER BY created_at ASC, id ASC` with no pagination.
 //
 // CSV columns:
-// `id,to,from,reason,source,scope,status,domain_id, created_at,updated_at,expires_at,group_id`.
-// The CSV carries the `group_id` column so group-scoped suppressions' group link
-// survives the export (empty for account-scope rows).
+// `id,to,from,reason,source,scope,status,domain_id, created_at,updated_at,expires_at,group_id,bounce_category,dsn_code, meta`
+// (15 columns). The first 12 columns are the stable native signature;
+// `bounce_category`, `dsn_code`, and `meta` are optional backup fields (empty when
+// unset). The CSV carries the `group_id` column so group-scoped suppressions'
+// group link survives the export (empty for account-scope rows).
 func (r *EmailBlockService) GetExport(ctx context.Context, query EmailBlockGetExportParams, opts ...option.RequestOption) (res *string, err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "text/csv")}, opts...)
@@ -209,7 +211,11 @@ type EmailBlock struct {
 	To        string    `json:"to" api:"required"`
 	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// `null` ⇒ account scope. Stored on the row; exposed here.
-	DomainID  string    `json:"domain_id" api:"nullable" format:"uuid"`
+	DomainID string `json:"domain_id" api:"nullable" format:"uuid"`
+	// Optional expiration time. An active row stops matching send-time suppression
+	// checks as soon as `expires_at <= now()`. A maintenance worker later transitions
+	// the row to `status: expired` and appends an `expired` audit event (normally
+	// within 15 minutes).
 	ExpiresAt time.Time `json:"expires_at" api:"nullable" format:"date-time"`
 	// `null` ⇒ not address-scope. (schema: from_address)
 	From string `json:"from" api:"nullable"`
