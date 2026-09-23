@@ -1368,11 +1368,12 @@ type CallDialParams struct {
 	// Use this field to avoid duplicate commands. Telnyx will ignore others Dial
 	// commands with the same `command_id`.
 	CommandID param.Opt[string] `json:"command_id,omitzero"`
-	// The number the inbound call being transferred was originally received on, in
-	// +E164 format. Supplying it lets an unverified non-Telnyx `from` be used as the
-	// caller id, provided that number is still on an active inbound call to this
-	// `diversion` number for your account. The `diversion` number itself must be one
-	// you own or have verified.
+	// The `to` number of an active inbound call, in +E164 format. Telnyx checks
+	// whether there is currently an active inbound call where `to` matches this
+	// `diversion` value and `from` matches the `from` number supplied for this
+	// request. If such a call exists, the `from` number is treated as verified (since
+	// it is already on an active inbound call to you) and can be used as the caller id
+	// for this outbound call.
 	Diversion param.Opt[string] `json:"diversion,omitzero"`
 	// Enables Dialogflow for the current call. The default value is false.
 	EnableDialogflow param.Opt[bool] `json:"enable_dialogflow,omitzero"`
@@ -1689,6 +1690,31 @@ type CallDialParamsAnsweringMachineDetectionConfig struct {
 	// Silence duration threshold after a greeting message or voice for it be
 	// considered human.
 	AfterGreetingSilenceMillis param.Opt[int64] `json:"after_greeting_silence_millis,omitzero"`
+	// Highest frequency, in Hz, that a tone can reach and still be treated as a beep.
+	// Only used when beep detection is active.
+	BeepMaxFrequencyHz param.Opt[int64] `json:"beep_max_frequency_hz,omitzero"`
+	// Lowest frequency, in Hz, that a tone must reach to be treated as a beep. Raising
+	// it above 480 excludes North American ringback (440 + 480 Hz), which can
+	// otherwise be reported as a beep when the `freq_only` profile is in use. Only
+	// used when beep detection is active.
+	BeepMinFrequencyHz param.Opt[int64] `json:"beep_min_frequency_hz,omitzero"`
+	// Shortest tone, in milliseconds, that can be treated as a beep. Raising it
+	// rejects brief tones such as call-progress blips. Only used when beep detection
+	// is active.
+	BeepMinToneDurationMillis param.Opt[int64] `json:"beep_min_tone_duration_millis,omitzero"`
+	// When enabled, a candidate beep must pass an additional spectral check before it
+	// is reported. Only used when beep detection is active.
+	BeepSpectralConfirmation param.Opt[bool] `json:"beep_spectral_confirmation,omitzero"`
+	// Minimum spectral purity, from 0 to 1, for a tone to be treated as a beep.
+	// Raising it rejects mixed tones such as ringback, which combines two frequencies.
+	// Only used when beep detection is active.
+	BeepSpectralMinPurity param.Opt[float64] `json:"beep_spectral_min_purity,omitzero"`
+	// When enabled, the fax CNG tone is rejected rather than reported as a beep. Only
+	// used when beep detection is active.
+	BeepSpectralRejectFaxCng param.Opt[bool] `json:"beep_spectral_reject_fax_cng,omitzero"`
+	// Length of the spectral confirmation window, in milliseconds. Only used when beep
+	// detection is active.
+	BeepSpectralWindowMillis param.Opt[int64] `json:"beep_spectral_window_millis,omitzero"`
 	// Maximum threshold for silence between words.
 	BetweenWordsSilenceMillis param.Opt[int64] `json:"between_words_silence_millis,omitzero"`
 	// Maximum threshold of a human greeting. If greeting longer than this value,

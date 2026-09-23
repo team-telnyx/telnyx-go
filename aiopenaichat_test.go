@@ -67,7 +67,7 @@ func TestAIOpenAIChatNewCompletionWithOptionalParams(t *testing.T) {
 			ToolChoice:  telnyx.ChatCompletionRequestToolChoiceNone,
 			Tools: []telnyx.ChatCompletionRequestToolsUnionParam{{
 				OfFunction: &telnyx.ChatCompletionRequestToolsFunctionParam{
-					Function: telnyx.ChatCompletionRequestToolsFunctionFunctionParam{
+					Function: telnyx.FunctionDefinitionParam{
 						Name:        "name",
 						Description: telnyx.String("description"),
 						Parameters: map[string]any{

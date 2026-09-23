@@ -27,7 +27,6 @@
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared">shared</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared#DocReqsRequirementType">DocReqsRequirementType</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared">shared</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared#Feature">Feature</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared">shared</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared#HostedNumber">HostedNumber</a>
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared">shared</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared#MessagingError">MessagingError</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared">shared</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared#MessagingFeatureSet">MessagingFeatureSet</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared">shared</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared#MessagingHostedNumberOrder">MessagingHostedNumberOrder</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared">shared</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared#MessagingPaginationMeta">MessagingPaginationMeta</a>
@@ -288,6 +287,7 @@ Response Types:
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#FaxSendingStarted">FaxSendingStarted</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#InboundMessage">InboundMessage</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#InboundSipHeader">InboundSipHeader</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#MessagingInboundMessage">MessagingInboundMessage</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#OutboundMessage">OutboundMessage</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ReplacedLinkClick">ReplacedLinkClick</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#Transcription">Transcription</a>
@@ -595,7 +595,6 @@ Response Types:
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#FallbackConfig">FallbackConfig</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#FlowEdge">FlowEdge</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#FlowNode">FlowNode</a>
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#HangupTool">HangupTool</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#HangupToolParamsResp">HangupToolParamsResp</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ImportMetadata">ImportMetadata</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#InferenceEmbedding">InferenceEmbedding</a>
@@ -790,6 +789,7 @@ Methods:
 
 Response Types:
 
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AudioTranscriptionResponseWord">AudioTranscriptionResponseWord</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIAudioTranscribeResponse">AIAudioTranscribeResponse</a>
 
 Methods:
@@ -1225,8 +1225,13 @@ Methods:
 
 ### Chat
 
+Params Types:
+
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#FunctionDefinitionParam">FunctionDefinitionParam</a>
+
 Response Types:
 
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#FunctionDefinition">FunctionDefinition</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIOpenAIChatNewCompletionResponse">AIOpenAIChatNewCompletionResponse</a>
 
 Methods:
@@ -1278,6 +1283,18 @@ Response Types:
 Methods:
 
 - <code title="get /ai/knowledge/collections/{slug}/documents">client.AI.Knowledge.Collections.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIKnowledgeCollectionService.GetDocuments">GetDocuments</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, slug <a href="https://pkg.go.dev/builtin#string">string</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIKnowledgeCollectionGetDocumentsParams">AIKnowledgeCollectionGetDocumentsParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIKnowledgeCollectionGetDocumentsResponse">AIKnowledgeCollectionGetDocumentsResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
+## Typesafe
+
+### V1
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AITypesafeV1SystemoneResponse">AITypesafeV1SystemoneResponse</a>
+
+Methods:
+
+- <code title="post /ai/typesafe/v1/systemone">client.AI.Typesafe.V1.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AITypesafeV1Service.Systemone">Systemone</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AITypesafeV1SystemoneParams">AITypesafeV1SystemoneParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AITypesafeV1SystemoneResponse">AITypesafeV1SystemoneResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 # AuditEvents
 
@@ -1729,12 +1746,14 @@ Response Types:
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#Connection">Connection</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ConnectionGetResponse">ConnectionGetResponse</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ConnectionListActiveCallsResponse">ConnectionListActiveCallsResponse</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ConnectionGetCountResponse">ConnectionGetCountResponse</a>
 
 Methods:
 
 - <code title="get /connections/{id}">client.Connections.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ConnectionService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ConnectionGetResponse">ConnectionGetResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /connections">client.Connections.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ConnectionService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ConnectionListParams">ConnectionListParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination#DefaultFlatPagination">DefaultFlatPagination</a>[<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#Connection">Connection</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /connections/{connection_id}/active_calls">client.Connections.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ConnectionService.ListActiveCalls">ListActiveCalls</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, connectionID <a href="https://pkg.go.dev/builtin#string">string</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ConnectionListActiveCallsParams">ConnectionListActiveCallsParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination#DefaultFlatPagination">DefaultFlatPagination</a>[<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ConnectionListActiveCallsResponse">ConnectionListActiveCallsResponse</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /connections/count">client.Connections.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ConnectionService.GetCount">GetCount</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ConnectionGetCountResponse">ConnectionGetCountResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 # CountryCoverage
 
@@ -2466,7 +2485,6 @@ Response Types:
 
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#MessagingError0b38e7044b">MessagingError0b38e7044b</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#MessagingInboundMessagePayload">MessagingInboundMessagePayload</a>
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#MessagingOutboundMessagePayload">MessagingOutboundMessagePayload</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#OutboundMessagePayload">OutboundMessagePayload</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#RcsAgentMessage">RcsAgentMessage</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#RcsCardContent">RcsCardContent</a>
@@ -4418,6 +4436,16 @@ Methods:
 - <code title="post /texml/ai_calls/{connection_id}">client.Texml.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TexmlService.InitiateAICall">InitiateAICall</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, connectionID <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TexmlInitiateAICallParams">TexmlInitiateAICallParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TexmlInitiateAICallResponse">TexmlInitiateAICallResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="post /texml/secrets">client.Texml.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TexmlService.Secrets">Secrets</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TexmlSecretsParams">TexmlSecretsParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TexmlSecretsResponse">TexmlSecretsResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
+## Calls
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TexmlCallNewResponse">TexmlCallNewResponse</a>
+
+Methods:
+
+- <code title="post /texml/calls/{connection_id}">client.Texml.Calls.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TexmlCallService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, connectionID <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TexmlCallNewParams">TexmlCallNewParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TexmlCallNewResponse">TexmlCallNewResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
 ## Accounts
 
 Response Types:
@@ -6262,3 +6290,66 @@ Methods:
 - <code title="get /compute/funcs/{id}/metric_aggregates">client.Compute.Funcs.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ComputeFuncService.GetMetricAggregates">GetMetricAggregates</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ComputeFuncGetMetricAggregatesParams">ComputeFuncGetMetricAggregatesParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ComputeFuncGetMetricAggregatesResponse">ComputeFuncGetMetricAggregatesResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /compute/funcs/{id}/revisions">client.Compute.Funcs.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ComputeFuncService.GetRevisions">GetRevisions</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ComputeFuncGetRevisionsParams">ComputeFuncGetRevisionsParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ComputeFuncGetRevisionsResponse">ComputeFuncGetRevisionsResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /compute/funcs/{id}/ship_inspection">client.Compute.Funcs.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ComputeFuncService.GetShipInspection">GetShipInspection</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ComputeFuncGetShipInspectionResponse">ComputeFuncGetShipInspectionResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
+### Export
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#FuncLogExportConfigResponse">FuncLogExportConfigResponse</a>
+
+Methods:
+
+- <code title="put /compute/funcs/{id}/logs/export">client.Compute.Funcs.Export.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ComputeFuncExportService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ComputeFuncExportNewParams">ComputeFuncExportNewParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#FuncLogExportConfigResponse">FuncLogExportConfigResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /compute/funcs/{id}/logs/export">client.Compute.Funcs.Export.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ComputeFuncExportService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#FuncLogExportConfigResponse">FuncLogExportConfigResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="delete /compute/funcs/{id}/logs/export">client.Compute.Funcs.Export.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ComputeFuncExportService.DeleteAll">DeleteAll</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
+
+# NoiseSuppressionEngines
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#NoiseSuppressionEngineListResponse">NoiseSuppressionEngineListResponse</a>
+
+Methods:
+
+- <code title="get /noise_suppression_engines">client.NoiseSuppressionEngines.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#NoiseSuppressionEngineService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#NoiseSuppressionEngineListResponse">NoiseSuppressionEngineListResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
+# BotChallenge
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#BotChallengeNewResponse">BotChallengeNewResponse</a>
+
+Methods:
+
+- <code title="post /v2/bot_challenge">client.BotChallenge.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#BotChallengeService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#BotChallengeNewParams">BotChallengeNewParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#BotChallengeNewResponse">BotChallengeNewResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
+# BotSessions
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#BotSessionListResponse">BotSessionListResponse</a>
+
+Methods:
+
+- <code title="get /v2/bot_sessions">client.BotSessions.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#BotSessionService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#BotSessionListParams">BotSessionListParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#BotSessionListResponse">BotSessionListResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
+# BotSignup
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SuccessResponse">SuccessResponse</a>
+
+Methods:
+
+- <code title="post /v2/bot_signup">client.BotSignup.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#BotSignupService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#BotSignupNewParams">BotSignupNewParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SuccessResponse">SuccessResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="post /v2/bot_signup/resend_magic_link">client.BotSignup.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#BotSignupService.ResendMagicLink">ResendMagicLink</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#BotSignupResendMagicLinkParams">BotSignupResendMagicLinkParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SuccessResponse">SuccessResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
+# MachinePayments
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#MachinePaymentAccountCreditResponse">MachinePaymentAccountCreditResponse</a>
+
+Methods:
+
+- <code title="post /machine-payments/account-credit">client.MachinePayments.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#MachinePaymentService.AccountCredit">AccountCredit</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#MachinePaymentAccountCreditParams">MachinePaymentAccountCreditParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#MachinePaymentAccountCreditResponse">MachinePaymentAccountCreditResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>

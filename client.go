@@ -363,6 +363,31 @@ type Client struct {
 	MeetingSessions      MeetingSessionService
 	ExternalRequirements ExternalRequirementService
 	Compute              ComputeService
+	// Noise suppression engines that can be selected when configuring noise
+	// suppression on voice connections.
+	NoiseSuppressionEngines NoiseSuppressionEngineService
+	// Agentic (bot) signup for Telnyx accounts. An AI agent solves a reverse-CAPTCHA
+	// challenge designed to be easy for LLMs and hard for humans, registers an
+	// account, and signs in by consuming a magic link emailed to the account owner.
+	// All endpoints are public and unauthenticated; signup endpoints are additionally
+	// gated by the freemium feature flags and per-country availability.
+	BotChallenge BotChallengeService
+	// Agentic (bot) signup for Telnyx accounts. An AI agent solves a reverse-CAPTCHA
+	// challenge designed to be easy for LLMs and hard for humans, registers an
+	// account, and signs in by consuming a magic link emailed to the account owner.
+	// All endpoints are public and unauthenticated; signup endpoints are additionally
+	// gated by the freemium feature flags and per-country availability.
+	BotSessions BotSessionService
+	// Agentic (bot) signup for Telnyx accounts. An AI agent solves a reverse-CAPTCHA
+	// challenge designed to be easy for LLMs and hard for humans, registers an
+	// account, and signs in by consuming a magic link emailed to the account owner.
+	// All endpoints are public and unauthenticated; signup endpoints are additionally
+	// gated by the freemium feature flags and per-country availability.
+	BotSignup BotSignupService
+	// Machine payment (MPP) account-credit operations. Fund your Telnyx account
+	// programmatically from a machine or agent using the Machine Payment Protocol, an
+	// HTTP-402 flow settled via Stripe or Tempo.
+	MachinePayments MachinePaymentService
 }
 
 // DefaultClientOptions read from the environment (TELNYX_API_KEY,
@@ -589,6 +614,11 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.MeetingSessions = NewMeetingSessionService(opts...)
 	r.ExternalRequirements = NewExternalRequirementService(opts...)
 	r.Compute = NewComputeService(opts...)
+	r.NoiseSuppressionEngines = NewNoiseSuppressionEngineService(opts...)
+	r.BotChallenge = NewBotChallengeService(opts...)
+	r.BotSessions = NewBotSessionService(opts...)
+	r.BotSignup = NewBotSignupService(opts...)
+	r.MachinePayments = NewMachinePaymentService(opts...)
 
 	return
 }
