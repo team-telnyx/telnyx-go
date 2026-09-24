@@ -15,7 +15,7 @@ import (
 type AITypesafeService struct {
 	Options []option.RequestOption
 	// Beta API for evaluating shared context with typed questions and structured
-	// answers. Telnyx manages model selection.
+	// answers using Flash or Pro.
 	V1 AITypesafeV1Service
 }
 

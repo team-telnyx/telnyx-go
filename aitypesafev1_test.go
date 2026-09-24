@@ -13,7 +13,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
-func TestAITypesafeV1Systemone(t *testing.T) {
+func TestAITypesafeV1SystemoneWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -63,6 +63,7 @@ func TestAITypesafeV1Systemone(t *testing.T) {
 		State: telnyx.AITypesafeV1SystemoneParamsStateUnion{
 			OfString: telnyx.String("Our production calls are failing. Every customer is affected."),
 		},
+		Model: telnyx.AITypesafeV1SystemoneParamsModelTelnyxDecisionFlash,
 	})
 	if err != nil {
 		var apierr *telnyx.Error
