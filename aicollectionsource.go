@@ -96,7 +96,7 @@ func (r *AICollectionSourceService) Replace(ctx context.Context, uuid string, bo
 	return res, err
 }
 
-type Source struct {
+type CollectionsSource struct {
 	ID string `json:"id"`
 	// The Telnyx Storage bucket name. Present only for `bucket` sources.
 	BucketID     string `json:"bucket_id"`
@@ -120,6 +120,38 @@ type Source struct {
 		Status       respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CollectionsSource) RawJSON() string { return r.JSON.raw }
+func (r *CollectionsSource) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type Source struct {
+	// Identifies one source within its profile: an ingested session, or one remembered
+	// fact. Returned by `ingest` and `remember` when the write is accepted.
+	// Re-ingesting a session keeps its source id.
+	ID string `json:"id" api:"required"`
+	// Memories extracted from this source. A memory derived from several sources is
+	// not counted here.
+	MemoryCount int64 `json:"memory_count" api:"required"`
+	// The session this source was ingested as. Null for a remembered fact.
+	SessionID string `json:"session_id" api:"required"`
+	// When the source was first stored.
+	CreatedAt string `json:"created_at" api:"nullable"`
+	// When the source was last written; re-ingesting moves it.
+	UpdatedAt string `json:"updated_at" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		MemoryCount respjson.Field
+		SessionID   respjson.Field
+		CreatedAt   respjson.Field
+		UpdatedAt   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
 	} `json:"-"`
 }
 
@@ -165,7 +197,7 @@ const (
 
 // Envelope containing a single collection source.
 type AICollectionSourceNewResponse struct {
-	Data Source `json:"data"`
+	Data CollectionsSource `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -181,7 +213,7 @@ func (r *AICollectionSourceNewResponse) UnmarshalJSON(data []byte) error {
 }
 
 type AICollectionSourceListResponse struct {
-	Data []Source `json:"data"`
+	Data []CollectionsSource `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -197,7 +229,7 @@ func (r *AICollectionSourceListResponse) UnmarshalJSON(data []byte) error {
 }
 
 type AICollectionSourceReplaceResponse struct {
-	Data []Source `json:"data"`
+	Data []CollectionsSource `json:"data"`
 	// Reports which source IDs were added, retained, and removed by a replace
 	// operation.
 	Meta AICollectionSourceReplaceResponseMeta `json:"meta"`
