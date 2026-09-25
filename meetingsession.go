@@ -464,7 +464,7 @@ type MeetingSessionDeleteRecordingMediaResponseData struct {
 	DeletionStatus string `json:"deletion_status" api:"required"`
 	// The account-scoped Meeting Session identifier.
 	MeetingSessionID string                          `json:"meeting_session_id" api:"required"`
-	Provider         constant.Recall                 `json:"provider" default:"recall"`
+	Provider         constant.Telnyx                 `json:"provider" default:"telnyx"`
 	Scope            constant.ProviderRecordingMedia `json:"scope" default:"provider_recording_media"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
