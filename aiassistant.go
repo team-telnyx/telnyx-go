@@ -299,6 +299,14 @@ func (u AssistantToolsUnionParam) GetWebhook() *WebhookToolWebhookParam {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
+func (u AssistantToolsUnionParam) GetTimeoutMs() *int64 {
+	if vt := u.OfWebhook; vt != nil && vt.TimeoutMs.Valid() {
+		return &vt.TimeoutMs.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
 func (u AssistantToolsUnionParam) GetHangup() *HangupToolParams {
 	if vt := u.OfHangup; vt != nil {
 		return &vt.Hangup
@@ -857,6 +865,8 @@ type AssistantToolUnion struct {
 	Shared bool   `json:"shared"`
 	// This field is from variant [InferenceEmbeddingWebhookToolParamsResp].
 	Webhook InferenceEmbeddingWebhookToolParamsWebhookResp `json:"webhook"`
+	// This field is from variant [InferenceEmbeddingWebhookToolParamsResp].
+	TimeoutMs int64 `json:"timeout_ms"`
 	// This field is from variant [AssistantToolClientSideTool].
 	ClientSideTool AssistantToolClientSideToolClientSideTool `json:"client_side_tool"`
 	// This field is from variant [RetrievalTool].
@@ -886,6 +896,7 @@ type AssistantToolUnion struct {
 		Type                   respjson.Field
 		Shared                 respjson.Field
 		Webhook                respjson.Field
+		TimeoutMs              respjson.Field
 		ClientSideTool         respjson.Field
 		Retrieval              respjson.Field
 		Handoff                respjson.Field
@@ -2305,6 +2316,14 @@ func (u AssistantToolUnionParam) GetFunction() *FunctionDefinitionParam {
 func (u AssistantToolUnionParam) GetWebhook() *InferenceEmbeddingWebhookToolParamsWebhook {
 	if vt := u.OfWebhook; vt != nil {
 		return &vt.Webhook
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u AssistantToolUnionParam) GetTimeoutMs() *int64 {
+	if vt := u.OfWebhook; vt != nil && vt.TimeoutMs.Valid() {
+		return &vt.TimeoutMs.Value
 	}
 	return nil
 }
@@ -5553,11 +5572,17 @@ type InferenceEmbeddingWebhookToolParamsResp struct {
 	// duplicate (rejected with error code 10015 when the type allows only one instance
 	// per assistant).
 	Shared bool `json:"shared"`
+	// The maximum number of milliseconds to wait for the webhook to respond before the
+	// tool call is aborted. Set this at the tool level, as a sibling of `type` — a
+	// `timeout_ms` nested inside the `webhook` object is stored but not applied, and
+	// the tool runs at this default instead. Applies when `webhook.async` is false.
+	TimeoutMs int64 `json:"timeout_ms"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Type        respjson.Field
 		Webhook     respjson.Field
 		Shared      respjson.Field
+		TimeoutMs   respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -5652,9 +5677,6 @@ type InferenceEmbeddingWebhookToolParamsWebhookResp struct {
 	// as dynamic variables. Each mapping specifies a dynamic variable name and a
 	// dot-notation path to the value in the response body.
 	StoreFieldsAsVariables []InferenceEmbeddingWebhookToolParamsWebhookStoreFieldsAsVariableResp `json:"store_fields_as_variables"`
-	// The maximum number of milliseconds to wait for the webhook to respond. Only
-	// applicable when async is false.
-	TimeoutMs int64 `json:"timeout_ms"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Description            respjson.Field
@@ -5671,7 +5693,6 @@ type InferenceEmbeddingWebhookToolParamsWebhookResp struct {
 		PresetQueryParams      respjson.Field
 		QueryParameters        respjson.Field
 		StoreFieldsAsVariables respjson.Field
-		TimeoutMs              respjson.Field
 		ExtraFields            map[string]respjson.Field
 		raw                    string
 	} `json:"-"`
@@ -5912,6 +5933,11 @@ type InferenceEmbeddingWebhookToolParams struct {
 	// Any of "webhook".
 	Type    InferenceEmbeddingWebhookToolParamsType    `json:"type,omitzero" api:"required"`
 	Webhook InferenceEmbeddingWebhookToolParamsWebhook `json:"webhook,omitzero" api:"required"`
+	// The maximum number of milliseconds to wait for the webhook to respond before the
+	// tool call is aborted. Set this at the tool level, as a sibling of `type` — a
+	// `timeout_ms` nested inside the `webhook` object is stored but not applied, and
+	// the tool runs at this default instead. Applies when `webhook.async` is false.
+	TimeoutMs param.Opt[int64] `json:"timeout_ms,omitzero"`
 	paramObj
 }
 
@@ -5941,9 +5967,6 @@ type InferenceEmbeddingWebhookToolParamsWebhook struct {
 	// webhook response before returning "Submitted" to the LLM. If unset, the platform
 	// default (currently 300ms) is used.
 	AsyncTimeoutMs param.Opt[int64] `json:"async_timeout_ms,omitzero"`
-	// The maximum number of milliseconds to wait for the webhook to respond. Only
-	// applicable when async is false.
-	TimeoutMs param.Opt[int64] `json:"timeout_ms,omitzero"`
 	// The body parameters the webhook tool accepts, described as a JSON Schema object.
 	// These parameters will be passed to the webhook as the body of the request. See
 	// the [JSON Schema reference](https://json-schema.org/understanding-json-schema)
@@ -8181,6 +8204,11 @@ type WebhookToolParam struct {
 	// Any of "webhook".
 	Type    WebhookToolType         `json:"type,omitzero" api:"required"`
 	Webhook WebhookToolWebhookParam `json:"webhook,omitzero" api:"required"`
+	// The maximum number of milliseconds to wait for the webhook to respond before the
+	// tool call is aborted. Set this at the tool level, as a sibling of `type` — a
+	// `timeout_ms` nested inside the `webhook` object is not applied, and the tool
+	// runs at this default instead.
+	TimeoutMs param.Opt[int64] `json:"timeout_ms,omitzero"`
 	paramObj
 }
 

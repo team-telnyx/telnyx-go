@@ -346,6 +346,14 @@ func (u CallAssistantRequestToolsUnionParam) GetWebhook() *WebhookToolWebhookPar
 }
 
 // Returns a pointer to the underlying variant's property, if present.
+func (u CallAssistantRequestToolsUnionParam) GetTimeoutMs() *int64 {
+	if vt := u.OfWebhook; vt != nil && vt.TimeoutMs.Valid() {
+		return &vt.TimeoutMs.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
 func (u CallAssistantRequestToolsUnionParam) GetHangup() *HangupToolParams {
 	if vt := u.OfHangup; vt != nil {
 		return &vt.Hangup
