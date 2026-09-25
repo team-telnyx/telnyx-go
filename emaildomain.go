@@ -142,6 +142,26 @@ func (r *EmailDomainService) GetHealth(ctx context.Context, id string, opts ...o
 	return res, err
 }
 
+// Generates a new DKIM key for the domain, activates it, and retires the previous
+// key. The response includes the updated DKIM DNS records the customer must
+// publish. Selectors are fixed, so rotation replaces the TXT value at the existing
+// `<selector>._domainkey.<domain>` host rather than adding a second record —
+// `old_selector_retained` is false and the new TXT value must be published
+// promptly, since signing switches to the new key immediately and the old TXT
+// value will no longer match. The previous key is retired to a `retiring` state
+// (retained, not revoked) so it can be revoked after the DNS propagation grace
+// period.
+func (r *EmailDomainService) RotateDkim(ctx context.Context, domainID string, opts ...option.RequestOption) (res *EmailDomainRotateDkimResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if domainID == "" {
+		err = errors.New("missing required domain_id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("email_domains/%s/rotate_dkim", domainID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
+	return res, err
+}
+
 // Checks the published DNS records against the records required for the email
 // domain and returns the latest verification results.
 func (r *EmailDomainService) Verify(ctx context.Context, domainID string, opts ...option.RequestOption) (res *EmailDomainResponse, err error) {
@@ -669,6 +689,134 @@ type EmailDomainGetHealthResponseData struct {
 // Returns the unmodified JSON received from the API
 func (r EmailDomainGetHealthResponseData) RawJSON() string { return r.JSON.raw }
 func (r *EmailDomainGetHealthResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type EmailDomainRotateDkimResponse struct {
+	// Result of rotating a domain's DKIM key. The new key is active and signing
+	// switches to it immediately; the previous key is retired to a `retiring` state
+	// (retained, not revoked) so it can be revoked after the DNS propagation grace
+	// period. Selectors are fixed, so the DKIM DNS record's TXT value is replaced in
+	// place at the shared `<selector>._domainkey.<domain>` host —
+	// `old_selector_retained` is false and the returned dns_records carry the new
+	// value the customer must publish promptly.
+	Data EmailDomainRotateDkimResponseData `json:"data" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EmailDomainRotateDkimResponse) RawJSON() string { return r.JSON.raw }
+func (r *EmailDomainRotateDkimResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Result of rotating a domain's DKIM key. The new key is active and signing
+// switches to it immediately; the previous key is retired to a `retiring` state
+// (retained, not revoked) so it can be revoked after the DNS propagation grace
+// period. Selectors are fixed, so the DKIM DNS record's TXT value is replaced in
+// place at the shared `<selector>._domainkey.<domain>` host —
+// `old_selector_retained` is false and the returned dns_records carry the new
+// value the customer must publish promptly.
+type EmailDomainRotateDkimResponseData struct {
+	// The new active DKIM key.
+	Dkim EmailDomainRotateDkimResponseDataDkim `json:"dkim" api:"required"`
+	// The DKIM DNS records the customer must publish, carrying the new key's TXT value
+	// with verification reset to pending.
+	DNSRecords []DNSRecord `json:"dns_records" api:"required"`
+	Domain     string      `json:"domain" api:"required"`
+	DomainID   string      `json:"domain_id" api:"required" format:"uuid"`
+	// False for this service: one selector is fixed per domain, so rotation replaces
+	// the TXT value at the existing \_domainkey host. There is no dual-selector
+	// overlap; publish the replacement TXT promptly because signing switches
+	// immediately.
+	OldSelectorRetained bool `json:"old_selector_retained" api:"required"`
+	// The retired previous key, or null when the domain had no active key before
+	// rotation. Retained in a `retiring` state so it can be revoked after the DNS
+	// propagation grace period.
+	PreviousDkimKey EmailDomainRotateDkimResponseDataPreviousDkimKey `json:"previous_dkim_key" api:"required"`
+	// Any of "email_domain_dkim_rotation".
+	RecordType string `json:"record_type" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Dkim                respjson.Field
+		DNSRecords          respjson.Field
+		Domain              respjson.Field
+		DomainID            respjson.Field
+		OldSelectorRetained respjson.Field
+		PreviousDkimKey     respjson.Field
+		RecordType          respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EmailDomainRotateDkimResponseData) RawJSON() string { return r.JSON.raw }
+func (r *EmailDomainRotateDkimResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The new active DKIM key.
+type EmailDomainRotateDkimResponseDataDkim struct {
+	ID string `json:"id" api:"required" format:"uuid"`
+	// Any of "rsa-sha256".
+	Algorithm string `json:"algorithm" api:"required"`
+	// Any of 2048.
+	KeyLength int64  `json:"key_length" api:"required"`
+	Selector  string `json:"selector" api:"required"`
+	// Any of "active".
+	Status string `json:"status" api:"required"`
+	// Monotonically increasing per-domain key version.
+	Version     int64     `json:"version" api:"required"`
+	ActivatedAt time.Time `json:"activated_at" api:"nullable" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Algorithm   respjson.Field
+		KeyLength   respjson.Field
+		Selector    respjson.Field
+		Status      respjson.Field
+		Version     respjson.Field
+		ActivatedAt respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EmailDomainRotateDkimResponseDataDkim) RawJSON() string { return r.JSON.raw }
+func (r *EmailDomainRotateDkimResponseDataDkim) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The retired previous key, or null when the domain had no active key before
+// rotation. Retained in a `retiring` state so it can be revoked after the DNS
+// propagation grace period.
+type EmailDomainRotateDkimResponseDataPreviousDkimKey struct {
+	ID       string `json:"id" api:"required" format:"uuid"`
+	Selector string `json:"selector" api:"required"`
+	// Any of "retiring", "revoked".
+	Status  string `json:"status" api:"required"`
+	Version int64  `json:"version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Selector    respjson.Field
+		Status      respjson.Field
+		Version     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EmailDomainRotateDkimResponseDataPreviousDkimKey) RawJSON() string { return r.JSON.raw }
+func (r *EmailDomainRotateDkimResponseDataPreviousDkimKey) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

@@ -33,8 +33,8 @@ func TestEmailEventListWithOptionalParams(t *testing.T) {
 			OfString: telnyx.String("string"),
 		},
 		From:       telnyx.Time(time.Now()),
-		PageCursor: telnyx.String("page_cursor"),
 		PageSize:   telnyx.Int(1),
+		PageCursor: telnyx.String("page[cursor]"),
 		To:         telnyx.Time(time.Now()),
 	})
 	if err != nil {

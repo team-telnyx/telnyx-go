@@ -72,6 +72,15 @@ func TestTextToSpeechGenerateSpeechWithOptionalParams(t *testing.T) {
 			Precision:  telnyx.String("string"),
 			SampleRate: telnyx.String("string"),
 		},
+		Soniox: telnyx.TextToSpeechGenerateSpeechParamsSoniox{
+			VoiceID:       "Emma",
+			AudioFormat:   "mp3",
+			Language:      telnyx.String("en"),
+			ModelID:       "tts-rt-v2",
+			ReduceSilence: telnyx.Bool(true),
+			SampleRate:    8000,
+			Speed:         telnyx.Float(1),
+		},
 		Telnyx: telnyx.TextToSpeechGenerateSpeechParamsTelnyx{
 			Emotion:        "neutral",
 			ResponseFormat: telnyx.String("mp3"),

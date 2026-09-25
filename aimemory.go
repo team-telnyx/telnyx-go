@@ -6,25 +6,24 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
-// AITypesafeService contains methods and other services that help with interacting
+// AIMemoryService contains methods and other services that help with interacting
 // with the telnyx API.
 //
 // Note, unlike clients, this service does not read variables from the environment
 // automatically. You should not instantiate this service directly, and instead use
-// the [NewAITypesafeService] method instead.
-type AITypesafeService struct {
+// the [NewAIMemoryService] method instead.
+type AIMemoryService struct {
 	Options []option.RequestOption
-	// Beta API for evaluating shared context with typed questions and structured
-	// answers using Flash or Pro.
-	V1 AITypesafeV1Service
+	// Whether a write has finished.
+	Namespaces AIMemoryNamespaceService
 }
 
-// NewAITypesafeService generates a new service that applies the given options to
+// NewAIMemoryService generates a new service that applies the given options to
 // each request. These options are applied after the parent client's options (if
 // there is one), and before any request-specific options.
-func NewAITypesafeService(opts ...option.RequestOption) (r AITypesafeService) {
-	r = AITypesafeService{}
+func NewAIMemoryService(opts ...option.RequestOption) (r AIMemoryService) {
+	r = AIMemoryService{}
 	r.Options = opts
-	r.V1 = NewAITypesafeV1Service(opts...)
+	r.Namespaces = NewAIMemoryNamespaceService(opts...)
 	return
 }

@@ -1313,10 +1313,10 @@ func (r *TexmlAccountCallCallsParamsBodyApplicationDefaultCustomHeader) Unmarsha
 type TexmlAccountCallGetCallsParams struct {
 	// Filters calls by their end date. Expected format is YYYY-MM-DD
 	EndTime param.Opt[string] `query:"EndTime,omitzero" json:"-"`
-	// Filters calls by their end date (after). Expected format is YYYY-MM-DD
-	EndTimeGt param.Opt[string] `query:"EndTime_gt,omitzero" json:"-"`
 	// Filters calls by their end date (before). Expected format is YYYY-MM-DD
-	EndTimeLt param.Opt[string] `query:"EndTime_lt,omitzero" json:"-"`
+	EndTimeLt param.Opt[string] `query:"EndTime<,omitzero" json:"-"`
+	// Filters calls by their end date (after). Expected format is YYYY-MM-DD
+	EndTimeGt param.Opt[string] `query:"EndTime>,omitzero" json:"-"`
 	// Filters calls by the from number.
 	From param.Opt[string] `query:"From,omitzero" json:"-"`
 	// The number of the page to be displayed, zero-indexed, should be used in
@@ -1328,10 +1328,10 @@ type TexmlAccountCallGetCallsParams struct {
 	PageToken param.Opt[string] `query:"PageToken,omitzero" json:"-"`
 	// Filters calls by their start date. Expected format is YYYY-MM-DD.
 	StartTime param.Opt[string] `query:"StartTime,omitzero" json:"-"`
-	// Filters calls by their start date (after). Expected format is YYYY-MM-DD
-	StartTimeGt param.Opt[string] `query:"StartTime_gt,omitzero" json:"-"`
 	// Filters calls by their start date (before). Expected format is YYYY-MM-DD
-	StartTimeLt param.Opt[string] `query:"StartTime_lt,omitzero" json:"-"`
+	StartTimeLt param.Opt[string] `query:"StartTime<,omitzero" json:"-"`
+	// Filters calls by their start date (after). Expected format is YYYY-MM-DD
+	StartTimeGt param.Opt[string] `query:"StartTime>,omitzero" json:"-"`
 	// Filters calls by the to number.
 	To param.Opt[string] `query:"To,omitzero" json:"-"`
 	// Filters calls by status.

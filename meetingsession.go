@@ -114,8 +114,6 @@ func (r *MeetingSessionService) Delete(ctx context.Context, id string, opts ...o
 	return res, err
 }
 
-// **Not yet available in production** — this route is not currently routed on
-// api.telnyx.com and returns a generic 404; it is documented ahead of rollout.
 // Irreversibly requests deletion of provider-hosted aggregate recording media
 // under the provider contract. The operation retains the Telnyx-local Meeting
 // session, transcript segments, events, artifacts, and usage records. It is
@@ -282,16 +280,23 @@ func (r *MeetingSession) UnmarshalJSON(data []byte) error {
 type MeetingSessionAssistant struct {
 	// Identifier of the assistant.
 	ID string `json:"id" api:"required"`
-	// Audio gating strategy for the assistant call leg.
+	// Audio gating strategy in force for the assistant call leg.
 	//
-	// Any of "none", "half_duplex".
+	// Any of "half_duplex", "full_duplex".
 	AudioGate string `json:"audio_gate" api:"required"`
+	// The dynamic variables in force for this session, or null when none were
+	// supplied.
+	DynamicVariables map[string]string `json:"dynamic_variables" api:"required"`
+	// Whether the bot leaves when the Assistant's conversation ends or fails.
+	LeaveOnEnd bool `json:"leave_on_end" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		AudioGate   respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		ID               respjson.Field
+		AudioGate        respjson.Field
+		DynamicVariables respjson.Field
+		LeaveOnEnd       respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
 	} `json:"-"`
 }
 
@@ -347,6 +352,8 @@ type MeetingSessionConfig struct {
 	// current bot audio; it does not bypass admission or initiate speech. Assistant
 	// sessions reject `barge_in: true`.
 	BargeIn bool `json:"barge_in" api:"required"`
+	// The message posted to chat on join, or null when unset.
+	ChatOnEnter string `json:"chat_on_enter" api:"required"`
 	// Text spoken on meeting entry, or null if not set.
 	SpeakOnEnter string `json:"speak_on_enter" api:"required"`
 	// Whether a summary artifact is generated on session end.
@@ -356,6 +363,7 @@ type MeetingSessionConfig struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BargeIn        respjson.Field
+		ChatOnEnter    respjson.Field
 		SpeakOnEnter   respjson.Field
 		SummarizeOnEnd respjson.Field
 		Voice          respjson.Field
@@ -624,6 +632,12 @@ type MeetingSessionNewParams struct {
 	BargeIn param.Opt[bool] `json:"barge_in,omitzero"`
 	// Display name for the bot in the meeting. Defaults to "Meeting Bot".
 	BotName param.Opt[string] `json:"bot_name,omitzero"`
+	// A message the bot posts to the meeting's chat as soon as it becomes active —
+	// typically a recording disclosure. Delivered at most once. Independent of
+	// `speak_on_enter`: both may be set, and the chat message posts first because it
+	// does not wait for text-to-speech or avatar startup. Rejected with 422
+	// `unsupported_capability` on platforms without meeting chat.
+	ChatOnEnter param.Opt[string] `json:"chat_on_enter,omitzero"`
 	// Client-supplied idempotency key to safely retry creation requests without
 	// duplicating sessions. Lookup is scoped to the authenticated account and compares
 	// the key only; the request payload is not fingerprinted or compared.
@@ -631,7 +645,10 @@ type MeetingSessionNewParams struct {
 	// ISO-8601 timestamp in the future at which the bot should join. If omitted, the
 	// bot joins immediately.
 	JoinAt param.Opt[time.Time] `json:"join_at,omitzero" format:"date-time"`
-	// Text the bot speaks when it enters the meeting.
+	// Text the bot speaks when it enters the meeting. **Not spoken when an `assistant`
+	// is attached**: the value is accepted and echoed back on the session, but the
+	// assistant owns the voice and the line is never delivered, with no event
+	// reporting the omission. Use `chat_on_enter` to announce an assistant-backed bot.
 	SpeakOnEnter param.Opt[string] `json:"speak_on_enter,omitzero"`
 	// If true, generate a summary artifact when the session ends.
 	SummarizeOnEnd param.Opt[bool] `json:"summarize_on_end,omitzero"`
@@ -643,10 +660,10 @@ type MeetingSessionNewParams struct {
 	// requires HTTPS, rejects embedded credentials and blocked hosts, and enforces
 	// egress policy. Validation makes no network request to the endpoint.
 	WebhookURL param.Opt[string] `json:"webhook_url,omitzero" format:"uri"`
-	// Request options for attaching a voice assistant to the session. Routing fields
-	// (`call_control_connection_id`, `from`, and `loopback_sip_uri`) are used only to
-	// establish the assistant call leg and are omitted from response objects.
-	// `audio_gate` is returned with `id` in the assistant response object.
+	// Attach a Telnyx AI Assistant to the session. Supply the Assistant's ID; the
+	// Meeting service connects it to the meeting directly. The Call Control
+	// connection, caller ID and loopback SIP URI previously required here have been
+	// removed and are now rejected as unknown fields.
 	Assistant MeetingSessionNewParamsAssistant `json:"assistant,omitzero"`
 	// Request options for attaching a bring-your-own-key avatar to the session.
 	Avatar MeetingSessionNewParamsAvatar `json:"avatar,omitzero"`
@@ -671,25 +688,41 @@ func (r *MeetingSessionNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Request options for attaching a voice assistant to the session. Routing fields
-// (`call_control_connection_id`, `from`, and `loopback_sip_uri`) are used only to
-// establish the assistant call leg and are omitted from response objects.
-// `audio_gate` is returned with `id` in the assistant response object.
+// Attach a Telnyx AI Assistant to the session. Supply the Assistant's ID; the
+// Meeting service connects it to the meeting directly. The Call Control
+// connection, caller ID and loopback SIP URI previously required here have been
+// removed and are now rejected as unknown fields.
 //
-// The properties ID, CallControlConnectionID, From, LoopbackSipUri are required.
+// The property ID is required.
 type MeetingSessionNewParamsAssistant struct {
 	// Identifier of the assistant to attach.
 	ID string `json:"id" api:"required"`
-	// Call control connection used to bridge the assistant into the meeting audio.
-	CallControlConnectionID string `json:"call_control_connection_id" api:"required"`
-	// E.164 calling number used as the originating party for the assistant call leg.
-	From string `json:"from" api:"required"`
-	// SIP URI to which the assistant media loopback is established.
-	LoopbackSipUri string `json:"loopback_sip_uri" api:"required"`
-	// Audio gating strategy for the assistant call leg.
+	// Leave the meeting when the Assistant's conversation reaches a terminal state --
+	// `ended` **or** `failed`. Off by default, which leaves the bot in the meeting
+	// after the Assistant stops. Fires once: a second terminal transition does not
+	// leave twice, and a leave the provider refuses is logged without changing how the
+	// session settles.
+	LeaveOnEnd param.Opt[bool] `json:"leave_on_end,omitzero"`
+	// Audio gating strategy for the assistant call leg. `half_duplex` (default) sends
+	// the assistant a single mixed meeting stream and mutes it while the assistant
+	// speaks, so the assistant cannot hear itself and cannot be interrupted.
+	// `full_duplex` sends a separate stream per participant, which allows barge-in and
+	// removes self-hearing, and COSTS SIGNIFICANTLY MORE: per-participant streams
+	// multiply the per-minute cost by the number of participants.
 	//
-	// Any of "none", "half_duplex".
+	// Any of "half_duplex", "full_duplex".
 	AudioGate string `json:"audio_gate,omitzero"`
+	// Per-conversation values for the
+	// [dynamic variables](/docs/inference/ai-assistants/dynamic-variables) used in the
+	// Assistant's instructions, greeting, or tools. Delivered before the Assistant's
+	// first utterance, so they resolve for the opening line as well as the rest of the
+	// conversation. At most 63 entries; keys 1-128 characters; values must be strings.
+	// The map is budgeted in aggregate at 1,047,552 bytes (1023 KiB) rather than
+	// capped per value. `streaming_audio`, `ai_assistant_streaming_audio` and
+	// `meeting_session_id` are reserved and rejected with `400 invalid_request` --
+	// they toggle provider infrastructure or are set by the service rather than fill a
+	// prompt template.
+	DynamicVariables map[string]string `json:"dynamic_variables,omitzero"`
 	paramObj
 }
 
@@ -703,7 +736,7 @@ func (r *MeetingSessionNewParamsAssistant) UnmarshalJSON(data []byte) error {
 
 func init() {
 	apijson.RegisterFieldValidator[MeetingSessionNewParamsAssistant](
-		"audio_gate", "none", "half_duplex",
+		"audio_gate", "half_duplex", "full_duplex",
 	)
 }
 

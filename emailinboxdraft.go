@@ -379,8 +379,10 @@ type EmailMessage struct {
 	Bcc         []EmailAddress           `json:"bcc" api:"required"`
 	Cc          []EmailAddress           `json:"cc" api:"required"`
 	CreatedAt   time.Time                `json:"created_at" api:"required" format:"date-time"`
-	Events      []MessageEvent           `json:"events" api:"required"`
+	Events      []EmailMessageEvent      `json:"events" api:"required"`
 	From        EmailAddress             `json:"from" api:"required"`
+	// Customer-supplied metadata stored with the message.
+	Metadata map[string]any `json:"metadata" api:"required"`
 	// Any of "email_message".
 	RecordType EmailMessageRecordType `json:"record_type" api:"required"`
 	ReplyTo    string                 `json:"reply_to" api:"required"`
@@ -391,11 +393,13 @@ type EmailMessage struct {
 	// Any of "queued", "scheduled", "cancelled", "sandbox", "sending", "sent",
 	// "failed", "deferred", "delivered", "bounced", "complained", "rejected",
 	// "opened", "clicked", "unsubscribed".
-	Status            EmailMessageStatus `json:"status" api:"required"`
-	Subject           string             `json:"subject" api:"required"`
-	TemplateID        string             `json:"template_id" api:"required" format:"uuid"`
-	TemplateVariables map[string]any     `json:"template_variables" api:"required"`
-	To                []EmailAddress     `json:"to" api:"required"`
+	Status  EmailMessageStatus `json:"status" api:"required"`
+	Subject string             `json:"subject" api:"required"`
+	// Customer-supplied tags stored with the message.
+	Tags              []string       `json:"tags" api:"required"`
+	TemplateID        string         `json:"template_id" api:"required" format:"uuid"`
+	TemplateVariables map[string]any `json:"template_variables" api:"required"`
+	To                []EmailAddress `json:"to" api:"required"`
 	// Present when true in the immediate create response. Not persisted; absent on
 	// subsequent GET requests.
 	InlineCss bool `json:"inline_css"`
@@ -422,10 +426,12 @@ type EmailMessage struct {
 		CreatedAt         respjson.Field
 		Events            respjson.Field
 		From              respjson.Field
+		Metadata          respjson.Field
 		RecordType        respjson.Field
 		ReplyTo           respjson.Field
 		Status            respjson.Field
 		Subject           respjson.Field
+		Tags              respjson.Field
 		TemplateID        respjson.Field
 		TemplateVariables respjson.Field
 		To                respjson.Field
@@ -477,6 +483,41 @@ type EmailMessageAttachment struct {
 // Returns the unmodified JSON received from the API
 func (r EmailMessageAttachment) RawJSON() string { return r.JSON.raw }
 func (r *EmailMessageAttachment) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// An event embedded in a message response. The dedicated per-message events
+// endpoint additionally returns event_type and canonical_event_type.
+type EmailMessageEvent struct {
+	OccurredAt time.Time `json:"occurred_at" api:"required" format:"date-time"`
+	// Bare stored event names returned by message history. In addition to the normal
+	// send and delivery lifecycle, polling can expose suppression, scan, and
+	// quarantine lifecycle rows. Sharp canonical names gw_reject, injection_timeout,
+	// and expired distinguish gateway rejection, ambiguous injection timeout, and MTA
+	// expiration. The failed and bounced names remain valid for system/admin failures
+	// and hard bounces respectively. Existing stored rows retain their original names.
+	//
+	// Any of "queued", "deferred", "scheduled", "cancelled", "sandbox", "sending",
+	// "sent", "failed", "delivered", "bounced", "complained", "suppressed",
+	// "rejected", "opened", "clicked", "unsubscribed", "daily_limit_exceeded",
+	// "scan_deferred", "quarantined", "quarantine_released",
+	// "quarantine_release_dispatched", "quarantine_rejected", "quarantine_expired",
+	// "gw_reject", "injection_timeout", "expired".
+	Type    EmailEventType `json:"type" api:"required"`
+	Payload map[string]any `json:"payload"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		OccurredAt  respjson.Field
+		Type        respjson.Field
+		Payload     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EmailMessageEvent) RawJSON() string { return r.JSON.raw }
+func (r *EmailMessageEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

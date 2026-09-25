@@ -27,10 +27,18 @@ func TestEmailTemplateNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.EmailTemplates.New(context.TODO(), telnyx.EmailTemplateNewParams{
-		Name:           "Welcome Email",
-		HTMLBody:       telnyx.String("<h1>Hello {{ first_name }}</h1>"),
-		Subject:        telnyx.String("Welcome, {{ first_name }}!"),
-		TextBody:       telnyx.String("Hello {{ first_name }}"),
+		Name:            "Welcome Email",
+		Autoescape:      telnyx.Bool(true),
+		HTMLBody:        telnyx.String("<h1>Hello {{ first_name }}</h1>"),
+		StrictVariables: telnyx.Bool(true),
+		Subject:         telnyx.String("Welcome, {{ first_name }}!"),
+		TextBody:        telnyx.String("Hello {{ first_name }}"),
+		VariableSchema: map[string]telnyx.EmailTemplateNewParamsVariableSchema{
+			"foo": {
+				Required: true,
+				Default:  telnyx.String("default"),
+			},
+		},
 		Variables:      []string{"string"},
 		IdempotencyKey: telnyx.String("8e03978e-40d5-43e8-bc93-6894a57f9326"),
 	})
@@ -84,10 +92,18 @@ func TestEmailTemplateUpdateWithOptionalParams(t *testing.T) {
 		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		telnyx.EmailTemplateUpdateParams{
 			UpdateEmailTemplateRequest: telnyx.UpdateEmailTemplateRequestParam{
-				HTMLBody:  telnyx.String("html_body"),
-				Name:      telnyx.String("name"),
-				Subject:   telnyx.String("Welcome aboard, {{first_name}}!"),
-				TextBody:  telnyx.String("text_body"),
+				Autoescape:      telnyx.Bool(true),
+				HTMLBody:        telnyx.String("html_body"),
+				Name:            telnyx.String("name"),
+				StrictVariables: telnyx.Bool(true),
+				Subject:         telnyx.String("Welcome aboard, {{first_name}}!"),
+				TextBody:        telnyx.String("text_body"),
+				VariableSchema: map[string]telnyx.UpdateEmailTemplateRequestVariableSchemaParam{
+					"foo": {
+						Required: true,
+						Default:  telnyx.String("default"),
+					},
+				},
 				Variables: []string{"string"},
 			},
 		},
@@ -199,10 +215,18 @@ func TestEmailTemplateReplaceWithOptionalParams(t *testing.T) {
 		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		telnyx.EmailTemplateReplaceParams{
 			UpdateEmailTemplateRequest: telnyx.UpdateEmailTemplateRequestParam{
-				HTMLBody:  telnyx.String("html_body"),
-				Name:      telnyx.String("name"),
-				Subject:   telnyx.String("Welcome aboard, {{first_name}}!"),
-				TextBody:  telnyx.String("text_body"),
+				Autoescape:      telnyx.Bool(true),
+				HTMLBody:        telnyx.String("html_body"),
+				Name:            telnyx.String("name"),
+				StrictVariables: telnyx.Bool(true),
+				Subject:         telnyx.String("Welcome aboard, {{first_name}}!"),
+				TextBody:        telnyx.String("text_body"),
+				VariableSchema: map[string]telnyx.UpdateEmailTemplateRequestVariableSchemaParam{
+					"foo": {
+						Required: true,
+						Default:  telnyx.String("default"),
+					},
+				},
 				Variables: []string{"string"},
 			},
 		},
