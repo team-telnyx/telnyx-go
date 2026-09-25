@@ -79,7 +79,7 @@ func (r *TextToSpeechService) ListVoices(ctx context.Context, query TextToSpeech
 // `Authorization: Bearer <API_KEY>` header. Send JSON frames with text to
 // synthesize; receive JSON frames containing base64-encoded audio chunks.
 //
-// Supported providers: `aws`, `telnyx`, `azure`, `murfai`, `minimax`, `resemble`,
+// Supported providers: `aws`, `telnyx`, `azure`, `minimax`, `resemble`,
 // `elevenlabs`, `xai`, `humain`.
 //
 // **Connection flow:**
@@ -569,8 +569,8 @@ type TextToSpeechGetSpeechParams struct {
 	// TTS provider. Defaults to `telnyx` if not specified. Ignored when `voice` is
 	// provided.
 	//
-	// Any of "aws", "telnyx", "azure", "elevenlabs", "minimax", "murfai", "resemble",
-	// "xai", "humain".
+	// Any of "aws", "telnyx", "azure", "elevenlabs", "minimax", "resemble", "xai",
+	// "humain".
 	Provider TextToSpeechGetSpeechParamsProvider `query:"provider,omitzero" json:"-"`
 	paramObj
 }
@@ -604,7 +604,6 @@ const (
 	TextToSpeechGetSpeechParamsProviderAzure      TextToSpeechGetSpeechParamsProvider = "azure"
 	TextToSpeechGetSpeechParamsProviderElevenlabs TextToSpeechGetSpeechParamsProvider = "elevenlabs"
 	TextToSpeechGetSpeechParamsProviderMinimax    TextToSpeechGetSpeechParamsProvider = "minimax"
-	TextToSpeechGetSpeechParamsProviderMurfai     TextToSpeechGetSpeechParamsProvider = "murfai"
 	TextToSpeechGetSpeechParamsProviderResemble   TextToSpeechGetSpeechParamsProvider = "resemble"
 	TextToSpeechGetSpeechParamsProviderXai        TextToSpeechGetSpeechParamsProvider = "xai"
 	TextToSpeechGetSpeechParamsProviderHumain     TextToSpeechGetSpeechParamsProvider = "humain"
