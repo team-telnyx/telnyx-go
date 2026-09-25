@@ -1406,19 +1406,34 @@ func (r *AssistantToolTransferTransferTargetsUnion) UnmarshalJSON(data []byte) e
 type AssistantToolTransferTransferTargetsTargetsListItem struct {
 	// The destination number or SIP URI of the call.
 	To string `json:"to" api:"required"`
+	// DTMF digits to send automatically after the transfer destination answers. Useful
+	// for reaching an extension behind an IVR (e.g. `"200"` to dial extension 200 once
+	// the called party picks up). Allowed characters: `0-9`, `A-D`, `w` (0.5s pause),
+	// `W` (1s pause), `*`, `#`. Maximum 64 characters. When omitted, no automatic DTMF
+	// is sent.
+	Extension string `json:"extension"`
 	// The warm transfer message to deliver to this specific target. When set, it takes
 	// precedence over the message the assistant composes from
 	// `warm_transfer_instructions`.
 	Message string `json:"message"`
 	// The name of the target.
 	Name string `json:"name"`
+	// SIP Authentication password used for SIP challenges. Applies when `to` is a SIP
+	// URI.
+	SipAuthPassword string `json:"sip_auth_password"`
+	// SIP Authentication username used for SIP challenges. Applies when `to` is a SIP
+	// URI.
+	SipAuthUsername string `json:"sip_auth_username"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		To          respjson.Field
-		Message     respjson.Field
-		Name        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		To              respjson.Field
+		Extension       respjson.Field
+		Message         respjson.Field
+		Name            respjson.Field
+		SipAuthPassword respjson.Field
+		SipAuthUsername respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
 	} `json:"-"`
 }
 
@@ -2709,12 +2724,24 @@ func (u *AssistantToolTransferTransferTargetsUnionParam) asAny() any {
 type AssistantToolTransferTransferTargetsTargetsListItemParam struct {
 	// The destination number or SIP URI of the call.
 	To string `json:"to" api:"required"`
+	// DTMF digits to send automatically after the transfer destination answers. Useful
+	// for reaching an extension behind an IVR (e.g. `"200"` to dial extension 200 once
+	// the called party picks up). Allowed characters: `0-9`, `A-D`, `w` (0.5s pause),
+	// `W` (1s pause), `*`, `#`. Maximum 64 characters. When omitted, no automatic DTMF
+	// is sent.
+	Extension param.Opt[string] `json:"extension,omitzero"`
 	// The warm transfer message to deliver to this specific target. When set, it takes
 	// precedence over the message the assistant composes from
 	// `warm_transfer_instructions`.
 	Message param.Opt[string] `json:"message,omitzero"`
 	// The name of the target.
 	Name param.Opt[string] `json:"name,omitzero"`
+	// SIP Authentication password used for SIP challenges. Applies when `to` is a SIP
+	// URI.
+	SipAuthPassword param.Opt[string] `json:"sip_auth_password,omitzero"`
+	// SIP Authentication username used for SIP challenges. Applies when `to` is a SIP
+	// URI.
+	SipAuthUsername param.Opt[string] `json:"sip_auth_username,omitzero"`
 	paramObj
 }
 
