@@ -67,7 +67,7 @@ func (r *EmailMessageService) New(ctx context.Context, params EmailMessageNewPar
 
 // The legacy `/v2/emails/{id}` GET route is a backward-compatible alias for this
 // operation.
-func (r *EmailMessageService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *EmailMessageGetResponse, err error) {
+func (r *EmailMessageService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *EmailMessageDetailResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -78,9 +78,9 @@ func (r *EmailMessageService) Get(ctx context.Context, id string, opts ...option
 	return res, err
 }
 
-// Lists messages sorted newest first by `created_at desc, id desc`. No filters
-// other than cursor pagination are implemented. The legacy `/v2/emails` GET route
-// is a backward-compatible alias for this operation.
+// Lists messages sorted newest first by `created_at desc, id desc`. Tags and
+// metadata filters compose with cursor pagination. The legacy `/v2/emails` GET
+// route is a backward-compatible alias for this operation.
 func (r *EmailMessageService) List(ctx context.Context, query EmailMessageListParams, opts ...option.RequestOption) (res *pagination.EmailCursorPagination[EmailMessage], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -98,9 +98,9 @@ func (r *EmailMessageService) List(ctx context.Context, query EmailMessageListPa
 	return res, nil
 }
 
-// Lists messages sorted newest first by `created_at desc, id desc`. No filters
-// other than cursor pagination are implemented. The legacy `/v2/emails` GET route
-// is a backward-compatible alias for this operation.
+// Lists messages sorted newest first by `created_at desc, id desc`. Tags and
+// metadata filters compose with cursor pagination. The legacy `/v2/emails` GET
+// route is a backward-compatible alias for this operation.
 func (r *EmailMessageService) ListAutoPaging(ctx context.Context, query EmailMessageListParams, opts ...option.RequestOption) *pagination.EmailCursorPaginationAutoPager[EmailMessage] {
 	return pagination.NewEmailCursorPaginationAutoPager(r.List(ctx, query, opts...))
 }
@@ -125,7 +125,10 @@ func (r *EmailMessageService) Delete(ctx context.Context, id string, opts ...opt
 // checks run first and can reject the whole batch before message creation. After
 // those checks pass, each message is validated and sent independently; item-level
 // failures do not affect other messages, and the processed batch returns 207
-// Multi-Status.
+// Multi-Status. Per-message failures include validation errors; when a template
+// has `strict_variables` enabled, a missing required variable produces a per-item
+// `unprocessable_entity` error naming that variable while the other messages
+// continue.
 func (r *EmailMessageService) Batch(ctx context.Context, params EmailMessageBatchParams, opts ...option.RequestOption) (res *EmailMessageBatchResponse, err error) {
 	if !param.IsOmitted(params.IdempotencyKey) {
 		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey.Value)))
@@ -165,6 +168,15 @@ func (r *EmailMessageService) DeleteSchedule(ctx context.Context, emailID string
 // Lists events for a single message sorted oldest first by
 // `occurred_at asc, id asc`. The legacy `/v2/emails/{id}/events` GET route is a
 // backward-compatible alias.
+//
+// For compatibility, each event carries the legacy customer-visible `event_type`
+// (`email.`-prefixed), the additive `canonical_event_type` (`email.`-prefixed),
+// and the deprecated `type` duplicate — whose value keeps the exact legacy format:
+// the bare stored event name, never `email.`-prefixed. Gateway rejections render
+// `email.failed` + canonical `email.gw_reject`; MTA expirations render
+// `email.bounced` + canonical `email.expired`; every unchanged outcome carries
+// identical `event_type` and `canonical_event_type` values (and `type` keeps the
+// stored name).
 func (r *EmailMessageService) GetEvents(ctx context.Context, emailID string, query EmailMessageGetEventsParams, opts ...option.RequestOption) (res *pagination.EmailCursorPagination[MessageEvent], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -189,8 +201,33 @@ func (r *EmailMessageService) GetEvents(ctx context.Context, emailID string, que
 // Lists events for a single message sorted oldest first by
 // `occurred_at asc, id asc`. The legacy `/v2/emails/{id}/events` GET route is a
 // backward-compatible alias.
+//
+// For compatibility, each event carries the legacy customer-visible `event_type`
+// (`email.`-prefixed), the additive `canonical_event_type` (`email.`-prefixed),
+// and the deprecated `type` duplicate — whose value keeps the exact legacy format:
+// the bare stored event name, never `email.`-prefixed. Gateway rejections render
+// `email.failed` + canonical `email.gw_reject`; MTA expirations render
+// `email.bounced` + canonical `email.expired`; every unchanged outcome carries
+// identical `event_type` and `canonical_event_type` values (and `type` keeps the
+// stored name).
 func (r *EmailMessageService) GetEventsAutoPaging(ctx context.Context, emailID string, query EmailMessageGetEventsParams, opts ...option.RequestOption) *pagination.EmailCursorPaginationAutoPager[MessageEvent] {
 	return pagination.NewEmailCursorPaginationAutoPager(r.GetEvents(ctx, emailID, query, opts...))
+}
+
+// Moves an existing scheduled email to a new future send time. Only the delivery
+// time (`scheduled_at`) changes; the message ID, content, recipients, tags, and
+// metadata remain unchanged. Returns `409 Conflict` if the message is no longer
+// scheduled or its scheduled-send worker has already started processing it. This
+// route emits no dedicated `rescheduled` event.
+func (r *EmailMessageService) UpdateSchedule(ctx context.Context, emailID string, body EmailMessageUpdateScheduleParams, opts ...option.RequestOption) (res *EmailMessageDetailResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if emailID == "" {
+		err = errors.New("missing required email_id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("email_messages/%s/schedule", emailID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
+	return res, err
 }
 
 type AttachmentRequestParam struct {
@@ -251,20 +288,84 @@ func init() {
 	apijson.RegisterUnion[EmailAddressInputUnionParam]("", apijson.Variant[EmailAddressParam](gjson.JSON))
 }
 
+type EmailMessageDetailResponse struct {
+	Data EmailMessageDetailResponseData `json:"data" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EmailMessageDetailResponse) RawJSON() string { return r.JSON.raw }
+func (r *EmailMessageDetailResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type EmailMessageDetailResponseData struct {
+	// HTML body submitted for the message.
+	HTMLBody string `json:"html_body" api:"required"`
+	// Plain-text body submitted for the message.
+	TextBody string `json:"text_body" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		HTMLBody    respjson.Field
+		TextBody    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+	EmailMessage
+}
+
+// Returns the unmodified JSON received from the API
+func (r EmailMessageDetailResponseData) RawJSON() string { return r.JSON.raw }
+func (r *EmailMessageDetailResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// An event on the per-message events endpoint. The legacy event_type and additive
+// canonical_event_type are email.-prefixed. The deprecated type preserves the bare
+// stored event name for compatibility.
 type MessageEvent struct {
+	// Additive canonical outcome name, prefixed with `email.`. Gateway rejection is
+	// `email.gw_reject`, ambiguous injection timeout is `email.injection_timeout`, and
+	// MTA expiration is `email.expired`. Unchanged outcomes retain their names.
+	// Existing stored rows are translated only when recorded payload evidence proves
+	// the outcome; a legacy failed row is not guessed or sharpened.
+	CanonicalEventType string `json:"canonical_event_type" api:"required"`
+	// Legacy customer-visible event name, prefixed with `email.`. Gateway rejections
+	// render `email.failed`; MTA expirations render `email.bounced`. Webhook
+	// subscription allowlists match the legacy name.
+	EventType  string    `json:"event_type" api:"required"`
 	OccurredAt time.Time `json:"occurred_at" api:"required" format:"date-time"`
+	// Bare stored event names returned by message history. In addition to the normal
+	// send and delivery lifecycle, polling can expose suppression, scan, and
+	// quarantine lifecycle rows. Sharp canonical names gw_reject, injection_timeout,
+	// and expired distinguish gateway rejection, ambiguous injection timeout, and MTA
+	// expiration. The failed and bounced names remain valid for system/admin failures
+	// and hard bounces respectively. Existing stored rows retain their original names.
+	//
 	// Any of "queued", "deferred", "scheduled", "cancelled", "sandbox", "sending",
-	// "sent", "failed", "delivered", "bounced", "complained", "rejected", "opened",
-	// "clicked", "unsubscribed", "daily_limit_exceeded".
+	// "sent", "failed", "delivered", "bounced", "complained", "suppressed",
+	// "rejected", "opened", "clicked", "unsubscribed", "daily_limit_exceeded",
+	// "scan_deferred", "quarantined", "quarantine_released",
+	// "quarantine_release_dispatched", "quarantine_rejected", "quarantine_expired",
+	// "gw_reject", "injection_timeout", "expired".
+	//
+	// Deprecated: deprecated
 	Type    EmailEventType `json:"type" api:"required"`
 	Payload map[string]any `json:"payload"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		OccurredAt  respjson.Field
-		Type        respjson.Field
-		Payload     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		CanonicalEventType respjson.Field
+		EventType          respjson.Field
+		OccurredAt         respjson.Field
+		Type               respjson.Field
+		Payload            respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
 	} `json:"-"`
 }
 
@@ -315,43 +416,6 @@ func (r TrackingSettingsParam) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *TrackingSettingsParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type EmailMessageGetResponse struct {
-	Data EmailMessageGetResponseData `json:"data" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r EmailMessageGetResponse) RawJSON() string { return r.JSON.raw }
-func (r *EmailMessageGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type EmailMessageGetResponseData struct {
-	// HTML body submitted for the message.
-	HTMLBody string `json:"html_body" api:"required"`
-	// Plain-text body submitted for the message.
-	TextBody string `json:"text_body" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		HTMLBody    respjson.Field
-		TextBody    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-	EmailMessage
-}
-
-// Returns the unmodified JSON received from the API
-func (r EmailMessageGetResponseData) RawJSON() string { return r.JSON.raw }
-func (r *EmailMessageGetResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -457,10 +521,11 @@ type EmailMessageNewParams struct {
 	//
 	// Only meaningful alongside `in_reply_to_message_id`.
 	ReplyToAll param.Opt[bool] `json:"reply_to_all,omitzero"`
-	// Future ISO 8601 time to schedule sending. Invalid or past timestamps are
-	// silently ignored and the email is sent immediately. The legacy alias `send_at`
-	// is still accepted for backward compatibility; when both are provided,
-	// `scheduled_at` wins.
+	// Future ISO 8601 delivery time. Invalid or non-future timestamps are rejected.
+	// Single sends return HTTP 422; in batch sends the invalid item is reported in the
+	// 207 per-item errors while other items continue. `send_at` remains a deprecated
+	// request alias. A non-null `scheduled_at` takes precedence over `send_at`; when
+	// `scheduled_at` is omitted or null, `send_at` is used.
 	ScheduledAt param.Opt[time.Time] `json:"scheduled_at,omitzero" format:"date-time"`
 	// Optional display name for string `from`; overrides `from.name` when provided.
 	FromName param.Opt[string] `json:"from_name,omitzero"`
@@ -472,7 +537,32 @@ type EmailMessageNewParams struct {
 	// be overridden. Requires the `email:override` API scope.
 	IgnoreSuppression param.Opt[bool] `json:"ignore_suppression,omitzero"`
 	InlineCss         param.Opt[bool] `json:"inline_css,omitzero"`
-	SandboxMode       param.Opt[bool] `json:"sandbox_mode,omitzero"`
+	// Validates and accepts the message without injecting it into the MTA or outbound
+	// Kafka path. Nothing is delivered: sandbox records are non-billable, consume no
+	// daily-send-limit quota, and feed no delivery-reputation signals.
+	//
+	// The reserved sandbox test-recipient domain is `test.telnyx.com`. In sandbox
+	// mode, these addresses produce deterministic recipient-scoped lifecycle events:
+	//
+	//   - `delivered@test.telnyx.com`: queued -> sending -> sent -> delivered
+	//   - `hard-bounce@test.telnyx.com`: queued -> sending -> sent -> bounced
+	//     (permanent)
+	//   - `soft-bounce@test.telnyx.com`: queued -> sending -> sent -> bounced
+	//     (transient)
+	//   - `complaint@test.telnyx.com`: queued -> sending -> sent -> complained
+	//   - `suppressed@test.telnyx.com`: queued -> suppressed
+	//   - `invalid@test.telnyx.com`: queued -> sending -> failed (invalid recipient)
+	//   - `dkim-fail@test.telnyx.com`: queued -> sending -> failed (DKIM unavailable)
+	//   - `rate-limit@test.telnyx.com`: queued -> sending -> failed (rate limit
+	//     exceeded)
+	//
+	// Matching is case-insensitive for both the local part and the domain and requires
+	// the exact domain `test.telnyx.com` — subdomains and other domains do not match.
+	// Mixed sandbox sends simulate only reserved test recipients; other recipients
+	// retain ordinary sandbox behavior (accepted, no delivery attempted). Hard-bounce
+	// and complaint outcomes also use the normal automatic-suppression pipeline.
+	// Non-sandbox sends to these addresses use the normal delivery path.
+	SandboxMode param.Opt[bool] `json:"sandbox_mode,omitzero"`
 	// Deprecated alias for `scheduled_at`.
 	SendAt param.Opt[time.Time] `json:"send_at,omitzero" format:"date-time"`
 	// Required unless `template_id` is supplied. When using a template, the template's
@@ -489,17 +579,23 @@ type EmailMessageNewParams struct {
 	Cc             []EmailAddressInputUnionParam `json:"cc,omitzero"`
 	// Custom email headers. Write-only; not returned in responses.
 	Headers map[string]string `json:"headers,omitzero"`
-	// Custom metadata. Write-only; not returned in responses.
+	// Custom metadata key/value pairs. Stored on the message, returned on message
+	// responses, and propagated to Email Detail Records. Usable in `filter[metadata]`
+	// when listing messages.
 	Metadata map[string]any `json:"metadata,omitzero"`
 	// Reply-to address. If provided as an object with a name, only the email is
 	// stored; the name is ignored.
 	ReplyTo EmailAddressInputUnionParam `json:"reply_to,omitzero"`
-	// Tags for categorization and reporting. Stored on the message and propagated to
-	// Email Detail Records. Not returned in API responses.
+	// Tags for categorization and filtering. Stored on the message, returned on
+	// message responses, and propagated to Email Detail Records. Usable in
+	// `filter[tags]` when listing messages.
 	Tags []string `json:"tags,omitzero"`
 	// Variables for Liquid template rendering. Non-object values may cause a 422
 	// validation error on message creation, but are silently treated as an empty
-	// object for template rendering.
+	// object for template rendering. When the template enables `strict_variables`, a
+	// missing required variable fails the request with 422 (single send) or a per-item
+	// `unprocessable_entity` error (batch) naming the variable; no message is
+	// persisted for the failed item.
 	TemplateVariables map[string]any `json:"template_variables,omitzero"`
 	// Per-send open and click tracking overrides. Omitted properties inherit the
 	// sender domain's tracking settings.
@@ -516,6 +612,19 @@ func (r *EmailMessageNewParams) UnmarshalJSON(data []byte) error {
 }
 
 type EmailMessageListParams struct {
+	// Metadata containment filter, supplied as a JSON object or comma-separated
+	// `key=value` pairs. All supplied key/value pairs must be contained in the message
+	// metadata. An empty value or empty JSON object omits the filter. Malformed
+	// values, valid non-object JSON, pairs without `=`, empty keys, and
+	// non-string/nested query shapes return HTTP 400.
+	FilterMetadata param.Opt[string] `query:"filter[metadata],omitzero" json:"-"`
+	// Comma-separated tags. Each segment is trimmed, and messages having at least one
+	// supplied tag are returned; matching is exact and case-sensitive after trimming.
+	// Because commas delimit values and surrounding whitespace is removed, this filter
+	// cannot represent stored tags containing literal commas or leading/trailing
+	// whitespace. An empty value omits the filter. Empty segments and
+	// non-string/nested query shapes return HTTP 400.
+	FilterTags param.Opt[string] `query:"filter[tags],omitzero" json:"-"`
 	// Opaque URL-safe Base64 cursor returned by a previous list response.
 	PageCursor param.Opt[string] `query:"page_cursor,omitzero" json:"-"`
 	// Number of results to return. Defaults to 25; maximum is 100. Invalid values are
@@ -537,8 +646,13 @@ type EmailMessageBatchParams struct {
 	// message is validated and sent independently; per-message failures do not affect
 	// other messages in the batch.
 	Messages []EmailMessageBatchParamsMessage `json:"messages,omitzero" api:"required"`
-	// Applies sandbox mode to all messages in the batch. Overrides any per-message
-	// sandbox_mode in the messages array.
+	// Applies sandbox mode to all messages in the batch and overrides any per-message
+	// `sandbox_mode` value — each message's effective `sandbox_mode` is exactly this
+	// envelope value. Reserved recipients at `test.telnyx.com` produce the
+	// deterministic event chains documented on CreateEmailRequest.sandbox_mode; no
+	// batch item is injected into the MTA or outbound Kafka path. Sandbox batch items
+	// are non-billable, consume no daily-send-limit quota, and feed no
+	// delivery-reputation signals.
 	SandboxMode    param.Opt[bool]   `json:"sandbox_mode,omitzero"`
 	IdempotencyKey param.Opt[string] `header:"Idempotency-Key,omitzero" json:"-"`
 	paramObj
@@ -567,10 +681,11 @@ type EmailMessageBatchParamsMessage struct {
 	// Optional unsubscribe-group UUID used for group-scoped suppression checks and
 	// unsubscribe handling.
 	GroupID param.Opt[string] `json:"group_id,omitzero" format:"uuid"`
-	// Future ISO 8601 time to schedule sending. Invalid or past timestamps are
-	// silently ignored and the email is sent immediately. The legacy alias `send_at`
-	// is still accepted for backward compatibility; when both are provided,
-	// `scheduled_at` wins.
+	// Future ISO 8601 delivery time. Invalid or non-future timestamps are rejected.
+	// Single sends return HTTP 422; in batch sends the invalid item is reported in the
+	// 207 per-item errors while other items continue. `send_at` remains a deprecated
+	// request alias. A non-null `scheduled_at` takes precedence over `send_at`; when
+	// `scheduled_at` is omitted or null, `send_at` is used.
 	ScheduledAt param.Opt[time.Time] `json:"scheduled_at,omitzero" format:"date-time"`
 	// Optional display name for string `from`; overrides `from.name` when provided.
 	FromName param.Opt[string] `json:"from_name,omitzero"`
@@ -582,7 +697,12 @@ type EmailMessageBatchParamsMessage struct {
 	// be overridden. Requires the `email:override` API scope.
 	IgnoreSuppression param.Opt[bool] `json:"ignore_suppression,omitzero"`
 	InlineCss         param.Opt[bool] `json:"inline_css,omitzero"`
-	SandboxMode       param.Opt[bool] `json:"sandbox_mode,omitzero"`
+	// Per-message sandbox flag. The batch-level `sandbox_mode` envelope value is
+	// authoritative: it overwrites every message's `sandbox_mode` before processing,
+	// including the `false` default when the envelope omits the field. A per-item
+	// `sandbox_mode: true` inside a non-sandbox batch is therefore a real send. Set
+	// the envelope field to run any batch item in sandbox mode.
+	SandboxMode param.Opt[bool] `json:"sandbox_mode,omitzero"`
 	// Deprecated alias for `scheduled_at`.
 	//
 	// Deprecated: Use scheduled_at instead.
@@ -600,17 +720,23 @@ type EmailMessageBatchParamsMessage struct {
 	Cc          []EmailAddressInputUnionParam `json:"cc,omitzero"`
 	// Custom email headers. Write-only; not returned in responses.
 	Headers map[string]string `json:"headers,omitzero"`
-	// Custom metadata. Write-only; not returned in responses.
+	// Custom metadata key/value pairs. Stored on the message, returned on message
+	// responses, and propagated to Email Detail Records. Usable in `filter[metadata]`
+	// when listing messages.
 	Metadata map[string]any `json:"metadata,omitzero"`
 	// Reply-to address. If provided as an object with a name, only the email is
 	// stored; the name is ignored.
 	ReplyTo EmailAddressInputUnionParam `json:"reply_to,omitzero"`
-	// Tags for categorization and reporting. Stored on the message and propagated to
-	// Email Detail Records. Not returned in API responses.
+	// Tags for categorization and filtering. Stored on the message, returned on
+	// message responses, and propagated to Email Detail Records. Usable in
+	// `filter[tags]` when listing messages.
 	Tags []string `json:"tags,omitzero"`
 	// Variables for Liquid template rendering. Non-object values may cause a 422
 	// validation error on message creation, but are silently treated as an empty
-	// object for template rendering.
+	// object for template rendering. When the template enables `strict_variables`, a
+	// missing required variable fails the request with 422 (single send) or a per-item
+	// `unprocessable_entity` error (batch) naming the variable; no message is
+	// persisted for the failed item.
 	TemplateVariables map[string]any `json:"template_variables,omitzero"`
 	// Per-send open and click tracking overrides. Omitted properties inherit the
 	// sender domain's tracking settings.
@@ -657,4 +783,18 @@ func (r EmailMessageGetEventsParams) URLQuery() (v url.Values, err error) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
+}
+
+type EmailMessageUpdateScheduleParams struct {
+	// New ISO 8601 delivery time. Must be strictly in the future.
+	ScheduledAt time.Time `json:"scheduled_at" api:"required" format:"date-time"`
+	paramObj
+}
+
+func (r EmailMessageUpdateScheduleParams) MarshalJSON() (data []byte, err error) {
+	type shadow EmailMessageUpdateScheduleParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *EmailMessageUpdateScheduleParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }

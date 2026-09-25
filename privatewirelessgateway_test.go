@@ -27,9 +27,10 @@ func TestPrivateWirelessGatewayNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.PrivateWirelessGateways.New(context.TODO(), telnyx.PrivateWirelessGatewayNewParams{
-		Name:       "My private wireless gateway",
-		NetworkID:  "6a09cdc3-8948-47f0-aa62-74ac943d6c58",
-		RegionCode: telnyx.String("dc2"),
+		Name:        "My private wireless gateway",
+		NetworkID:   "6a09cdc3-8948-47f0-aa62-74ac943d6c58",
+		AddressMode: telnyx.PrivateWirelessGatewayNewParamsAddressModeStatic,
+		RegionCode:  telnyx.String("dc2"),
 	})
 	if err != nil {
 		var apierr *telnyx.Error

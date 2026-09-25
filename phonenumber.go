@@ -231,9 +231,17 @@ type NumbersPhoneNumberDetailed struct {
 	//
 	// Any of "disabled", "reject_calls", "flag_calls".
 	InboundCallScreening NumbersPhoneNumberDetailedInboundCallScreening `json:"inbound_call_screening"`
-	// Identifies the messaging profile associated with the phone number.
+	// Identifies the messaging campaign associated with the phone number's messaging
+	// profile. If the messaging profile details could not be retrieved, this value is
+	// the string `UNAVAILABLE`.
+	MessagingCampaignID string `json:"messaging_campaign_id" api:"nullable"`
+	// Identifies the messaging profile associated with the phone number. If the
+	// messaging profile details could not be retrieved, this value is the string
+	// `UNAVAILABLE`.
 	MessagingProfileID string `json:"messaging_profile_id" api:"nullable"`
-	// The name of the messaging profile associated with the phone number.
+	// The name of the messaging profile associated with the phone number. If the
+	// messaging profile details could not be retrieved, this value is the string
+	// `UNAVAILABLE`.
 	MessagingProfileName string `json:"messaging_profile_name" api:"nullable"`
 	// Indicates if the phone number was purchased or ported in. For some numbers this
 	// information may not be available.
@@ -271,6 +279,7 @@ type NumbersPhoneNumberDetailed struct {
 		EmergencyStatus       respjson.Field
 		HDVoiceEnabled        respjson.Field
 		InboundCallScreening  respjson.Field
+		MessagingCampaignID   respjson.Field
 		MessagingProfileID    respjson.Field
 		MessagingProfileName  respjson.Field
 		SourceType            respjson.Field

@@ -142,7 +142,7 @@ type Collection struct {
 	RecordType string                   `json:"record_type"`
 	Settings   RetrievalSettingsWrapper `json:"settings"`
 	Slug       string                   `json:"slug"`
-	Sources    []Source                 `json:"sources"`
+	Sources    []CollectionsSource      `json:"sources"`
 	Status     string                   `json:"status"`
 	UpdatedAt  time.Time                `json:"updated_at" format:"date-time"`
 	Uuid       string                   `json:"uuid" format:"uuid"`

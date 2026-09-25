@@ -63,7 +63,7 @@ func (r *PrivateWirelessGatewayService) Get(ctx context.Context, id string, opts
 }
 
 // Get all Private Wireless Gateways belonging to the user.
-func (r *PrivateWirelessGatewayService) List(ctx context.Context, query PrivateWirelessGatewayListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[PrivateWirelessGateway], err error) {
+func (r *PrivateWirelessGatewayService) List(ctx context.Context, query PrivateWirelessGatewayListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[WirelessPrivateWirelessGateway], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -81,7 +81,7 @@ func (r *PrivateWirelessGatewayService) List(ctx context.Context, query PrivateW
 }
 
 // Get all Private Wireless Gateways belonging to the user.
-func (r *PrivateWirelessGatewayService) ListAutoPaging(ctx context.Context, query PrivateWirelessGatewayListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[PrivateWirelessGateway] {
+func (r *PrivateWirelessGatewayService) ListAutoPaging(ctx context.Context, query PrivateWirelessGatewayListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[WirelessPrivateWirelessGateway] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
@@ -95,49 +95,6 @@ func (r *PrivateWirelessGatewayService) Delete(ctx context.Context, id string, o
 	path := fmt.Sprintf("private_wireless_gateways/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
-}
-
-type PrivateWirelessGateway struct {
-	// Identifies the resource.
-	ID string `json:"id" format:"uuid"`
-	// A list of the resources that have been assigned to the Private Wireless Gateway.
-	AssignedResources []PwgAssignedResourcesSummary `json:"assigned_resources"`
-	// ISO 8601 formatted date-time indicating when the resource was created.
-	CreatedAt string `json:"created_at"`
-	// IP block used to assign IPs to the SIM cards in the Private Wireless Gateway.
-	IPRange string `json:"ip_range"`
-	// The private wireless gateway name.
-	Name string `json:"name"`
-	// The identification of the related network resource.
-	NetworkID  string `json:"network_id" format:"uuid"`
-	RecordType string `json:"record_type"`
-	// The name of the region where the Private Wireless Gateway is deployed.
-	RegionCode string `json:"region_code"`
-	// The current status or failure details of the Private Wireless Gateway.
-	Status PrivateWirelessGatewayStatus `json:"status"`
-	// ISO 8601 formatted date-time indicating when the resource was updated.
-	UpdatedAt string `json:"updated_at"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                respjson.Field
-		AssignedResources respjson.Field
-		CreatedAt         respjson.Field
-		IPRange           respjson.Field
-		Name              respjson.Field
-		NetworkID         respjson.Field
-		RecordType        respjson.Field
-		RegionCode        respjson.Field
-		Status            respjson.Field
-		UpdatedAt         respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PrivateWirelessGateway) RawJSON() string { return r.JSON.raw }
-func (r *PrivateWirelessGateway) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
 }
 
 // The current status or failure details of the Private Wireless Gateway.
@@ -214,8 +171,70 @@ func (r *PwgAssignedResourcesSummary) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type WirelessPrivateWirelessGateway struct {
+	// Identifies the resource.
+	ID string `json:"id" format:"uuid"`
+	// The address mode of the private wireless gateway. With static, each SIM card
+	// gets a fixed IP address from the gateway's IP range that is preserved across
+	// sessions. With dynamic, IP addresses are assigned by the network at attach time
+	// and may change between sessions.
+	//
+	// Any of "static", "dynamic".
+	AddressMode WirelessPrivateWirelessGatewayAddressMode `json:"address_mode"`
+	// A list of the resources that have been assigned to the Private Wireless Gateway.
+	AssignedResources []PwgAssignedResourcesSummary `json:"assigned_resources"`
+	// ISO 8601 formatted date-time indicating when the resource was created.
+	CreatedAt string `json:"created_at"`
+	// IP block used to assign IPs to the SIM cards in the Private Wireless Gateway.
+	IPRange string `json:"ip_range"`
+	// The private wireless gateway name.
+	Name string `json:"name"`
+	// The identification of the related network resource.
+	NetworkID  string `json:"network_id" format:"uuid"`
+	RecordType string `json:"record_type"`
+	// The name of the region where the Private Wireless Gateway is deployed.
+	RegionCode string `json:"region_code"`
+	// The current status or failure details of the Private Wireless Gateway.
+	Status PrivateWirelessGatewayStatus `json:"status"`
+	// ISO 8601 formatted date-time indicating when the resource was updated.
+	UpdatedAt string `json:"updated_at"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                respjson.Field
+		AddressMode       respjson.Field
+		AssignedResources respjson.Field
+		CreatedAt         respjson.Field
+		IPRange           respjson.Field
+		Name              respjson.Field
+		NetworkID         respjson.Field
+		RecordType        respjson.Field
+		RegionCode        respjson.Field
+		Status            respjson.Field
+		UpdatedAt         respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WirelessPrivateWirelessGateway) RawJSON() string { return r.JSON.raw }
+func (r *WirelessPrivateWirelessGateway) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The address mode of the private wireless gateway. With static, each SIM card
+// gets a fixed IP address from the gateway's IP range that is preserved across
+// sessions. With dynamic, IP addresses are assigned by the network at attach time
+// and may change between sessions.
+type WirelessPrivateWirelessGatewayAddressMode string
+
+const (
+	WirelessPrivateWirelessGatewayAddressModeStatic  WirelessPrivateWirelessGatewayAddressMode = "static"
+	WirelessPrivateWirelessGatewayAddressModeDynamic WirelessPrivateWirelessGatewayAddressMode = "dynamic"
+)
+
 type PrivateWirelessGatewayNewResponse struct {
-	Data PrivateWirelessGateway `json:"data"`
+	Data WirelessPrivateWirelessGateway `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -231,7 +250,7 @@ func (r *PrivateWirelessGatewayNewResponse) UnmarshalJSON(data []byte) error {
 }
 
 type PrivateWirelessGatewayGetResponse struct {
-	Data PrivateWirelessGateway `json:"data"`
+	Data WirelessPrivateWirelessGateway `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -247,7 +266,7 @@ func (r *PrivateWirelessGatewayGetResponse) UnmarshalJSON(data []byte) error {
 }
 
 type PrivateWirelessGatewayDeleteResponse struct {
-	Data PrivateWirelessGateway `json:"data"`
+	Data WirelessPrivateWirelessGateway `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -270,6 +289,14 @@ type PrivateWirelessGatewayNewParams struct {
 	// The code of the region where the private wireless gateway will be assigned. A
 	// list of available regions can be found at the regions endpoint
 	RegionCode param.Opt[string] `json:"region_code,omitzero"`
+	// Determines how IP addresses are assigned to SIM cards using this gateway. With
+	// static, each SIM card gets a fixed IP address from the gateway's IP range that
+	// is preserved across sessions. With dynamic, an IP address is assigned by the
+	// network at attach time and may change between sessions. If omitted, the gateway
+	// is created with the default address mode, dynamic.
+	//
+	// Any of "static", "dynamic".
+	AddressMode PrivateWirelessGatewayNewParamsAddressMode `json:"address_mode,omitzero"`
 	paramObj
 }
 
@@ -280,6 +307,18 @@ func (r PrivateWirelessGatewayNewParams) MarshalJSON() (data []byte, err error) 
 func (r *PrivateWirelessGatewayNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// Determines how IP addresses are assigned to SIM cards using this gateway. With
+// static, each SIM card gets a fixed IP address from the gateway's IP range that
+// is preserved across sessions. With dynamic, an IP address is assigned by the
+// network at attach time and may change between sessions. If omitted, the gateway
+// is created with the default address mode, dynamic.
+type PrivateWirelessGatewayNewParamsAddressMode string
+
+const (
+	PrivateWirelessGatewayNewParamsAddressModeStatic  PrivateWirelessGatewayNewParamsAddressMode = "static"
+	PrivateWirelessGatewayNewParamsAddressModeDynamic PrivateWirelessGatewayNewParamsAddressMode = "dynamic"
+)
 
 type PrivateWirelessGatewayListParams struct {
 	// Private Wireless Gateway resource creation date.

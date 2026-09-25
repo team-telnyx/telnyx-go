@@ -13,7 +13,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
-func TestMeetingSessionArtifactNew(t *testing.T) {
+func TestAIMemoryNamespaceProfileSourceGet(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -26,13 +26,12 @@ func TestMeetingSessionArtifactNew(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.MeetingSessions.Artifacts.New(
+	_, err := client.AI.Memory.Namespaces.Profiles.Sources.Get(
 		context.TODO(),
-		"mtgsess_a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-		telnyx.MeetingSessionArtifactNewParams{
-			OfNamedArtifact: &telnyx.MeetingSessionArtifactNewParamsBodyNamedArtifact{
-				Type: "summary",
-			},
+		"source_id",
+		telnyx.AIMemoryNamespaceProfileSourceGetParams{
+			Namespace: "namespace",
+			ProfileID: "profile_id",
 		},
 	)
 	if err != nil {
@@ -44,7 +43,7 @@ func TestMeetingSessionArtifactNew(t *testing.T) {
 	}
 }
 
-func TestMeetingSessionArtifactGet(t *testing.T) {
+func TestAIMemoryNamespaceProfileSourceListWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -57,11 +56,14 @@ func TestMeetingSessionArtifactGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.MeetingSessions.Artifacts.Get(
+	_, err := client.AI.Memory.Namespaces.Profiles.Sources.List(
 		context.TODO(),
-		"mtgart_b2c3d4e5-f6a7-8901-bcde-f23456789012",
-		telnyx.MeetingSessionArtifactGetParams{
-			ID: "mtgsess_a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+		"profile_id",
+		telnyx.AIMemoryNamespaceProfileSourceListParams{
+			Namespace:  "namespace",
+			PageNumber: telnyx.Int(1),
+			PageSize:   telnyx.Int(1),
+			SessionID:  telnyx.String("session_id"),
 		},
 	)
 	if err != nil {
@@ -73,7 +75,7 @@ func TestMeetingSessionArtifactGet(t *testing.T) {
 	}
 }
 
-func TestMeetingSessionArtifactList(t *testing.T) {
+func TestAIMemoryNamespaceProfileSourceDelete(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -86,7 +88,14 @@ func TestMeetingSessionArtifactList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.MeetingSessions.Artifacts.List(context.TODO(), "mtgsess_a1b2c3d4-e5f6-7890-abcd-ef1234567890")
+	_, err := client.AI.Memory.Namespaces.Profiles.Sources.Delete(
+		context.TODO(),
+		"source_id",
+		telnyx.AIMemoryNamespaceProfileSourceDeleteParams{
+			Namespace: "namespace",
+			ProfileID: "profile_id",
+		},
+	)
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {

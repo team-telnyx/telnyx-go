@@ -109,7 +109,7 @@ type EmailRecipient struct {
 	// Current per-recipient delivery status.
 	//
 	// Any of "queued", "sending", "sent", "deferred", "delivered", "bounced",
-	// "failed", "gw_reject", "cancelled".
+	// "failed", "gw_reject", "cancelled", "injection_timeout", "expired".
 	Status      EmailRecipientStatus `json:"status" api:"required"`
 	DeliveredAt time.Time            `json:"delivered_at" api:"nullable" format:"date-time"`
 	FailedAt    time.Time            `json:"failed_at" api:"nullable" format:"date-time"`
@@ -161,15 +161,17 @@ const (
 type EmailRecipientStatus string
 
 const (
-	EmailRecipientStatusQueued    EmailRecipientStatus = "queued"
-	EmailRecipientStatusSending   EmailRecipientStatus = "sending"
-	EmailRecipientStatusSent      EmailRecipientStatus = "sent"
-	EmailRecipientStatusDeferred  EmailRecipientStatus = "deferred"
-	EmailRecipientStatusDelivered EmailRecipientStatus = "delivered"
-	EmailRecipientStatusBounced   EmailRecipientStatus = "bounced"
-	EmailRecipientStatusFailed    EmailRecipientStatus = "failed"
-	EmailRecipientStatusGwReject  EmailRecipientStatus = "gw_reject"
-	EmailRecipientStatusCancelled EmailRecipientStatus = "cancelled"
+	EmailRecipientStatusQueued           EmailRecipientStatus = "queued"
+	EmailRecipientStatusSending          EmailRecipientStatus = "sending"
+	EmailRecipientStatusSent             EmailRecipientStatus = "sent"
+	EmailRecipientStatusDeferred         EmailRecipientStatus = "deferred"
+	EmailRecipientStatusDelivered        EmailRecipientStatus = "delivered"
+	EmailRecipientStatusBounced          EmailRecipientStatus = "bounced"
+	EmailRecipientStatusFailed           EmailRecipientStatus = "failed"
+	EmailRecipientStatusGwReject         EmailRecipientStatus = "gw_reject"
+	EmailRecipientStatusCancelled        EmailRecipientStatus = "cancelled"
+	EmailRecipientStatusInjectionTimeout EmailRecipientStatus = "injection_timeout"
+	EmailRecipientStatusExpired          EmailRecipientStatus = "expired"
 )
 
 type EmailMessageRecipientGetResponse struct {
@@ -206,7 +208,7 @@ type EmailMessageRecipientListParams struct {
 	// Filter recipients by status.
 	//
 	// Any of "queued", "sending", "sent", "deferred", "delivered", "bounced",
-	// "failed", "gw_reject", "cancelled".
+	// "failed", "gw_reject", "cancelled", "injection_timeout", "expired".
 	Status EmailMessageRecipientListParamsStatus `query:"status,omitzero" json:"-"`
 	paramObj
 }
@@ -233,13 +235,15 @@ const (
 type EmailMessageRecipientListParamsStatus string
 
 const (
-	EmailMessageRecipientListParamsStatusQueued    EmailMessageRecipientListParamsStatus = "queued"
-	EmailMessageRecipientListParamsStatusSending   EmailMessageRecipientListParamsStatus = "sending"
-	EmailMessageRecipientListParamsStatusSent      EmailMessageRecipientListParamsStatus = "sent"
-	EmailMessageRecipientListParamsStatusDeferred  EmailMessageRecipientListParamsStatus = "deferred"
-	EmailMessageRecipientListParamsStatusDelivered EmailMessageRecipientListParamsStatus = "delivered"
-	EmailMessageRecipientListParamsStatusBounced   EmailMessageRecipientListParamsStatus = "bounced"
-	EmailMessageRecipientListParamsStatusFailed    EmailMessageRecipientListParamsStatus = "failed"
-	EmailMessageRecipientListParamsStatusGwReject  EmailMessageRecipientListParamsStatus = "gw_reject"
-	EmailMessageRecipientListParamsStatusCancelled EmailMessageRecipientListParamsStatus = "cancelled"
+	EmailMessageRecipientListParamsStatusQueued           EmailMessageRecipientListParamsStatus = "queued"
+	EmailMessageRecipientListParamsStatusSending          EmailMessageRecipientListParamsStatus = "sending"
+	EmailMessageRecipientListParamsStatusSent             EmailMessageRecipientListParamsStatus = "sent"
+	EmailMessageRecipientListParamsStatusDeferred         EmailMessageRecipientListParamsStatus = "deferred"
+	EmailMessageRecipientListParamsStatusDelivered        EmailMessageRecipientListParamsStatus = "delivered"
+	EmailMessageRecipientListParamsStatusBounced          EmailMessageRecipientListParamsStatus = "bounced"
+	EmailMessageRecipientListParamsStatusFailed           EmailMessageRecipientListParamsStatus = "failed"
+	EmailMessageRecipientListParamsStatusGwReject         EmailMessageRecipientListParamsStatus = "gw_reject"
+	EmailMessageRecipientListParamsStatusCancelled        EmailMessageRecipientListParamsStatus = "cancelled"
+	EmailMessageRecipientListParamsStatusInjectionTimeout EmailMessageRecipientListParamsStatus = "injection_timeout"
+	EmailMessageRecipientListParamsStatusExpired          EmailMessageRecipientListParamsStatus = "expired"
 )
