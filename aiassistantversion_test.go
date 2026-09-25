@@ -126,17 +126,18 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 								},
 							},
 							Type: telnyx.FlowNodeReqTypePrompt,
-							VoiceSettings: telnyx.VoiceSettingsParam{
+							VoiceSettings: telnyx.InferenceEmbeddingVoiceSettingsParam{
 								Voice:     "voice",
 								APIKeyRef: telnyx.String("api_key_ref"),
-								BackgroundAudio: telnyx.VoiceSettingsBackgroundAudioUnionParam{
-									OfPredefinedMedia: &telnyx.VoiceSettingsBackgroundAudioPredefinedMediaParam{
+								BackgroundAudio: telnyx.InferenceEmbeddingVoiceSettingsBackgroundAudioUnionParam{
+									OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0: &telnyx.InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0Param{
+										Type:   "predefined_media",
 										Value:  "silence",
 										Volume: telnyx.Float(0.1),
 									},
 								},
 								ExpressiveMode:  telnyx.Bool(true),
-								LanguageBoost:   telnyx.VoiceSettingsLanguageBoostAuto,
+								LanguageBoost:   telnyx.InferenceEmbeddingVoiceSettingsLanguageBoostAuto,
 								SimilarityBoost: telnyx.Float(0),
 								Speed:           telnyx.Float(0),
 								Style:           telnyx.Float(0),
@@ -191,17 +192,18 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 								},
 							},
 							Type: telnyx.FlowNodeReqTypePrompt,
-							VoiceSettings: telnyx.VoiceSettingsParam{
+							VoiceSettings: telnyx.InferenceEmbeddingVoiceSettingsParam{
 								Voice:     "voice",
 								APIKeyRef: telnyx.String("api_key_ref"),
-								BackgroundAudio: telnyx.VoiceSettingsBackgroundAudioUnionParam{
-									OfPredefinedMedia: &telnyx.VoiceSettingsBackgroundAudioPredefinedMediaParam{
+								BackgroundAudio: telnyx.InferenceEmbeddingVoiceSettingsBackgroundAudioUnionParam{
+									OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0: &telnyx.InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0Param{
+										Type:   "predefined_media",
 										Value:  "silence",
 										Volume: telnyx.Float(0.1),
 									},
 								},
 								ExpressiveMode:  telnyx.Bool(true),
-								LanguageBoost:   telnyx.VoiceSettingsLanguageBoostAuto,
+								LanguageBoost:   telnyx.InferenceEmbeddingVoiceSettingsLanguageBoostAuto,
 								SimilarityBoost: telnyx.Float(0),
 								Speed:           telnyx.Float(0),
 								Style:           telnyx.Float(0),
@@ -395,17 +397,18 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 					},
 				},
 				VersionName: telnyx.String("version_name"),
-				VoiceSettings: telnyx.VoiceSettingsParam{
+				VoiceSettings: telnyx.InferenceEmbeddingVoiceSettingsParam{
 					Voice:     "voice",
 					APIKeyRef: telnyx.String("api_key_ref"),
-					BackgroundAudio: telnyx.VoiceSettingsBackgroundAudioUnionParam{
-						OfPredefinedMedia: &telnyx.VoiceSettingsBackgroundAudioPredefinedMediaParam{
+					BackgroundAudio: telnyx.InferenceEmbeddingVoiceSettingsBackgroundAudioUnionParam{
+						OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0: &telnyx.InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0Param{
+							Type:   "predefined_media",
 							Value:  "silence",
 							Volume: telnyx.Float(0.1),
 						},
 					},
 					ExpressiveMode:  telnyx.Bool(true),
-					LanguageBoost:   telnyx.VoiceSettingsLanguageBoostAuto,
+					LanguageBoost:   telnyx.InferenceEmbeddingVoiceSettingsLanguageBoostAuto,
 					SimilarityBoost: telnyx.Float(0),
 					Speed:           telnyx.Float(0),
 					Style:           telnyx.Float(0),

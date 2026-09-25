@@ -231,9 +231,9 @@ type UpdateAssistantParam struct {
 	// Responses merge shared tools into `tools` with `shared: true`; when updating,
 	// omit those tools from the `tools` array and manage them through `tool_ids`
 	// instead.
-	Tools         []AssistantToolUnionParam  `json:"tools,omitzero"`
-	Transcription TranscriptionSettingsParam `json:"transcription,omitzero"`
-	VoiceSettings VoiceSettingsParam         `json:"voice_settings,omitzero"`
+	Tools         []AssistantToolUnionParam            `json:"tools,omitzero"`
+	Transcription TranscriptionSettingsParam           `json:"transcription,omitzero"`
+	VoiceSettings InferenceEmbeddingVoiceSettingsParam `json:"voice_settings,omitzero"`
 	// Configuration settings for the assistant's web widget.
 	WidgetSettings WidgetSettingsParam `json:"widget_settings,omitzero"`
 	paramObj

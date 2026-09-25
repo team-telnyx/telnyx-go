@@ -450,6 +450,12 @@ type ConversationRelayEmbeddedConfigParam struct {
 	//   - **Fish Audio:** Use `FishAudio.<ModelId>.<VoiceId>` (e.g.,
 	//     `FishAudio.s2.1-pro.<reference_id>`). Supported models: `s2.1-pro`, `s2-pro`,
 	//     `s1`. `VoiceId` is a Fish Voice-Library reference ID.
+	//   - **Soniox:** Use `Soniox.<ModelId>.<VoiceId>` (e.g., `Soniox.tts-rt-v2.Emma`).
+	//     Supported model: `tts-rt-v2`. Browse the catalog via the
+	//     [Voices API](https://developers.telnyx.com/api-reference/text-to-speech-commands/list-available-voices).
+	//     Every voice speaks all supported languages; set `language` to the two-letter
+	//     ISO 639-1 code of the text, for example `it`. SSML is not supported. Use
+	//     `voice_settings` to configure `speed` (0.7 to 1.3) and `reduce_silence`.
 	//   - **xAI:** Use `xAI.<VoiceId>` (e.g., `xAI.eve`). Available voices: `eve`,
 	//     `ara`, `rex`, `sal`, `leo`.
 	//   - **Humain:** Use `Humain.<VoiceId>` (e.g., `Humain.sara-ar`). Available voices:
@@ -537,6 +543,7 @@ type ConversationRelayEmbeddedConfigVoiceSettingsUnionParam struct {
 	OfResemble   *shared.ResembleVoiceSettingsParam `json:",omitzero,inline"`
 	OfInworld    *shared.InworldVoiceSettingsParam  `json:",omitzero,inline"`
 	OfXai        *shared.XaiVoiceSettingsParam      `json:",omitzero,inline"`
+	OfSoniox     *SonioxVoiceSettingsParam          `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -548,7 +555,8 @@ func (u ConversationRelayEmbeddedConfigVoiceSettingsUnionParam) MarshalJSON() ([
 		u.OfAzure,
 		u.OfResemble,
 		u.OfInworld,
-		u.OfXai)
+		u.OfXai,
+		u.OfSoniox)
 }
 func (u *ConversationRelayEmbeddedConfigVoiceSettingsUnionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -571,6 +579,8 @@ func (u *ConversationRelayEmbeddedConfigVoiceSettingsUnionParam) asAny() any {
 		return u.OfInworld
 	} else if !param.IsOmitted(u.OfXai) {
 		return u.OfXai
+	} else if !param.IsOmitted(u.OfSoniox) {
+		return u.OfSoniox
 	}
 	return nil
 }
@@ -595,14 +605,6 @@ func (u ConversationRelayEmbeddedConfigVoiceSettingsUnionParam) GetLanguageBoost
 func (u ConversationRelayEmbeddedConfigVoiceSettingsUnionParam) GetPitch() *int64 {
 	if vt := u.OfMinimax; vt != nil && vt.Pitch.Valid() {
 		return &vt.Pitch.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u ConversationRelayEmbeddedConfigVoiceSettingsUnionParam) GetSpeed() *float64 {
-	if vt := u.OfMinimax; vt != nil && vt.Speed.Valid() {
-		return &vt.Speed.Value
 	}
 	return nil
 }
@@ -688,6 +690,14 @@ func (u ConversationRelayEmbeddedConfigVoiceSettingsUnionParam) GetLanguage() *s
 }
 
 // Returns a pointer to the underlying variant's property, if present.
+func (u ConversationRelayEmbeddedConfigVoiceSettingsUnionParam) GetReduceSilence() *bool {
+	if vt := u.OfSoniox; vt != nil && vt.ReduceSilence.Valid() {
+		return &vt.ReduceSilence.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
 func (u ConversationRelayEmbeddedConfigVoiceSettingsUnionParam) GetType() *string {
 	if vt := u.OfElevenlabs; vt != nil {
 		return (*string)(&vt.Type)
@@ -705,6 +715,8 @@ func (u ConversationRelayEmbeddedConfigVoiceSettingsUnionParam) GetType() *strin
 		return (*string)(&vt.Type)
 	} else if vt := u.OfXai; vt != nil {
 		return (*string)(&vt.Type)
+	} else if vt := u.OfSoniox; vt != nil {
+		return (*string)(&vt.Type)
 	}
 	return nil
 }
@@ -715,6 +727,16 @@ func (u ConversationRelayEmbeddedConfigVoiceSettingsUnionParam) GetAPIKeyRef() *
 		return &vt.APIKeyRef.Value
 	} else if vt := u.OfAzure; vt != nil && vt.APIKeyRef.Valid() {
 		return &vt.APIKeyRef.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ConversationRelayEmbeddedConfigVoiceSettingsUnionParam) GetSpeed() *float64 {
+	if vt := u.OfMinimax; vt != nil && vt.Speed.Valid() {
+		return &vt.Speed.Value
+	} else if vt := u.OfSoniox; vt != nil && vt.Speed.Valid() {
+		return &vt.Speed.Value
 	}
 	return nil
 }
@@ -730,6 +752,7 @@ func init() {
 		apijson.Discriminator[shared.ResembleVoiceSettingsParam]("resemble"),
 		apijson.Discriminator[shared.InworldVoiceSettingsParam]("inworld"),
 		apijson.Discriminator[shared.XaiVoiceSettingsParam]("xai"),
+		apijson.Discriminator[SonioxVoiceSettingsParam]("soniox"),
 	)
 }
 
@@ -842,6 +865,7 @@ type ConversationRelayLanguageVoiceSettingsUnionParam struct {
 	OfResemble   *shared.ResembleVoiceSettingsParam `json:",omitzero,inline"`
 	OfInworld    *shared.InworldVoiceSettingsParam  `json:",omitzero,inline"`
 	OfXai        *shared.XaiVoiceSettingsParam      `json:",omitzero,inline"`
+	OfSoniox     *SonioxVoiceSettingsParam          `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -853,7 +877,8 @@ func (u ConversationRelayLanguageVoiceSettingsUnionParam) MarshalJSON() ([]byte,
 		u.OfAzure,
 		u.OfResemble,
 		u.OfInworld,
-		u.OfXai)
+		u.OfXai,
+		u.OfSoniox)
 }
 func (u *ConversationRelayLanguageVoiceSettingsUnionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -876,6 +901,8 @@ func (u *ConversationRelayLanguageVoiceSettingsUnionParam) asAny() any {
 		return u.OfInworld
 	} else if !param.IsOmitted(u.OfXai) {
 		return u.OfXai
+	} else if !param.IsOmitted(u.OfSoniox) {
+		return u.OfSoniox
 	}
 	return nil
 }
@@ -900,14 +927,6 @@ func (u ConversationRelayLanguageVoiceSettingsUnionParam) GetLanguageBoost() *st
 func (u ConversationRelayLanguageVoiceSettingsUnionParam) GetPitch() *int64 {
 	if vt := u.OfMinimax; vt != nil && vt.Pitch.Valid() {
 		return &vt.Pitch.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u ConversationRelayLanguageVoiceSettingsUnionParam) GetSpeed() *float64 {
-	if vt := u.OfMinimax; vt != nil && vt.Speed.Valid() {
-		return &vt.Speed.Value
 	}
 	return nil
 }
@@ -993,6 +1012,14 @@ func (u ConversationRelayLanguageVoiceSettingsUnionParam) GetLanguage() *string 
 }
 
 // Returns a pointer to the underlying variant's property, if present.
+func (u ConversationRelayLanguageVoiceSettingsUnionParam) GetReduceSilence() *bool {
+	if vt := u.OfSoniox; vt != nil && vt.ReduceSilence.Valid() {
+		return &vt.ReduceSilence.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
 func (u ConversationRelayLanguageVoiceSettingsUnionParam) GetType() *string {
 	if vt := u.OfElevenlabs; vt != nil {
 		return (*string)(&vt.Type)
@@ -1010,6 +1037,8 @@ func (u ConversationRelayLanguageVoiceSettingsUnionParam) GetType() *string {
 		return (*string)(&vt.Type)
 	} else if vt := u.OfXai; vt != nil {
 		return (*string)(&vt.Type)
+	} else if vt := u.OfSoniox; vt != nil {
+		return (*string)(&vt.Type)
 	}
 	return nil
 }
@@ -1020,6 +1049,16 @@ func (u ConversationRelayLanguageVoiceSettingsUnionParam) GetAPIKeyRef() *string
 		return &vt.APIKeyRef.Value
 	} else if vt := u.OfAzure; vt != nil && vt.APIKeyRef.Valid() {
 		return &vt.APIKeyRef.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ConversationRelayLanguageVoiceSettingsUnionParam) GetSpeed() *float64 {
+	if vt := u.OfMinimax; vt != nil && vt.Speed.Valid() {
+		return &vt.Speed.Value
+	} else if vt := u.OfSoniox; vt != nil && vt.Speed.Valid() {
+		return &vt.Speed.Value
 	}
 	return nil
 }
@@ -1035,6 +1074,7 @@ func init() {
 		apijson.Discriminator[shared.ResembleVoiceSettingsParam]("resemble"),
 		apijson.Discriminator[shared.InworldVoiceSettingsParam]("inworld"),
 		apijson.Discriminator[shared.XaiVoiceSettingsParam]("xai"),
+		apijson.Discriminator[SonioxVoiceSettingsParam]("soniox"),
 	)
 }
 

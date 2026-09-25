@@ -50,7 +50,7 @@ func NewTextToSpeechService(opts ...option.RequestOption) (r TextToSpeechService
 // parameters.
 //
 // Supported providers: `aws`, `telnyx`, `azure`, `elevenlabs`, `minimax`,
-// `resemble`, `xai`, `humain`.
+// `resemble`, `xai`, `humain`, `soniox`.
 //
 // The Telnyx `Ultra` model supports 44 languages with emotion control, speed
 // adjustment, and volume control. Use the `telnyx` provider-specific parameters to
@@ -80,7 +80,7 @@ func (r *TextToSpeechService) ListVoices(ctx context.Context, query TextToSpeech
 // synthesize; receive JSON frames containing base64-encoded audio chunks.
 //
 // Supported providers: `aws`, `telnyx`, `azure`, `minimax`, `resemble`,
-// `elevenlabs`, `xai`, `humain`.
+// `elevenlabs`, `xai`, `humain`, `soniox`.
 //
 // **Connection flow:**
 //
@@ -208,10 +208,13 @@ type TextToSpeechGenerateSpeechParams struct {
 	// TTS provider. Required unless `voice` is provided.
 	//
 	// Any of "aws", "telnyx", "azure", "elevenlabs", "minimax", "resemble", "xai",
-	// "humain".
+	// "humain", "soniox".
 	Provider TextToSpeechGenerateSpeechParamsProvider `json:"provider,omitzero"`
 	// Resemble AI provider-specific parameters.
 	Resemble TextToSpeechGenerateSpeechParamsResemble `json:"resemble,omitzero"`
+	// Soniox provider-specific parameters. Every voice speaks all supported languages;
+	// set `language` to the language of the text.
+	Soniox TextToSpeechGenerateSpeechParamsSoniox `json:"soniox,omitzero"`
 	// Telnyx provider-specific parameters. For the `Ultra` model, use `voice_speed`,
 	// `volume`, and `emotion`. `Bayan` and `Sukhan` don't use `temperature`, `volume`,
 	// or `emotion`, and don't support `voice_speed`. `Sukhan`'s `response_format` is
@@ -398,6 +401,7 @@ const (
 	TextToSpeechGenerateSpeechParamsProviderResemble   TextToSpeechGenerateSpeechParamsProvider = "resemble"
 	TextToSpeechGenerateSpeechParamsProviderXai        TextToSpeechGenerateSpeechParamsProvider = "xai"
 	TextToSpeechGenerateSpeechParamsProviderHumain     TextToSpeechGenerateSpeechParamsProvider = "humain"
+	TextToSpeechGenerateSpeechParamsProviderSoniox     TextToSpeechGenerateSpeechParamsProvider = "soniox"
 )
 
 // Resemble AI provider-specific parameters.
@@ -419,6 +423,57 @@ func (r TextToSpeechGenerateSpeechParamsResemble) MarshalJSON() (data []byte, er
 }
 func (r *TextToSpeechGenerateSpeechParamsResemble) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+// Soniox provider-specific parameters. Every voice speaks all supported languages;
+// set `language` to the language of the text.
+//
+// The property VoiceID is required.
+type TextToSpeechGenerateSpeechParamsSoniox struct {
+	// Soniox voice name from the
+	// [voices listing](https://developers.telnyx.com/api-reference/text-to-speech-commands/list-available-voices),
+	// for example `Emma`.
+	VoiceID string `json:"voice_id" api:"required"`
+	// Two-letter ISO 639-1 code of the text.
+	Language param.Opt[string] `json:"language,omitzero"`
+	// Shortens the pauses between words.
+	ReduceSilence param.Opt[bool] `json:"reduce_silence,omitzero"`
+	// Speaking rate. 1.0 is normal speed.
+	Speed param.Opt[float64] `json:"speed,omitzero"`
+	// Audio output format.
+	//
+	// Any of "mp3", "wav", "pcm_s16le", "pcm_mulaw", "pcm_alaw".
+	AudioFormat string `json:"audio_format,omitzero"`
+	// Soniox model.
+	//
+	// Any of "tts-rt-v2".
+	ModelID string `json:"model_id,omitzero"`
+	// Audio sample rate in Hz. `pcm_mulaw` and `pcm_alaw` accept 8000 only; `mp3` does
+	// not accept 8000. Defaults to 24000, or 8000 for `pcm_mulaw` and `pcm_alaw`.
+	//
+	// Any of 8000, 16000, 24000, 44100, 48000.
+	SampleRate int64 `json:"sample_rate,omitzero"`
+	paramObj
+}
+
+func (r TextToSpeechGenerateSpeechParamsSoniox) MarshalJSON() (data []byte, err error) {
+	type shadow TextToSpeechGenerateSpeechParamsSoniox
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TextToSpeechGenerateSpeechParamsSoniox) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[TextToSpeechGenerateSpeechParamsSoniox](
+		"audio_format", "mp3", "wav", "pcm_s16le", "pcm_mulaw", "pcm_alaw",
+	)
+	apijson.RegisterFieldValidator[TextToSpeechGenerateSpeechParamsSoniox](
+		"model_id", "tts-rt-v2",
+	)
+	apijson.RegisterFieldValidator[TextToSpeechGenerateSpeechParamsSoniox](
+		"sample_rate", 8000, 16000, 24000, 44100, 48000,
+	)
 }
 
 // Telnyx provider-specific parameters. For the `Ultra` model, use `voice_speed`,
@@ -515,7 +570,7 @@ type TextToSpeechListVoicesParams struct {
 	// Filter voices by provider. If omitted, voices from all providers are returned.
 	//
 	// Any of "aws", "telnyx", "azure", "elevenlabs", "minimax", "resemble", "xai",
-	// "humain".
+	// "humain", "soniox".
 	Provider TextToSpeechListVoicesParamsProvider `query:"provider,omitzero" json:"-"`
 	paramObj
 }
@@ -541,6 +596,7 @@ const (
 	TextToSpeechListVoicesParamsProviderResemble   TextToSpeechListVoicesParamsProvider = "resemble"
 	TextToSpeechListVoicesParamsProviderXai        TextToSpeechListVoicesParamsProvider = "xai"
 	TextToSpeechListVoicesParamsProviderHumain     TextToSpeechListVoicesParamsProvider = "humain"
+	TextToSpeechListVoicesParamsProviderSoniox     TextToSpeechListVoicesParamsProvider = "soniox"
 )
 
 type TextToSpeechGetSpeechParams struct {
@@ -570,7 +626,7 @@ type TextToSpeechGetSpeechParams struct {
 	// provided.
 	//
 	// Any of "aws", "telnyx", "azure", "elevenlabs", "minimax", "resemble", "xai",
-	// "humain".
+	// "humain", "soniox".
 	Provider TextToSpeechGetSpeechParamsProvider `query:"provider,omitzero" json:"-"`
 	paramObj
 }
@@ -607,4 +663,5 @@ const (
 	TextToSpeechGetSpeechParamsProviderResemble   TextToSpeechGetSpeechParamsProvider = "resemble"
 	TextToSpeechGetSpeechParamsProviderXai        TextToSpeechGetSpeechParamsProvider = "xai"
 	TextToSpeechGetSpeechParamsProviderHumain     TextToSpeechGetSpeechParamsProvider = "humain"
+	TextToSpeechGetSpeechParamsProviderSoniox     TextToSpeechGetSpeechParamsProvider = "soniox"
 )

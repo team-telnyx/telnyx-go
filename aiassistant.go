@@ -3459,7 +3459,7 @@ type ConversationFlowNodesUnion struct {
 	// Any of "prompt", "tool", "speak".
 	Type string `json:"type"`
 	// This field is from variant [FlowNode].
-	VoiceSettings VoiceSettings `json:"voice_settings"`
+	VoiceSettings InferenceEmbeddingVoiceSettings `json:"voice_settings"`
 	// This field is from variant [ToolNode].
 	SharedToolID string `json:"shared_tool_id"`
 	// This field is from variant [ToolNode].
@@ -3661,7 +3661,7 @@ func (u ConversationFlowReqNodesUnionParam) GetTranscription() *TranscriptionSet
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u ConversationFlowReqNodesUnionParam) GetVoiceSettings() *VoiceSettingsParam {
+func (u ConversationFlowReqNodesUnionParam) GetVoiceSettings() *InferenceEmbeddingVoiceSettingsParam {
 	if vt := u.OfPrompt; vt != nil {
 		return &vt.VoiceSettings
 	}
@@ -4569,7 +4569,7 @@ type FlowNode struct {
 	// Any of "prompt".
 	Type FlowNodeType `json:"type"`
 	// Per-node voice override (response form).
-	VoiceSettings VoiceSettings `json:"voice_settings"`
+	VoiceSettings InferenceEmbeddingVoiceSettings `json:"voice_settings"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID               respjson.Field
@@ -4681,7 +4681,7 @@ type FlowNodeReqParam struct {
 	Type FlowNodeReqType `json:"type,omitzero"`
 	// Per-node voice override. Only fields set here override the assistant-level voice
 	// settings; unset fields cascade.
-	VoiceSettings VoiceSettingsParam `json:"voice_settings,omitzero"`
+	VoiceSettings InferenceEmbeddingVoiceSettingsParam `json:"voice_settings,omitzero"`
 	paramObj
 }
 
@@ -4919,8 +4919,8 @@ type InferenceEmbedding struct {
 	// endpoints.
 	VersionID string `json:"version_id"`
 	// Human-readable name for the assistant version.
-	VersionName   string        `json:"version_name"`
-	VoiceSettings VoiceSettings `json:"voice_settings"`
+	VersionName   string                          `json:"version_name"`
+	VoiceSettings InferenceEmbeddingVoiceSettings `json:"voice_settings"`
 	// Configuration settings for the assistant's web widget.
 	WidgetSettings WidgetSettings `json:"widget_settings"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -5045,6 +5045,500 @@ func (r InferenceEmbeddingInterruptionSettingsParam) MarshalJSON() (data []byte,
 }
 func (r *InferenceEmbeddingInterruptionSettingsParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+type InferenceEmbeddingVoiceSettings struct {
+	// The voice to be used by the voice assistant. Check the full list of
+	// [available voices](https://developers.telnyx.com/docs/tts-stt/tts-available-voices)
+	// via our voices API. To use ElevenLabs, you must reference your ElevenLabs API
+	// key as an integration secret under the `api_key_ref` field. See
+	// [integration secrets documentation](https://developers.telnyx.com/api-reference/integration-secrets/create-a-secret)
+	// for details. For Telnyx voices, use `Telnyx.<model_id>.<voice_id>` (e.g.
+	// Telnyx.KokoroTTS.af_heart). For Soniox voices, use `Soniox.tts-rt-v2.<voice_id>`
+	// (e.g. Soniox.tts-rt-v2.Emma); every Soniox voice speaks all supported languages.
+	// The voice portion of the identifier supports
+	// [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables)
+	// using mustache syntax (e.g. `Telnyx.Ultra.{{voice_id}}`). The variable is
+	// resolved at call time from your dynamic variables webhook, allowing you to
+	// select the voice dynamically per call.
+	Voice string `json:"voice" api:"required"`
+	// The `identifier` for an integration secret
+	// [/v2/integration_secrets](https://developers.telnyx.com/api-reference/integration-secrets/create-a-secret)
+	// that refers to your ElevenLabs API key. Warning: Free plans are unlikely to work
+	// with this integration.
+	APIKeyRef string `json:"api_key_ref"`
+	// Optional background audio to play on the call. Use a predefined media bed, or
+	// supply a looped MP3 URL. If a media URL is chosen in the portal, customers can
+	// preview it before saving.
+	BackgroundAudio InferenceEmbeddingVoiceSettingsBackgroundAudioUnion `json:"background_audio"`
+	// Enables emotionally expressive speech using SSML emotion tags. When enabled, the
+	// assistant uses audio tags like angry, excited, content, and sad to add emotional
+	// nuance. Only supported for Telnyx Ultra voices.
+	ExpressiveMode bool `json:"expressive_mode"`
+	// Enhances recognition for specific languages and dialects during MiniMax TTS
+	// synthesis. Default is null (no boost). Set to 'auto' for automatic language
+	// detection. Only applicable when using MiniMax voices.
+	//
+	// Any of "auto", "Chinese", "Chinese,Yue", "English", "Arabic", "Russian",
+	// "Spanish", "French", "Portuguese", "German", "Turkish", "Dutch", "Ukrainian",
+	// "Vietnamese", "Indonesian", "Japanese", "Italian", "Korean", "Thai", "Polish",
+	// "Romanian", "Greek", "Czech", "Finnish", "Hindi", "Bulgarian", "Danish",
+	// "Hebrew", "Malay", "Persian", "Slovak", "Swedish", "Croatian", "Filipino",
+	// "Hungarian", "Norwegian", "Slovenian", "Catalan", "Nynorsk", "Tamil",
+	// "Afrikaans".
+	LanguageBoost InferenceEmbeddingVoiceSettingsLanguageBoost `json:"language_boost" api:"nullable"`
+	// Determines how closely the AI should adhere to the original voice when
+	// attempting to replicate it. Only applicable when using ElevenLabs.
+	SimilarityBoost float64 `json:"similarity_boost"`
+	// Adjusts speech velocity. 1.0 is default speed; values less than 1.0 slow speech;
+	// values greater than 1.0 accelerate it. Only applicable when using ElevenLabs.
+	Speed float64 `json:"speed"`
+	// Determines the style exaggeration of the voice. Amplifies speaker style but
+	// consumes additional resources when set above 0. Only applicable when using
+	// ElevenLabs.
+	Style float64 `json:"style"`
+	// Determines how stable the voice is and the randomness between each generation.
+	// Lower values create a broader emotional range; higher values produce more
+	// consistent, monotonous output. Only applicable when using ElevenLabs.
+	Temperature float64 `json:"temperature"`
+	// Amplifies similarity to the original speaker voice. Increases computational load
+	// and latency slightly. Only applicable when using ElevenLabs.
+	UseSpeakerBoost bool `json:"use_speaker_boost"`
+	// The speed of the voice in the range [0.25, 2.0]. 1.0 is deafult speed. Larger
+	// numbers make the voice faster, smaller numbers make it slower. This is only
+	// applicable for Telnyx Natural voices and Soniox voices (0.7 to 1.3 for Soniox).
+	VoiceSpeed float64 `json:"voice_speed"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Voice           respjson.Field
+		APIKeyRef       respjson.Field
+		BackgroundAudio respjson.Field
+		ExpressiveMode  respjson.Field
+		LanguageBoost   respjson.Field
+		SimilarityBoost respjson.Field
+		Speed           respjson.Field
+		Style           respjson.Field
+		Temperature     respjson.Field
+		UseSpeakerBoost respjson.Field
+		VoiceSpeed      respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingVoiceSettings) RawJSON() string { return r.JSON.raw }
+func (r *InferenceEmbeddingVoiceSettings) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this InferenceEmbeddingVoiceSettings to a
+// InferenceEmbeddingVoiceSettingsParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// InferenceEmbeddingVoiceSettingsParam.Overrides()
+func (r InferenceEmbeddingVoiceSettings) ToParam() InferenceEmbeddingVoiceSettingsParam {
+	return param.Override[InferenceEmbeddingVoiceSettingsParam](json.RawMessage(r.RawJSON()))
+}
+
+// InferenceEmbeddingVoiceSettingsBackgroundAudioUnion contains all possible
+// properties and values from
+// [InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0],
+// [InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember1],
+// [InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember2].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type InferenceEmbeddingVoiceSettingsBackgroundAudioUnion struct {
+	Type  string `json:"type"`
+	Value string `json:"value"`
+	// This field is from variant
+	// [InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0].
+	Volume float64 `json:"volume"`
+	JSON   struct {
+		Type   respjson.Field
+		Value  respjson.Field
+		Volume respjson.Field
+		raw    string
+	} `json:"-"`
+}
+
+func (u InferenceEmbeddingVoiceSettingsBackgroundAudioUnion) AsInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0() (v InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u InferenceEmbeddingVoiceSettingsBackgroundAudioUnion) AsInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember1() (v InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember1) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u InferenceEmbeddingVoiceSettingsBackgroundAudioUnion) AsInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember2() (v InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember2) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u InferenceEmbeddingVoiceSettingsBackgroundAudioUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *InferenceEmbeddingVoiceSettingsBackgroundAudioUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0 struct {
+	// Select from predefined media options.
+	//
+	// Any of "predefined_media".
+	Type string `json:"type" api:"required"`
+	// The predefined media to use. `silence` disables background audio.
+	//
+	// Any of "silence", "office".
+	Value string `json:"value" api:"required"`
+	// Volume level for the predefined background audio. Supports values from 0.1 to
+	// 1.0 in 0.1 increments.
+	Volume float64 `json:"volume"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type        respjson.Field
+		Value       respjson.Field
+		Volume      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember1 struct {
+	// Provide a direct URL to an MP3 file. The audio will loop during the call.
+	//
+	// Any of "media_url".
+	Type string `json:"type" api:"required"`
+	// HTTPS URL to an MP3 file.
+	Value string `json:"value" api:"required" format:"uri"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember1) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember1) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember2 struct {
+	// Reference a previously uploaded media by its name from Telnyx Media Storage.
+	//
+	// Any of "media_name".
+	Type string `json:"type" api:"required"`
+	// The `name` of a media asset created via
+	// [Media Storage API](https://developers.telnyx.com/api/media-storage/create-media-storage).
+	// The audio will loop during the call.
+	Value string `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember2) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember2) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Enhances recognition for specific languages and dialects during MiniMax TTS
+// synthesis. Default is null (no boost). Set to 'auto' for automatic language
+// detection. Only applicable when using MiniMax voices.
+type InferenceEmbeddingVoiceSettingsLanguageBoost string
+
+const (
+	InferenceEmbeddingVoiceSettingsLanguageBoostAuto       InferenceEmbeddingVoiceSettingsLanguageBoost = "auto"
+	InferenceEmbeddingVoiceSettingsLanguageBoostChinese    InferenceEmbeddingVoiceSettingsLanguageBoost = "Chinese"
+	InferenceEmbeddingVoiceSettingsLanguageBoostChineseYue InferenceEmbeddingVoiceSettingsLanguageBoost = "Chinese,Yue"
+	InferenceEmbeddingVoiceSettingsLanguageBoostEnglish    InferenceEmbeddingVoiceSettingsLanguageBoost = "English"
+	InferenceEmbeddingVoiceSettingsLanguageBoostArabic     InferenceEmbeddingVoiceSettingsLanguageBoost = "Arabic"
+	InferenceEmbeddingVoiceSettingsLanguageBoostRussian    InferenceEmbeddingVoiceSettingsLanguageBoost = "Russian"
+	InferenceEmbeddingVoiceSettingsLanguageBoostSpanish    InferenceEmbeddingVoiceSettingsLanguageBoost = "Spanish"
+	InferenceEmbeddingVoiceSettingsLanguageBoostFrench     InferenceEmbeddingVoiceSettingsLanguageBoost = "French"
+	InferenceEmbeddingVoiceSettingsLanguageBoostPortuguese InferenceEmbeddingVoiceSettingsLanguageBoost = "Portuguese"
+	InferenceEmbeddingVoiceSettingsLanguageBoostGerman     InferenceEmbeddingVoiceSettingsLanguageBoost = "German"
+	InferenceEmbeddingVoiceSettingsLanguageBoostTurkish    InferenceEmbeddingVoiceSettingsLanguageBoost = "Turkish"
+	InferenceEmbeddingVoiceSettingsLanguageBoostDutch      InferenceEmbeddingVoiceSettingsLanguageBoost = "Dutch"
+	InferenceEmbeddingVoiceSettingsLanguageBoostUkrainian  InferenceEmbeddingVoiceSettingsLanguageBoost = "Ukrainian"
+	InferenceEmbeddingVoiceSettingsLanguageBoostVietnamese InferenceEmbeddingVoiceSettingsLanguageBoost = "Vietnamese"
+	InferenceEmbeddingVoiceSettingsLanguageBoostIndonesian InferenceEmbeddingVoiceSettingsLanguageBoost = "Indonesian"
+	InferenceEmbeddingVoiceSettingsLanguageBoostJapanese   InferenceEmbeddingVoiceSettingsLanguageBoost = "Japanese"
+	InferenceEmbeddingVoiceSettingsLanguageBoostItalian    InferenceEmbeddingVoiceSettingsLanguageBoost = "Italian"
+	InferenceEmbeddingVoiceSettingsLanguageBoostKorean     InferenceEmbeddingVoiceSettingsLanguageBoost = "Korean"
+	InferenceEmbeddingVoiceSettingsLanguageBoostThai       InferenceEmbeddingVoiceSettingsLanguageBoost = "Thai"
+	InferenceEmbeddingVoiceSettingsLanguageBoostPolish     InferenceEmbeddingVoiceSettingsLanguageBoost = "Polish"
+	InferenceEmbeddingVoiceSettingsLanguageBoostRomanian   InferenceEmbeddingVoiceSettingsLanguageBoost = "Romanian"
+	InferenceEmbeddingVoiceSettingsLanguageBoostGreek      InferenceEmbeddingVoiceSettingsLanguageBoost = "Greek"
+	InferenceEmbeddingVoiceSettingsLanguageBoostCzech      InferenceEmbeddingVoiceSettingsLanguageBoost = "Czech"
+	InferenceEmbeddingVoiceSettingsLanguageBoostFinnish    InferenceEmbeddingVoiceSettingsLanguageBoost = "Finnish"
+	InferenceEmbeddingVoiceSettingsLanguageBoostHindi      InferenceEmbeddingVoiceSettingsLanguageBoost = "Hindi"
+	InferenceEmbeddingVoiceSettingsLanguageBoostBulgarian  InferenceEmbeddingVoiceSettingsLanguageBoost = "Bulgarian"
+	InferenceEmbeddingVoiceSettingsLanguageBoostDanish     InferenceEmbeddingVoiceSettingsLanguageBoost = "Danish"
+	InferenceEmbeddingVoiceSettingsLanguageBoostHebrew     InferenceEmbeddingVoiceSettingsLanguageBoost = "Hebrew"
+	InferenceEmbeddingVoiceSettingsLanguageBoostMalay      InferenceEmbeddingVoiceSettingsLanguageBoost = "Malay"
+	InferenceEmbeddingVoiceSettingsLanguageBoostPersian    InferenceEmbeddingVoiceSettingsLanguageBoost = "Persian"
+	InferenceEmbeddingVoiceSettingsLanguageBoostSlovak     InferenceEmbeddingVoiceSettingsLanguageBoost = "Slovak"
+	InferenceEmbeddingVoiceSettingsLanguageBoostSwedish    InferenceEmbeddingVoiceSettingsLanguageBoost = "Swedish"
+	InferenceEmbeddingVoiceSettingsLanguageBoostCroatian   InferenceEmbeddingVoiceSettingsLanguageBoost = "Croatian"
+	InferenceEmbeddingVoiceSettingsLanguageBoostFilipino   InferenceEmbeddingVoiceSettingsLanguageBoost = "Filipino"
+	InferenceEmbeddingVoiceSettingsLanguageBoostHungarian  InferenceEmbeddingVoiceSettingsLanguageBoost = "Hungarian"
+	InferenceEmbeddingVoiceSettingsLanguageBoostNorwegian  InferenceEmbeddingVoiceSettingsLanguageBoost = "Norwegian"
+	InferenceEmbeddingVoiceSettingsLanguageBoostSlovenian  InferenceEmbeddingVoiceSettingsLanguageBoost = "Slovenian"
+	InferenceEmbeddingVoiceSettingsLanguageBoostCatalan    InferenceEmbeddingVoiceSettingsLanguageBoost = "Catalan"
+	InferenceEmbeddingVoiceSettingsLanguageBoostNynorsk    InferenceEmbeddingVoiceSettingsLanguageBoost = "Nynorsk"
+	InferenceEmbeddingVoiceSettingsLanguageBoostTamil      InferenceEmbeddingVoiceSettingsLanguageBoost = "Tamil"
+	InferenceEmbeddingVoiceSettingsLanguageBoostAfrikaans  InferenceEmbeddingVoiceSettingsLanguageBoost = "Afrikaans"
+)
+
+// The property Voice is required.
+type InferenceEmbeddingVoiceSettingsParam struct {
+	// The voice to be used by the voice assistant. Check the full list of
+	// [available voices](https://developers.telnyx.com/docs/tts-stt/tts-available-voices)
+	// via our voices API. To use ElevenLabs, you must reference your ElevenLabs API
+	// key as an integration secret under the `api_key_ref` field. See
+	// [integration secrets documentation](https://developers.telnyx.com/api-reference/integration-secrets/create-a-secret)
+	// for details. For Telnyx voices, use `Telnyx.<model_id>.<voice_id>` (e.g.
+	// Telnyx.KokoroTTS.af_heart). For Soniox voices, use `Soniox.tts-rt-v2.<voice_id>`
+	// (e.g. Soniox.tts-rt-v2.Emma); every Soniox voice speaks all supported languages.
+	// The voice portion of the identifier supports
+	// [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables)
+	// using mustache syntax (e.g. `Telnyx.Ultra.{{voice_id}}`). The variable is
+	// resolved at call time from your dynamic variables webhook, allowing you to
+	// select the voice dynamically per call.
+	Voice string `json:"voice" api:"required"`
+	// The `identifier` for an integration secret
+	// [/v2/integration_secrets](https://developers.telnyx.com/api-reference/integration-secrets/create-a-secret)
+	// that refers to your ElevenLabs API key. Warning: Free plans are unlikely to work
+	// with this integration.
+	APIKeyRef param.Opt[string] `json:"api_key_ref,omitzero"`
+	// Enables emotionally expressive speech using SSML emotion tags. When enabled, the
+	// assistant uses audio tags like angry, excited, content, and sad to add emotional
+	// nuance. Only supported for Telnyx Ultra voices.
+	ExpressiveMode param.Opt[bool] `json:"expressive_mode,omitzero"`
+	// Determines how closely the AI should adhere to the original voice when
+	// attempting to replicate it. Only applicable when using ElevenLabs.
+	SimilarityBoost param.Opt[float64] `json:"similarity_boost,omitzero"`
+	// Adjusts speech velocity. 1.0 is default speed; values less than 1.0 slow speech;
+	// values greater than 1.0 accelerate it. Only applicable when using ElevenLabs.
+	Speed param.Opt[float64] `json:"speed,omitzero"`
+	// Determines the style exaggeration of the voice. Amplifies speaker style but
+	// consumes additional resources when set above 0. Only applicable when using
+	// ElevenLabs.
+	Style param.Opt[float64] `json:"style,omitzero"`
+	// Determines how stable the voice is and the randomness between each generation.
+	// Lower values create a broader emotional range; higher values produce more
+	// consistent, monotonous output. Only applicable when using ElevenLabs.
+	Temperature param.Opt[float64] `json:"temperature,omitzero"`
+	// Amplifies similarity to the original speaker voice. Increases computational load
+	// and latency slightly. Only applicable when using ElevenLabs.
+	UseSpeakerBoost param.Opt[bool] `json:"use_speaker_boost,omitzero"`
+	// The speed of the voice in the range [0.25, 2.0]. 1.0 is deafult speed. Larger
+	// numbers make the voice faster, smaller numbers make it slower. This is only
+	// applicable for Telnyx Natural voices and Soniox voices (0.7 to 1.3 for Soniox).
+	VoiceSpeed param.Opt[float64] `json:"voice_speed,omitzero"`
+	// Enhances recognition for specific languages and dialects during MiniMax TTS
+	// synthesis. Default is null (no boost). Set to 'auto' for automatic language
+	// detection. Only applicable when using MiniMax voices.
+	//
+	// Any of "auto", "Chinese", "Chinese,Yue", "English", "Arabic", "Russian",
+	// "Spanish", "French", "Portuguese", "German", "Turkish", "Dutch", "Ukrainian",
+	// "Vietnamese", "Indonesian", "Japanese", "Italian", "Korean", "Thai", "Polish",
+	// "Romanian", "Greek", "Czech", "Finnish", "Hindi", "Bulgarian", "Danish",
+	// "Hebrew", "Malay", "Persian", "Slovak", "Swedish", "Croatian", "Filipino",
+	// "Hungarian", "Norwegian", "Slovenian", "Catalan", "Nynorsk", "Tamil",
+	// "Afrikaans".
+	LanguageBoost InferenceEmbeddingVoiceSettingsLanguageBoost `json:"language_boost,omitzero"`
+	// Optional background audio to play on the call. Use a predefined media bed, or
+	// supply a looped MP3 URL. If a media URL is chosen in the portal, customers can
+	// preview it before saving.
+	BackgroundAudio InferenceEmbeddingVoiceSettingsBackgroundAudioUnionParam `json:"background_audio,omitzero"`
+	paramObj
+}
+
+func (r InferenceEmbeddingVoiceSettingsParam) MarshalJSON() (data []byte, err error) {
+	type shadow InferenceEmbeddingVoiceSettingsParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InferenceEmbeddingVoiceSettingsParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type InferenceEmbeddingVoiceSettingsBackgroundAudioUnionParam struct {
+	OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0 *InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0Param `json:",omitzero,inline"`
+	OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember1 *InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember1Param `json:",omitzero,inline"`
+	OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember2 *InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember2Param `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u InferenceEmbeddingVoiceSettingsBackgroundAudioUnionParam) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0, u.OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember1, u.OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember2)
+}
+func (u *InferenceEmbeddingVoiceSettingsBackgroundAudioUnionParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *InferenceEmbeddingVoiceSettingsBackgroundAudioUnionParam) asAny() any {
+	if !param.IsOmitted(u.OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0) {
+		return u.OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0
+	} else if !param.IsOmitted(u.OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember1) {
+		return u.OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember1
+	} else if !param.IsOmitted(u.OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember2) {
+		return u.OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember2
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u InferenceEmbeddingVoiceSettingsBackgroundAudioUnionParam) GetVolume() *float64 {
+	if vt := u.OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0; vt != nil && vt.Volume.Valid() {
+		return &vt.Volume.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u InferenceEmbeddingVoiceSettingsBackgroundAudioUnionParam) GetType() *string {
+	if vt := u.OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember1; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember2; vt != nil {
+		return (*string)(&vt.Type)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u InferenceEmbeddingVoiceSettingsBackgroundAudioUnionParam) GetValue() *string {
+	if vt := u.OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0; vt != nil {
+		return (*string)(&vt.Value)
+	} else if vt := u.OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember1; vt != nil {
+		return (*string)(&vt.Value)
+	} else if vt := u.OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember2; vt != nil {
+		return (*string)(&vt.Value)
+	}
+	return nil
+}
+
+func init() {
+	apijson.RegisterUnion[InferenceEmbeddingVoiceSettingsBackgroundAudioUnionParam](
+		"",
+		apijson.Variant[InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0Param](gjson.JSON),
+		apijson.Variant[InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember1Param](gjson.JSON),
+		apijson.Variant[InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember2Param](gjson.JSON),
+	)
+}
+
+// The properties Type, Value are required.
+type InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0Param struct {
+	// Select from predefined media options.
+	//
+	// Any of "predefined_media".
+	Type string `json:"type,omitzero" api:"required"`
+	// The predefined media to use. `silence` disables background audio.
+	//
+	// Any of "silence", "office".
+	Value string `json:"value,omitzero" api:"required"`
+	// Volume level for the predefined background audio. Supports values from 0.1 to
+	// 1.0 in 0.1 increments.
+	Volume param.Opt[float64] `json:"volume,omitzero"`
+	paramObj
+}
+
+func (r InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0Param) MarshalJSON() (data []byte, err error) {
+	type shadow InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0Param
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0Param) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0Param](
+		"type", "predefined_media",
+	)
+	apijson.RegisterFieldValidator[InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0Param](
+		"value", "silence", "office",
+	)
+}
+
+// The properties Type, Value are required.
+type InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember1Param struct {
+	// Provide a direct URL to an MP3 file. The audio will loop during the call.
+	//
+	// Any of "media_url".
+	Type string `json:"type,omitzero" api:"required"`
+	// HTTPS URL to an MP3 file.
+	Value string `json:"value" api:"required" format:"uri"`
+	paramObj
+}
+
+func (r InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember1Param) MarshalJSON() (data []byte, err error) {
+	type shadow InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember1Param
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember1Param) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember1Param](
+		"type", "media_url",
+	)
+}
+
+// The properties Type, Value are required.
+type InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember2Param struct {
+	// Reference a previously uploaded media by its name from Telnyx Media Storage.
+	//
+	// Any of "media_name".
+	Type string `json:"type,omitzero" api:"required"`
+	// The `name` of a media asset created via
+	// [Media Storage API](https://developers.telnyx.com/api/media-storage/create-media-storage).
+	// The audio will loop during the call.
+	Value string `json:"value" api:"required"`
+	paramObj
+}
+
+func (r InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember2Param) MarshalJSON() (data []byte, err error) {
+	type shadow InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember2Param
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember2Param) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember2Param](
+		"type", "media_name",
+	)
 }
 
 type InferenceEmbeddingWebhookToolParamsResp struct {
@@ -7423,291 +7917,6 @@ const (
 	TransferToolTypeTransfer TransferToolType = "transfer"
 )
 
-type VoiceSettings struct {
-	// The voice to be used by the voice assistant. Check the full list of
-	// [available voices](https://developers.telnyx.com/docs/tts-stt/tts-available-voices)
-	// via our voices API. To use ElevenLabs, you must reference your ElevenLabs API
-	// key as an integration secret under the `api_key_ref` field. See
-	// [integration secrets documentation](https://developers.telnyx.com/api-reference/integration-secrets/create-a-secret)
-	// for details. For Telnyx voices, use `Telnyx.<model_id>.<voice_id>` (e.g.
-	// Telnyx.KokoroTTS.af_heart). The voice portion of the identifier supports
-	// [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables)
-	// using mustache syntax (e.g. `Telnyx.Ultra.{{voice_id}}`). The variable is
-	// resolved at call time from your dynamic variables webhook, allowing you to
-	// select the voice dynamically per call.
-	Voice string `json:"voice" api:"required"`
-	// The `identifier` for an integration secret
-	// [/v2/integration_secrets](https://developers.telnyx.com/api-reference/integration-secrets/create-a-secret)
-	// that refers to your ElevenLabs API key. Warning: Free plans are unlikely to work
-	// with this integration.
-	APIKeyRef string `json:"api_key_ref"`
-	// Optional background audio to play on the call. Use a predefined media bed, or
-	// supply a looped MP3 URL. If a media URL is chosen in the portal, customers can
-	// preview it before saving.
-	BackgroundAudio VoiceSettingsBackgroundAudioUnion `json:"background_audio"`
-	// Enables emotionally expressive speech using SSML emotion tags. When enabled, the
-	// assistant uses audio tags like angry, excited, content, and sad to add emotional
-	// nuance. Only supported for Telnyx Ultra voices.
-	ExpressiveMode bool `json:"expressive_mode"`
-	// Enhances recognition for specific languages and dialects during MiniMax TTS
-	// synthesis. Default is null (no boost). Set to 'auto' for automatic language
-	// detection. Only applicable when using MiniMax voices.
-	//
-	// Any of "auto", "Chinese", "Chinese,Yue", "English", "Arabic", "Russian",
-	// "Spanish", "French", "Portuguese", "German", "Turkish", "Dutch", "Ukrainian",
-	// "Vietnamese", "Indonesian", "Japanese", "Italian", "Korean", "Thai", "Polish",
-	// "Romanian", "Greek", "Czech", "Finnish", "Hindi", "Bulgarian", "Danish",
-	// "Hebrew", "Malay", "Persian", "Slovak", "Swedish", "Croatian", "Filipino",
-	// "Hungarian", "Norwegian", "Slovenian", "Catalan", "Nynorsk", "Tamil",
-	// "Afrikaans".
-	LanguageBoost VoiceSettingsLanguageBoost `json:"language_boost" api:"nullable"`
-	// Determines how closely the AI should adhere to the original voice when
-	// attempting to replicate it. Only applicable when using ElevenLabs.
-	SimilarityBoost float64 `json:"similarity_boost"`
-	// Adjusts speech velocity. 1.0 is default speed; values less than 1.0 slow speech;
-	// values greater than 1.0 accelerate it. Only applicable when using ElevenLabs.
-	Speed float64 `json:"speed"`
-	// Determines the style exaggeration of the voice. Amplifies speaker style but
-	// consumes additional resources when set above 0. Only applicable when using
-	// ElevenLabs.
-	Style float64 `json:"style"`
-	// Determines how stable the voice is and the randomness between each generation.
-	// Lower values create a broader emotional range; higher values produce more
-	// consistent, monotonous output. Only applicable when using ElevenLabs.
-	Temperature float64 `json:"temperature"`
-	// Amplifies similarity to the original speaker voice. Increases computational load
-	// and latency slightly. Only applicable when using ElevenLabs.
-	UseSpeakerBoost bool `json:"use_speaker_boost"`
-	// The speed of the voice in the range [0.25, 2.0]. 1.0 is deafult speed. Larger
-	// numbers make the voice faster, smaller numbers make it slower. This is only
-	// applicable for Telnyx Natural voices.
-	VoiceSpeed float64 `json:"voice_speed"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Voice           respjson.Field
-		APIKeyRef       respjson.Field
-		BackgroundAudio respjson.Field
-		ExpressiveMode  respjson.Field
-		LanguageBoost   respjson.Field
-		SimilarityBoost respjson.Field
-		Speed           respjson.Field
-		Style           respjson.Field
-		Temperature     respjson.Field
-		UseSpeakerBoost respjson.Field
-		VoiceSpeed      respjson.Field
-		ExtraFields     map[string]respjson.Field
-		raw             string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r VoiceSettings) RawJSON() string { return r.JSON.raw }
-func (r *VoiceSettings) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// ToParam converts this VoiceSettings to a VoiceSettingsParam.
-//
-// Warning: the fields of the param type will not be present. ToParam should only
-// be used at the last possible moment before sending a request. Test for this with
-// VoiceSettingsParam.Overrides()
-func (r VoiceSettings) ToParam() VoiceSettingsParam {
-	return param.Override[VoiceSettingsParam](json.RawMessage(r.RawJSON()))
-}
-
-// VoiceSettingsBackgroundAudioUnion contains all possible properties and values
-// from [VoiceSettingsBackgroundAudioPredefinedMedia],
-// [VoiceSettingsBackgroundAudioMediaURL], [VoiceSettingsBackgroundAudioMediaName].
-//
-// Use the [VoiceSettingsBackgroundAudioUnion.AsAny] method to switch on the
-// variant.
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-type VoiceSettingsBackgroundAudioUnion struct {
-	// Any of "predefined_media", "media_url", "media_name".
-	Type  string `json:"type"`
-	Value string `json:"value"`
-	// This field is from variant [VoiceSettingsBackgroundAudioPredefinedMedia].
-	Volume float64 `json:"volume"`
-	JSON   struct {
-		Type   respjson.Field
-		Value  respjson.Field
-		Volume respjson.Field
-		raw    string
-	} `json:"-"`
-}
-
-// anyVoiceSettingsBackgroundAudio is implemented by each variant of
-// [VoiceSettingsBackgroundAudioUnion] to add type safety for the return type of
-// [VoiceSettingsBackgroundAudioUnion.AsAny]
-type anyVoiceSettingsBackgroundAudio interface {
-	implVoiceSettingsBackgroundAudioUnion()
-}
-
-func (VoiceSettingsBackgroundAudioPredefinedMedia) implVoiceSettingsBackgroundAudioUnion() {}
-func (VoiceSettingsBackgroundAudioMediaURL) implVoiceSettingsBackgroundAudioUnion()        {}
-func (VoiceSettingsBackgroundAudioMediaName) implVoiceSettingsBackgroundAudioUnion()       {}
-
-// Use the following switch statement to find the correct variant
-//
-//	switch variant := VoiceSettingsBackgroundAudioUnion.AsAny().(type) {
-//	case telnyx.VoiceSettingsBackgroundAudioPredefinedMedia:
-//	case telnyx.VoiceSettingsBackgroundAudioMediaURL:
-//	case telnyx.VoiceSettingsBackgroundAudioMediaName:
-//	default:
-//	  fmt.Errorf("no variant present")
-//	}
-func (u VoiceSettingsBackgroundAudioUnion) AsAny() anyVoiceSettingsBackgroundAudio {
-	switch u.Type {
-	case "predefined_media":
-		return u.AsPredefinedMedia()
-	case "media_url":
-		return u.AsMediaURL()
-	case "media_name":
-		return u.AsMediaName()
-	}
-	return nil
-}
-
-func (u VoiceSettingsBackgroundAudioUnion) AsPredefinedMedia() (v VoiceSettingsBackgroundAudioPredefinedMedia) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u VoiceSettingsBackgroundAudioUnion) AsMediaURL() (v VoiceSettingsBackgroundAudioMediaURL) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u VoiceSettingsBackgroundAudioUnion) AsMediaName() (v VoiceSettingsBackgroundAudioMediaName) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u VoiceSettingsBackgroundAudioUnion) RawJSON() string { return u.JSON.raw }
-
-func (r *VoiceSettingsBackgroundAudioUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type VoiceSettingsBackgroundAudioPredefinedMedia struct {
-	// Select from predefined media options.
-	Type constant.PredefinedMedia `json:"type" default:"predefined_media"`
-	// The predefined media to use. `silence` disables background audio.
-	//
-	// Any of "silence", "office".
-	Value string `json:"value" api:"required"`
-	// Volume level for the predefined background audio. Supports values from 0.1 to
-	// 1.0 in 0.1 increments.
-	Volume float64 `json:"volume"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Type        respjson.Field
-		Value       respjson.Field
-		Volume      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r VoiceSettingsBackgroundAudioPredefinedMedia) RawJSON() string { return r.JSON.raw }
-func (r *VoiceSettingsBackgroundAudioPredefinedMedia) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type VoiceSettingsBackgroundAudioMediaURL struct {
-	// Provide a direct URL to an MP3 file. The audio will loop during the call.
-	Type constant.MediaURL `json:"type" default:"media_url"`
-	// HTTPS URL to an MP3 file.
-	Value string `json:"value" api:"required" format:"uri"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Type        respjson.Field
-		Value       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r VoiceSettingsBackgroundAudioMediaURL) RawJSON() string { return r.JSON.raw }
-func (r *VoiceSettingsBackgroundAudioMediaURL) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type VoiceSettingsBackgroundAudioMediaName struct {
-	// Reference a previously uploaded media by its name from Telnyx Media Storage.
-	Type constant.MediaName `json:"type" default:"media_name"`
-	// The `name` of a media asset created via
-	// [Media Storage API](https://developers.telnyx.com/api/media-storage/create-media-storage).
-	// The audio will loop during the call.
-	Value string `json:"value" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Type        respjson.Field
-		Value       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r VoiceSettingsBackgroundAudioMediaName) RawJSON() string { return r.JSON.raw }
-func (r *VoiceSettingsBackgroundAudioMediaName) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Enhances recognition for specific languages and dialects during MiniMax TTS
-// synthesis. Default is null (no boost). Set to 'auto' for automatic language
-// detection. Only applicable when using MiniMax voices.
-type VoiceSettingsLanguageBoost string
-
-const (
-	VoiceSettingsLanguageBoostAuto       VoiceSettingsLanguageBoost = "auto"
-	VoiceSettingsLanguageBoostChinese    VoiceSettingsLanguageBoost = "Chinese"
-	VoiceSettingsLanguageBoostChineseYue VoiceSettingsLanguageBoost = "Chinese,Yue"
-	VoiceSettingsLanguageBoostEnglish    VoiceSettingsLanguageBoost = "English"
-	VoiceSettingsLanguageBoostArabic     VoiceSettingsLanguageBoost = "Arabic"
-	VoiceSettingsLanguageBoostRussian    VoiceSettingsLanguageBoost = "Russian"
-	VoiceSettingsLanguageBoostSpanish    VoiceSettingsLanguageBoost = "Spanish"
-	VoiceSettingsLanguageBoostFrench     VoiceSettingsLanguageBoost = "French"
-	VoiceSettingsLanguageBoostPortuguese VoiceSettingsLanguageBoost = "Portuguese"
-	VoiceSettingsLanguageBoostGerman     VoiceSettingsLanguageBoost = "German"
-	VoiceSettingsLanguageBoostTurkish    VoiceSettingsLanguageBoost = "Turkish"
-	VoiceSettingsLanguageBoostDutch      VoiceSettingsLanguageBoost = "Dutch"
-	VoiceSettingsLanguageBoostUkrainian  VoiceSettingsLanguageBoost = "Ukrainian"
-	VoiceSettingsLanguageBoostVietnamese VoiceSettingsLanguageBoost = "Vietnamese"
-	VoiceSettingsLanguageBoostIndonesian VoiceSettingsLanguageBoost = "Indonesian"
-	VoiceSettingsLanguageBoostJapanese   VoiceSettingsLanguageBoost = "Japanese"
-	VoiceSettingsLanguageBoostItalian    VoiceSettingsLanguageBoost = "Italian"
-	VoiceSettingsLanguageBoostKorean     VoiceSettingsLanguageBoost = "Korean"
-	VoiceSettingsLanguageBoostThai       VoiceSettingsLanguageBoost = "Thai"
-	VoiceSettingsLanguageBoostPolish     VoiceSettingsLanguageBoost = "Polish"
-	VoiceSettingsLanguageBoostRomanian   VoiceSettingsLanguageBoost = "Romanian"
-	VoiceSettingsLanguageBoostGreek      VoiceSettingsLanguageBoost = "Greek"
-	VoiceSettingsLanguageBoostCzech      VoiceSettingsLanguageBoost = "Czech"
-	VoiceSettingsLanguageBoostFinnish    VoiceSettingsLanguageBoost = "Finnish"
-	VoiceSettingsLanguageBoostHindi      VoiceSettingsLanguageBoost = "Hindi"
-	VoiceSettingsLanguageBoostBulgarian  VoiceSettingsLanguageBoost = "Bulgarian"
-	VoiceSettingsLanguageBoostDanish     VoiceSettingsLanguageBoost = "Danish"
-	VoiceSettingsLanguageBoostHebrew     VoiceSettingsLanguageBoost = "Hebrew"
-	VoiceSettingsLanguageBoostMalay      VoiceSettingsLanguageBoost = "Malay"
-	VoiceSettingsLanguageBoostPersian    VoiceSettingsLanguageBoost = "Persian"
-	VoiceSettingsLanguageBoostSlovak     VoiceSettingsLanguageBoost = "Slovak"
-	VoiceSettingsLanguageBoostSwedish    VoiceSettingsLanguageBoost = "Swedish"
-	VoiceSettingsLanguageBoostCroatian   VoiceSettingsLanguageBoost = "Croatian"
-	VoiceSettingsLanguageBoostFilipino   VoiceSettingsLanguageBoost = "Filipino"
-	VoiceSettingsLanguageBoostHungarian  VoiceSettingsLanguageBoost = "Hungarian"
-	VoiceSettingsLanguageBoostNorwegian  VoiceSettingsLanguageBoost = "Norwegian"
-	VoiceSettingsLanguageBoostSlovenian  VoiceSettingsLanguageBoost = "Slovenian"
-	VoiceSettingsLanguageBoostCatalan    VoiceSettingsLanguageBoost = "Catalan"
-	VoiceSettingsLanguageBoostNynorsk    VoiceSettingsLanguageBoost = "Nynorsk"
-	VoiceSettingsLanguageBoostTamil      VoiceSettingsLanguageBoost = "Tamil"
-	VoiceSettingsLanguageBoostAfrikaans  VoiceSettingsLanguageBoost = "Afrikaans"
-)
-
 // The property Voice is required.
 type VoiceSettingsParam struct {
 	// The voice to be used by the voice assistant. Check the full list of
@@ -7917,6 +8126,55 @@ func (r VoiceSettingsBackgroundAudioMediaNameParam) MarshalJSON() (data []byte, 
 func (r *VoiceSettingsBackgroundAudioMediaNameParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// Enhances recognition for specific languages and dialects during MiniMax TTS
+// synthesis. Default is null (no boost). Set to 'auto' for automatic language
+// detection. Only applicable when using MiniMax voices.
+type VoiceSettingsLanguageBoost string
+
+const (
+	VoiceSettingsLanguageBoostAuto       VoiceSettingsLanguageBoost = "auto"
+	VoiceSettingsLanguageBoostChinese    VoiceSettingsLanguageBoost = "Chinese"
+	VoiceSettingsLanguageBoostChineseYue VoiceSettingsLanguageBoost = "Chinese,Yue"
+	VoiceSettingsLanguageBoostEnglish    VoiceSettingsLanguageBoost = "English"
+	VoiceSettingsLanguageBoostArabic     VoiceSettingsLanguageBoost = "Arabic"
+	VoiceSettingsLanguageBoostRussian    VoiceSettingsLanguageBoost = "Russian"
+	VoiceSettingsLanguageBoostSpanish    VoiceSettingsLanguageBoost = "Spanish"
+	VoiceSettingsLanguageBoostFrench     VoiceSettingsLanguageBoost = "French"
+	VoiceSettingsLanguageBoostPortuguese VoiceSettingsLanguageBoost = "Portuguese"
+	VoiceSettingsLanguageBoostGerman     VoiceSettingsLanguageBoost = "German"
+	VoiceSettingsLanguageBoostTurkish    VoiceSettingsLanguageBoost = "Turkish"
+	VoiceSettingsLanguageBoostDutch      VoiceSettingsLanguageBoost = "Dutch"
+	VoiceSettingsLanguageBoostUkrainian  VoiceSettingsLanguageBoost = "Ukrainian"
+	VoiceSettingsLanguageBoostVietnamese VoiceSettingsLanguageBoost = "Vietnamese"
+	VoiceSettingsLanguageBoostIndonesian VoiceSettingsLanguageBoost = "Indonesian"
+	VoiceSettingsLanguageBoostJapanese   VoiceSettingsLanguageBoost = "Japanese"
+	VoiceSettingsLanguageBoostItalian    VoiceSettingsLanguageBoost = "Italian"
+	VoiceSettingsLanguageBoostKorean     VoiceSettingsLanguageBoost = "Korean"
+	VoiceSettingsLanguageBoostThai       VoiceSettingsLanguageBoost = "Thai"
+	VoiceSettingsLanguageBoostPolish     VoiceSettingsLanguageBoost = "Polish"
+	VoiceSettingsLanguageBoostRomanian   VoiceSettingsLanguageBoost = "Romanian"
+	VoiceSettingsLanguageBoostGreek      VoiceSettingsLanguageBoost = "Greek"
+	VoiceSettingsLanguageBoostCzech      VoiceSettingsLanguageBoost = "Czech"
+	VoiceSettingsLanguageBoostFinnish    VoiceSettingsLanguageBoost = "Finnish"
+	VoiceSettingsLanguageBoostHindi      VoiceSettingsLanguageBoost = "Hindi"
+	VoiceSettingsLanguageBoostBulgarian  VoiceSettingsLanguageBoost = "Bulgarian"
+	VoiceSettingsLanguageBoostDanish     VoiceSettingsLanguageBoost = "Danish"
+	VoiceSettingsLanguageBoostHebrew     VoiceSettingsLanguageBoost = "Hebrew"
+	VoiceSettingsLanguageBoostMalay      VoiceSettingsLanguageBoost = "Malay"
+	VoiceSettingsLanguageBoostPersian    VoiceSettingsLanguageBoost = "Persian"
+	VoiceSettingsLanguageBoostSlovak     VoiceSettingsLanguageBoost = "Slovak"
+	VoiceSettingsLanguageBoostSwedish    VoiceSettingsLanguageBoost = "Swedish"
+	VoiceSettingsLanguageBoostCroatian   VoiceSettingsLanguageBoost = "Croatian"
+	VoiceSettingsLanguageBoostFilipino   VoiceSettingsLanguageBoost = "Filipino"
+	VoiceSettingsLanguageBoostHungarian  VoiceSettingsLanguageBoost = "Hungarian"
+	VoiceSettingsLanguageBoostNorwegian  VoiceSettingsLanguageBoost = "Norwegian"
+	VoiceSettingsLanguageBoostSlovenian  VoiceSettingsLanguageBoost = "Slovenian"
+	VoiceSettingsLanguageBoostCatalan    VoiceSettingsLanguageBoost = "Catalan"
+	VoiceSettingsLanguageBoostNynorsk    VoiceSettingsLanguageBoost = "Nynorsk"
+	VoiceSettingsLanguageBoostTamil      VoiceSettingsLanguageBoost = "Tamil"
+	VoiceSettingsLanguageBoostAfrikaans  VoiceSettingsLanguageBoost = "Afrikaans"
+)
 
 // The properties Type, Webhook are required.
 type WebhookToolParam struct {
@@ -8373,9 +8631,9 @@ type AIAssistantNewParams struct {
 	// Deprecated for new integrations. Inline tool definitions available to the
 	// assistant. Prefer `tool_ids` to attach shared tools created with the AI Tools
 	// endpoints.
-	Tools         []AssistantToolUnionParam  `json:"tools,omitzero"`
-	Transcription TranscriptionSettingsParam `json:"transcription,omitzero"`
-	VoiceSettings VoiceSettingsParam         `json:"voice_settings,omitzero"`
+	Tools         []AssistantToolUnionParam            `json:"tools,omitzero"`
+	Transcription TranscriptionSettingsParam           `json:"transcription,omitzero"`
+	VoiceSettings InferenceEmbeddingVoiceSettingsParam `json:"voice_settings,omitzero"`
 	// Configuration settings for the assistant's web widget.
 	WidgetSettings WidgetSettingsParam `json:"widget_settings,omitzero"`
 	paramObj
@@ -8522,9 +8780,9 @@ type AIAssistantUpdateParams struct {
 	// Responses merge shared tools into `tools` with `shared: true`; when updating,
 	// omit those tools from the `tools` array and manage them through `tool_ids`
 	// instead.
-	Tools         []AssistantToolUnionParam  `json:"tools,omitzero"`
-	Transcription TranscriptionSettingsParam `json:"transcription,omitzero"`
-	VoiceSettings VoiceSettingsParam         `json:"voice_settings,omitzero"`
+	Tools         []AssistantToolUnionParam            `json:"tools,omitzero"`
+	Transcription TranscriptionSettingsParam           `json:"transcription,omitzero"`
+	VoiceSettings InferenceEmbeddingVoiceSettingsParam `json:"voice_settings,omitzero"`
 	// Configuration settings for the assistant's web widget.
 	WidgetSettings WidgetSettingsParam `json:"widget_settings,omitzero"`
 	paramObj
