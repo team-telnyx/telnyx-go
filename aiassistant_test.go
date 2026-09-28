@@ -214,6 +214,23 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 				},
 			}},
 		},
+		DelegationSettings: telnyx.DelegationSettingsParam{
+			Enabled: telnyx.Bool(true),
+			ExternalLlm: telnyx.ExternalLlmParam{
+				BaseURL:              "base_url",
+				Model:                "model",
+				AuthenticationMethod: telnyx.AuthenticationMethodToken,
+				CertificateRef:       telnyx.String("certificate_ref"),
+				ForwardMetadata:      telnyx.Bool(true),
+				LlmAPIKeyRef:         telnyx.String("llm_api_key_ref"),
+				TokenRetrievalURL:    telnyx.String("token_retrieval_url"),
+			},
+			Instructions: telnyx.String("instructions"),
+			LlmAPIKeyRef: telnyx.String("llm_api_key_ref"),
+			Mode:         telnyx.DelegationSettingsModeTelnyx,
+			Model:        telnyx.String("model"),
+			SpeakResults: telnyx.Bool(true),
+		},
 		Description: telnyx.String("description"),
 		DynamicVariables: map[string]any{
 			"foo": "bar",
@@ -379,6 +396,11 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 			Temperature:     telnyx.Float(0),
 			UseSpeakerBoost: telnyx.Bool(true),
 			VoiceSpeed:      telnyx.Float(0),
+		},
+		WebsocketSettings: telnyx.WebsocketSettingsParam{
+			AuthRef: telnyx.String("auth_ref"),
+			Enabled: telnyx.Bool(true),
+			URL:     telnyx.String("url"),
 		},
 		WidgetSettings: telnyx.WidgetSettingsParam{
 			AgentThinkingText: telnyx.String("agent_thinking_text"),
@@ -641,6 +663,23 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 					},
 				}},
 			},
+			DelegationSettings: telnyx.DelegationSettingsParam{
+				Enabled: telnyx.Bool(true),
+				ExternalLlm: telnyx.ExternalLlmParam{
+					BaseURL:              "base_url",
+					Model:                "model",
+					AuthenticationMethod: telnyx.AuthenticationMethodToken,
+					CertificateRef:       telnyx.String("certificate_ref"),
+					ForwardMetadata:      telnyx.Bool(true),
+					LlmAPIKeyRef:         telnyx.String("llm_api_key_ref"),
+					TokenRetrievalURL:    telnyx.String("token_retrieval_url"),
+				},
+				Instructions: telnyx.String("instructions"),
+				LlmAPIKeyRef: telnyx.String("llm_api_key_ref"),
+				Mode:         telnyx.DelegationSettingsModeTelnyx,
+				Model:        telnyx.String("model"),
+				SpeakResults: telnyx.Bool(true),
+			},
 			Description: telnyx.String("description"),
 			DynamicVariables: map[string]any{
 				"foo": "bar",
@@ -810,6 +849,11 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 				Temperature:     telnyx.Float(0),
 				UseSpeakerBoost: telnyx.Bool(true),
 				VoiceSpeed:      telnyx.Float(0),
+			},
+			WebsocketSettings: telnyx.WebsocketSettingsParam{
+				AuthRef: telnyx.String("auth_ref"),
+				Enabled: telnyx.Bool(true),
+				URL:     telnyx.String("url"),
 			},
 			WidgetSettings: telnyx.WidgetSettingsParam{
 				AgentThinkingText: telnyx.String("agent_thinking_text"),

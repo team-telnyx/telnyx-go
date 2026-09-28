@@ -3761,6 +3761,149 @@ func init() {
 	)
 }
 
+// Splits the conversation between a frontend model that talks to the caller and a
+// backend model that does the work. On the GPT-Live route the frontend model
+// cannot call tools at all — when it needs something done it raises a delegation
+// and waits. On the chat completion route the frontend keeps a single `delegate`
+// tool that returns immediately, so the conversation carries on while the backend
+// works. Either way the backend's answer is spoken as commentary or kept as silent
+// context, depending on `speak_results`. Beta feature.
+type DelegationSettings struct {
+	// Whether the assistant delegates work to a backend model. Defaults to `true`: a
+	// GPT-Live assistant with delegation disabled can hold a conversation but can
+	// never look anything up or run a tool.
+	Enabled bool `json:"enabled"`
+	// Run the backend on your own OpenAI-compatible endpoint instead of a
+	// Telnyx-hosted model. As above, a raw `api_key` here is rejected — reference an
+	// integration secret with `external_llm.llm_api_key_ref` instead.
+	ExternalLlm ExternalLlm `json:"external_llm"`
+	// Extra instructions for the backend model, in addition to the assistant's own.
+	// Use this for the business rules the backend needs and the talking model does
+	// not.
+	Instructions string `json:"instructions"`
+	// Integration secret identifier for the backend model's API key. Required for
+	// models from providers other than Telnyx, OpenAI and Anthropic. A raw `api_key`
+	// is rejected rather than ignored, so that no plaintext credential is stored on
+	// the assistant.
+	LlmAPIKeyRef string `json:"llm_api_key_ref"`
+	// Who answers a delegation. `telnyx` runs the backend model on Telnyx with the
+	// assistant's own tools, MCP servers and observability. `client` relays the
+	// delegation to a server you host over the WebSocket configured in
+	// `websocket_settings`: Telnyx sends a `session.delegation.created` frame and
+	// waits for your `session.delegation.completed` answer. That answer is text only,
+	// since the socket offers no tool vocabulary. If no socket is connected the
+	// delegation is refused and the assistant tells the caller it cannot look things
+	// up right now. Defaults to `telnyx`.
+	//
+	// Any of "telnyx", "client".
+	Mode DelegationSettingsMode `json:"mode"`
+	// The backend model that answers delegations. Must be a model available for AI
+	// Assistants. Leave unset to use the platform default backend model. Only applies
+	// when `mode` is `telnyx`.
+	Model string `json:"model"`
+	// Whether the backend's answer is spoken to the caller. When `true` the result is
+	// appended as commentary and paraphrased aloud; when `false` it is kept as silent
+	// context that informs later answers without being read out. Defaults to `true`.
+	SpeakResults bool `json:"speak_results"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Enabled      respjson.Field
+		ExternalLlm  respjson.Field
+		Instructions respjson.Field
+		LlmAPIKeyRef respjson.Field
+		Mode         respjson.Field
+		Model        respjson.Field
+		SpeakResults respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r DelegationSettings) RawJSON() string { return r.JSON.raw }
+func (r *DelegationSettings) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this DelegationSettings to a DelegationSettingsParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// DelegationSettingsParam.Overrides()
+func (r DelegationSettings) ToParam() DelegationSettingsParam {
+	return param.Override[DelegationSettingsParam](json.RawMessage(r.RawJSON()))
+}
+
+// Who answers a delegation. `telnyx` runs the backend model on Telnyx with the
+// assistant's own tools, MCP servers and observability. `client` relays the
+// delegation to a server you host over the WebSocket configured in
+// `websocket_settings`: Telnyx sends a `session.delegation.created` frame and
+// waits for your `session.delegation.completed` answer. That answer is text only,
+// since the socket offers no tool vocabulary. If no socket is connected the
+// delegation is refused and the assistant tells the caller it cannot look things
+// up right now. Defaults to `telnyx`.
+type DelegationSettingsMode string
+
+const (
+	DelegationSettingsModeTelnyx DelegationSettingsMode = "telnyx"
+	DelegationSettingsModeClient DelegationSettingsMode = "client"
+)
+
+// Splits the conversation between a frontend model that talks to the caller and a
+// backend model that does the work. On the GPT-Live route the frontend model
+// cannot call tools at all — when it needs something done it raises a delegation
+// and waits. On the chat completion route the frontend keeps a single `delegate`
+// tool that returns immediately, so the conversation carries on while the backend
+// works. Either way the backend's answer is spoken as commentary or kept as silent
+// context, depending on `speak_results`. Beta feature.
+type DelegationSettingsParam struct {
+	// Whether the assistant delegates work to a backend model. Defaults to `true`: a
+	// GPT-Live assistant with delegation disabled can hold a conversation but can
+	// never look anything up or run a tool.
+	Enabled param.Opt[bool] `json:"enabled,omitzero"`
+	// Extra instructions for the backend model, in addition to the assistant's own.
+	// Use this for the business rules the backend needs and the talking model does
+	// not.
+	Instructions param.Opt[string] `json:"instructions,omitzero"`
+	// Integration secret identifier for the backend model's API key. Required for
+	// models from providers other than Telnyx, OpenAI and Anthropic. A raw `api_key`
+	// is rejected rather than ignored, so that no plaintext credential is stored on
+	// the assistant.
+	LlmAPIKeyRef param.Opt[string] `json:"llm_api_key_ref,omitzero"`
+	// The backend model that answers delegations. Must be a model available for AI
+	// Assistants. Leave unset to use the platform default backend model. Only applies
+	// when `mode` is `telnyx`.
+	Model param.Opt[string] `json:"model,omitzero"`
+	// Whether the backend's answer is spoken to the caller. When `true` the result is
+	// appended as commentary and paraphrased aloud; when `false` it is kept as silent
+	// context that informs later answers without being read out. Defaults to `true`.
+	SpeakResults param.Opt[bool] `json:"speak_results,omitzero"`
+	// Run the backend on your own OpenAI-compatible endpoint instead of a
+	// Telnyx-hosted model. As above, a raw `api_key` here is rejected — reference an
+	// integration secret with `external_llm.llm_api_key_ref` instead.
+	ExternalLlm ExternalLlmParam `json:"external_llm,omitzero"`
+	// Who answers a delegation. `telnyx` runs the backend model on Telnyx with the
+	// assistant's own tools, MCP servers and observability. `client` relays the
+	// delegation to a server you host over the WebSocket configured in
+	// `websocket_settings`: Telnyx sends a `session.delegation.created` frame and
+	// waits for your `session.delegation.completed` answer. That answer is text only,
+	// since the socket offers no tool vocabulary. If no socket is connected the
+	// delegation is refused and the assistant tells the caller it cannot look things
+	// up right now. Defaults to `telnyx`.
+	//
+	// Any of "telnyx", "client".
+	Mode DelegationSettingsMode `json:"mode,omitzero"`
+	paramObj
+}
+
+func (r DelegationSettingsParam) MarshalJSON() (data []byte, err error) {
+	type shadow DelegationSettingsParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DelegationSettingsParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // If `telephony` is enabled, the assistant will be able to make and receive calls.
 // If `messaging` is enabled, the assistant will be able to send and receive
 // messages.
@@ -3812,6 +3955,51 @@ type ExternalLlm struct {
 // Returns the unmodified JSON received from the API
 func (r ExternalLlm) RawJSON() string { return r.JSON.raw }
 func (r *ExternalLlm) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this ExternalLlm to a ExternalLlmParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// ExternalLlmParam.Overrides()
+func (r ExternalLlm) ToParam() ExternalLlmParam {
+	return param.Override[ExternalLlmParam](json.RawMessage(r.RawJSON()))
+}
+
+// The properties BaseURL, Model are required.
+type ExternalLlmParam struct {
+	// Base URL for the external LLM endpoint.
+	BaseURL string `json:"base_url" api:"required"`
+	// Model identifier to use with the external LLM endpoint.
+	Model string `json:"model" api:"required"`
+	// Integration secret identifier for the client certificate used with certificate
+	// authentication.
+	CertificateRef param.Opt[string] `json:"certificate_ref,omitzero"`
+	// When `true`, Telnyx forwards the assistant's dynamic variables to the external
+	// LLM endpoint as a top-level `extra_metadata` object on the chat completion
+	// request body. Defaults to `false`. Example payload sent to the external
+	// endpoint:
+	// `{"extra_metadata": {"customer_name": "Jane", "account_id": "acct_789", "telnyx_agent_target": "+13125550100", "telnyx_end_user_target": "+13125550123"}}`.
+	// Distinct from OpenAI's native `metadata` field, which has its own size and type
+	// limits.
+	ForwardMetadata param.Opt[bool] `json:"forward_metadata,omitzero"`
+	// Integration secret identifier for the external LLM API key.
+	LlmAPIKeyRef param.Opt[string] `json:"llm_api_key_ref,omitzero"`
+	// URL used to retrieve an access token when certificate authentication is enabled.
+	TokenRetrievalURL param.Opt[string] `json:"token_retrieval_url,omitzero"`
+	// Authentication method used when connecting to the external LLM endpoint.
+	//
+	// Any of "token", "certificate".
+	AuthenticationMethod AuthenticationMethod `json:"authentication_method,omitzero"`
+	paramObj
+}
+
+func (r ExternalLlmParam) MarshalJSON() (data []byte, err error) {
+	type shadow ExternalLlmParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ExternalLlmParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -4884,7 +5072,15 @@ type InferenceEmbedding struct {
 	A2aAgents []AssistantA2AAgent `json:"a2a_agents"`
 	// Conversation flow as returned by the API.
 	ConversationFlow ConversationFlow `json:"conversation_flow"`
-	Description      string           `json:"description"`
+	// Splits the conversation between a frontend model that talks to the caller and a
+	// backend model that does the work. On the GPT-Live route the frontend model
+	// cannot call tools at all — when it needs something done it raises a delegation
+	// and waits. On the chat completion route the frontend keeps a single `delegate`
+	// tool that returns immediately, so the conversation carries on while the backend
+	// works. Either way the backend's answer is spoken as commentary or kept as silent
+	// context, depending on `speak_results`. Beta feature.
+	DelegationSettings DelegationSettings `json:"delegation_settings"`
+	Description        string             `json:"description"`
 	// Map of dynamic variables and their values
 	DynamicVariables map[string]any `json:"dynamic_variables"`
 	// Timeout in milliseconds for the dynamic variables webhook. Must be between 1 and
@@ -4967,6 +5163,12 @@ type InferenceEmbedding struct {
 	// Human-readable name for the assistant version.
 	VersionName   string                          `json:"version_name"`
 	VoiceSettings InferenceEmbeddingVoiceSettings `json:"voice_settings"`
+	// Streams conversation and telephony events to a WebSocket server you host, and
+	// accepts messages injected back into the conversation. Telnyx opens the
+	// connection as a client, once per conversation. Delivery is best effort
+	// throughout: while the connection is down events are dropped rather than queued,
+	// and no socket failure is ever allowed to affect the call. Beta feature.
+	WebsocketSettings WebsocketSettings `json:"websocket_settings"`
 	// Configuration settings for the assistant's web widget.
 	WidgetSettings WidgetSettings `json:"widget_settings"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -4978,6 +5180,7 @@ type InferenceEmbedding struct {
 		Name                             respjson.Field
 		A2aAgents                        respjson.Field
 		ConversationFlow                 respjson.Field
+		DelegationSettings               respjson.Field
 		Description                      respjson.Field
 		DynamicVariables                 respjson.Field
 		DynamicVariablesWebhookTimeoutMs respjson.Field
@@ -5005,6 +5208,7 @@ type InferenceEmbedding struct {
 		VersionID                        respjson.Field
 		VersionName                      respjson.Field
 		VoiceSettings                    respjson.Field
+		WebsocketSettings                respjson.Field
 		WidgetSettings                   respjson.Field
 		ExtraFields                      map[string]respjson.Field
 		raw                              string
@@ -8427,6 +8631,76 @@ func init() {
 	)
 }
 
+// Streams conversation and telephony events to a WebSocket server you host, and
+// accepts messages injected back into the conversation. Telnyx opens the
+// connection as a client, once per conversation. Delivery is best effort
+// throughout: while the connection is down events are dropped rather than queued,
+// and no socket failure is ever allowed to affect the call. Beta feature.
+type WebsocketSettings struct {
+	// Integration secret identifier whose value Telnyx sends as an
+	// `Authorization: Bearer <value>` header on the upgrade request. Resolved on every
+	// connection attempt, so a rotated secret is picked up by the next reconnect.
+	AuthRef string `json:"auth_ref"`
+	// Whether Telnyx opens a WebSocket to `url` for each of this assistant's
+	// conversations. Defaults to `false`.
+	Enabled bool `json:"enabled"`
+	// The `ws://` or `wss://` endpoint Telnyx connects to. Required when `enabled` is
+	// `true`. Must be externally reachable — localhost, private IP ranges and `.local`
+	// domains are rejected.
+	URL string `json:"url"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AuthRef     respjson.Field
+		Enabled     respjson.Field
+		URL         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebsocketSettings) RawJSON() string { return r.JSON.raw }
+func (r *WebsocketSettings) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this WebsocketSettings to a WebsocketSettingsParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// WebsocketSettingsParam.Overrides()
+func (r WebsocketSettings) ToParam() WebsocketSettingsParam {
+	return param.Override[WebsocketSettingsParam](json.RawMessage(r.RawJSON()))
+}
+
+// Streams conversation and telephony events to a WebSocket server you host, and
+// accepts messages injected back into the conversation. Telnyx opens the
+// connection as a client, once per conversation. Delivery is best effort
+// throughout: while the connection is down events are dropped rather than queued,
+// and no socket failure is ever allowed to affect the call. Beta feature.
+type WebsocketSettingsParam struct {
+	// Integration secret identifier whose value Telnyx sends as an
+	// `Authorization: Bearer <value>` header on the upgrade request. Resolved on every
+	// connection attempt, so a rotated secret is picked up by the next reconnect.
+	AuthRef param.Opt[string] `json:"auth_ref,omitzero"`
+	// Whether Telnyx opens a WebSocket to `url` for each of this assistant's
+	// conversations. Defaults to `false`.
+	Enabled param.Opt[bool] `json:"enabled,omitzero"`
+	// The `ws://` or `wss://` endpoint Telnyx connects to. Required when `enabled` is
+	// `true`. Must be externally reachable — localhost, private IP ranges and `.local`
+	// domains are rejected.
+	URL param.Opt[string] `json:"url,omitzero"`
+	paramObj
+}
+
+func (r WebsocketSettingsParam) MarshalJSON() (data []byte, err error) {
+	type shadow WebsocketSettingsParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *WebsocketSettingsParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // Configuration settings for the assistant's web widget.
 type WidgetSettings struct {
 	// Text displayed while the agent is processing.
@@ -8664,6 +8938,14 @@ type AIAssistantNewParams struct {
 	// unique node/edge IDs, that `start_node_id` references a real node, and that
 	// every edge's endpoints reference real nodes.
 	ConversationFlow ConversationFlowReqParam `json:"conversation_flow,omitzero"`
+	// Splits the conversation between a frontend model that talks to the caller and a
+	// backend model that does the work. On the GPT-Live route the frontend model
+	// cannot call tools at all — when it needs something done it raises a delegation
+	// and waits. On the chat completion route the frontend keeps a single `delegate`
+	// tool that returns immediately, so the conversation carries on while the backend
+	// works. Either way the backend's answer is spoken as commentary or kept as silent
+	// context, depending on `speak_results`. Beta feature.
+	DelegationSettings DelegationSettingsParam `json:"delegation_settings,omitzero"`
 	// Map of dynamic variables and their default values
 	DynamicVariables map[string]any         `json:"dynamic_variables,omitzero"`
 	EnabledFeatures  []EnabledFeatures      `json:"enabled_features,omitzero"`
@@ -8708,6 +8990,12 @@ type AIAssistantNewParams struct {
 	Tools         []AssistantToolUnionParam            `json:"tools,omitzero"`
 	Transcription TranscriptionSettingsParam           `json:"transcription,omitzero"`
 	VoiceSettings InferenceEmbeddingVoiceSettingsParam `json:"voice_settings,omitzero"`
+	// Streams conversation and telephony events to a WebSocket server you host, and
+	// accepts messages injected back into the conversation. Telnyx opens the
+	// connection as a client, once per conversation. Delivery is best effort
+	// throughout: while the connection is down events are dropped rather than queued,
+	// and no socket failure is ever allowed to affect the call. Beta feature.
+	WebsocketSettings WebsocketSettingsParam `json:"websocket_settings,omitzero"`
 	// Configuration settings for the assistant's web widget.
 	WidgetSettings WidgetSettingsParam `json:"widget_settings,omitzero"`
 	paramObj
@@ -8802,6 +9090,14 @@ type AIAssistantUpdateParams struct {
 	// unique node/edge IDs, that `start_node_id` references a real node, and that
 	// every edge's endpoints reference real nodes.
 	ConversationFlow ConversationFlowReqParam `json:"conversation_flow,omitzero"`
+	// Splits the conversation between a frontend model that talks to the caller and a
+	// backend model that does the work. On the GPT-Live route the frontend model
+	// cannot call tools at all — when it needs something done it raises a delegation
+	// and waits. On the chat completion route the frontend keeps a single `delegate`
+	// tool that returns immediately, so the conversation carries on while the backend
+	// works. Either way the backend's answer is spoken as commentary or kept as silent
+	// context, depending on `speak_results`. Beta feature.
+	DelegationSettings DelegationSettingsParam `json:"delegation_settings,omitzero"`
 	// Map of dynamic variables and their default values
 	DynamicVariables map[string]any         `json:"dynamic_variables,omitzero"`
 	EnabledFeatures  []EnabledFeatures      `json:"enabled_features,omitzero"`
@@ -8857,6 +9153,12 @@ type AIAssistantUpdateParams struct {
 	Tools         []AssistantToolUnionParam            `json:"tools,omitzero"`
 	Transcription TranscriptionSettingsParam           `json:"transcription,omitzero"`
 	VoiceSettings InferenceEmbeddingVoiceSettingsParam `json:"voice_settings,omitzero"`
+	// Streams conversation and telephony events to a WebSocket server you host, and
+	// accepts messages injected back into the conversation. Telnyx opens the
+	// connection as a client, once per conversation. Delivery is best effort
+	// throughout: while the connection is down events are dropped rather than queued,
+	// and no socket failure is ever allowed to affect the call. Beta feature.
+	WebsocketSettings WebsocketSettingsParam `json:"websocket_settings,omitzero"`
 	// Configuration settings for the assistant's web widget.
 	WidgetSettings WidgetSettingsParam `json:"widget_settings,omitzero"`
 	paramObj
