@@ -3481,11 +3481,10 @@ type ConversationFlowNodesUnion struct {
 	VoiceSettings InferenceEmbeddingVoiceSettings `json:"voice_settings"`
 	// This field is from variant [ToolNode].
 	SharedToolID string `json:"shared_tool_id"`
+	Message      string `json:"message"`
 	// This field is from variant [ToolNode].
 	Tool []AssistantToolUnion `json:"tool"`
-	// This field is from variant [SpeakNode].
-	Message string `json:"message"`
-	JSON    struct {
+	JSON struct {
 		ID               respjson.Field
 		Instructions     respjson.Field
 		ExternalLlm      respjson.Field
@@ -3501,8 +3500,8 @@ type ConversationFlowNodesUnion struct {
 		Type             respjson.Field
 		VoiceSettings    respjson.Field
 		SharedToolID     respjson.Field
-		Tool             respjson.Field
 		Message          respjson.Field
+		Tool             respjson.Field
 		raw              string
 	} `json:"-"`
 }
@@ -3570,7 +3569,7 @@ func (r *ConversationFlowNodesUnion) UnmarshalJSON(data []byte) error {
 // The properties Nodes, StartNodeID are required.
 type ConversationFlowReqParam struct {
 	// All nodes in the flow. Must contain `start_node_id`. Each node is a prompt node
-	// (`type: prompt`) or a tool node (`type: tool`).
+	// (`type: prompt`), a tool node (`type: tool`), or a speak node (`type: speak`).
 	Nodes []ConversationFlowReqNodesUnionParam `json:"nodes,omitzero" api:"required"`
 	// ID of the node where the conversation begins.
 	StartNodeID string `json:"start_node_id" api:"required"`
@@ -3696,14 +3695,6 @@ func (u ConversationFlowReqNodesUnionParam) GetSharedToolID() *string {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u ConversationFlowReqNodesUnionParam) GetMessage() *string {
-	if vt := u.OfSpeak; vt != nil {
-		return &vt.Message
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
 func (u ConversationFlowReqNodesUnionParam) GetID() *string {
 	if vt := u.OfPrompt; vt != nil {
 		return (*string)(&vt.ID)
@@ -3735,6 +3726,16 @@ func (u ConversationFlowReqNodesUnionParam) GetType() *string {
 		return (*string)(&vt.Type)
 	} else if vt := u.OfSpeak; vt != nil {
 		return (*string)(&vt.Type)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ConversationFlowReqNodesUnionParam) GetMessage() *string {
+	if vt := u.OfTool; vt != nil && vt.Message.Valid() {
+		return &vt.Message.Value
+	} else if vt := u.OfSpeak; vt != nil {
+		return (*string)(&vt.Message)
 	}
 	return nil
 }
@@ -4718,7 +4719,8 @@ type FlowNodeReqParam struct {
 	// from the assistant-level transcription.
 	Transcription TranscriptionSettingsParam `json:"transcription,omitzero"`
 	// Node kind discriminator. `prompt` (default) is an LLM-driven step; `tool` is a
-	// standalone tool execution (see `ToolNodeReq`).
+	// standalone tool execution and `speak` a scripted message (see `ToolNodeReq` /
+	// `SpeakNodeReq`).
 	//
 	// Any of "prompt".
 	Type FlowNodeReqType `json:"type,omitzero"`
@@ -4757,7 +4759,8 @@ const (
 )
 
 // Node kind discriminator. `prompt` (default) is an LLM-driven step; `tool` is a
-// standalone tool execution (see `ToolNodeReq`).
+// standalone tool execution and `speak` a scripted message (see `ToolNodeReq` /
+// `SpeakNodeReq`).
 type FlowNodeReqType string
 
 const (
@@ -7376,11 +7379,19 @@ type ToolNode struct {
 	ID string `json:"id" api:"required"`
 	// ID of the single shared (org-level) tool this node executes. When the flow
 	// reaches this node the tool runs as a deliberate step (no LLM turn); its outgoing
-	// `tool_result` edges then route on the outcome. Arguments are filled from the
-	// conversation's dynamic variables by name — a dynamic variable whose name matches
-	// one of the tool's parameters supplies that argument. Cross-validated against the
-	// org's shared tools on write.
+	// `llm` / `expression` edges route the flow on the tool's outcome. Arguments are
+	// filled from the conversation's dynamic variables by name — a dynamic variable
+	// whose name matches one of the tool's parameters supplies that argument.
+	// Cross-validated against the org's shared tools on write.
 	SharedToolID string `json:"shared_tool_id" api:"required"`
+	// Optional message delivered to the user verbatim immediately before the tool
+	// executes — an announcement such as 'One moment while I look that up.' No LLM
+	// turn and no customer turn: the message is spoken/sent, then the tool runs, in
+	// the same deterministic step. `{{variable}}` placeholders are interpolated from
+	// the conversation's dynamic variables (unresolved → empty string); the tool's own
+	// result is not yet available when the message is rendered. Omit for a silent tool
+	// step.
+	Message string `json:"message"`
 	// Optional human-readable label, displayed in authoring UIs.
 	Name string `json:"name"`
 	// Optional canvas coordinates used by authoring UIs to lay out the graph. Ignored
@@ -7399,6 +7410,7 @@ type ToolNode struct {
 	JSON struct {
 		ID           respjson.Field
 		SharedToolID respjson.Field
+		Message      respjson.Field
 		Name         respjson.Field
 		Position     respjson.Field
 		Tool         respjson.Field
@@ -7425,8 +7437,10 @@ const (
 //
 // Unlike a prompt node, a tool node has no instructions or model — it isn't an LLM
 // turn. Reaching it deterministically runs one shared tool (arguments filled from
-// matching dynamic variables by name), then routes on the result via outgoing
-// `tool_result` edges.
+// matching dynamic variables by name), then routes via outgoing `llm` /
+// `expression` edges, with exactly one `default` fallback edge required when the
+// node has any outgoing edges (the tool's outcome is readable as
+// `telnyx_last_tool_status_code` in `expression` conditions).
 //
 // The properties ID, SharedToolID are required.
 type ToolNodeReqParam struct {
@@ -7434,11 +7448,19 @@ type ToolNodeReqParam struct {
 	ID string `json:"id" api:"required"`
 	// ID of the single shared (org-level) tool this node executes. When the flow
 	// reaches this node the tool runs as a deliberate step (no LLM turn); its outgoing
-	// `tool_result` edges then route on the outcome. Arguments are filled from the
-	// conversation's dynamic variables by name — a dynamic variable whose name matches
-	// one of the tool's parameters supplies that argument. Cross-validated against the
-	// org's shared tools on write.
+	// `llm` / `expression` edges route the flow on the tool's outcome. Arguments are
+	// filled from the conversation's dynamic variables by name — a dynamic variable
+	// whose name matches one of the tool's parameters supplies that argument.
+	// Cross-validated against the org's shared tools on write.
 	SharedToolID string `json:"shared_tool_id" api:"required"`
+	// Optional message delivered to the user verbatim immediately before the tool
+	// executes — an announcement such as 'One moment while I look that up.' No LLM
+	// turn and no customer turn: the message is spoken/sent, then the tool runs, in
+	// the same deterministic step. `{{variable}}` placeholders are interpolated from
+	// the conversation's dynamic variables (unresolved → empty string); the tool's own
+	// result is not yet available when the message is rendered. Omit for a silent tool
+	// step.
+	Message param.Opt[string] `json:"message,omitzero"`
 	// Optional human-readable label, displayed in authoring UIs.
 	Name param.Opt[string] `json:"name,omitzero"`
 	// Optional canvas coordinates used by authoring UIs to lay out the graph. Ignored
