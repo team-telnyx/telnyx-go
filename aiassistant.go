@@ -3798,8 +3798,9 @@ type DelegationSettings struct {
 	// Any of "telnyx", "client".
 	Mode DelegationSettingsMode `json:"mode"`
 	// The backend model that answers delegations. Must be a model available for AI
-	// Assistants. Leave unset to use the platform default backend model. Only applies
-	// when `mode` is `telnyx`.
+	// Assistants. When enabling `telnyx` delegation, explicitly set this field or
+	// `external_llm.model`; a configuration without either backend model is rejected.
+	// Only applies when `mode` is `telnyx`.
 	Model string `json:"model"`
 	// Whether the backend's answer is spoken to the caller. When `true` the result is
 	// appended as commentary and paraphrased aloud; when `false` it is kept as silent
@@ -3871,8 +3872,9 @@ type DelegationSettingsParam struct {
 	// the assistant.
 	LlmAPIKeyRef param.Opt[string] `json:"llm_api_key_ref,omitzero"`
 	// The backend model that answers delegations. Must be a model available for AI
-	// Assistants. Leave unset to use the platform default backend model. Only applies
-	// when `mode` is `telnyx`.
+	// Assistants. When enabling `telnyx` delegation, explicitly set this field or
+	// `external_llm.model`; a configuration without either backend model is rejected.
+	// Only applies when `mode` is `telnyx`.
 	Model param.Opt[string] `json:"model,omitzero"`
 	// Whether the backend's answer is spoken to the caller. When `true` the result is
 	// appended as commentary and paraphrased aloud; when `false` it is kept as silent
