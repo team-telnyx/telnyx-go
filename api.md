@@ -1309,11 +1309,17 @@ Methods:
 
 Response Types:
 
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#Namespace">Namespace</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIMemoryNamespaceNewResponse">AIMemoryNamespaceNewResponse</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIMemoryNamespaceGetResponse">AIMemoryNamespaceGetResponse</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIMemoryNamespaceListResponse">AIMemoryNamespaceListResponse</a>
 
 Methods:
 
+- <code title="post /ai/memory/namespaces">client.AI.Memory.Namespaces.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIMemoryNamespaceService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIMemoryNamespaceNewParams">AIMemoryNamespaceNewParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIMemoryNamespaceNewResponse">AIMemoryNamespaceNewResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /ai/memory/namespaces/{namespace}/operations/{operation_id}">client.AI.Memory.Namespaces.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIMemoryNamespaceService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, operationID <a href="https://pkg.go.dev/builtin#string">string</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIMemoryNamespaceGetParams">AIMemoryNamespaceGetParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIMemoryNamespaceGetResponse">AIMemoryNamespaceGetResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /ai/memory/namespaces">client.AI.Memory.Namespaces.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIMemoryNamespaceService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIMemoryNamespaceListResponse">AIMemoryNamespaceListResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="delete /ai/memory/namespaces/{namespace}">client.AI.Memory.Namespaces.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AIMemoryNamespaceService.Delete">Delete</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, namespace <a href="https://pkg.go.dev/builtin#string">string</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
 
 #### Profiles
 
