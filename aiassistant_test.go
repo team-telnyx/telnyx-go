@@ -1077,3 +1077,40 @@ func TestAIAssistantSendSMSWithOptionalParams(t *testing.T) {
 		t.Fatalf("err should be nil: %s", err.Error())
 	}
 }
+
+func TestAIAssistantWhatsappWithOptionalParams(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := telnyx.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.AI.Assistants.Whatsapp(
+		context.TODO(),
+		"assistant_id",
+		telnyx.AIAssistantWhatsappParams{
+			Content: "Send the login verification code 482913 to the customer.",
+			From:    "+13125550001",
+			To:      "+13125550002",
+			ConversationMetadata: map[string]telnyx.AIAssistantWhatsappParamsConversationMetadataUnion{
+				"order_id": {
+					OfString: telnyx.String("A1"),
+				},
+			},
+			IdempotencyKey: telnyx.String("8e03978e-40d5-43e8-bc93-6894a57f9326"),
+		},
+	)
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}

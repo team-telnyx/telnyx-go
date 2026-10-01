@@ -207,6 +207,35 @@ func (r *AIAssistantService) SendSMS(ctx context.Context, assistantID string, pa
 	return res, err
 }
 
+// Start a WhatsApp conversation with a customer from the business side. This
+// endpoint:
+//
+//  1. Validates that `from` is a WhatsApp number on your account whose messaging
+//     profile has this assistant configured
+//  2. Creates a new `whatsapp_chat` conversation with the provided metadata
+//  3. Asks the assistant to pick one of its approved WhatsApp templates and fill
+//     its variables from `content`
+//  4. Sends the template from `from` to `to`
+//  5. Returns the conversation ID and the message ID
+//
+// When the customer replies, the reply is routed to the same conversation and the
+// assistant answers within the 24-hour customer service window. The assistant
+// needs a `whatsapp_template` tool with at least one approved template, data
+// retention enabled and PII redaction disabled.
+func (r *AIAssistantService) Whatsapp(ctx context.Context, assistantID string, params AIAssistantWhatsappParams, opts ...option.RequestOption) (res *AIAssistantWhatsappResponse, err error) {
+	if !param.IsOmitted(params.IdempotencyKey) {
+		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey.Value)))
+	}
+	opts = slices.Concat(r.Options, opts)
+	if assistantID == "" {
+		err = errors.New("missing required assistant_id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("ai/assistants/%s/chat/whatsapp", url.PathEscape(assistantID))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
+	return res, err
+}
+
 // Assistant configuration including choice of LLM, custom instructions, and tools.
 type AssistantParam struct {
 	// The system instructions that the voice assistant uses during the gather command
@@ -8884,6 +8913,26 @@ func (r *AIAssistantSendSMSResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type AIAssistantWhatsappResponse struct {
+	// ID of the conversation created for this WhatsApp chat.
+	ConversationID string `json:"conversation_id" api:"required"`
+	// ID of the WhatsApp template message that was sent.
+	MessageID string `json:"message_id" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ConversationID respjson.Field
+		MessageID      respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AIAssistantWhatsappResponse) RawJSON() string { return r.JSON.raw }
+func (r *AIAssistantWhatsappResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type AIAssistantNewParams struct {
 	// System instructions for the assistant. These may be templated with
 	// [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables)
@@ -9272,6 +9321,59 @@ func (u *AIAssistantSendSMSParamsConversationMetadataUnion) UnmarshalJSON(data [
 }
 
 func (u *AIAssistantSendSMSParamsConversationMetadataUnion) asAny() any {
+	if !param.IsOmitted(u.OfString) {
+		return &u.OfString.Value
+	} else if !param.IsOmitted(u.OfInt) {
+		return &u.OfInt.Value
+	} else if !param.IsOmitted(u.OfBool) {
+		return &u.OfBool.Value
+	}
+	return nil
+}
+
+type AIAssistantWhatsappParams struct {
+	// Instruction for the assistant, including the values for the template variables,
+	// e.g. `Send the login verification code 482913 to the customer.`
+	Content string `json:"content" api:"required"`
+	// WhatsApp number on your account to send from, in E.164 format. Its messaging
+	// profile must have this assistant configured.
+	From string `json:"from" api:"required"`
+	// Customer to message, as an E.164 phone number or a WhatsApp business-scoped user
+	// ID (BSUID).
+	To             string            `json:"to" api:"required"`
+	IdempotencyKey param.Opt[string] `header:"Idempotency-Key,omitzero" json:"-"`
+	// Metadata stored on the conversation. Keys starting with `telnyx_` and the
+	// `assistant_id` key are reserved.
+	ConversationMetadata map[string]AIAssistantWhatsappParamsConversationMetadataUnion `json:"conversation_metadata,omitzero"`
+	paramObj
+}
+
+func (r AIAssistantWhatsappParams) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantWhatsappParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantWhatsappParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type AIAssistantWhatsappParamsConversationMetadataUnion struct {
+	OfString param.Opt[string] `json:",omitzero,inline"`
+	OfInt    param.Opt[int64]  `json:",omitzero,inline"`
+	OfBool   param.Opt[bool]   `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u AIAssistantWhatsappParamsConversationMetadataUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfString, u.OfInt, u.OfBool)
+}
+func (u *AIAssistantWhatsappParamsConversationMetadataUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *AIAssistantWhatsappParamsConversationMetadataUnion) asAny() any {
 	if !param.IsOmitted(u.OfString) {
 		return &u.OfString.Value
 	} else if !param.IsOmitted(u.OfInt) {
