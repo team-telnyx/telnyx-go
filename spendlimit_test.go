@@ -13,7 +13,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/option"
 )
 
-func TestAIEmbeddingNewWithOptionalParams(t *testing.T) {
+func TestSpendLimitNewWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -26,13 +26,14 @@ func TestAIEmbeddingNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.AI.Embeddings.New(context.TODO(), telnyx.AIEmbeddingNewParams{
-		BucketName:               "Bucket Name",
-		DocumentChunkOverlapSize: telnyx.Int(512),
-		DocumentChunkSize:        telnyx.Int(1024),
-		EmbeddingModel:           telnyx.AIEmbeddingNewParamsEmbeddingModelIntfloatMultilingualE5Large,
-		Loader:                   telnyx.AIEmbeddingNewParamsLoaderDefault,
-		IdempotencyKey:           telnyx.String("8e03978e-40d5-43e8-bc93-6894a57f9326"),
+	_, err := client.SpendLimits.New(context.TODO(), telnyx.SpendLimitNewParams{
+		OfAmount: &telnyx.SpendLimitNewParamsBodyCreateSpendLimitWithAmount{
+			Amount:    100,
+			Product:   "inference",
+			Period:    telnyx.SpendLimitPeriodDaily,
+			Reason:    telnyx.String("Team budget"),
+			Unlimited: false,
+		},
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -43,7 +44,7 @@ func TestAIEmbeddingNewWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestAIEmbeddingGet(t *testing.T) {
+func TestSpendLimitUpdateWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -56,7 +57,18 @@ func TestAIEmbeddingGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.AI.Embeddings.Get(context.TODO(), "task_id")
+	_, err := client.SpendLimits.Update(
+		context.TODO(),
+		"inference",
+		telnyx.SpendLimitUpdateParams{
+			OfAmount: &telnyx.SpendLimitUpdateParamsBodyUpdateSpendLimitWithAmount{
+				Amount:    250,
+				Reason:    telnyx.String("Raised for the product launch"),
+				Unlimited: false,
+			},
+			Period: telnyx.SpendLimitPeriodDaily,
+		},
+	)
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
@@ -66,7 +78,7 @@ func TestAIEmbeddingGet(t *testing.T) {
 	}
 }
 
-func TestAIEmbeddingListWithOptionalParams(t *testing.T) {
+func TestSpendLimitList(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -79,9 +91,7 @@ func TestAIEmbeddingListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.AI.Embeddings.List(context.TODO(), telnyx.AIEmbeddingListParams{
-		Status: []string{"string"},
-	})
+	_, err := client.SpendLimits.List(context.TODO())
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
@@ -91,7 +101,7 @@ func TestAIEmbeddingListWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestAIEmbeddingSimilaritySearchWithOptionalParams(t *testing.T) {
+func TestSpendLimitDeleteWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -104,38 +114,14 @@ func TestAIEmbeddingSimilaritySearchWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.AI.Embeddings.SimilaritySearch(context.TODO(), telnyx.AIEmbeddingSimilaritySearchParams{
-		BucketName: "Bucket Name",
-		Query:      "Query",
-		NumOfDocs:  telnyx.Int(3),
-	})
-	if err != nil {
-		var apierr *telnyx.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestAIEmbeddingURLWithOptionalParams(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := telnyx.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
+	_, err := client.SpendLimits.Delete(
+		context.TODO(),
+		"inference",
+		telnyx.SpendLimitDeleteParams{
+			Period: telnyx.SpendLimitPeriodDaily,
+			Reason: telnyx.String("reason"),
+		},
 	)
-	_, err := client.AI.Embeddings.URL(context.TODO(), telnyx.AIEmbeddingURLParams{
-		BucketName:     "Bucket Name",
-		URL:            "URL",
-		IdempotencyKey: telnyx.String("8e03978e-40d5-43e8-bc93-6894a57f9326"),
-	})
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {

@@ -38,13 +38,18 @@ func TestEnterpriseDirNewWithOptionalParams(t *testing.T) {
 			CertifyIPOwnership:     true,
 			CertifyNoShaftContent:  true,
 			DisplayName:            "Acme Plumbing",
+			BpoAuthorizations: []telnyx.BpoAuthorizationInputParam{{
+				BpoEnterpriseID: "4a6192a4-573d-446d-b3ce-aff9117272a6",
+				LoaDocumentID:   "2a7e8337-e803-4057-a4ae-26c40eb0bc6c",
+			}},
 			Documents: []telnyx.DocumentParam{{
 				DocumentID:   "2a7e8337-e803-4057-a4ae-26c40eb0bc6c",
 				DocumentType: telnyx.DocumentDocumentTypeBusinessRegistration,
 				Description:  telnyx.String("Certificate of incorporation."),
 			}},
-			LogoURL:   telnyx.String("https://acmeplumbing.example.com/logo-256.bmp"),
-			Reselling: telnyx.Bool(false),
+			LogoURL:    telnyx.String("https://acmeplumbing.example.com/logo-256.bmp"),
+			Reselling:  telnyx.Bool(false),
+			WebhookURL: telnyx.String("https://mapleridge.example.com/webhooks/branded-calling"),
 		},
 	)
 	if err != nil {

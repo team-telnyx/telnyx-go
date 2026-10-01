@@ -86,6 +86,13 @@ func (r *BucketIDsParam) UnmarshalJSON(data []byte) error {
 type ChatCompletionRequestParam struct {
 	// A list of the previous chat messages for context.
 	Messages []ChatCompletionRequestMessageParam `json:"messages,omitzero" api:"required"`
+	// Maximum number of completion (output) tokens the model may generate per request.
+	// Defaults to 8192 when omitted or `null`. Set a higher value to allow longer
+	// completions. The model's `max_completion_tokens` metadata (see
+	// `GET /ai/models`), when set, caps both the default and any larger explicit
+	// value. Reasoning models consume this budget across reasoning and answer tokens
+	// combined.
+	MaxTokens param.Opt[int64] `json:"max_tokens,omitzero"`
 	// If you are using an external inference provider like xAI or OpenAI, this field
 	// allows you to pass along a reference to your API key. After creating an
 	// [integration secret](https://developers.telnyx.com/api-reference/integration-secrets/create-a-secret)
@@ -110,8 +117,6 @@ type ChatCompletionRequestParam struct {
 	// returns the log probabilities of each output token returned in the `content` of
 	// `message`.
 	Logprobs param.Opt[bool] `json:"logprobs,omitzero"`
-	// Maximum number of completion tokens the model should generate.
-	MaxTokens param.Opt[int64] `json:"max_tokens,omitzero"`
 	// This is an alternative to `top_p` that
 	// [many prefer](https://github.com/huggingface/transformers/issues/27670). Must be
 	// in [0, 1].

@@ -5387,9 +5387,12 @@ func (r *CallActionReferParams) UnmarshalJSON(data []byte) error {
 }
 
 type CallActionRejectParams struct {
-	// Cause for call rejection.
+	// Cause for call rejection. The cause sets the SIP response the caller receives:
+	// `USER_BUSY` sends 486 User Busy, `CALL_REJECTED` sends 603 Decline, `NOT_FOUND`
+	// sends 404 Not Found, and `TEMPORARILY_UNAVAILABLE` sends 480 Temporarily
+	// Unavailable.
 	//
-	// Any of "CALL_REJECTED", "USER_BUSY".
+	// Any of "CALL_REJECTED", "NOT_FOUND", "TEMPORARILY_UNAVAILABLE", "USER_BUSY".
 	Cause CallActionRejectParamsCause `json:"cause,omitzero" api:"required"`
 	// Use this field to add state to every subsequent webhook. It must be a valid
 	// Base-64 encoded string.
@@ -5408,12 +5411,17 @@ func (r *CallActionRejectParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Cause for call rejection.
+// Cause for call rejection. The cause sets the SIP response the caller receives:
+// `USER_BUSY` sends 486 User Busy, `CALL_REJECTED` sends 603 Decline, `NOT_FOUND`
+// sends 404 Not Found, and `TEMPORARILY_UNAVAILABLE` sends 480 Temporarily
+// Unavailable.
 type CallActionRejectParamsCause string
 
 const (
-	CallActionRejectParamsCauseCallRejected CallActionRejectParamsCause = "CALL_REJECTED"
-	CallActionRejectParamsCauseUserBusy     CallActionRejectParamsCause = "USER_BUSY"
+	CallActionRejectParamsCauseCallRejected           CallActionRejectParamsCause = "CALL_REJECTED"
+	CallActionRejectParamsCauseNotFound               CallActionRejectParamsCause = "NOT_FOUND"
+	CallActionRejectParamsCauseTemporarilyUnavailable CallActionRejectParamsCause = "TEMPORARILY_UNAVAILABLE"
+	CallActionRejectParamsCauseUserBusy               CallActionRejectParamsCause = "USER_BUSY"
 )
 
 type CallActionResumeRecordingParams struct {
