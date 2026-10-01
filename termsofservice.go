@@ -90,14 +90,18 @@ func (r *TermsOfServiceGetInfoResponse) UnmarshalJSON(data []byte) error {
 }
 
 type TermsOfServiceGetInfoResponseAgreement struct {
-	CurrentVersion string    `json:"current_version"`
-	Description    string    `json:"description"`
-	EffectiveDate  time.Time `json:"effective_date" format:"date"`
+	// The latest published version of these terms.
+	CurrentVersion string `json:"current_version"`
+	// A short summary of the product these terms cover.
+	Description string `json:"description"`
+	// The date this version took effect.
+	EffectiveDate time.Time `json:"effective_date" format:"date"`
 	// Telnyx product the Terms of Service apply to.
 	//
 	// Any of "branded_calling", "number_reputation".
 	ProductType TosProductType `json:"product_type"`
-	TermsURL    string         `json:"terms_url"`
+	// A link to the full terms text.
+	TermsURL string `json:"terms_url"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CurrentVersion respjson.Field
@@ -148,7 +152,8 @@ type TermsOfServiceGetStatusResponseData struct {
 	//
 	// Any of "branded_calling", "number_reputation".
 	ProductType TosProductType `json:"product_type" api:"required"`
-	AgreedAt    time.Time      `json:"agreed_at" api:"nullable" format:"date-time"`
+	// When you accepted the terms, or null if you have not.
+	AgreedAt time.Time `json:"agreed_at" api:"nullable" format:"date-time"`
 	// Version the user previously agreed to (may be older than
 	// `current_terms_version`). `null` if the user has never agreed.
 	AgreedVersion string `json:"agreed_version" api:"nullable"`

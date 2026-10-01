@@ -322,6 +322,8 @@ func (r *DirPhoneNumberAddParams) UnmarshalJSON(data []byte) error {
 }
 
 type DirPhoneNumberRemoveParams struct {
+	// The phone numbers to remove from this brand, in E.164 format, up to 100 per
+	// request. They must currently be attached to this brand.
 	PhoneNumbers []string `json:"phone_numbers,omitzero" api:"required"`
 	paramObj
 }
