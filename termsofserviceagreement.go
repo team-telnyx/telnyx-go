@@ -100,14 +100,18 @@ func (r *TermsOfServiceAgreementService) ListAutoPaging(ctx context.Context, que
 // intentionally NOT echoed back on this public surface - the caller already knows
 // their own identity.
 type TosAgreement struct {
-	ID        string    `json:"id" format:"uuid"`
-	AgreedAt  time.Time `json:"agreed_at" format:"date-time"`
+	// The unique identifier of this recorded agreement.
+	ID string `json:"id" format:"uuid"`
+	// When you accepted this version of the terms.
+	AgreedAt time.Time `json:"agreed_at" format:"date-time"`
+	// When this agreement record was created.
 	CreatedAt time.Time `json:"created_at" format:"date-time"`
 	// Telnyx product the Terms of Service apply to.
 	//
 	// Any of "branded_calling", "number_reputation".
-	ProductType  TosProductType `json:"product_type"`
-	TermsVersion string         `json:"terms_version"`
+	ProductType TosProductType `json:"product_type"`
+	// The version of the terms you accepted.
+	TermsVersion string `json:"terms_version"`
 	// Convenience alias of `terms_version`. Both keys are present on every response.
 	Version string `json:"version"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].

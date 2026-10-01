@@ -214,6 +214,23 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 				},
 			}},
 		},
+		DelegationSettings: telnyx.DelegationSettingsParam{
+			Enabled: telnyx.Bool(true),
+			ExternalLlm: telnyx.ExternalLlmParam{
+				BaseURL:              "base_url",
+				Model:                "model",
+				AuthenticationMethod: telnyx.AuthenticationMethodToken,
+				CertificateRef:       telnyx.String("certificate_ref"),
+				ForwardMetadata:      telnyx.Bool(true),
+				LlmAPIKeyRef:         telnyx.String("llm_api_key_ref"),
+				TokenRetrievalURL:    telnyx.String("token_retrieval_url"),
+			},
+			Instructions: telnyx.String("instructions"),
+			LlmAPIKeyRef: telnyx.String("llm_api_key_ref"),
+			Mode:         telnyx.DelegationSettingsModeTelnyx,
+			Model:        telnyx.String("model"),
+			SpeakResults: telnyx.Bool(true),
+		},
 		Description: telnyx.String("description"),
 		DynamicVariables: map[string]any{
 			"foo": "bar",
@@ -379,6 +396,11 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 			Temperature:     telnyx.Float(0),
 			UseSpeakerBoost: telnyx.Bool(true),
 			VoiceSpeed:      telnyx.Float(0),
+		},
+		WebsocketSettings: telnyx.WebsocketSettingsParam{
+			AuthRef: telnyx.String("auth_ref"),
+			Enabled: telnyx.Bool(true),
+			URL:     telnyx.String("url"),
 		},
 		WidgetSettings: telnyx.WidgetSettingsParam{
 			AgentThinkingText: telnyx.String("agent_thinking_text"),
@@ -641,6 +663,23 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 					},
 				}},
 			},
+			DelegationSettings: telnyx.DelegationSettingsParam{
+				Enabled: telnyx.Bool(true),
+				ExternalLlm: telnyx.ExternalLlmParam{
+					BaseURL:              "base_url",
+					Model:                "model",
+					AuthenticationMethod: telnyx.AuthenticationMethodToken,
+					CertificateRef:       telnyx.String("certificate_ref"),
+					ForwardMetadata:      telnyx.Bool(true),
+					LlmAPIKeyRef:         telnyx.String("llm_api_key_ref"),
+					TokenRetrievalURL:    telnyx.String("token_retrieval_url"),
+				},
+				Instructions: telnyx.String("instructions"),
+				LlmAPIKeyRef: telnyx.String("llm_api_key_ref"),
+				Mode:         telnyx.DelegationSettingsModeTelnyx,
+				Model:        telnyx.String("model"),
+				SpeakResults: telnyx.Bool(true),
+			},
 			Description: telnyx.String("description"),
 			DynamicVariables: map[string]any{
 				"foo": "bar",
@@ -810,6 +849,11 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 				Temperature:     telnyx.Float(0),
 				UseSpeakerBoost: telnyx.Bool(true),
 				VoiceSpeed:      telnyx.Float(0),
+			},
+			WebsocketSettings: telnyx.WebsocketSettingsParam{
+				AuthRef: telnyx.String("auth_ref"),
+				Enabled: telnyx.Bool(true),
+				URL:     telnyx.String("url"),
 			},
 			WidgetSettings: telnyx.WidgetSettingsParam{
 				AgentThinkingText: telnyx.String("agent_thinking_text"),
@@ -1023,6 +1067,43 @@ func TestAIAssistantSendSMSWithOptionalParams(t *testing.T) {
 			ShouldCreateConversation: telnyx.Bool(false),
 			Text:                     telnyx.String("Text"),
 			IdempotencyKey:           telnyx.String("8e03978e-40d5-43e8-bc93-6894a57f9326"),
+		},
+	)
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestAIAssistantWhatsappWithOptionalParams(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := telnyx.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.AI.Assistants.Whatsapp(
+		context.TODO(),
+		"assistant_id",
+		telnyx.AIAssistantWhatsappParams{
+			Content: "Send the login verification code 482913 to the customer.",
+			From:    "+13125550001",
+			To:      "+13125550002",
+			ConversationMetadata: map[string]telnyx.AIAssistantWhatsappParamsConversationMetadataUnion{
+				"order_id": {
+					OfString: telnyx.String("A1"),
+				},
+			},
+			IdempotencyKey: telnyx.String("8e03978e-40d5-43e8-bc93-6894a57f9326"),
 		},
 	)
 	if err != nil {
