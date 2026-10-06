@@ -414,7 +414,8 @@ type Client struct {
 	//   - **Limits set by Telnyx.** Telnyx support can also set a limit on your account.
 	//     It is listed with `origin: operator` and you can update or delete it like your
 	//     own.
-	SpendLimits SpendLimitService
+	SpendLimits     SpendLimitService
+	LlmTokenGateway LlmTokenGatewayService
 }
 
 // DefaultClientOptions read from the environment (TELNYX_API_KEY,
@@ -647,6 +648,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.BotSignup = NewBotSignupService(opts...)
 	r.MachinePayments = NewMachinePaymentService(opts...)
 	r.SpendLimits = NewSpendLimitService(opts...)
+	r.LlmTokenGateway = NewLlmTokenGatewayService(opts...)
 
 	return
 }

@@ -260,7 +260,8 @@ type PortingOrder struct {
 	PhoneNumberConfiguration PortingOrderPhoneNumberConfiguration `json:"phone_number_configuration"`
 	// The type of the phone number
 	//
-	// Any of "landline", "local", "mobile", "national", "shared_cost", "toll_free".
+	// Any of "landline", "local", "mobile", "multipurpose", "national", "other",
+	// "shared_cost", "toll_free".
 	PhoneNumberType PortingOrderPhoneNumberType `json:"phone_number_type"`
 	// List of phone numbers associated with this porting order
 	PhoneNumbers []PortingPhoneNumber `json:"phone_numbers"`
@@ -327,12 +328,14 @@ func (r *PortingOrder) UnmarshalJSON(data []byte) error {
 type PortingOrderPhoneNumberType string
 
 const (
-	PortingOrderPhoneNumberTypeLandline   PortingOrderPhoneNumberType = "landline"
-	PortingOrderPhoneNumberTypeLocal      PortingOrderPhoneNumberType = "local"
-	PortingOrderPhoneNumberTypeMobile     PortingOrderPhoneNumberType = "mobile"
-	PortingOrderPhoneNumberTypeNational   PortingOrderPhoneNumberType = "national"
-	PortingOrderPhoneNumberTypeSharedCost PortingOrderPhoneNumberType = "shared_cost"
-	PortingOrderPhoneNumberTypeTollFree   PortingOrderPhoneNumberType = "toll_free"
+	PortingOrderPhoneNumberTypeLandline     PortingOrderPhoneNumberType = "landline"
+	PortingOrderPhoneNumberTypeLocal        PortingOrderPhoneNumberType = "local"
+	PortingOrderPhoneNumberTypeMobile       PortingOrderPhoneNumberType = "mobile"
+	PortingOrderPhoneNumberTypeMultipurpose PortingOrderPhoneNumberType = "multipurpose"
+	PortingOrderPhoneNumberTypeNational     PortingOrderPhoneNumberType = "national"
+	PortingOrderPhoneNumberTypeOther        PortingOrderPhoneNumberType = "other"
+	PortingOrderPhoneNumberTypeSharedCost   PortingOrderPhoneNumberType = "shared_cost"
+	PortingOrderPhoneNumberTypeTollFree     PortingOrderPhoneNumberType = "toll_free"
 )
 
 type PortingOrderActivationSettings struct {

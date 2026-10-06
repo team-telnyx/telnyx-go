@@ -905,7 +905,7 @@ func TestAIAssistantList(t *testing.T) {
 	}
 }
 
-func TestAIAssistantDelete(t *testing.T) {
+func TestAIAssistantDeleteWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -918,7 +918,13 @@ func TestAIAssistantDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.AI.Assistants.Delete(context.TODO(), "assistant_id")
+	_, err := client.AI.Assistants.Delete(
+		context.TODO(),
+		"assistant_id",
+		telnyx.AIAssistantDeleteParams{
+			HardDelete: telnyx.Bool(true),
+		},
+	)
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
@@ -1031,6 +1037,29 @@ func TestAIAssistantImportsWithOptionalParams(t *testing.T) {
 		ImportIDs:      []string{"string"},
 		IdempotencyKey: telnyx.String("8e03978e-40d5-43e8-bc93-6894a57f9326"),
 	})
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestAIAssistantRestore(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := telnyx.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.AI.Assistants.Restore(context.TODO(), "assistant_id")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {

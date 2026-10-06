@@ -1972,9 +1972,11 @@ type CallMachinePremiumGreetingEndedPayload struct {
 	ConnectionID string `json:"connection_id"`
 	// Number or SIP URI placing the call.
 	From string `json:"from"`
-	// Premium Answering Machine Greeting Ended result.
+	// Premium Answering Machine Greeting Ended result. `prompt_ended` is only sent
+	// when `answering_machine_detection` is `premium_ios_call_screening_detection` and
+	// the iOS call-screening prompt ends without a beep.
 	//
-	// Any of "beep_detected", "no_beep_detected".
+	// Any of "beep_detected", "no_beep_detected", "prompt_ended".
 	Result string `json:"result"`
 	// Destination number or SIP URI of the call.
 	To string `json:"to"`
@@ -6112,6 +6114,104 @@ func (r *CallBridgedWebhookEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type CallConversationCreatedWebhookEvent struct {
+	// A conversation has been created for the call. Use the conversation ID to
+	// correlate subsequent conversation events.
+	Data CallConversationCreatedWebhookEventData `json:"data"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CallConversationCreatedWebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *CallConversationCreatedWebhookEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A conversation has been created for the call. Use the conversation ID to
+// correlate subsequent conversation events.
+type CallConversationCreatedWebhookEventData struct {
+	// Unique identifier for the event.
+	ID string `json:"id" format:"uuid"`
+	// Timestamp when the event was created in the system.
+	CreatedAt time.Time `json:"created_at" format:"date-time"`
+	// The type of event being delivered.
+	//
+	// Any of "call.conversation.created".
+	EventType string `json:"event_type"`
+	// ISO 8601 datetime of when the event occurred.
+	OccurredAt time.Time                                      `json:"occurred_at" format:"date-time"`
+	Payload    CallConversationCreatedWebhookEventDataPayload `json:"payload"`
+	// Identifies the type of the resource.
+	//
+	// Any of "event".
+	RecordType string `json:"record_type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		CreatedAt   respjson.Field
+		EventType   respjson.Field
+		OccurredAt  respjson.Field
+		Payload     respjson.Field
+		RecordType  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CallConversationCreatedWebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *CallConversationCreatedWebhookEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CallConversationCreatedWebhookEventDataPayload struct {
+	// Call ID used to issue commands via Call Control API.
+	CallControlID string `json:"call_control_id"`
+	// ID that is unique to the call leg.
+	CallLegID string `json:"call_leg_id"`
+	// ID that is unique to the call session (group of related call legs).
+	CallSessionID string `json:"call_session_id"`
+	// The type of calling party connection.
+	//
+	// Any of "pstn", "sip".
+	CallingPartyType string `json:"calling_party_type"`
+	// Base64-encoded state received from a command.
+	ClientState string `json:"client_state"`
+	// Call Control App ID (formerly Telnyx connection ID) used in the call.
+	ConnectionID string `json:"connection_id"`
+	// Unique identifier of the conversation created for this call.
+	ConversationID string `json:"conversation_id" format:"uuid"`
+	// The caller's number or identifier.
+	From string `json:"from"`
+	// The callee's number or SIP address.
+	To string `json:"to"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CallControlID    respjson.Field
+		CallLegID        respjson.Field
+		CallSessionID    respjson.Field
+		CallingPartyType respjson.Field
+		ClientState      respjson.Field
+		ConnectionID     respjson.Field
+		ConversationID   respjson.Field
+		From             respjson.Field
+		To               respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CallConversationCreatedWebhookEventDataPayload) RawJSON() string { return r.JSON.raw }
+func (r *CallConversationCreatedWebhookEventDataPayload) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type CallConversationEndedWebhookEvent struct {
 	Data CallConversationEnded `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -6701,6 +6801,100 @@ func (r *CallMachineGreetingEndedWebhookEvent) UnmarshalJSON(data []byte) error 
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type CallMachinePremiumCallScreeningDetectedWebhookEvent struct {
+	Data CallMachinePremiumCallScreeningDetectedWebhookEventData `json:"data"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CallMachinePremiumCallScreeningDetectedWebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *CallMachinePremiumCallScreeningDetectedWebhookEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CallMachinePremiumCallScreeningDetectedWebhookEventData struct {
+	// Identifies the type of resource.
+	ID string `json:"id" format:"uuid"`
+	// The type of event being delivered.
+	//
+	// Any of "call.machine.premium.call_screening.detected".
+	EventType string `json:"event_type"`
+	// ISO 8601 datetime of when the event occurred.
+	OccurredAt time.Time                                                      `json:"occurred_at" format:"date-time"`
+	Payload    CallMachinePremiumCallScreeningDetectedWebhookEventDataPayload `json:"payload"`
+	// Identifies the type of the resource.
+	//
+	// Any of "event".
+	RecordType string `json:"record_type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		EventType   respjson.Field
+		OccurredAt  respjson.Field
+		Payload     respjson.Field
+		RecordType  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CallMachinePremiumCallScreeningDetectedWebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *CallMachinePremiumCallScreeningDetectedWebhookEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CallMachinePremiumCallScreeningDetectedWebhookEventDataPayload struct {
+	// Call ID used to issue commands via Call Control API.
+	CallControlID string `json:"call_control_id"`
+	// ID that is unique to the call and can be used to correlate webhook events.
+	CallLegID string `json:"call_leg_id"`
+	// ID that is unique to the call session and can be used to correlate webhook
+	// events. Call session is a group of related call legs that logically belong to
+	// the same phone call, e.g. an inbound and outbound leg of a transferred call.
+	CallSessionID string `json:"call_session_id"`
+	// State received from a command.
+	ClientState string `json:"client_state"`
+	// Call Control App ID (formerly Telnyx connection ID) used in the call.
+	ConnectionID string `json:"connection_id"`
+	// Number or SIP URI placing the call.
+	From string `json:"from"`
+	// Apple Call Screening detection result. Sent when an Apple Call Screening tone is
+	// detected; Premium Answering Machine Detection is restarted on the screened call
+	// afterwards.
+	//
+	// Any of "screening".
+	Result string `json:"result"`
+	// Destination number or SIP URI of the call.
+	To string `json:"to"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CallControlID respjson.Field
+		CallLegID     respjson.Field
+		CallSessionID respjson.Field
+		ClientState   respjson.Field
+		ConnectionID  respjson.Field
+		From          respjson.Field
+		Result        respjson.Field
+		To            respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CallMachinePremiumCallScreeningDetectedWebhookEventDataPayload) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *CallMachinePremiumCallScreeningDetectedWebhookEventDataPayload) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type CallMachinePremiumDetectionEndedWebhookEvent struct {
 	Data CallMachinePremiumDetectionEnded `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -6714,6 +6908,93 @@ type CallMachinePremiumDetectionEndedWebhookEvent struct {
 // Returns the unmodified JSON received from the API
 func (r CallMachinePremiumDetectionEndedWebhookEvent) RawJSON() string { return r.JSON.raw }
 func (r *CallMachinePremiumDetectionEndedWebhookEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CallMachinePremiumDetectionStartedWebhookEvent struct {
+	Data CallMachinePremiumDetectionStartedWebhookEventData `json:"data"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CallMachinePremiumDetectionStartedWebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *CallMachinePremiumDetectionStartedWebhookEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CallMachinePremiumDetectionStartedWebhookEventData struct {
+	// Identifies the type of resource.
+	ID string `json:"id" format:"uuid"`
+	// The type of event being delivered.
+	//
+	// Any of "call.machine.premium.detection.started".
+	EventType string `json:"event_type"`
+	// ISO 8601 datetime of when the event occurred.
+	OccurredAt time.Time                                                 `json:"occurred_at" format:"date-time"`
+	Payload    CallMachinePremiumDetectionStartedWebhookEventDataPayload `json:"payload"`
+	// Identifies the type of the resource.
+	//
+	// Any of "event".
+	RecordType string `json:"record_type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		EventType   respjson.Field
+		OccurredAt  respjson.Field
+		Payload     respjson.Field
+		RecordType  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CallMachinePremiumDetectionStartedWebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *CallMachinePremiumDetectionStartedWebhookEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CallMachinePremiumDetectionStartedWebhookEventDataPayload struct {
+	// Call ID used to issue commands via Call Control API.
+	CallControlID string `json:"call_control_id"`
+	// ID that is unique to the call and can be used to correlate webhook events.
+	CallLegID string `json:"call_leg_id"`
+	// ID that is unique to the call session and can be used to correlate webhook
+	// events. Call session is a group of related call legs that logically belong to
+	// the same phone call, e.g. an inbound and outbound leg of a transferred call.
+	CallSessionID string `json:"call_session_id"`
+	// State received from a command.
+	ClientState string `json:"client_state"`
+	// Call Control App ID (formerly Telnyx connection ID) used in the call.
+	ConnectionID string `json:"connection_id"`
+	// Number or SIP URI placing the call.
+	From string `json:"from"`
+	// Destination number or SIP URI of the call.
+	To string `json:"to"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CallControlID respjson.Field
+		CallLegID     respjson.Field
+		CallSessionID respjson.Field
+		ClientState   respjson.Field
+		ConnectionID  respjson.Field
+		From          respjson.Field
+		To            respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CallMachinePremiumDetectionStartedWebhookEventDataPayload) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *CallMachinePremiumDetectionStartedWebhookEventDataPayload) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -8219,7 +8500,8 @@ func (r *TranscriptionWebhookEvent) UnmarshalJSON(data []byte) error {
 // [CallAIGatherMessageHistoryUpdatedWebhookEvent],
 // [CallAIGatherPartialResultsWebhookEvent], [ArtifactCompletedWebhookEvent],
 // [ArtifactFailedWebhookEvent], [CallAnsweredWebhookEvent],
-// [CallBridgedWebhookEvent], [CallConversationEndedWebhookEvent],
+// [CallBridgedWebhookEvent], [CallConversationCreatedWebhookEvent],
+// [CallConversationEndedWebhookEvent],
 // [CallConversationInsightsGeneratedWebhookEvent], [CallCostWebhookEvent],
 // [CallDeepfakeDetectionErrorWebhookEvent],
 // [CallDeepfakeDetectionResultWebhookEvent], [CallDtmfReceivedWebhookEvent],
@@ -8228,7 +8510,9 @@ func (r *TranscriptionWebhookEvent) UnmarshalJSON(data []byte) error {
 // [CallHangupWebhookEvent], [CallHoldWebhookEvent], [CallInitiatedWebhookEvent],
 // [CallLeftQueueWebhookEvent], [CallMachineDetectionEndedWebhookEvent],
 // [CallMachineGreetingEndedWebhookEvent],
+// [CallMachinePremiumCallScreeningDetectedWebhookEvent],
 // [CallMachinePremiumDetectionEndedWebhookEvent],
+// [CallMachinePremiumDetectionStartedWebhookEvent],
 // [CallMachinePremiumGreetingEndedWebhookEvent],
 // [CallPaymentCompletedWebhookEvent], [CallPaymentProgressWebhookEvent],
 // [CallPlaybackEndedWebhookEvent], [CallPlaybackStartedWebhookEvent],
@@ -8262,18 +8546,21 @@ type UnsafeUnwrapWebhookEventUnion struct {
 	// This field is a union of [CallAIGatherEnded],
 	// [CallAIGatherMessageHistoryUpdated], [CallAIGatherPartialResults],
 	// [ArtifactCompletedWebhookEventData], [ArtifactFailedWebhookEventData],
-	// [CallAnswered], [CallBridged], [CallConversationEnded],
-	// [CallConversationInsightsGenerated], [CallCostWebhookEventData],
-	// [CallDeepfakeDetectionErrorWebhookEventData],
+	// [CallAnswered], [CallBridged], [CallConversationCreatedWebhookEventData],
+	// [CallConversationEnded], [CallConversationInsightsGenerated],
+	// [CallCostWebhookEventData], [CallDeepfakeDetectionErrorWebhookEventData],
 	// [CallDeepfakeDetectionResultWebhookEventData], [CallDtmfReceived],
 	// [CallEnqueued], [CallForkStarted], [CallForkStopped], [CallGatherEnded],
 	// [CallHangup], [CallHoldWebhookEventData], [CallInitiated], [CallLeftQueue],
 	// [CallMachineDetectionEnded], [CallMachineGreetingEnded],
-	// [CallMachinePremiumDetectionEnded], [CallMachinePremiumGreetingEnded],
-	// [CallPaymentCompletedWebhookEventData], [CallPaymentProgressWebhookEventData],
-	// [CallPlaybackEnded], [CallPlaybackStarted], [CallRecordingError],
-	// [CallRecordingSaved], [CallRecordingTranscriptionSaved], [CallReferCompleted],
-	// [CallReferFailed], [CallReferStarted], [CallSiprecFailed], [CallSiprecStarted],
+	// [CallMachinePremiumCallScreeningDetectedWebhookEventData],
+	// [CallMachinePremiumDetectionEnded],
+	// [CallMachinePremiumDetectionStartedWebhookEventData],
+	// [CallMachinePremiumGreetingEnded], [CallPaymentCompletedWebhookEventData],
+	// [CallPaymentProgressWebhookEventData], [CallPlaybackEnded],
+	// [CallPlaybackStarted], [CallRecordingError], [CallRecordingSaved],
+	// [CallRecordingTranscriptionSaved], [CallReferCompleted], [CallReferFailed],
+	// [CallReferStarted], [CallSiprecFailed], [CallSiprecStarted],
 	// [CallSiprecStopped], [CallSpeakEnded], [CallSpeakStarted],
 	// [CallStreamingFailed], [CallStreamingStarted], [CallStreamingStopped],
 	// [CallUnholdWebhookEventData], [ConferenceCreated], [ConferenceEnded],
@@ -8377,6 +8664,11 @@ func (u UnsafeUnwrapWebhookEventUnion) AsCallBridgedEvent() (v CallBridgedWebhoo
 	return
 }
 
+func (u UnsafeUnwrapWebhookEventUnion) AsCallConversationCreatedEvent() (v CallConversationCreatedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
 func (u UnsafeUnwrapWebhookEventUnion) AsCallConversationEndedEvent() (v CallConversationEndedWebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
@@ -8457,7 +8749,17 @@ func (u UnsafeUnwrapWebhookEventUnion) AsCallMachineGreetingEndedEvent() (v Call
 	return
 }
 
+func (u UnsafeUnwrapWebhookEventUnion) AsCallMachinePremiumCallScreeningDetectedEvent() (v CallMachinePremiumCallScreeningDetectedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
 func (u UnsafeUnwrapWebhookEventUnion) AsCallMachinePremiumDetectionEndedEvent() (v CallMachinePremiumDetectionEndedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsCallMachinePremiumDetectionStartedEvent() (v CallMachinePremiumDetectionStartedWebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -8736,15 +9038,20 @@ type UnsafeUnwrapWebhookEventUnionData struct {
 	OccurredAt time.Time `json:"occurred_at"`
 	// This field is a union of [CallAIGatherEndedPayload],
 	// [CallAIGatherMessageHistoryUpdatedPayload], [CallAIGatherPartialResultsPayload],
-	// [CallAnsweredPayload], [CallBridgedPayload], [CallConversationEndedPayload],
-	// [CallConversationInsightsGeneratedPayload], [CallCostWebhookEventDataPayload],
+	// [CallAnsweredPayload], [CallBridgedPayload],
+	// [CallConversationCreatedWebhookEventDataPayload],
+	// [CallConversationEndedPayload], [CallConversationInsightsGeneratedPayload],
+	// [CallCostWebhookEventDataPayload],
 	// [CallDeepfakeDetectionErrorWebhookEventDataPayload],
 	// [CallDeepfakeDetectionResultWebhookEventDataPayload], [CallDtmfReceivedPayload],
 	// [CallEnqueuedPayload], [CallForkStartedPayload], [CallForkStoppedPayload],
 	// [CallGatherEndedPayload], [CallHangupPayload],
 	// [CallHoldWebhookEventDataPayload], [CallInitiatedPayload],
 	// [CallLeftQueuePayload], [CallMachineDetectionEndedPayload],
-	// [CallMachineGreetingEndedPayload], [CallMachinePremiumDetectionEndedPayload],
+	// [CallMachineGreetingEndedPayload],
+	// [CallMachinePremiumCallScreeningDetectedWebhookEventDataPayload],
+	// [CallMachinePremiumDetectionEndedPayload],
+	// [CallMachinePremiumDetectionStartedWebhookEventDataPayload],
 	// [CallMachinePremiumGreetingEndedPayload],
 	// [CallPaymentCompletedWebhookEventDataPayload],
 	// [CallPaymentProgressWebhookEventDataPayload], [CallPlaybackEndedPayload],
@@ -8777,10 +9084,9 @@ type UnsafeUnwrapWebhookEventUnionData struct {
 	// This field is from variant [ArtifactCompletedWebhookEventData].
 	ModelProvenance ArtifactCompletedWebhookEventDataModelProvenance `json:"model_provenance"`
 	// This field is from variant [ArtifactCompletedWebhookEventData].
-	Prompt    string `json:"prompt"`
-	SessionID string `json:"session_id"`
-	Type      string `json:"type"`
-	// This field is from variant [CallConversationEnded].
+	Prompt    string    `json:"prompt"`
+	SessionID string    `json:"session_id"`
+	Type      string    `json:"type"`
 	CreatedAt time.Time `json:"created_at"`
 	// This field is from variant [RecordingAvailableWebhookEventData].
 	RecordingTypes []string `json:"recording_types"`
@@ -8851,35 +9157,35 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 	// This field is a union of [string], [string], [string], [string], [string],
 	// [string], [string], [string], [string], [string], [string], [string], [string],
 	// [string], [string], [string], [string], [string], [string], [string], [string],
-	// [OutboundMessagePayloadFrom], [string], [string], [string], [string], [string],
-	// [MessagingInboundMessagePayloadFrom], [WhatsappMessageEchoDataPayloadFrom]
+	// [string], [string], [string], [OutboundMessagePayloadFrom], [string], [string],
+	// [string], [string], [string], [MessagingInboundMessagePayloadFrom],
+	// [WhatsappMessageEchoDataPayloadFrom]
 	From UnsafeUnwrapWebhookEventUnionDataPayloadFrom `json:"from"`
 	// This field is a union of [[]CallAIGatherEndedPayloadMessageHistory],
 	// [[]CallAIGatherMessageHistoryUpdatedPayloadMessageHistory],
 	// [[]CallAIGatherPartialResultsPayloadMessageHistory]
 	MessageHistory UnsafeUnwrapWebhookEventUnionDataPayloadMessageHistory `json:"message_history"`
 	// This field is a union of [map[string]any], [string], [string], [string],
-	// [string], [string], [string]
+	// [string], [string], [string], [string]
 	Result UnsafeUnwrapWebhookEventUnionDataPayloadResult `json:"result"`
 	Status string                                         `json:"status"`
 	// This field is a union of [string], [string], [string], [string], [string],
 	// [string], [string], [string], [string], [string], [string], [string], [string],
 	// [string], [string], [string], [string], [string], [string], [string], [string],
-	// [[]OutboundMessagePayloadTo], [string], [string], [string], [string], [string],
-	// [MessagingInboundMessagePayloadToUnion], [string]
+	// [string], [string], [string], [[]OutboundMessagePayloadTo], [string], [string],
+	// [string], [string], [string], [MessagingInboundMessagePayloadToUnion], [string]
 	To UnsafeUnwrapWebhookEventUnionDataPayloadTo `json:"to"`
 	// This field is from variant [CallAIGatherPartialResultsPayload].
-	PartialResults map[string]any     `json:"partial_results"`
-	CustomHeaders  []CustomSipHeader  `json:"custom_headers"`
-	SipHeaders     []InboundSipHeader `json:"sip_headers"`
-	StartTime      time.Time          `json:"start_time"`
-	State          string             `json:"state"`
-	Tags           []string           `json:"tags"`
+	PartialResults   map[string]any     `json:"partial_results"`
+	CustomHeaders    []CustomSipHeader  `json:"custom_headers"`
+	SipHeaders       []InboundSipHeader `json:"sip_headers"`
+	StartTime        time.Time          `json:"start_time"`
+	State            string             `json:"state"`
+	Tags             []string           `json:"tags"`
+	CallingPartyType string             `json:"calling_party_type"`
+	ConversationID   string             `json:"conversation_id"`
 	// This field is from variant [CallConversationEndedPayload].
-	AssistantID      string `json:"assistant_id"`
-	CallingPartyType string `json:"calling_party_type"`
-	// This field is from variant [CallConversationEndedPayload].
-	ConversationID string `json:"conversation_id"`
+	AssistantID string `json:"assistant_id"`
 	// This field is from variant [CallConversationEndedPayload].
 	DurationSec int64 `json:"duration_sec"`
 	// This field is from variant [CallConversationEndedPayload].
@@ -9108,9 +9414,9 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 		StartTime                respjson.Field
 		State                    respjson.Field
 		Tags                     respjson.Field
-		AssistantID              respjson.Field
 		CallingPartyType         respjson.Field
 		ConversationID           respjson.Field
+		AssistantID              respjson.Field
 		DurationSec              respjson.Field
 		LlmModel                 respjson.Field
 		Reason                   respjson.Field
@@ -9658,7 +9964,8 @@ func (r *UnsafeUnwrapWebhookEventUnionMeta) UnmarshalJSON(data []byte) error {
 // [CallAIGatherMessageHistoryUpdatedWebhookEvent],
 // [CallAIGatherPartialResultsWebhookEvent], [ArtifactCompletedWebhookEvent],
 // [ArtifactFailedWebhookEvent], [CallAnsweredWebhookEvent],
-// [CallBridgedWebhookEvent], [CallConversationEndedWebhookEvent],
+// [CallBridgedWebhookEvent], [CallConversationCreatedWebhookEvent],
+// [CallConversationEndedWebhookEvent],
 // [CallConversationInsightsGeneratedWebhookEvent], [CallCostWebhookEvent],
 // [CallDeepfakeDetectionErrorWebhookEvent],
 // [CallDeepfakeDetectionResultWebhookEvent], [CallDtmfReceivedWebhookEvent],
@@ -9667,7 +9974,9 @@ func (r *UnsafeUnwrapWebhookEventUnionMeta) UnmarshalJSON(data []byte) error {
 // [CallHangupWebhookEvent], [CallHoldWebhookEvent], [CallInitiatedWebhookEvent],
 // [CallLeftQueueWebhookEvent], [CallMachineDetectionEndedWebhookEvent],
 // [CallMachineGreetingEndedWebhookEvent],
+// [CallMachinePremiumCallScreeningDetectedWebhookEvent],
 // [CallMachinePremiumDetectionEndedWebhookEvent],
+// [CallMachinePremiumDetectionStartedWebhookEvent],
 // [CallMachinePremiumGreetingEndedWebhookEvent],
 // [CallPaymentCompletedWebhookEvent], [CallPaymentProgressWebhookEvent],
 // [CallPlaybackEndedWebhookEvent], [CallPlaybackStartedWebhookEvent],
@@ -9701,18 +10010,21 @@ type UnwrapWebhookEventUnion struct {
 	// This field is a union of [CallAIGatherEnded],
 	// [CallAIGatherMessageHistoryUpdated], [CallAIGatherPartialResults],
 	// [ArtifactCompletedWebhookEventData], [ArtifactFailedWebhookEventData],
-	// [CallAnswered], [CallBridged], [CallConversationEnded],
-	// [CallConversationInsightsGenerated], [CallCostWebhookEventData],
-	// [CallDeepfakeDetectionErrorWebhookEventData],
+	// [CallAnswered], [CallBridged], [CallConversationCreatedWebhookEventData],
+	// [CallConversationEnded], [CallConversationInsightsGenerated],
+	// [CallCostWebhookEventData], [CallDeepfakeDetectionErrorWebhookEventData],
 	// [CallDeepfakeDetectionResultWebhookEventData], [CallDtmfReceived],
 	// [CallEnqueued], [CallForkStarted], [CallForkStopped], [CallGatherEnded],
 	// [CallHangup], [CallHoldWebhookEventData], [CallInitiated], [CallLeftQueue],
 	// [CallMachineDetectionEnded], [CallMachineGreetingEnded],
-	// [CallMachinePremiumDetectionEnded], [CallMachinePremiumGreetingEnded],
-	// [CallPaymentCompletedWebhookEventData], [CallPaymentProgressWebhookEventData],
-	// [CallPlaybackEnded], [CallPlaybackStarted], [CallRecordingError],
-	// [CallRecordingSaved], [CallRecordingTranscriptionSaved], [CallReferCompleted],
-	// [CallReferFailed], [CallReferStarted], [CallSiprecFailed], [CallSiprecStarted],
+	// [CallMachinePremiumCallScreeningDetectedWebhookEventData],
+	// [CallMachinePremiumDetectionEnded],
+	// [CallMachinePremiumDetectionStartedWebhookEventData],
+	// [CallMachinePremiumGreetingEnded], [CallPaymentCompletedWebhookEventData],
+	// [CallPaymentProgressWebhookEventData], [CallPlaybackEnded],
+	// [CallPlaybackStarted], [CallRecordingError], [CallRecordingSaved],
+	// [CallRecordingTranscriptionSaved], [CallReferCompleted], [CallReferFailed],
+	// [CallReferStarted], [CallSiprecFailed], [CallSiprecStarted],
 	// [CallSiprecStopped], [CallSpeakEnded], [CallSpeakStarted],
 	// [CallStreamingFailed], [CallStreamingStarted], [CallStreamingStopped],
 	// [CallUnholdWebhookEventData], [ConferenceCreated], [ConferenceEnded],
@@ -9816,6 +10128,11 @@ func (u UnwrapWebhookEventUnion) AsCallBridgedEvent() (v CallBridgedWebhookEvent
 	return
 }
 
+func (u UnwrapWebhookEventUnion) AsCallConversationCreatedEvent() (v CallConversationCreatedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
 func (u UnwrapWebhookEventUnion) AsCallConversationEndedEvent() (v CallConversationEndedWebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
@@ -9896,7 +10213,17 @@ func (u UnwrapWebhookEventUnion) AsCallMachineGreetingEndedEvent() (v CallMachin
 	return
 }
 
+func (u UnwrapWebhookEventUnion) AsCallMachinePremiumCallScreeningDetectedEvent() (v CallMachinePremiumCallScreeningDetectedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
 func (u UnwrapWebhookEventUnion) AsCallMachinePremiumDetectionEndedEvent() (v CallMachinePremiumDetectionEndedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnwrapWebhookEventUnion) AsCallMachinePremiumDetectionStartedEvent() (v CallMachinePremiumDetectionStartedWebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -10175,15 +10502,20 @@ type UnwrapWebhookEventUnionData struct {
 	OccurredAt time.Time `json:"occurred_at"`
 	// This field is a union of [CallAIGatherEndedPayload],
 	// [CallAIGatherMessageHistoryUpdatedPayload], [CallAIGatherPartialResultsPayload],
-	// [CallAnsweredPayload], [CallBridgedPayload], [CallConversationEndedPayload],
-	// [CallConversationInsightsGeneratedPayload], [CallCostWebhookEventDataPayload],
+	// [CallAnsweredPayload], [CallBridgedPayload],
+	// [CallConversationCreatedWebhookEventDataPayload],
+	// [CallConversationEndedPayload], [CallConversationInsightsGeneratedPayload],
+	// [CallCostWebhookEventDataPayload],
 	// [CallDeepfakeDetectionErrorWebhookEventDataPayload],
 	// [CallDeepfakeDetectionResultWebhookEventDataPayload], [CallDtmfReceivedPayload],
 	// [CallEnqueuedPayload], [CallForkStartedPayload], [CallForkStoppedPayload],
 	// [CallGatherEndedPayload], [CallHangupPayload],
 	// [CallHoldWebhookEventDataPayload], [CallInitiatedPayload],
 	// [CallLeftQueuePayload], [CallMachineDetectionEndedPayload],
-	// [CallMachineGreetingEndedPayload], [CallMachinePremiumDetectionEndedPayload],
+	// [CallMachineGreetingEndedPayload],
+	// [CallMachinePremiumCallScreeningDetectedWebhookEventDataPayload],
+	// [CallMachinePremiumDetectionEndedPayload],
+	// [CallMachinePremiumDetectionStartedWebhookEventDataPayload],
 	// [CallMachinePremiumGreetingEndedPayload],
 	// [CallPaymentCompletedWebhookEventDataPayload],
 	// [CallPaymentProgressWebhookEventDataPayload], [CallPlaybackEndedPayload],
@@ -10216,10 +10548,9 @@ type UnwrapWebhookEventUnionData struct {
 	// This field is from variant [ArtifactCompletedWebhookEventData].
 	ModelProvenance ArtifactCompletedWebhookEventDataModelProvenance `json:"model_provenance"`
 	// This field is from variant [ArtifactCompletedWebhookEventData].
-	Prompt    string `json:"prompt"`
-	SessionID string `json:"session_id"`
-	Type      string `json:"type"`
-	// This field is from variant [CallConversationEnded].
+	Prompt    string    `json:"prompt"`
+	SessionID string    `json:"session_id"`
+	Type      string    `json:"type"`
 	CreatedAt time.Time `json:"created_at"`
 	// This field is from variant [RecordingAvailableWebhookEventData].
 	RecordingTypes []string `json:"recording_types"`
@@ -10290,35 +10621,35 @@ type UnwrapWebhookEventUnionDataPayload struct {
 	// This field is a union of [string], [string], [string], [string], [string],
 	// [string], [string], [string], [string], [string], [string], [string], [string],
 	// [string], [string], [string], [string], [string], [string], [string], [string],
-	// [OutboundMessagePayloadFrom], [string], [string], [string], [string], [string],
-	// [MessagingInboundMessagePayloadFrom], [WhatsappMessageEchoDataPayloadFrom]
+	// [string], [string], [string], [OutboundMessagePayloadFrom], [string], [string],
+	// [string], [string], [string], [MessagingInboundMessagePayloadFrom],
+	// [WhatsappMessageEchoDataPayloadFrom]
 	From UnwrapWebhookEventUnionDataPayloadFrom `json:"from"`
 	// This field is a union of [[]CallAIGatherEndedPayloadMessageHistory],
 	// [[]CallAIGatherMessageHistoryUpdatedPayloadMessageHistory],
 	// [[]CallAIGatherPartialResultsPayloadMessageHistory]
 	MessageHistory UnwrapWebhookEventUnionDataPayloadMessageHistory `json:"message_history"`
 	// This field is a union of [map[string]any], [string], [string], [string],
-	// [string], [string], [string]
+	// [string], [string], [string], [string]
 	Result UnwrapWebhookEventUnionDataPayloadResult `json:"result"`
 	Status string                                   `json:"status"`
 	// This field is a union of [string], [string], [string], [string], [string],
 	// [string], [string], [string], [string], [string], [string], [string], [string],
 	// [string], [string], [string], [string], [string], [string], [string], [string],
-	// [[]OutboundMessagePayloadTo], [string], [string], [string], [string], [string],
-	// [MessagingInboundMessagePayloadToUnion], [string]
+	// [string], [string], [string], [[]OutboundMessagePayloadTo], [string], [string],
+	// [string], [string], [string], [MessagingInboundMessagePayloadToUnion], [string]
 	To UnwrapWebhookEventUnionDataPayloadTo `json:"to"`
 	// This field is from variant [CallAIGatherPartialResultsPayload].
-	PartialResults map[string]any     `json:"partial_results"`
-	CustomHeaders  []CustomSipHeader  `json:"custom_headers"`
-	SipHeaders     []InboundSipHeader `json:"sip_headers"`
-	StartTime      time.Time          `json:"start_time"`
-	State          string             `json:"state"`
-	Tags           []string           `json:"tags"`
+	PartialResults   map[string]any     `json:"partial_results"`
+	CustomHeaders    []CustomSipHeader  `json:"custom_headers"`
+	SipHeaders       []InboundSipHeader `json:"sip_headers"`
+	StartTime        time.Time          `json:"start_time"`
+	State            string             `json:"state"`
+	Tags             []string           `json:"tags"`
+	CallingPartyType string             `json:"calling_party_type"`
+	ConversationID   string             `json:"conversation_id"`
 	// This field is from variant [CallConversationEndedPayload].
-	AssistantID      string `json:"assistant_id"`
-	CallingPartyType string `json:"calling_party_type"`
-	// This field is from variant [CallConversationEndedPayload].
-	ConversationID string `json:"conversation_id"`
+	AssistantID string `json:"assistant_id"`
 	// This field is from variant [CallConversationEndedPayload].
 	DurationSec int64 `json:"duration_sec"`
 	// This field is from variant [CallConversationEndedPayload].
@@ -10547,9 +10878,9 @@ type UnwrapWebhookEventUnionDataPayload struct {
 		StartTime                respjson.Field
 		State                    respjson.Field
 		Tags                     respjson.Field
-		AssistantID              respjson.Field
 		CallingPartyType         respjson.Field
 		ConversationID           respjson.Field
+		AssistantID              respjson.Field
 		DurationSec              respjson.Field
 		LlmModel                 respjson.Field
 		Reason                   respjson.Field

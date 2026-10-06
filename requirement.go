@@ -101,7 +101,8 @@ type DocReqsRequirement struct {
 	// Indicates the phone_number_type this requirement applies to. Leave blank if this
 	// requirement applies to all number_types.
 	//
-	// Any of "local", "national", "toll_free".
+	// Any of "local", "mobile", "multipurpose", "national", "shared_cost",
+	// "toll_free".
 	PhoneNumberType DocReqsRequirementPhoneNumberType `json:"phone_number_type"`
 	// Identifies the type of the resource.
 	RecordType string `json:"record_type"`
@@ -152,9 +153,12 @@ const (
 type DocReqsRequirementPhoneNumberType string
 
 const (
-	DocReqsRequirementPhoneNumberTypeLocal    DocReqsRequirementPhoneNumberType = "local"
-	DocReqsRequirementPhoneNumberTypeNational DocReqsRequirementPhoneNumberType = "national"
-	DocReqsRequirementPhoneNumberTypeTollFree DocReqsRequirementPhoneNumberType = "toll_free"
+	DocReqsRequirementPhoneNumberTypeLocal        DocReqsRequirementPhoneNumberType = "local"
+	DocReqsRequirementPhoneNumberTypeMobile       DocReqsRequirementPhoneNumberType = "mobile"
+	DocReqsRequirementPhoneNumberTypeMultipurpose DocReqsRequirementPhoneNumberType = "multipurpose"
+	DocReqsRequirementPhoneNumberTypeNational     DocReqsRequirementPhoneNumberType = "national"
+	DocReqsRequirementPhoneNumberTypeSharedCost   DocReqsRequirementPhoneNumberType = "shared_cost"
+	DocReqsRequirementPhoneNumberTypeTollFree     DocReqsRequirementPhoneNumberType = "toll_free"
 )
 
 type RequirementGetResponse struct {
@@ -226,7 +230,8 @@ type RequirementListParamsFilter struct {
 	Action string `query:"action,omitzero" json:"-"`
 	// Filters results to those applying to a specific phone_number_type
 	//
-	// Any of "local", "national", "toll_free".
+	// Any of "local", "mobile", "multipurpose", "national", "shared_cost",
+	// "toll_free".
 	PhoneNumberType string `query:"phone_number_type,omitzero" json:"-"`
 	paramObj
 }

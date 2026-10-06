@@ -55,9 +55,33 @@ func (r *CallActionService) AddAIAssistantMessages(ctx context.Context, callCont
 // Answer an incoming call. You must issue this command before executing subsequent
 // commands on an incoming call.
 //
+// To answer with an AI assistant, include `assistant.id` and any per-call
+// overrides in the `assistant` object. Telnyx attempts to warm up the assistant
+// before answering the call, then starts the assistant automatically when the call
+// is answered. Do not also send `ai_assistant_start` for this flow. The HTTP
+// success response can arrive before the call is answered; use the `call.answered`
+// webhook to track the answer. If warm-up fails, Telnyx falls back to starting the
+// assistant after answering.
+//
+// When `assistant.id` is supplied, obtain the conversation ID from
+// `data.payload.conversation_id` in the
+// [call.conversation.created](/api-reference/callbacks/call-conversation-created)
+// webhook and correlate it using `data.payload.call_control_id`. The `answer` HTTP
+// response does not include `conversation_id`. The created event is emitted during
+// assistant startup and does not indicate that the assistant is ready to speak.
+//
+// Set the assistant voice with `assistant.voice_settings.voice` and speech-to-text
+// settings with `assistant.transcription`. You can reuse one stored assistant with
+// different per-call settings. Warm-up prepares assistant configuration and
+// dependencies; it does not wait for the greeting audio to be ready or guarantee
+// zero silence after answer. A plain `answer` followed by `ai_assistant_start`
+// performs assistant startup after the call has already been answered.
+//
 // **Expected Webhooks:**
 //
 //   - `call.answered`
+//   - `call.conversation.created` when the requested assistant conversation is
+//     created
 //   - `call.hold` and `call.unhold` if the call is held/unheld
 //   - `call.deepfake_detection.result` if `deepfake_detection` was enabled
 //   - `call.deepfake_detection.error` if `deepfake_detection` was enabled and an
@@ -135,6 +159,8 @@ func (r *CallActionService) Gather(ctx context.Context, callControlID string, bo
 //
 // **Expected Webhooks:**
 //
+//   - [`call.conversation.created`](/api-reference/callbacks/call-conversation-created)
+//     includes `conversation_id` during startup
 //   - `call.ai_gather.ended`
 //   - `call.conversation.ended`
 //   - `call.ai_gather.partial_results` (if `send_partial_results` is set to `true`)
@@ -395,8 +421,10 @@ func (r *CallActionService) Speak(ctx context.Context, callControlID string, bod
 //
 // **Expected Webhooks:**
 //
-// - `call.conversation.ended`
-// - `call.conversation_insights.generated`
+//   - [`call.conversation.created`](/api-reference/callbacks/call-conversation-created)
+//     includes `conversation_id` during startup
+//   - `call.conversation.ended`
+//   - `call.conversation_insights.generated`
 func (r *CallActionService) StartAIAssistant(ctx context.Context, callControlID string, body CallActionStartAIAssistantParams, opts ...option.RequestOption) (res *CallActionStartAIAssistantResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
@@ -737,6 +765,9 @@ func (r *CallActionService) SwitchSupervisorRole(ctx context.Context, callContro
 //     `answering_machine_detection=premium` was requested
 //   - `call.machine.premium.greeting.ended` if `answering_machine_detection=premium`
 //     was requested and a beep was detected
+//   - `call.machine.premium.call_screening.detected` if
+//     `answering_machine_detection=premium_ios_call_screening_detection` was
+//     requested and an Apple Call Screening tone was detected
 func (r *CallActionService) Transfer(ctx context.Context, callControlID string, body CallActionTransferParams, opts ...option.RequestOption) (res *CallActionTransferResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
@@ -1575,9 +1606,10 @@ type TelnyxVoiceSettingsParam struct {
 	//
 	// Any of "telnyx".
 	Type TelnyxVoiceSettingsType `json:"type,omitzero" api:"required"`
-	// The voice speed to be used for the voice. The voice speed must be between 0.1
-	// and 2.0. Default value is 1.0. Not supported for `Telnyx.Bayan.*` or
-	// `Telnyx.Sukhan.*` voices.
+	// The voice speed to be used for the voice. Telnyx `Ultra` voices accept values
+	// from 0.6 to 1.5; values outside that range are rejected by the synthesis engine.
+	// `Qwen3TTS` and `KokoroTTS` accept the field but do not apply it. Default value
+	// is 1.0. Not supported for `Telnyx.Bayan.*` or `Telnyx.Sukhan.*` voices.
 	VoiceSpeed param.Opt[float64] `json:"voice_speed,omitzero"`
 	paramObj
 }
@@ -3903,14 +3935,18 @@ type CallActionAnswerParams struct {
 	SendSilenceWhenIdle param.Opt[bool] `json:"send_silence_when_idle,omitzero"`
 	// The destination WebSocket address where the stream is going to be delivered.
 	StreamURL param.Opt[string] `json:"stream_url,omitzero"`
-	// Enable transcription upon call answer. The default value is false.
+	// Enable standalone call transcription upon call answer. The default value is
+	// false. Configure this feature with `transcription_config`. To configure speech
+	// recognition for an AI assistant, use `assistant.transcription` instead.
 	Transcription param.Opt[bool] `json:"transcription,omitzero"`
 	// Use this field to override the URL for which Telnyx will send subsequent
 	// webhooks to for this call.
 	WebhookURL param.Opt[string] `json:"webhook_url,omitzero"`
-	// AI Assistant configuration. All fields except `id` are optional — the
-	// assistant's stored configuration will be used as fallback for any omitted
-	// fields.
+	// AI Assistant configuration and per-call overrides. All fields except `id` are
+	// optional. Omitted assistant fields use the stored configuration. Supplied
+	// `voice_settings` and `transcription` objects replace their stored objects rather
+	// than merging individual settings; include every setting you want to retain.
+	// `dynamic_variables` are merged, with request values taking precedence.
 	Assistant CallAssistantRequestParam `json:"assistant,omitzero"`
 	// Starts a Conversation Relay session automatically when the answered/dialed call
 	// is answered. This embedded shape is supported on `answer` and `dial`. It uses
@@ -5907,9 +5943,11 @@ type CallActionStartAIAssistantParams struct {
 	// updated. The assistant's own `telephony_settings.send_message_history_updates`
 	// overrides this value when it is set.
 	SendMessageHistoryUpdates param.Opt[bool] `json:"send_message_history_updates,omitzero"`
-	// AI Assistant configuration. All fields except `id` are optional — the
-	// assistant's stored configuration will be used as fallback for any omitted
-	// fields.
+	// AI Assistant configuration and per-call overrides. All fields except `id` are
+	// optional. Omitted assistant fields use the stored configuration. Supplied
+	// `voice_settings` and `transcription` objects replace their stored objects rather
+	// than merging individual settings; include every setting you want to retain.
+	// `dynamic_variables` are merged, with request values taking precedence.
 	Assistant CallAssistantRequestParam `json:"assistant,omitzero"`
 	// Settings for handling user interruptions during assistant speech
 	InterruptionSettings InterruptionSettingsParam `json:"interruption_settings,omitzero"`
@@ -7574,15 +7612,25 @@ type CallActionTransferParams struct {
 	// 'greeting_end' or 'detect_words' is used and a 'machine' is detected, you will
 	// receive another 'call.machine.greeting.ended' webhook when the answering machine
 	// greeting ends with a beep or silence. If `detect_beep` is used, you will only
-	// receive 'call.machine.greeting.ended' if a beep is detected.
+	// receive 'call.machine.greeting.ended' if a beep is detected. If
+	// `answering_machine_detection` is set to `premium_ios_call_screening_detection`,
+	// Premium AMD runs with iOS Call Screening support: after an initial `machine`
+	// result, Telnyx listens for the iOS call-screening prompt to end or for an Apple
+	// Call Screening tone, sends `call.machine.premium.greeting.ended` with
+	// `result=prompt_ended` or `call.machine.premium.call_screening.detected` with
+	// `result=screening` respectively. When the Apple Call Screening tone is detected,
+	// Premium AMD is restarted on the screened call and a
+	// `call.machine.premium.detection.ended` webhook with the post-screening
+	// classification follows.
 	//
-	// Any of "premium", "detect", "detect_beep", "detect_words", "greeting_end",
-	// "disabled".
+	// Any of "premium", "premium_ios_call_screening_detection", "detect",
+	// "detect_beep", "detect_words", "greeting_end", "disabled".
 	AnsweringMachineDetection CallActionTransferParamsAnsweringMachineDetection `json:"answering_machine_detection,omitzero"`
 	// Optional configuration parameters to modify 'answering_machine_detection'
 	// performance. Only `total_analysis_time_millis` and `greeting_duration_millis`
 	// parameters are applicable when `premium` is selected as
-	// answering_machine_detection.
+	// answering_machine_detection. `prompt_end_timeout_millis` is additionally
+	// applicable when `premium_ios_call_screening_detection` is selected.
 	AnsweringMachineDetectionConfig CallActionTransferParamsAnsweringMachineDetectionConfig `json:"answering_machine_detection_config,omitzero"`
 	// Custom headers to be added to the SIP INVITE.
 	CustomHeaders []CustomSipHeaderParam `json:"custom_headers,omitzero"`
@@ -7676,22 +7724,33 @@ func (r *CallActionTransferParams) UnmarshalJSON(data []byte) error {
 // 'greeting_end' or 'detect_words' is used and a 'machine' is detected, you will
 // receive another 'call.machine.greeting.ended' webhook when the answering machine
 // greeting ends with a beep or silence. If `detect_beep` is used, you will only
-// receive 'call.machine.greeting.ended' if a beep is detected.
+// receive 'call.machine.greeting.ended' if a beep is detected. If
+// `answering_machine_detection` is set to `premium_ios_call_screening_detection`,
+// Premium AMD runs with iOS Call Screening support: after an initial `machine`
+// result, Telnyx listens for the iOS call-screening prompt to end or for an Apple
+// Call Screening tone, sends `call.machine.premium.greeting.ended` with
+// `result=prompt_ended` or `call.machine.premium.call_screening.detected` with
+// `result=screening` respectively. When the Apple Call Screening tone is detected,
+// Premium AMD is restarted on the screened call and a
+// `call.machine.premium.detection.ended` webhook with the post-screening
+// classification follows.
 type CallActionTransferParamsAnsweringMachineDetection string
 
 const (
-	CallActionTransferParamsAnsweringMachineDetectionPremium     CallActionTransferParamsAnsweringMachineDetection = "premium"
-	CallActionTransferParamsAnsweringMachineDetectionDetect      CallActionTransferParamsAnsweringMachineDetection = "detect"
-	CallActionTransferParamsAnsweringMachineDetectionDetectBeep  CallActionTransferParamsAnsweringMachineDetection = "detect_beep"
-	CallActionTransferParamsAnsweringMachineDetectionDetectWords CallActionTransferParamsAnsweringMachineDetection = "detect_words"
-	CallActionTransferParamsAnsweringMachineDetectionGreetingEnd CallActionTransferParamsAnsweringMachineDetection = "greeting_end"
-	CallActionTransferParamsAnsweringMachineDetectionDisabled    CallActionTransferParamsAnsweringMachineDetection = "disabled"
+	CallActionTransferParamsAnsweringMachineDetectionPremium                          CallActionTransferParamsAnsweringMachineDetection = "premium"
+	CallActionTransferParamsAnsweringMachineDetectionPremiumIosCallScreeningDetection CallActionTransferParamsAnsweringMachineDetection = "premium_ios_call_screening_detection"
+	CallActionTransferParamsAnsweringMachineDetectionDetect                           CallActionTransferParamsAnsweringMachineDetection = "detect"
+	CallActionTransferParamsAnsweringMachineDetectionDetectBeep                       CallActionTransferParamsAnsweringMachineDetection = "detect_beep"
+	CallActionTransferParamsAnsweringMachineDetectionDetectWords                      CallActionTransferParamsAnsweringMachineDetection = "detect_words"
+	CallActionTransferParamsAnsweringMachineDetectionGreetingEnd                      CallActionTransferParamsAnsweringMachineDetection = "greeting_end"
+	CallActionTransferParamsAnsweringMachineDetectionDisabled                         CallActionTransferParamsAnsweringMachineDetection = "disabled"
 )
 
 // Optional configuration parameters to modify 'answering_machine_detection'
 // performance. Only `total_analysis_time_millis` and `greeting_duration_millis`
 // parameters are applicable when `premium` is selected as
-// answering_machine_detection.
+// answering_machine_detection. `prompt_end_timeout_millis` is additionally
+// applicable when `premium_ios_call_screening_detection` is selected.
 type CallActionTransferParamsAnsweringMachineDetectionConfig struct {
 	// Silence duration threshold after a greeting message or voice for it be
 	// considered human.
@@ -7738,6 +7797,11 @@ type CallActionTransferParamsAnsweringMachineDetectionConfig struct {
 	MaximumNumberOfWords param.Opt[int64] `json:"maximum_number_of_words,omitzero"`
 	// If a single word lasts longer than this threshold, consider it a machine.
 	MaximumWordLengthMillis param.Opt[int64] `json:"maximum_word_length_millis,omitzero"`
+	// Maximum time Telnyx waits, in milliseconds, for the iOS call-screening prompt to
+	// end after Premium AMD initially detects a `machine`. Used when
+	// `answering_machine_detection` is `premium_ios_call_screening_detection`.
+	// Defaults to 5000 milliseconds.
+	PromptEndTimeoutMillis param.Opt[int64] `json:"prompt_end_timeout_millis,omitzero"`
 	// Minimum noise threshold for any analysis.
 	SilenceThreshold param.Opt[int64] `json:"silence_threshold,omitzero"`
 	// Maximum timeout threshold for overall detection.

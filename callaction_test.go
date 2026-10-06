@@ -123,8 +123,12 @@ func TestCallActionAnswerWithOptionalParams(t *testing.T) {
 						Type: telnyx.HangupToolTypeHangup,
 					},
 				}},
+				Transcription: telnyx.TranscriptionConfigParam{
+					Language: telnyx.String("en"),
+					Model:    telnyx.TranscriptionConfigModelDeepgramFlux,
+				},
 				VoiceSettings: telnyx.VoiceSettingsParam{
-					Voice:     "voice",
+					Voice:     "Telnyx.KokoroTTS.af_heart",
 					APIKeyRef: telnyx.String("api_key_ref"),
 					BackgroundAudio: telnyx.VoiceSettingsBackgroundAudioUnionParam{
 						OfPredefinedMedia: &telnyx.VoiceSettingsBackgroundAudioPredefinedMediaParam{
@@ -1075,6 +1079,10 @@ func TestCallActionStartAIAssistantWithOptionalParams(t *testing.T) {
 						Type: shared.BookAppointmentToolTypeBookAppointment,
 					},
 				}},
+				Transcription: telnyx.TranscriptionConfigParam{
+					Language: telnyx.String("language"),
+					Model:    telnyx.TranscriptionConfigModelDistilWhisperDistilLargeV2,
+				},
 				VoiceSettings: telnyx.VoiceSettingsParam{
 					Voice:     "voice",
 					APIKeyRef: telnyx.String("api_key_ref"),
@@ -1916,6 +1924,7 @@ func TestCallActionTransferWithOptionalParams(t *testing.T) {
 				InitialSilenceMillis:            telnyx.Int(1000),
 				MaximumNumberOfWords:            telnyx.Int(1000),
 				MaximumWordLengthMillis:         telnyx.Int(2000),
+				PromptEndTimeoutMillis:          telnyx.Int(5000),
 				SilenceThreshold:                telnyx.Int(512),
 				TotalAnalysisTimeMillis:         telnyx.Int(5000),
 			},

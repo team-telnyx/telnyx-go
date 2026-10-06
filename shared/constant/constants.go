@@ -33,6 +33,7 @@ type Default string                // Always "default"
 type Ein string                    // Always "EIN"
 type Expression string             // Always "expression"
 type Function string               // Always "function"
+type GuardrailEvent string         // Always "guardrail_event"
 type Handoff string                // Always "handoff"
 type Hangup string                 // Always "hangup"
 type Invite string                 // Always "invite"
@@ -81,6 +82,7 @@ func (c Default) Default() Default                               { return "defau
 func (c Ein) Default() Ein                                       { return "EIN" }
 func (c Expression) Default() Expression                         { return "expression" }
 func (c Function) Default() Function                             { return "function" }
+func (c GuardrailEvent) Default() GuardrailEvent                 { return "guardrail_event" }
 func (c Handoff) Default() Handoff                               { return "handoff" }
 func (c Hangup) Default() Hangup                                 { return "hangup" }
 func (c Invite) Default() Invite                                 { return "invite" }
@@ -129,6 +131,7 @@ func (c Default) MarshalJSON() ([]byte, error)                { return marshalSt
 func (c Ein) MarshalJSON() ([]byte, error)                    { return marshalString(c) }
 func (c Expression) MarshalJSON() ([]byte, error)             { return marshalString(c) }
 func (c Function) MarshalJSON() ([]byte, error)               { return marshalString(c) }
+func (c GuardrailEvent) MarshalJSON() ([]byte, error)         { return marshalString(c) }
 func (c Handoff) MarshalJSON() ([]byte, error)                { return marshalString(c) }
 func (c Hangup) MarshalJSON() ([]byte, error)                 { return marshalString(c) }
 func (c Invite) MarshalJSON() ([]byte, error)                 { return marshalString(c) }

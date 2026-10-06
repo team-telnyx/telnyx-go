@@ -51,6 +51,7 @@ func TestCallDialWithOptionalParams(t *testing.T) {
 			InitialSilenceMillis:            telnyx.Int(1000),
 			MaximumNumberOfWords:            telnyx.Int(1000),
 			MaximumWordLengthMillis:         telnyx.Int(2000),
+			PromptEndTimeoutMillis:          telnyx.Int(5000),
 			SilenceThreshold:                telnyx.Int(512),
 			TotalAnalysisTimeMillis:         telnyx.Int(5000),
 		},
@@ -109,6 +110,10 @@ func TestCallDialWithOptionalParams(t *testing.T) {
 					Type: shared.BookAppointmentToolTypeBookAppointment,
 				},
 			}},
+			Transcription: telnyx.TranscriptionConfigParam{
+				Language: telnyx.String("language"),
+				Model:    telnyx.TranscriptionConfigModelDistilWhisperDistilLargeV2,
+			},
 			VoiceSettings: telnyx.VoiceSettingsParam{
 				Voice:     "voice",
 				APIKeyRef: telnyx.String("api_key_ref"),

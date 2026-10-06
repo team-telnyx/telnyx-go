@@ -47,6 +47,8 @@ type AIAssistantService struct {
 	Tags AIAssistantTagService
 	// Configure AI assistant specifications
 	Instructions AIAssistantInstructionService
+	// Configure AI assistant specifications
+	Deleted AIAssistantDeletedService
 }
 
 // NewAIAssistantService generates a new service that applies the given options to
@@ -62,6 +64,7 @@ func NewAIAssistantService(opts ...option.RequestOption) (r AIAssistantService) 
 	r.Versions = NewAIAssistantVersionService(opts...)
 	r.Tags = NewAIAssistantTagService(opts...)
 	r.Instructions = NewAIAssistantInstructionService(opts...)
+	r.Deleted = NewAIAssistantDeletedService(opts...)
 	return
 }
 
@@ -112,14 +115,28 @@ func (r *AIAssistantService) List(ctx context.Context, opts ...option.RequestOpt
 }
 
 // Delete an AI Assistant by `assistant_id`.
-func (r *AIAssistantService) Delete(ctx context.Context, assistantID string, opts ...option.RequestOption) (res *AIAssistantDeleteResponse, err error) {
+//
+// By default this performs a soft delete: the assistant moves to the Recently
+// Deleted list and stays restorable for 30 days, after which it is permanently
+// deleted automatically. The assistant's versions and TeXML application are
+// preserved during the retention window.
+//
+// Pass `hard_delete=true` to skip the retention window and permanently delete the
+// assistant immediately. A hard delete erases the assistant and all of its
+// versions, and deletes its TeXML application unless phone numbers are still
+// assigned to it. It does not delete conversations, recordings, shared tools the
+// assistant referenced, or knowledge-base embeddings.
+//
+// Deletion fails with `400` if other assistants reference this one through a
+// handoff tool or a conversation-flow edge — remove those references first.
+func (r *AIAssistantService) Delete(ctx context.Context, assistantID string, body AIAssistantDeleteParams, opts ...option.RequestOption) (res *AIAssistantDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if assistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
 		return nil, err
 	}
 	path := fmt.Sprintf("ai/assistants/%s", url.PathEscape(assistantID))
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
 	return res, err
 }
 
@@ -179,6 +196,22 @@ func (r *AIAssistantService) Imports(ctx context.Context, params AIAssistantImpo
 	opts = slices.Concat(r.Options, opts)
 	path := "ai/assistants/import"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
+	return res, err
+}
+
+// Restore a soft-deleted assistant from the Recently Deleted list.
+//
+// The assistant becomes fully active again with its versions and TeXML application
+// as they were at deletion time. Restoring does not re-enable numbers or
+// connections that were released separately after the deletion.
+func (r *AIAssistantService) Restore(ctx context.Context, assistantID string, opts ...option.RequestOption) (res *InferenceEmbedding, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if assistantID == "" {
+		err = errors.New("missing required assistant_id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("ai/assistants/%s/restore", url.PathEscape(assistantID))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
 	return res, err
 }
 
@@ -5385,9 +5418,10 @@ type InferenceEmbeddingVoiceSettings struct {
 	// Amplifies similarity to the original speaker voice. Increases computational load
 	// and latency slightly. Only applicable when using ElevenLabs.
 	UseSpeakerBoost bool `json:"use_speaker_boost"`
-	// The speed of the voice in the range [0.25, 2.0]. 1.0 is deafult speed. Larger
-	// numbers make the voice faster, smaller numbers make it slower. This is only
-	// applicable for Telnyx Natural voices and Soniox voices (0.7 to 1.3 for Soniox).
+	// The speed of the voice in the range [0.6, 1.5]. 1.0 is the default speed. Larger
+	// numbers make the voice faster, smaller numbers make it slower. Applies to Telnyx
+	// `Ultra` voices; values outside this range are rejected by the synthesis engine.
+	// Soniox voices support a speed range of 0.7 to 1.3.
 	VoiceSpeed float64 `json:"voice_speed"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -5637,9 +5671,10 @@ type InferenceEmbeddingVoiceSettingsParam struct {
 	// Amplifies similarity to the original speaker voice. Increases computational load
 	// and latency slightly. Only applicable when using ElevenLabs.
 	UseSpeakerBoost param.Opt[bool] `json:"use_speaker_boost,omitzero"`
-	// The speed of the voice in the range [0.25, 2.0]. 1.0 is deafult speed. Larger
-	// numbers make the voice faster, smaller numbers make it slower. This is only
-	// applicable for Telnyx Natural voices and Soniox voices (0.7 to 1.3 for Soniox).
+	// The speed of the voice in the range [0.6, 1.5]. 1.0 is the default speed. Larger
+	// numbers make the voice faster, smaller numbers make it slower. Applies to Telnyx
+	// `Ultra` voices; values outside this range are rejected by the synthesis engine.
+	// Soniox voices support a speed range of 0.7 to 1.3.
 	VoiceSpeed param.Opt[float64] `json:"voice_speed,omitzero"`
 	// Enhances recognition for specific languages and dialects during MiniMax TTS
 	// synthesis. Default is null (no boost). Set to 'auto' for automatic language
@@ -8261,9 +8296,9 @@ type VoiceSettingsParam struct {
 	// Amplifies similarity to the original speaker voice. Increases computational load
 	// and latency slightly. Only applicable when using ElevenLabs.
 	UseSpeakerBoost param.Opt[bool] `json:"use_speaker_boost,omitzero"`
-	// The speed of the voice in the range [0.25, 2.0]. 1.0 is deafult speed. Larger
-	// numbers make the voice faster, smaller numbers make it slower. This is only
-	// applicable for Telnyx Natural voices.
+	// The speed of the voice in the range [0.6, 1.5]. 1.0 is the default speed. Larger
+	// numbers make the voice faster, smaller numbers make it slower. Applies to Telnyx
+	// `Ultra` voices; values outside this range are rejected by the synthesis engine.
 	VoiceSpeed param.Opt[float64] `json:"voice_speed,omitzero"`
 	// Enhances recognition for specific languages and dialects during MiniMax TTS
 	// synthesis. Default is null (no boost). Set to 'auto' for automatic language
@@ -9221,6 +9256,22 @@ func (r AIAssistantUpdateParams) MarshalJSON() (data []byte, err error) {
 }
 func (r *AIAssistantUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+type AIAssistantDeleteParams struct {
+	// Permanently delete the assistant immediately instead of soft-deleting it to the
+	// Recently Deleted list, where it stays restorable for 30 days.
+	HardDelete param.Opt[bool] `query:"hard_delete,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [AIAssistantDeleteParams]'s query parameters as
+// `url.Values`.
+func (r AIAssistantDeleteParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
 }
 
 type AIAssistantChatParams struct {
