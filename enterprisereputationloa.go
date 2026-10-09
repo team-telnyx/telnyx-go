@@ -76,18 +76,36 @@ func (r *EnterpriseReputationLoaService) Render(ctx context.Context, enterpriseI
 // ContactPhone, ContactTitle, Country, LegalName, PostalCode, StreetAddress are
 // required.
 type AgentInputParam struct {
-	AdministrativeArea string            `json:"administrative_area" api:"required"`
-	City               string            `json:"city" api:"required"`
-	ContactEmail       string            `json:"contact_email" api:"required" format:"email"`
-	ContactName        string            `json:"contact_name" api:"required"`
-	ContactPhone       string            `json:"contact_phone" api:"required"`
-	ContactTitle       string            `json:"contact_title" api:"required"`
-	Country            string            `json:"country" api:"required"`
-	LegalName          string            `json:"legal_name" api:"required"`
-	PostalCode         string            `json:"postal_code" api:"required"`
-	StreetAddress      string            `json:"street_address" api:"required"`
-	Dba                param.Opt[string] `json:"dba,omitzero"`
-	ExtendedAddress    param.Opt[string] `json:"extended_address,omitzero"`
+	// The state or province of the partner's address, as its code, for example IL or
+	// ON.
+	AdministrativeArea string `json:"administrative_area" api:"required"`
+	// The city of the partner's address.
+	City string `json:"city" api:"required"`
+	// The email address of the contact person at the partner.
+	ContactEmail string `json:"contact_email" api:"required" format:"email"`
+	// The name of a contact person at the partner.
+	ContactName string `json:"contact_name" api:"required"`
+	// The phone number of the contact person at the partner, in E.164 format, for
+	// example +13125550000.
+	ContactPhone string `json:"contact_phone" api:"required"`
+	// The job title of the contact person at the partner.
+	ContactTitle string `json:"contact_title" api:"required"`
+	// The two-letter country code of the partner's address, for example US.
+	Country string `json:"country" api:"required"`
+	// The legal name of the third-party partner or reseller managing these numbers on
+	// your behalf.
+	LegalName string `json:"legal_name" api:"required"`
+	// The postal or ZIP code of the partner's address.
+	PostalCode string `json:"postal_code" api:"required"`
+	// The street address of the partner, including the building number and street
+	// name.
+	StreetAddress string `json:"street_address" api:"required"`
+	// The trade name (Doing Business As) the partner operates under, if different from
+	// its legal name. Leave blank if it does not apply.
+	Dba param.Opt[string] `json:"dba,omitzero"`
+	// An optional second address line for the partner, such as a suite, unit, or
+	// floor. Leave blank if it does not apply.
+	ExtendedAddress param.Opt[string] `json:"extended_address,omitzero"`
 	paramObj
 }
 
@@ -118,7 +136,7 @@ func (r *EnterpriseReputationLoaUpdateParams) UnmarshalJSON(data []byte) error {
 type EnterpriseReputationLoaRenderParams struct {
 	// Third-party reseller / partner managing the enterprise's phone numbers. Omit
 	// when the enterprise works directly with Telnyx.
-	Agent AgentInputParam `json:"agent,omitzero"`
+	Agent EnterpriseReputationLoaRenderParamsAgent `json:"agent,omitzero"`
 	// Optional signature embedded in the rendered PDF. When omitted the PDF is
 	// returned unsigned for the customer to sign and upload.
 	Signature EnterpriseReputationLoaRenderParamsSignature `json:"signature,omitzero"`
@@ -130,6 +148,36 @@ func (r EnterpriseReputationLoaRenderParams) MarshalJSON() (data []byte, err err
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *EnterpriseReputationLoaRenderParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Third-party reseller / partner managing the enterprise's phone numbers. Omit
+// when the enterprise works directly with Telnyx.
+//
+// The properties AdministrativeArea, City, ContactEmail, ContactName,
+// ContactPhone, ContactTitle, Country, LegalName, PostalCode, StreetAddress are
+// required.
+type EnterpriseReputationLoaRenderParamsAgent struct {
+	AdministrativeArea string            `json:"administrative_area" api:"required"`
+	City               string            `json:"city" api:"required"`
+	ContactEmail       string            `json:"contact_email" api:"required" format:"email"`
+	ContactName        string            `json:"contact_name" api:"required"`
+	ContactPhone       string            `json:"contact_phone" api:"required"`
+	ContactTitle       string            `json:"contact_title" api:"required"`
+	Country            string            `json:"country" api:"required"`
+	LegalName          string            `json:"legal_name" api:"required"`
+	PostalCode         string            `json:"postal_code" api:"required"`
+	StreetAddress      string            `json:"street_address" api:"required"`
+	Dba                param.Opt[string] `json:"dba,omitzero"`
+	ExtendedAddress    param.Opt[string] `json:"extended_address,omitzero"`
+	paramObj
+}
+
+func (r EnterpriseReputationLoaRenderParamsAgent) MarshalJSON() (data []byte, err error) {
+	type shadow EnterpriseReputationLoaRenderParamsAgent
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *EnterpriseReputationLoaRenderParamsAgent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

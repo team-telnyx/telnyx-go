@@ -77,11 +77,14 @@ func (r *DirService) Get(ctx context.Context, dirID string, opts ...option.Reque
 // Edit a DIR. DIRs in `draft`, `rejected`, `unsuccessful`, or `suspended` can be
 // edited freely: PATCH is a pure edit, `status` is never changed, and you re-vet
 // by calling `POST /v2/dir/{dir_id}/submit` explicitly. A `verified` DIR can also
-// be edited in place: a PATCH that changes any value returns the DIR to `draft`
-// and branded delivery stops until you re-submit and the DIR is approved again,
-// while a PATCH that changes nothing (an empty body or values identical to the
-// current ones) leaves the DIR `verified`, so idempotent retries are safe. DIRs in
-// any other status (`submitted`, `in_review`, `expired`, `infringement_claimed`,
+// be edited in place: a PATCH that changes any value returns the DIR to `draft`;
+// the currently approved identity keeps displaying, and the edited content goes
+// live only after you re-submit and the DIR is approved again. A PATCH that
+// changes nothing (an empty body or values identical to the current ones) leaves
+// the DIR `verified`, so idempotent retries are safe. Changing only
+// `bpo_authorizations` or `webhook_url` is the exception: the DIR stays
+// `verified`. Each BPO authorization is reviewed on its own instead. DIRs in any
+// other status (`submitted`, `in_review`, `expired`, `infringement_claimed`,
 // `permanently_rejected`) cannot be edited.
 func (r *DirService) Update(ctx context.Context, dirID string, body DirUpdateParams, opts ...option.RequestOption) (res *DirWrapped, err error) {
 	opts = slices.Concat(r.Options, opts)
@@ -131,19 +134,46 @@ func (r *DirService) ListAutoPaging(ctx context.Context, query DirListParams, op
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Delete a DIR. Failure modes: `400` if a child phone number is in a non-deletable
-// status, `409` if the DIR has an unresolved infringement claim, `404` if the DIR
-// is not yours.
-func (r *DirService) Delete(ctx context.Context, dirID string, opts ...option.RequestOption) (err error) {
+// Request deletion of a DIR. This does not remove the DIR on this call: it records
+// the request, moves the DIR to `delete_requested`, and Telnyx completes the
+// removal (de-registration and cleanup) shortly after. A verified DIR keeps
+// serving its branded identity, and keeps billing, until the removal is executed.
+// Failure modes: `400` if a child phone number is still attached or the DIR is
+// `in_review` (wait for the review to finish), `409` if the DIR has an unresolved
+// infringement claim, `404` if the DIR is not yours.
+func (r *DirService) Delete(ctx context.Context, dirID string, opts ...option.RequestOption) (res *DirDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if dirID == "" {
 		err = errors.New("missing required dir_id parameter")
-		return err
+		return nil, err
 	}
 	path := fmt.Sprintf("dir/%s", dirID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return err
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
+	return res, err
+}
+
+// The Letter of Authorization in which a Brand Owner authorizes an approved BPO
+// (Business Process Outsourcer) to place branded calls that display this DIR on
+// the owner's behalf. Both parties are read from the caller's account: the Brand
+// Owner is the enterprise that owns the DIR, and the BPO is `bpo_enterprise_id`.
+// No business identity is accepted in the body.
+//
+// When `signature` is omitted the PDF is returned unsigned so the Brand Owner can
+// sign it externally and the BPO can upload it via the Documents API. When
+// `signature` is present the PDF embeds the supplied image, printed name, and
+// signed-at date.
+//
+// Returns `application/pdf`.
+func (r *DirService) BpoLoa(ctx context.Context, dirID string, body DirBpoLoaParams, opts ...option.RequestOption) (res *http.Response, err error) {
+	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "application/pdf")}, opts...)
+	if dirID == "" {
+		err = errors.New("missing required dir_id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("dir/%s/bpo_loa", dirID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return res, err
 }
 
 // Reference list of `document_type` values accepted by
@@ -216,6 +246,29 @@ func (r *DirService) NewLoa(ctx context.Context, dirID string, body DirNewLoaPar
 	return res, err
 }
 
+// List the BPO (Business Process Outsourcer) accounts a Brand Owner has authorized
+// on this DIR, together with the review state of each authorization.
+//
+// Authorizations are supplied as the `bpo_authorizations` array when creating or
+// updating a DIR, and each one is reviewed on its own. Only an `approved`
+// authorization adds that BPO to this DIR's authorized callers in the branded
+// calling registry; `pending` and `rejected` authorizations do not. Each entry
+// includes the `loa_document_id` you submitted: because `bpo_authorizations`
+// replaces the whole list on every DIR update, send each entry you want to keep
+// back with its `loa_document_id` unchanged, and it keeps its review state. A
+// rejected entry carries a `rejection_reason`. Returns an empty list when the DIR
+// has authorized no BPOs.
+func (r *DirService) GetBpoAuthorizations(ctx context.Context, dirID string, query DirGetBpoAuthorizationsParams, opts ...option.RequestOption) (res *DirGetBpoAuthorizationsResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if dirID == "" {
+		err = errors.New("missing required dir_id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("dir/%s/bpo_authorizations", dirID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
+}
+
 // Submit a DIR for vetting. Sends the DIR back through the vetting cycle from any
 // non-terminal status. When re-submitting from `suspended` or `expired`, the DIR's
 // previous Branded Calling registration is torn down transactionally and its phone
@@ -253,6 +306,29 @@ func (r *DirService) UpdateInfringement(ctx context.Context, dirID string, body 
 	return res, err
 }
 
+// One authorization to include when creating or updating a DIR: an approved BPO
+// (Business Process Outsourcer) account plus the signed Letter of Authorization
+// the Brand Owner granted it.
+//
+// The properties BpoEnterpriseID, LoaDocumentID are required.
+type BpoAuthorizationInputParam struct {
+	// Enterprise id of an approved BPO (Business Process Outsourcer) account on your
+	// organization to authorize for this DIR.
+	BpoEnterpriseID string `json:"bpo_enterprise_id" api:"required" format:"uuid"`
+	// Id of the signed Letter of Authorization document (uploaded via the Telnyx
+	// Documents API) in which the Brand Owner authorizes this BPO.
+	LoaDocumentID string `json:"loa_document_id" api:"required" format:"uuid"`
+	paramObj
+}
+
+func (r BpoAuthorizationInputParam) MarshalJSON() (data []byte, err error) {
+	type shadow BpoAuthorizationInputParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *BpoAuthorizationInputParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type Dir struct {
 	ID                     string          `json:"id" format:"uuid"`
 	AuthorizerEmail        string          `json:"authorizer_email" api:"nullable" format:"email"`
@@ -262,12 +338,15 @@ type Dir struct {
 	CertifyIPOwnership     bool            `json:"certify_ip_ownership"`
 	CertifyNoShaftContent  bool            `json:"certify_no_shaft_content"`
 	CreatedAt              time.Time       `json:"created_at" format:"date-time"`
-	DisplayName            string          `json:"display_name"`
-	Documents              []Document      `json:"documents" api:"nullable"`
-	EnterpriseID           string          `json:"enterprise_id" format:"uuid"`
-	ExpiringAt             time.Time       `json:"expiring_at" api:"nullable" format:"date-time"`
-	LogoURL                string          `json:"logo_url" api:"nullable" format:"uri"`
-	RejectedAt             time.Time       `json:"rejected_at" api:"nullable" format:"date-time"`
+	// When deletion was requested. Set once the DIR enters `delete_requested`; `null`
+	// otherwise.
+	DeleteRequestedAt time.Time  `json:"delete_requested_at" api:"nullable" format:"date-time"`
+	DisplayName       string     `json:"display_name"`
+	Documents         []Document `json:"documents" api:"nullable"`
+	EnterpriseID      string     `json:"enterprise_id" format:"uuid"`
+	ExpiringAt        time.Time  `json:"expiring_at" api:"nullable" format:"date-time"`
+	LogoURL           string     `json:"logo_url" api:"nullable" format:"uri"`
+	RejectedAt        time.Time  `json:"rejected_at" api:"nullable" format:"date-time"`
 	// Populated when `status` is `rejected`; cleared on `/submit` or successful
 	// approval.
 	RejectionReasons []RejectionReason `json:"rejection_reasons" api:"nullable"`
@@ -286,14 +365,21 @@ type Dir struct {
 	//   - `infringement_claimed` - a trademark/impersonation claim is open against this
 	//     DIR.
 	//   - `permanently_rejected` - terminal; cannot be resubmitted.
+	//   - `delete_requested` - you have requested deletion; the DIR still exists and
+	//     Telnyx is completing the removal (de-registration and cleanup). A verified DIR
+	//     keeps serving its branded identity, and keeps billing, until the removal
+	//     finishes.
 	//
 	// Any of "draft", "submitted", "in_review", "verified", "rejected",
 	// "unsuccessful", "suspended", "expired", "infringement_claimed",
-	// "permanently_rejected".
+	// "permanently_rejected", "delete_requested".
 	Status      DirStatus `json:"status"`
 	SubmittedAt time.Time `json:"submitted_at" api:"nullable" format:"date-time"`
 	UpdatedAt   time.Time `json:"updated_at" format:"date-time"`
 	VerifiedAt  time.Time `json:"verified_at" api:"nullable" format:"date-time"`
+	// `https://` URL that receives webhook notifications for this DIR's
+	// compliance-review outcomes. `null` when not subscribed.
+	WebhookURL string `json:"webhook_url" api:"nullable" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                     respjson.Field
@@ -304,6 +390,7 @@ type Dir struct {
 		CertifyIPOwnership     respjson.Field
 		CertifyNoShaftContent  respjson.Field
 		CreatedAt              respjson.Field
+		DeleteRequestedAt      respjson.Field
 		DisplayName            respjson.Field
 		Documents              respjson.Field
 		EnterpriseID           respjson.Field
@@ -316,6 +403,7 @@ type Dir struct {
 		SubmittedAt            respjson.Field
 		UpdatedAt              respjson.Field
 		VerifiedAt             respjson.Field
+		WebhookURL             respjson.Field
 		ExtraFields            map[string]respjson.Field
 		raw                    string
 	} `json:"-"`
@@ -381,6 +469,10 @@ func (r *DirList) UnmarshalJSON(data []byte) error {
 //   - `infringement_claimed` - a trademark/impersonation claim is open against this
 //     DIR.
 //   - `permanently_rejected` - terminal; cannot be resubmitted.
+//   - `delete_requested` - you have requested deletion; the DIR still exists and
+//     Telnyx is completing the removal (de-registration and cleanup). A verified DIR
+//     keeps serving its branded identity, and keeps billing, until the removal
+//     finishes.
 type DirStatus string
 
 const (
@@ -394,6 +486,7 @@ const (
 	DirStatusExpired             DirStatus = "expired"
 	DirStatusInfringementClaimed DirStatus = "infringement_claimed"
 	DirStatusPermanentlyRejected DirStatus = "permanently_rejected"
+	DirStatusDeleteRequested     DirStatus = "delete_requested"
 )
 
 type DirWrapped struct {
@@ -426,7 +519,8 @@ type Document struct {
 	// "professional_license", "government_id", "utility_bill", "bank_statement",
 	// "other".
 	DocumentType DocumentDocumentType `json:"document_type" api:"required"`
-	Description  string               `json:"description"`
+	// An optional note describing this document, for example what it proves.
+	Description string `json:"description"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		DocumentID   respjson.Field
@@ -488,7 +582,8 @@ type DocumentParam struct {
 	// "professional_license", "government_id", "utility_bill", "bank_statement",
 	// "other".
 	DocumentType DocumentDocumentType `json:"document_type,omitzero" api:"required"`
-	Description  param.Opt[string]    `json:"description,omitzero"`
+	// An optional note describing this document, for example what it proves.
+	Description param.Opt[string] `json:"description,omitzero"`
 	paramObj
 }
 
@@ -497,6 +592,62 @@ func (r DocumentParam) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *DocumentParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The property ImageBase64 is required.
+type SignaturePayloadParam struct {
+	// PNG image, base64-encoded.
+	ImageBase64 string `json:"image_base64" api:"required"`
+	// Optional. When absent the rendered PDF falls back to the enterprise contact's
+	// legal name.
+	SignerName param.Opt[string] `json:"signer_name,omitzero"`
+	paramObj
+}
+
+func (r SignaturePayloadParam) MarshalJSON() (data []byte, err error) {
+	type shadow SignaturePayloadParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *SignaturePayloadParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type DirDeleteResponse struct {
+	Data DirDeleteResponseData `json:"data" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r DirDeleteResponse) RawJSON() string { return r.JSON.raw }
+func (r *DirDeleteResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type DirDeleteResponseData struct {
+	// Id of the DIR whose deletion was requested.
+	ID string `json:"id" api:"required" format:"uuid"`
+	// Always `delete_requested`: the DIR has been queued for removal, not yet removed.
+	//
+	// Any of "delete_requested".
+	Status string `json:"status" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Status      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r DirDeleteResponseData) RawJSON() string { return r.JSON.raw }
+func (r *DirDeleteResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -542,7 +693,73 @@ func (r *DirListDocumentTypesResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Paginated list of a DIR's BPO authorizations.
+type DirGetBpoAuthorizationsResponse struct {
+	Data []DirGetBpoAuthorizationsResponseData `json:"data" api:"required"`
+	// JSON:API pagination metadata returned with every paginated list response. Page
+	// numbering is 1-based. `page_size` reports the number of items actually returned
+	// in `data` for this page; the requested size is taken from the `page[size]` query
+	// parameter.
+	Meta BrandedCallingPaginationMeta `json:"meta" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r DirGetBpoAuthorizationsResponse) RawJSON() string { return r.JSON.raw }
+func (r *DirGetBpoAuthorizationsResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single authorization of a BPO (Business Process Outsourcer) account on a DIR.
+type DirGetBpoAuthorizationsResponseData struct {
+	// The authorized BPO account's enterprise id.
+	BpoEnterpriseID string `json:"bpo_enterprise_id" api:"required" format:"uuid"`
+	// Id of the signed Letter of Authorization document submitted for this BPO. Send
+	// it back unchanged in `bpo_authorizations` when updating the DIR to keep this
+	// authorization and its review state.
+	LoaDocumentID string `json:"loa_document_id" api:"required" format:"uuid"`
+	// Always `bpo_authorization`.
+	//
+	// Any of "bpo_authorization".
+	RecordType string `json:"record_type" api:"required"`
+	// Review state of this authorization. `pending` on create or when the Letter of
+	// Authorization is re-uploaded; an admin moves it to `approved` or `rejected`.
+	// Only an `approved` authorization adds the BPO to this DIR's authorized callers
+	// in the branded calling registry.
+	//
+	// Any of "pending", "approved", "rejected".
+	Status string `json:"status" api:"required"`
+	// Why the authorization was rejected. `null` unless `status` is `rejected`.
+	RejectionReason string `json:"rejection_reason" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		BpoEnterpriseID respjson.Field
+		LoaDocumentID   respjson.Field
+		RecordType      respjson.Field
+		Status          respjson.Field
+		RejectionReason respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r DirGetBpoAuthorizationsResponseData) RawJSON() string { return r.JSON.raw }
+func (r *DirGetBpoAuthorizationsResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type DirUpdateParams struct {
+	// Optional `https://` URL that receives webhook notifications when this DIR's
+	// compliance review completes. Send `null` to clear. Changing only this field on a
+	// `verified` DIR does not re-vet it. Maximum 2048 characters.
+	WebhookURL param.Opt[string] `json:"webhook_url,omitzero" format:"uri"`
 	// Contact email of the authorizer. Telnyx may send verification or infringement
 	// notices here.
 	AuthorizerEmail param.Opt[string] `json:"authorizer_email,omitzero" format:"email"`
@@ -566,6 +783,13 @@ type DirUpdateParams struct {
 	// Set to true if your organization places calls on behalf of other enterprises
 	// (BPO/reseller). Updating this triggers re-vetting on next submit.
 	Reselling param.Opt[bool] `json:"reselling,omitzero"`
+	// Optional. Replace this DIR's authorized BPO (Business Process Outsourcer)
+	// accounts with these, each with its signed Letter of Authorization. The supplied
+	// list replaces the current one: a BPO left out has its authorization removed, and
+	// a new BPO (or a changed Letter of Authorization) is created `pending` admin
+	// review. Send an empty list to clear all authorizations; omit the field to leave
+	// them unchanged. Editing this list does not re-vet the DIR. Maximum 10.
+	BpoAuthorizations []BpoAuthorizationInputParam `json:"bpo_authorizations,omitzero"`
 	// 1–10 reasons your business calls customers. Validate phrasing against
 	// `POST /call_reasons/validate`.
 	CallReasons []string `json:"call_reasons,omitzero"`
@@ -604,7 +828,7 @@ type DirListParams struct {
 	//
 	// Any of "draft", "submitted", "in_review", "verified", "rejected",
 	// "unsuccessful", "suspended", "expired", "infringement_claimed",
-	// "permanently_rejected".
+	// "permanently_rejected", "delete_requested".
 	FilterStatus DirStatus `query:"filter[status],omitzero" json:"-"`
 	// Sort field. Allowed values: `created_at`, `updated_at`, `display_name`,
 	// `status`. Prefix with `-` for descending. Default `-created_at`.
@@ -638,6 +862,25 @@ const (
 	DirListParamsSortStatusDesc       DirListParamsSort = "-status"
 )
 
+type DirBpoLoaParams struct {
+	// The approved BPO enterprise the Brand Owner is authorizing. Must be a BPO
+	// account on the caller's organization that has already been approved.
+	BpoEnterpriseID string `json:"bpo_enterprise_id" api:"required" format:"uuid"`
+	// Optional. When provided the rendered PDF embeds the signature image, printed
+	// name, and signed-at date. When absent the PDF is returned unsigned so the Brand
+	// Owner can sign externally and the BPO can upload it via the Documents API.
+	Signature SignaturePayloadParam `json:"signature,omitzero"`
+	paramObj
+}
+
+func (r DirBpoLoaParams) MarshalJSON() (data []byte, err error) {
+	type shadow DirBpoLoaParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DirBpoLoaParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type DirListInfringementClaimsParams struct {
 	// 1-based page number. Out-of-range values return an empty page with correct meta.
 	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
@@ -665,7 +908,7 @@ type DirNewLoaParams struct {
 	// Optional. When provided the rendered PDF embeds the signature image, printed
 	// name, and signed-at date. When absent the PDF is returned unsigned so the
 	// customer can sign externally and upload it via the Documents API.
-	Signature DirNewLoaParamsSignature `json:"signature,omitzero"`
+	Signature SignaturePayloadParam `json:"signature,omitzero"`
 	paramObj
 }
 
@@ -677,26 +920,21 @@ func (r *DirNewLoaParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Optional. When provided the rendered PDF embeds the signature image, printed
-// name, and signed-at date. When absent the PDF is returned unsigned so the
-// customer can sign externally and upload it via the Documents API.
-//
-// The property ImageBase64 is required.
-type DirNewLoaParamsSignature struct {
-	// PNG image, base64-encoded.
-	ImageBase64 string `json:"image_base64" api:"required"`
-	// Optional. When absent the rendered PDF falls back to the enterprise contact's
-	// legal name.
-	SignerName param.Opt[string] `json:"signer_name,omitzero"`
+type DirGetBpoAuthorizationsParams struct {
+	// 1-based page number. Out-of-range values return an empty page with correct meta.
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	// Items per page. Maximum 250; values above are clamped to 250.
+	PageSize param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	paramObj
 }
 
-func (r DirNewLoaParamsSignature) MarshalJSON() (data []byte, err error) {
-	type shadow DirNewLoaParamsSignature
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *DirNewLoaParamsSignature) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+// URLQuery serializes [DirGetBpoAuthorizationsParams]'s query parameters as
+// `url.Values`.
+func (r DirGetBpoAuthorizationsParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
 }
 
 type DirUpdateInfringementParams struct {
@@ -708,7 +946,8 @@ type DirUpdateInfringementParams struct {
 	//
 	// Any of true.
 	CertifyIPOwnership bool `json:"certify_ip_ownership,omitzero" api:"required"`
-	// Must be `true`.
+	// Check to certify that the brand no longer infringes anyone else's trademark or
+	// intellectual property.
 	//
 	// Any of true.
 	CertifyNoInfringement bool `json:"certify_no_infringement,omitzero" api:"required"`
@@ -717,8 +956,10 @@ type DirUpdateInfringementParams struct {
 	// Any of true.
 	CertifyNoShaftContent bool `json:"certify_no_shaft_content,omitzero" api:"required"`
 	// Explanation of how the infringement concern was addressed.
-	InfringementResolutionNotes string            `json:"infringement_resolution_notes" api:"required"`
-	DisplayName                 param.Opt[string] `json:"display_name,omitzero"`
+	InfringementResolutionNotes string `json:"infringement_resolution_notes" api:"required"`
+	// The business name shown to call recipients, 1 to 35 characters, no emoji, not
+	// blank.
+	DisplayName param.Opt[string] `json:"display_name,omitzero"`
 	// Publicly accessible HTTPS URL (max 128 chars) to a 256x256 BMP logo (max 1 MB).
 	LogoURL     param.Opt[string] `json:"logo_url,omitzero"`
 	CallReasons []string          `json:"call_reasons,omitzero"`

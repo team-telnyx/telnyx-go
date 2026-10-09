@@ -100,15 +100,16 @@ func (r *AIToolService) ListAutoPaging(ctx context.Context, query AIToolListPara
 }
 
 // Permanently deletes the specified custom AI tool from your account.
-func (r *AIToolService) Delete(ctx context.Context, toolID string, opts ...option.RequestOption) (res *AIToolDeleteResponse, err error) {
+func (r *AIToolService) Delete(ctx context.Context, toolID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if toolID == "" {
 		err = errors.New("missing required tool_id parameter")
-		return nil, err
+		return err
 	}
 	path := fmt.Sprintf("ai/tools/%s", url.PathEscape(toolID))
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return res, err
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
+	return err
 }
 
 type PayToolParamsResp struct {
@@ -305,8 +306,6 @@ func (r UpdateDynamicVariablesToolParamsUpdatableVariable) MarshalJSON() (data [
 func (r *UpdateDynamicVariablesToolParamsUpdatableVariable) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type AIToolDeleteResponse = any
 
 type AIToolNewParams struct {
 	DisplayName    string            `json:"display_name" api:"required"`
