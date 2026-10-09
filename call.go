@@ -84,9 +84,11 @@ func (r *CallService) GetStatus(ctx context.Context, callControlID string, opts 
 	return res, err
 }
 
-// AI Assistant configuration. All fields except `id` are optional — the
-// assistant's stored configuration will be used as fallback for any omitted
-// fields.
+// AI Assistant configuration and per-call overrides. All fields except `id` are
+// optional. Omitted assistant fields use the stored configuration. Supplied
+// `voice_settings` and `transcription` objects replace their stored objects rather
+// than merging individual settings; include every setting you want to retain.
+// `dynamic_variables` are merged, with request values taking precedence.
 //
 // The property ID is required.
 type CallAssistantRequestParam struct {
@@ -136,8 +138,16 @@ type CallAssistantRequestParam struct {
 	ObservabilitySettings map[string]any `json:"observability_settings,omitzero"`
 	// Inline tool definitions available to the assistant (webhook, retrieval,
 	// transfer, hangup, etc.). Overrides the assistant's stored tools if provided.
-	Tools         []CallAssistantRequestToolsUnionParam `json:"tools,omitzero"`
-	VoiceSettings VoiceSettingsParam                    `json:"voice_settings,omitzero"`
+	Tools []CallAssistantRequestToolsUnionParam `json:"tools,omitzero"`
+	// Per-call speech-to-text configuration for the assistant. If omitted, the stored
+	// assistant transcription configuration is used. If supplied, this object replaces
+	// the stored transcription settings. This is separate from the top-level
+	// `transcription` boolean on answer and dial commands.
+	Transcription TranscriptionConfigParam `json:"transcription,omitzero"`
+	// Per-call voice configuration. Set the voice identifier in
+	// `voice_settings.voice`, not in `assistant.voice`. If supplied, this object
+	// replaces the stored voice settings.
+	VoiceSettings VoiceSettingsParam `json:"voice_settings,omitzero"`
 	paramObj
 }
 
@@ -1542,9 +1552,11 @@ type CallDialParams struct {
 	// parameters are applicable when `premium` is selected as
 	// answering_machine_detection.
 	AnsweringMachineDetectionConfig CallDialParamsAnsweringMachineDetectionConfig `json:"answering_machine_detection_config,omitzero"`
-	// AI Assistant configuration. All fields except `id` are optional — the
-	// assistant's stored configuration will be used as fallback for any omitted
-	// fields.
+	// AI Assistant configuration and per-call overrides. All fields except `id` are
+	// optional. Omitted assistant fields use the stored configuration. Supplied
+	// `voice_settings` and `transcription` objects replace their stored objects rather
+	// than merging individual settings; include every setting you want to retain.
+	// `dynamic_variables` are merged, with request values taking precedence.
 	Assistant CallAssistantRequestParam `json:"assistant,omitzero"`
 	// Optional configuration parameters to dial new participant into a conference.
 	ConferenceConfig CallDialParamsConferenceConfig `json:"conference_config,omitzero"`

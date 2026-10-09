@@ -190,6 +190,7 @@ func TestEnterpriseListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Enterprises.List(context.TODO(), telnyx.EnterpriseListParams{
 		FilterLegalNameContains: telnyx.String("Acme"),
+		FilterRoleType:          telnyx.EnterpriseListParamsFilterRoleTypeBpo,
 		LegalName:               telnyx.String("Acme"),
 		PageNumber:              telnyx.Int(1),
 		PageSize:                telnyx.Int(10),

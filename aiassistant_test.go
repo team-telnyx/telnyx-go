@@ -72,9 +72,69 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 					ToolsMode:     telnyx.FlowNodeReqToolsModeReplace,
 					Transcription: telnyx.TranscriptionSettingsParam{
 						APIKeyRef: telnyx.String("api_key_ref"),
-						Language:  telnyx.String("language"),
-						Model:     telnyx.TranscriptionSettingsModelDeepgramFlux,
-						Region:    telnyx.String("region"),
+						Challenger: telnyx.TranscriptionSettingsChallengerParam{
+							Model:    "deepgram/nova-3",
+							Language: telnyx.String("en"),
+							Rule:     "best_turn",
+							Settings: telnyx.TranscriptionSettingsConfigParam{
+								Context:                      telnyx.String("context"),
+								EagerEotThreshold:            telnyx.Float(0.3),
+								EnableEndpointDetection:      telnyx.Bool(true),
+								EndOfTurnConfidenceThreshold: telnyx.Float(0),
+								EotThreshold:                 telnyx.Float(0.5),
+								EotTimeoutMs:                 telnyx.Int(500),
+								InterimResults:               telnyx.Bool(true),
+								Keyterm:                      telnyx.String("keyterm"),
+								LanguageHints:                []string{"string"},
+								MaxEndpointDelayMs:           telnyx.Int(500),
+								MaxTurnSilence:               telnyx.Int(100),
+								MinTurnSilence:               telnyx.Int(100),
+								Numerals:                     telnyx.Bool(true),
+								SmartFormat:                  telnyx.Bool(true),
+							},
+						},
+						FallbackModels: []telnyx.TranscriptionSettingsFallbackModelParam{{
+							Model:    "deepgram/nova-3",
+							Language: telnyx.String("en"),
+							Settings: telnyx.TranscriptionSettingsConfigParam{
+								Context:                      telnyx.String("context"),
+								EagerEotThreshold:            telnyx.Float(0.3),
+								EnableEndpointDetection:      telnyx.Bool(true),
+								EndOfTurnConfidenceThreshold: telnyx.Float(0),
+								EotThreshold:                 telnyx.Float(0.5),
+								EotTimeoutMs:                 telnyx.Int(500),
+								InterimResults:               telnyx.Bool(true),
+								Keyterm:                      telnyx.String("Telnyx,VoIP,SIP"),
+								LanguageHints:                []string{"string"},
+								MaxEndpointDelayMs:           telnyx.Int(500),
+								MaxTurnSilence:               telnyx.Int(100),
+								MinTurnSilence:               telnyx.Int(100),
+								Numerals:                     telnyx.Bool(true),
+								SmartFormat:                  telnyx.Bool(true),
+							},
+						}, {
+							Model:    "soniox/stt-rt-v5",
+							Language: telnyx.String("en"),
+							Settings: telnyx.TranscriptionSettingsConfigParam{
+								Context:                      telnyx.String("Telnyx,VoIP,SIP"),
+								EagerEotThreshold:            telnyx.Float(0.3),
+								EnableEndpointDetection:      telnyx.Bool(true),
+								EndOfTurnConfidenceThreshold: telnyx.Float(0),
+								EotThreshold:                 telnyx.Float(0.5),
+								EotTimeoutMs:                 telnyx.Int(500),
+								InterimResults:               telnyx.Bool(true),
+								Keyterm:                      telnyx.String("keyterm"),
+								LanguageHints:                []string{"string"},
+								MaxEndpointDelayMs:           telnyx.Int(500),
+								MaxTurnSilence:               telnyx.Int(100),
+								MinTurnSilence:               telnyx.Int(100),
+								Numerals:                     telnyx.Bool(true),
+								SmartFormat:                  telnyx.Bool(true),
+							},
+						}},
+						Language: telnyx.String("language"),
+						Model:    telnyx.TranscriptionSettingsModelDeepgramFlux,
+						Region:   telnyx.String("region"),
 						Settings: telnyx.TranscriptionSettingsConfigParam{
 							Context:                      telnyx.String("context"),
 							EagerEotThreshold:            telnyx.Float(0.3),
@@ -138,9 +198,69 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 					ToolsMode:     telnyx.FlowNodeReqToolsModeAppend,
 					Transcription: telnyx.TranscriptionSettingsParam{
 						APIKeyRef: telnyx.String("api_key_ref"),
-						Language:  telnyx.String("language"),
-						Model:     telnyx.TranscriptionSettingsModelDeepgramFlux,
-						Region:    telnyx.String("region"),
+						Challenger: telnyx.TranscriptionSettingsChallengerParam{
+							Model:    "deepgram/nova-3",
+							Language: telnyx.String("en"),
+							Rule:     "best_turn",
+							Settings: telnyx.TranscriptionSettingsConfigParam{
+								Context:                      telnyx.String("context"),
+								EagerEotThreshold:            telnyx.Float(0.3),
+								EnableEndpointDetection:      telnyx.Bool(true),
+								EndOfTurnConfidenceThreshold: telnyx.Float(0),
+								EotThreshold:                 telnyx.Float(0.5),
+								EotTimeoutMs:                 telnyx.Int(500),
+								InterimResults:               telnyx.Bool(true),
+								Keyterm:                      telnyx.String("keyterm"),
+								LanguageHints:                []string{"string"},
+								MaxEndpointDelayMs:           telnyx.Int(500),
+								MaxTurnSilence:               telnyx.Int(100),
+								MinTurnSilence:               telnyx.Int(100),
+								Numerals:                     telnyx.Bool(true),
+								SmartFormat:                  telnyx.Bool(true),
+							},
+						},
+						FallbackModels: []telnyx.TranscriptionSettingsFallbackModelParam{{
+							Model:    "deepgram/nova-3",
+							Language: telnyx.String("en"),
+							Settings: telnyx.TranscriptionSettingsConfigParam{
+								Context:                      telnyx.String("context"),
+								EagerEotThreshold:            telnyx.Float(0.3),
+								EnableEndpointDetection:      telnyx.Bool(true),
+								EndOfTurnConfidenceThreshold: telnyx.Float(0),
+								EotThreshold:                 telnyx.Float(0.5),
+								EotTimeoutMs:                 telnyx.Int(500),
+								InterimResults:               telnyx.Bool(true),
+								Keyterm:                      telnyx.String("Telnyx,VoIP,SIP"),
+								LanguageHints:                []string{"string"},
+								MaxEndpointDelayMs:           telnyx.Int(500),
+								MaxTurnSilence:               telnyx.Int(100),
+								MinTurnSilence:               telnyx.Int(100),
+								Numerals:                     telnyx.Bool(true),
+								SmartFormat:                  telnyx.Bool(true),
+							},
+						}, {
+							Model:    "soniox/stt-rt-v5",
+							Language: telnyx.String("en"),
+							Settings: telnyx.TranscriptionSettingsConfigParam{
+								Context:                      telnyx.String("Telnyx,VoIP,SIP"),
+								EagerEotThreshold:            telnyx.Float(0.3),
+								EnableEndpointDetection:      telnyx.Bool(true),
+								EndOfTurnConfidenceThreshold: telnyx.Float(0),
+								EotThreshold:                 telnyx.Float(0.5),
+								EotTimeoutMs:                 telnyx.Int(500),
+								InterimResults:               telnyx.Bool(true),
+								Keyterm:                      telnyx.String("keyterm"),
+								LanguageHints:                []string{"string"},
+								MaxEndpointDelayMs:           telnyx.Int(500),
+								MaxTurnSilence:               telnyx.Int(100),
+								MinTurnSilence:               telnyx.Int(100),
+								Numerals:                     telnyx.Bool(true),
+								SmartFormat:                  telnyx.Bool(true),
+							},
+						}},
+						Language: telnyx.String("language"),
+						Model:    telnyx.TranscriptionSettingsModelDeepgramFlux,
+						Region:   telnyx.String("region"),
 						Settings: telnyx.TranscriptionSettingsConfigParam{
 							Context:                      telnyx.String("context"),
 							EagerEotThreshold:            telnyx.Float(0.3),
@@ -213,6 +333,23 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 					},
 				},
 			}},
+		},
+		DelegationSettings: telnyx.DelegationSettingsParam{
+			Enabled: telnyx.Bool(true),
+			ExternalLlm: telnyx.ExternalLlmParam{
+				BaseURL:              "base_url",
+				Model:                "model",
+				AuthenticationMethod: telnyx.AuthenticationMethodToken,
+				CertificateRef:       telnyx.String("certificate_ref"),
+				ForwardMetadata:      telnyx.Bool(true),
+				LlmAPIKeyRef:         telnyx.String("llm_api_key_ref"),
+				TokenRetrievalURL:    telnyx.String("token_retrieval_url"),
+			},
+			Instructions: telnyx.String("instructions"),
+			LlmAPIKeyRef: telnyx.String("llm_api_key_ref"),
+			Mode:         telnyx.DelegationSettingsModeTelnyx,
+			Model:        telnyx.String("model"),
+			SpeakResults: telnyx.Bool(true),
 		},
 		Description: telnyx.String("description"),
 		DynamicVariables: map[string]any{
@@ -341,9 +478,69 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 		}},
 		Transcription: telnyx.TranscriptionSettingsParam{
 			APIKeyRef: telnyx.String("api_key_ref"),
-			Language:  telnyx.String("language"),
-			Model:     telnyx.TranscriptionSettingsModelDeepgramFlux,
-			Region:    telnyx.String("region"),
+			Challenger: telnyx.TranscriptionSettingsChallengerParam{
+				Model:    "deepgram/nova-3",
+				Language: telnyx.String("en"),
+				Rule:     "best_turn",
+				Settings: telnyx.TranscriptionSettingsConfigParam{
+					Context:                      telnyx.String("context"),
+					EagerEotThreshold:            telnyx.Float(0.3),
+					EnableEndpointDetection:      telnyx.Bool(true),
+					EndOfTurnConfidenceThreshold: telnyx.Float(0),
+					EotThreshold:                 telnyx.Float(0.5),
+					EotTimeoutMs:                 telnyx.Int(500),
+					InterimResults:               telnyx.Bool(true),
+					Keyterm:                      telnyx.String("keyterm"),
+					LanguageHints:                []string{"string"},
+					MaxEndpointDelayMs:           telnyx.Int(500),
+					MaxTurnSilence:               telnyx.Int(100),
+					MinTurnSilence:               telnyx.Int(100),
+					Numerals:                     telnyx.Bool(true),
+					SmartFormat:                  telnyx.Bool(true),
+				},
+			},
+			FallbackModels: []telnyx.TranscriptionSettingsFallbackModelParam{{
+				Model:    "deepgram/nova-3",
+				Language: telnyx.String("en"),
+				Settings: telnyx.TranscriptionSettingsConfigParam{
+					Context:                      telnyx.String("context"),
+					EagerEotThreshold:            telnyx.Float(0.3),
+					EnableEndpointDetection:      telnyx.Bool(true),
+					EndOfTurnConfidenceThreshold: telnyx.Float(0),
+					EotThreshold:                 telnyx.Float(0.5),
+					EotTimeoutMs:                 telnyx.Int(500),
+					InterimResults:               telnyx.Bool(true),
+					Keyterm:                      telnyx.String("Telnyx,VoIP,SIP"),
+					LanguageHints:                []string{"string"},
+					MaxEndpointDelayMs:           telnyx.Int(500),
+					MaxTurnSilence:               telnyx.Int(100),
+					MinTurnSilence:               telnyx.Int(100),
+					Numerals:                     telnyx.Bool(true),
+					SmartFormat:                  telnyx.Bool(true),
+				},
+			}, {
+				Model:    "soniox/stt-rt-v5",
+				Language: telnyx.String("en"),
+				Settings: telnyx.TranscriptionSettingsConfigParam{
+					Context:                      telnyx.String("Telnyx,VoIP,SIP"),
+					EagerEotThreshold:            telnyx.Float(0.3),
+					EnableEndpointDetection:      telnyx.Bool(true),
+					EndOfTurnConfidenceThreshold: telnyx.Float(0),
+					EotThreshold:                 telnyx.Float(0.5),
+					EotTimeoutMs:                 telnyx.Int(500),
+					InterimResults:               telnyx.Bool(true),
+					Keyterm:                      telnyx.String("keyterm"),
+					LanguageHints:                []string{"string"},
+					MaxEndpointDelayMs:           telnyx.Int(500),
+					MaxTurnSilence:               telnyx.Int(100),
+					MinTurnSilence:               telnyx.Int(100),
+					Numerals:                     telnyx.Bool(true),
+					SmartFormat:                  telnyx.Bool(true),
+				},
+			}},
+			Language: telnyx.String("language"),
+			Model:    telnyx.TranscriptionSettingsModelDeepgramFlux,
+			Region:   telnyx.String("region"),
 			Settings: telnyx.TranscriptionSettingsConfigParam{
 				Context:                      telnyx.String("context"),
 				EagerEotThreshold:            telnyx.Float(0.3),
@@ -379,6 +576,11 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 			Temperature:     telnyx.Float(0),
 			UseSpeakerBoost: telnyx.Bool(true),
 			VoiceSpeed:      telnyx.Float(0),
+		},
+		WebsocketSettings: telnyx.WebsocketSettingsParam{
+			AuthRef: telnyx.String("auth_ref"),
+			Enabled: telnyx.Bool(true),
+			URL:     telnyx.String("url"),
 		},
 		WidgetSettings: telnyx.WidgetSettingsParam{
 			AgentThinkingText: telnyx.String("agent_thinking_text"),
@@ -499,9 +701,69 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 						ToolsMode:     telnyx.FlowNodeReqToolsModeReplace,
 						Transcription: telnyx.TranscriptionSettingsParam{
 							APIKeyRef: telnyx.String("api_key_ref"),
-							Language:  telnyx.String("language"),
-							Model:     telnyx.TranscriptionSettingsModelDeepgramFlux,
-							Region:    telnyx.String("region"),
+							Challenger: telnyx.TranscriptionSettingsChallengerParam{
+								Model:    "deepgram/nova-3",
+								Language: telnyx.String("en"),
+								Rule:     "best_turn",
+								Settings: telnyx.TranscriptionSettingsConfigParam{
+									Context:                      telnyx.String("context"),
+									EagerEotThreshold:            telnyx.Float(0.3),
+									EnableEndpointDetection:      telnyx.Bool(true),
+									EndOfTurnConfidenceThreshold: telnyx.Float(0),
+									EotThreshold:                 telnyx.Float(0.5),
+									EotTimeoutMs:                 telnyx.Int(500),
+									InterimResults:               telnyx.Bool(true),
+									Keyterm:                      telnyx.String("keyterm"),
+									LanguageHints:                []string{"string"},
+									MaxEndpointDelayMs:           telnyx.Int(500),
+									MaxTurnSilence:               telnyx.Int(100),
+									MinTurnSilence:               telnyx.Int(100),
+									Numerals:                     telnyx.Bool(true),
+									SmartFormat:                  telnyx.Bool(true),
+								},
+							},
+							FallbackModels: []telnyx.TranscriptionSettingsFallbackModelParam{{
+								Model:    "deepgram/nova-3",
+								Language: telnyx.String("en"),
+								Settings: telnyx.TranscriptionSettingsConfigParam{
+									Context:                      telnyx.String("context"),
+									EagerEotThreshold:            telnyx.Float(0.3),
+									EnableEndpointDetection:      telnyx.Bool(true),
+									EndOfTurnConfidenceThreshold: telnyx.Float(0),
+									EotThreshold:                 telnyx.Float(0.5),
+									EotTimeoutMs:                 telnyx.Int(500),
+									InterimResults:               telnyx.Bool(true),
+									Keyterm:                      telnyx.String("Telnyx,VoIP,SIP"),
+									LanguageHints:                []string{"string"},
+									MaxEndpointDelayMs:           telnyx.Int(500),
+									MaxTurnSilence:               telnyx.Int(100),
+									MinTurnSilence:               telnyx.Int(100),
+									Numerals:                     telnyx.Bool(true),
+									SmartFormat:                  telnyx.Bool(true),
+								},
+							}, {
+								Model:    "soniox/stt-rt-v5",
+								Language: telnyx.String("en"),
+								Settings: telnyx.TranscriptionSettingsConfigParam{
+									Context:                      telnyx.String("Telnyx,VoIP,SIP"),
+									EagerEotThreshold:            telnyx.Float(0.3),
+									EnableEndpointDetection:      telnyx.Bool(true),
+									EndOfTurnConfidenceThreshold: telnyx.Float(0),
+									EotThreshold:                 telnyx.Float(0.5),
+									EotTimeoutMs:                 telnyx.Int(500),
+									InterimResults:               telnyx.Bool(true),
+									Keyterm:                      telnyx.String("keyterm"),
+									LanguageHints:                []string{"string"},
+									MaxEndpointDelayMs:           telnyx.Int(500),
+									MaxTurnSilence:               telnyx.Int(100),
+									MinTurnSilence:               telnyx.Int(100),
+									Numerals:                     telnyx.Bool(true),
+									SmartFormat:                  telnyx.Bool(true),
+								},
+							}},
+							Language: telnyx.String("language"),
+							Model:    telnyx.TranscriptionSettingsModelDeepgramFlux,
+							Region:   telnyx.String("region"),
 							Settings: telnyx.TranscriptionSettingsConfigParam{
 								Context:                      telnyx.String("context"),
 								EagerEotThreshold:            telnyx.Float(0.3),
@@ -565,9 +827,69 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 						ToolsMode:     telnyx.FlowNodeReqToolsModeAppend,
 						Transcription: telnyx.TranscriptionSettingsParam{
 							APIKeyRef: telnyx.String("api_key_ref"),
-							Language:  telnyx.String("language"),
-							Model:     telnyx.TranscriptionSettingsModelDeepgramFlux,
-							Region:    telnyx.String("region"),
+							Challenger: telnyx.TranscriptionSettingsChallengerParam{
+								Model:    "deepgram/nova-3",
+								Language: telnyx.String("en"),
+								Rule:     "best_turn",
+								Settings: telnyx.TranscriptionSettingsConfigParam{
+									Context:                      telnyx.String("context"),
+									EagerEotThreshold:            telnyx.Float(0.3),
+									EnableEndpointDetection:      telnyx.Bool(true),
+									EndOfTurnConfidenceThreshold: telnyx.Float(0),
+									EotThreshold:                 telnyx.Float(0.5),
+									EotTimeoutMs:                 telnyx.Int(500),
+									InterimResults:               telnyx.Bool(true),
+									Keyterm:                      telnyx.String("keyterm"),
+									LanguageHints:                []string{"string"},
+									MaxEndpointDelayMs:           telnyx.Int(500),
+									MaxTurnSilence:               telnyx.Int(100),
+									MinTurnSilence:               telnyx.Int(100),
+									Numerals:                     telnyx.Bool(true),
+									SmartFormat:                  telnyx.Bool(true),
+								},
+							},
+							FallbackModels: []telnyx.TranscriptionSettingsFallbackModelParam{{
+								Model:    "deepgram/nova-3",
+								Language: telnyx.String("en"),
+								Settings: telnyx.TranscriptionSettingsConfigParam{
+									Context:                      telnyx.String("context"),
+									EagerEotThreshold:            telnyx.Float(0.3),
+									EnableEndpointDetection:      telnyx.Bool(true),
+									EndOfTurnConfidenceThreshold: telnyx.Float(0),
+									EotThreshold:                 telnyx.Float(0.5),
+									EotTimeoutMs:                 telnyx.Int(500),
+									InterimResults:               telnyx.Bool(true),
+									Keyterm:                      telnyx.String("Telnyx,VoIP,SIP"),
+									LanguageHints:                []string{"string"},
+									MaxEndpointDelayMs:           telnyx.Int(500),
+									MaxTurnSilence:               telnyx.Int(100),
+									MinTurnSilence:               telnyx.Int(100),
+									Numerals:                     telnyx.Bool(true),
+									SmartFormat:                  telnyx.Bool(true),
+								},
+							}, {
+								Model:    "soniox/stt-rt-v5",
+								Language: telnyx.String("en"),
+								Settings: telnyx.TranscriptionSettingsConfigParam{
+									Context:                      telnyx.String("Telnyx,VoIP,SIP"),
+									EagerEotThreshold:            telnyx.Float(0.3),
+									EnableEndpointDetection:      telnyx.Bool(true),
+									EndOfTurnConfidenceThreshold: telnyx.Float(0),
+									EotThreshold:                 telnyx.Float(0.5),
+									EotTimeoutMs:                 telnyx.Int(500),
+									InterimResults:               telnyx.Bool(true),
+									Keyterm:                      telnyx.String("keyterm"),
+									LanguageHints:                []string{"string"},
+									MaxEndpointDelayMs:           telnyx.Int(500),
+									MaxTurnSilence:               telnyx.Int(100),
+									MinTurnSilence:               telnyx.Int(100),
+									Numerals:                     telnyx.Bool(true),
+									SmartFormat:                  telnyx.Bool(true),
+								},
+							}},
+							Language: telnyx.String("language"),
+							Model:    telnyx.TranscriptionSettingsModelDeepgramFlux,
+							Region:   telnyx.String("region"),
 							Settings: telnyx.TranscriptionSettingsConfigParam{
 								Context:                      telnyx.String("context"),
 								EagerEotThreshold:            telnyx.Float(0.3),
@@ -640,6 +962,23 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 						},
 					},
 				}},
+			},
+			DelegationSettings: telnyx.DelegationSettingsParam{
+				Enabled: telnyx.Bool(true),
+				ExternalLlm: telnyx.ExternalLlmParam{
+					BaseURL:              "base_url",
+					Model:                "model",
+					AuthenticationMethod: telnyx.AuthenticationMethodToken,
+					CertificateRef:       telnyx.String("certificate_ref"),
+					ForwardMetadata:      telnyx.Bool(true),
+					LlmAPIKeyRef:         telnyx.String("llm_api_key_ref"),
+					TokenRetrievalURL:    telnyx.String("token_retrieval_url"),
+				},
+				Instructions: telnyx.String("instructions"),
+				LlmAPIKeyRef: telnyx.String("llm_api_key_ref"),
+				Mode:         telnyx.DelegationSettingsModeTelnyx,
+				Model:        telnyx.String("model"),
+				SpeakResults: telnyx.Bool(true),
 			},
 			Description: telnyx.String("description"),
 			DynamicVariables: map[string]any{
@@ -771,9 +1110,69 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 			}},
 			Transcription: telnyx.TranscriptionSettingsParam{
 				APIKeyRef: telnyx.String("api_key_ref"),
-				Language:  telnyx.String("language"),
-				Model:     telnyx.TranscriptionSettingsModelDeepgramFlux,
-				Region:    telnyx.String("region"),
+				Challenger: telnyx.TranscriptionSettingsChallengerParam{
+					Model:    "deepgram/nova-3",
+					Language: telnyx.String("en"),
+					Rule:     "best_turn",
+					Settings: telnyx.TranscriptionSettingsConfigParam{
+						Context:                      telnyx.String("context"),
+						EagerEotThreshold:            telnyx.Float(0.3),
+						EnableEndpointDetection:      telnyx.Bool(true),
+						EndOfTurnConfidenceThreshold: telnyx.Float(0),
+						EotThreshold:                 telnyx.Float(0.5),
+						EotTimeoutMs:                 telnyx.Int(500),
+						InterimResults:               telnyx.Bool(true),
+						Keyterm:                      telnyx.String("keyterm"),
+						LanguageHints:                []string{"string"},
+						MaxEndpointDelayMs:           telnyx.Int(500),
+						MaxTurnSilence:               telnyx.Int(100),
+						MinTurnSilence:               telnyx.Int(100),
+						Numerals:                     telnyx.Bool(true),
+						SmartFormat:                  telnyx.Bool(true),
+					},
+				},
+				FallbackModels: []telnyx.TranscriptionSettingsFallbackModelParam{{
+					Model:    "deepgram/nova-3",
+					Language: telnyx.String("en"),
+					Settings: telnyx.TranscriptionSettingsConfigParam{
+						Context:                      telnyx.String("context"),
+						EagerEotThreshold:            telnyx.Float(0.3),
+						EnableEndpointDetection:      telnyx.Bool(true),
+						EndOfTurnConfidenceThreshold: telnyx.Float(0),
+						EotThreshold:                 telnyx.Float(0.5),
+						EotTimeoutMs:                 telnyx.Int(500),
+						InterimResults:               telnyx.Bool(true),
+						Keyterm:                      telnyx.String("Telnyx,VoIP,SIP"),
+						LanguageHints:                []string{"string"},
+						MaxEndpointDelayMs:           telnyx.Int(500),
+						MaxTurnSilence:               telnyx.Int(100),
+						MinTurnSilence:               telnyx.Int(100),
+						Numerals:                     telnyx.Bool(true),
+						SmartFormat:                  telnyx.Bool(true),
+					},
+				}, {
+					Model:    "soniox/stt-rt-v5",
+					Language: telnyx.String("en"),
+					Settings: telnyx.TranscriptionSettingsConfigParam{
+						Context:                      telnyx.String("Telnyx,VoIP,SIP"),
+						EagerEotThreshold:            telnyx.Float(0.3),
+						EnableEndpointDetection:      telnyx.Bool(true),
+						EndOfTurnConfidenceThreshold: telnyx.Float(0),
+						EotThreshold:                 telnyx.Float(0.5),
+						EotTimeoutMs:                 telnyx.Int(500),
+						InterimResults:               telnyx.Bool(true),
+						Keyterm:                      telnyx.String("keyterm"),
+						LanguageHints:                []string{"string"},
+						MaxEndpointDelayMs:           telnyx.Int(500),
+						MaxTurnSilence:               telnyx.Int(100),
+						MinTurnSilence:               telnyx.Int(100),
+						Numerals:                     telnyx.Bool(true),
+						SmartFormat:                  telnyx.Bool(true),
+					},
+				}},
+				Language: telnyx.String("language"),
+				Model:    telnyx.TranscriptionSettingsModelDeepgramFlux,
+				Region:   telnyx.String("region"),
 				Settings: telnyx.TranscriptionSettingsConfigParam{
 					Context:                      telnyx.String("context"),
 					EagerEotThreshold:            telnyx.Float(0.3),
@@ -810,6 +1209,11 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 				Temperature:     telnyx.Float(0),
 				UseSpeakerBoost: telnyx.Bool(true),
 				VoiceSpeed:      telnyx.Float(0),
+			},
+			WebsocketSettings: telnyx.WebsocketSettingsParam{
+				AuthRef: telnyx.String("auth_ref"),
+				Enabled: telnyx.Bool(true),
+				URL:     telnyx.String("url"),
 			},
 			WidgetSettings: telnyx.WidgetSettingsParam{
 				AgentThinkingText: telnyx.String("agent_thinking_text"),
@@ -861,7 +1265,7 @@ func TestAIAssistantList(t *testing.T) {
 	}
 }
 
-func TestAIAssistantDelete(t *testing.T) {
+func TestAIAssistantDeleteWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -874,7 +1278,13 @@ func TestAIAssistantDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.AI.Assistants.Delete(context.TODO(), "assistant_id")
+	_, err := client.AI.Assistants.Delete(
+		context.TODO(),
+		"assistant_id",
+		telnyx.AIAssistantDeleteParams{
+			HardDelete: telnyx.Bool(true),
+		},
+	)
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
@@ -996,6 +1406,29 @@ func TestAIAssistantImportsWithOptionalParams(t *testing.T) {
 	}
 }
 
+func TestAIAssistantRestore(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := telnyx.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.AI.Assistants.Restore(context.TODO(), "assistant_id")
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
 func TestAIAssistantSendSMSWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
@@ -1023,6 +1456,43 @@ func TestAIAssistantSendSMSWithOptionalParams(t *testing.T) {
 			ShouldCreateConversation: telnyx.Bool(false),
 			Text:                     telnyx.String("Text"),
 			IdempotencyKey:           telnyx.String("8e03978e-40d5-43e8-bc93-6894a57f9326"),
+		},
+	)
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestAIAssistantWhatsappWithOptionalParams(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := telnyx.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.AI.Assistants.Whatsapp(
+		context.TODO(),
+		"assistant_id",
+		telnyx.AIAssistantWhatsappParams{
+			Content: "Send the login verification code 482913 to the customer.",
+			From:    "+13125550001",
+			To:      "+13125550002",
+			ConversationMetadata: map[string]telnyx.AIAssistantWhatsappParamsConversationMetadataUnion{
+				"order_id": {
+					OfString: telnyx.String("A1"),
+				},
+			},
+			IdempotencyKey: telnyx.String("8e03978e-40d5-43e8-bc93-6894a57f9326"),
 		},
 	)
 	if err != nil {

@@ -109,6 +109,10 @@ func TestCallDialWithOptionalParams(t *testing.T) {
 					Type: shared.BookAppointmentToolTypeBookAppointment,
 				},
 			}},
+			Transcription: telnyx.TranscriptionConfigParam{
+				Language: telnyx.String("language"),
+				Model:    telnyx.TranscriptionConfigModelDistilWhisperDistilLargeV2,
+			},
 			VoiceSettings: telnyx.VoiceSettingsParam{
 				Voice:     "voice",
 				APIKeyRef: telnyx.String("api_key_ref"),

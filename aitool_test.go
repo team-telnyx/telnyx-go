@@ -202,7 +202,7 @@ func TestAIToolDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.AI.Tools.Delete(context.TODO(), "tool_id")
+	err := client.AI.Tools.Delete(context.TODO(), "tool_id")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {

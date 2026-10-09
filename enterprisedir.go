@@ -130,7 +130,8 @@ type EnterpriseDirNewParams struct {
 	// 1–10 reasons your business calls customers. Validate phrasing against
 	// `POST /call_reasons/validate`.
 	CallReasons []string `json:"call_reasons,omitzero" api:"required"`
-	// Must be `true`.
+	// Certification that the DIR information is accurate. Must be `true` for the DIR
+	// to be submitted for vetting.
 	//
 	// Any of true.
 	CertifyBrandIsAccurate bool `json:"certify_brand_is_accurate,omitzero" api:"required"`
@@ -145,11 +146,22 @@ type EnterpriseDirNewParams struct {
 	CertifyNoShaftContent bool `json:"certify_no_shaft_content,omitzero" api:"required"`
 	// Name shown to call recipients. No emoji; not whitespace-only.
 	DisplayName string `json:"display_name" api:"required"`
+	// Optional `https://` URL that receives webhook notifications when this DIR's
+	// compliance review completes (rejection outcomes include structured rejection
+	// reasons). Maximum 2048 characters.
+	WebhookURL param.Opt[string] `json:"webhook_url,omitzero" format:"uri"`
 	// Publicly accessible HTTPS URL (max 128 chars) to a 256x256 BMP logo (max 1 MB).
 	LogoURL param.Opt[string] `json:"logo_url,omitzero" format:"uri"`
 	// Set to true if your organization places calls on behalf of other enterprises
 	// (BPO/reseller).
 	Reselling param.Opt[bool] `json:"reselling,omitzero"`
+	// Optional. Approved BPO (Business Process Outsourcer) accounts on your
+	// organization authorized to place branded calls for this DIR, each with the
+	// signed Letter of Authorization the Brand Owner granted it. Each authorization
+	// starts `pending` and takes effect only after an admin reviews its Letter of
+	// Authorization. Omit or send an empty list to authorize no BPO on this DIR.
+	// Maximum 10.
+	BpoAuthorizations []BpoAuthorizationInputParam `json:"bpo_authorizations,omitzero"`
 	// Supporting documents. Each `document_id` may appear at most once on a DIR.
 	Documents []DocumentParam `json:"documents,omitzero"`
 	paramObj
@@ -185,7 +197,7 @@ type EnterpriseDirListParams struct {
 	//
 	// Any of "draft", "submitted", "in_review", "verified", "rejected",
 	// "unsuccessful", "suspended", "expired", "infringement_claimed",
-	// "permanently_rejected".
+	// "permanently_rejected", "delete_requested".
 	FilterStatus DirStatus `query:"filter[status],omitzero" json:"-"`
 	// Sort field. Allowed: `created_at`, `updated_at`, `display_name`, `status`,
 	// `submitted_at`, `verified_at`, `expiring_at`. Prefix with `-` for descending.

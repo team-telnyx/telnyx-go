@@ -55,6 +55,21 @@ func (r *CallActionService) AddAIAssistantMessages(ctx context.Context, callCont
 // Answer an incoming call. You must issue this command before executing subsequent
 // commands on an incoming call.
 //
+// To answer with an AI assistant, include `assistant.id` and any per-call
+// overrides in the `assistant` object. Telnyx attempts to warm up the assistant
+// before answering the call, then starts the assistant automatically when the call
+// is answered. Do not also send `ai_assistant_start` for this flow. The HTTP
+// success response can arrive before the call is answered; use the `call.answered`
+// webhook to track the answer. If warm-up fails, Telnyx falls back to starting the
+// assistant after answering.
+//
+// Set the assistant voice with `assistant.voice_settings.voice` and speech-to-text
+// settings with `assistant.transcription`. You can reuse one stored assistant with
+// different per-call settings. Warm-up prepares assistant configuration and
+// dependencies; it does not wait for the greeting audio to be ready or guarantee
+// zero silence after answer. A plain `answer` followed by `ai_assistant_start`
+// performs assistant startup after the call has already been answered.
+//
 // **Expected Webhooks:**
 //
 //   - `call.answered`
@@ -1575,9 +1590,10 @@ type TelnyxVoiceSettingsParam struct {
 	//
 	// Any of "telnyx".
 	Type TelnyxVoiceSettingsType `json:"type,omitzero" api:"required"`
-	// The voice speed to be used for the voice. The voice speed must be between 0.1
-	// and 2.0. Default value is 1.0. Not supported for `Telnyx.Bayan.*` or
-	// `Telnyx.Sukhan.*` voices.
+	// The voice speed to be used for the voice. Telnyx `Ultra` voices accept values
+	// from 0.6 to 1.5; values outside that range are rejected by the synthesis engine.
+	// `Qwen3TTS` and `KokoroTTS` accept the field but do not apply it. Default value
+	// is 1.0. Not supported for `Telnyx.Bayan.*` or `Telnyx.Sukhan.*` voices.
 	VoiceSpeed param.Opt[float64] `json:"voice_speed,omitzero"`
 	paramObj
 }
@@ -3903,14 +3919,18 @@ type CallActionAnswerParams struct {
 	SendSilenceWhenIdle param.Opt[bool] `json:"send_silence_when_idle,omitzero"`
 	// The destination WebSocket address where the stream is going to be delivered.
 	StreamURL param.Opt[string] `json:"stream_url,omitzero"`
-	// Enable transcription upon call answer. The default value is false.
+	// Enable standalone call transcription upon call answer. The default value is
+	// false. Configure this feature with `transcription_config`. To configure speech
+	// recognition for an AI assistant, use `assistant.transcription` instead.
 	Transcription param.Opt[bool] `json:"transcription,omitzero"`
 	// Use this field to override the URL for which Telnyx will send subsequent
 	// webhooks to for this call.
 	WebhookURL param.Opt[string] `json:"webhook_url,omitzero"`
-	// AI Assistant configuration. All fields except `id` are optional — the
-	// assistant's stored configuration will be used as fallback for any omitted
-	// fields.
+	// AI Assistant configuration and per-call overrides. All fields except `id` are
+	// optional. Omitted assistant fields use the stored configuration. Supplied
+	// `voice_settings` and `transcription` objects replace their stored objects rather
+	// than merging individual settings; include every setting you want to retain.
+	// `dynamic_variables` are merged, with request values taking precedence.
 	Assistant CallAssistantRequestParam `json:"assistant,omitzero"`
 	// Starts a Conversation Relay session automatically when the answered/dialed call
 	// is answered. This embedded shape is supported on `answer` and `dial`. It uses
@@ -5387,9 +5407,12 @@ func (r *CallActionReferParams) UnmarshalJSON(data []byte) error {
 }
 
 type CallActionRejectParams struct {
-	// Cause for call rejection.
+	// Cause for call rejection. The cause sets the SIP response the caller receives:
+	// `USER_BUSY` sends 486 User Busy, `CALL_REJECTED` sends 603 Decline, `NOT_FOUND`
+	// sends 404 Not Found, and `TEMPORARILY_UNAVAILABLE` sends 480 Temporarily
+	// Unavailable.
 	//
-	// Any of "CALL_REJECTED", "USER_BUSY".
+	// Any of "CALL_REJECTED", "NOT_FOUND", "TEMPORARILY_UNAVAILABLE", "USER_BUSY".
 	Cause CallActionRejectParamsCause `json:"cause,omitzero" api:"required"`
 	// Use this field to add state to every subsequent webhook. It must be a valid
 	// Base-64 encoded string.
@@ -5408,12 +5431,17 @@ func (r *CallActionRejectParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Cause for call rejection.
+// Cause for call rejection. The cause sets the SIP response the caller receives:
+// `USER_BUSY` sends 486 User Busy, `CALL_REJECTED` sends 603 Decline, `NOT_FOUND`
+// sends 404 Not Found, and `TEMPORARILY_UNAVAILABLE` sends 480 Temporarily
+// Unavailable.
 type CallActionRejectParamsCause string
 
 const (
-	CallActionRejectParamsCauseCallRejected CallActionRejectParamsCause = "CALL_REJECTED"
-	CallActionRejectParamsCauseUserBusy     CallActionRejectParamsCause = "USER_BUSY"
+	CallActionRejectParamsCauseCallRejected           CallActionRejectParamsCause = "CALL_REJECTED"
+	CallActionRejectParamsCauseNotFound               CallActionRejectParamsCause = "NOT_FOUND"
+	CallActionRejectParamsCauseTemporarilyUnavailable CallActionRejectParamsCause = "TEMPORARILY_UNAVAILABLE"
+	CallActionRejectParamsCauseUserBusy               CallActionRejectParamsCause = "USER_BUSY"
 )
 
 type CallActionResumeRecordingParams struct {
@@ -5899,9 +5927,11 @@ type CallActionStartAIAssistantParams struct {
 	// updated. The assistant's own `telephony_settings.send_message_history_updates`
 	// overrides this value when it is set.
 	SendMessageHistoryUpdates param.Opt[bool] `json:"send_message_history_updates,omitzero"`
-	// AI Assistant configuration. All fields except `id` are optional — the
-	// assistant's stored configuration will be used as fallback for any omitted
-	// fields.
+	// AI Assistant configuration and per-call overrides. All fields except `id` are
+	// optional. Omitted assistant fields use the stored configuration. Supplied
+	// `voice_settings` and `transcription` objects replace their stored objects rather
+	// than merging individual settings; include every setting you want to retain.
+	// `dynamic_variables` are merged, with request values taking precedence.
 	Assistant CallAssistantRequestParam `json:"assistant,omitzero"`
 	// Settings for handling user interruptions during assistant speech
 	InterruptionSettings InterruptionSettingsParam `json:"interruption_settings,omitzero"`
