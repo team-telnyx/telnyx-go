@@ -51,7 +51,6 @@ func TestCallDialWithOptionalParams(t *testing.T) {
 			InitialSilenceMillis:            telnyx.Int(1000),
 			MaximumNumberOfWords:            telnyx.Int(1000),
 			MaximumWordLengthMillis:         telnyx.Int(2000),
-			PromptEndTimeoutMillis:          telnyx.Int(5000),
 			SilenceThreshold:                telnyx.Int(512),
 			TotalAnalysisTimeMillis:         telnyx.Int(5000),
 		},

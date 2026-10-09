@@ -57,9 +57,6 @@ func NewCallService(opts ...option.RequestOption) (r CallService) {
 //     `answering_machine_detection=premium` was requested
 //   - `call.machine.premium.greeting.ended` if `answering_machine_detection=premium`
 //     was requested and a beep was detected
-//   - `call.machine.premium.call_screening.detected` if
-//     `answering_machine_detection=premium_ios_call_screening_detection` was
-//     requested and an Apple Call Screening tone was detected
 //   - `call.deepfake_detection.result` if `deepfake_detection` was enabled
 //   - `call.deepfake_detection.error` if `deepfake_detection` was enabled and an
 //     error occurred
@@ -453,10 +450,10 @@ type ConversationRelayEmbeddedConfigParam struct {
 	//     the `VoiceId` (e.g., `AWS.Polly.Joanna-Neural`). Check the
 	//     [available voices](https://docs.aws.amazon.com/polly/latest/dg/available-voices.html)
 	//     for compatibility.
-	//   - **Azure:** Use `Azure.<VoiceId>` (e.g., `Azure.en-CA-ClaraNeural`,
-	//     `Azure.en-CA-LiamNeural`, `Azure.en-US-BrianMultilingualNeural`,
-	//     `Azure.en-US-Ava:DragonHDLatestNeural`). For a complete list of voices, go to
-	//     [Azure Voice Gallery](https://speech.microsoft.com/portal/voicegallery).
+	//   - **Azure:** Use `Azure.<VoiceId>. (e.g. Azure.en-CA-ClaraNeural,
+	//     Azure.en-CA-LiamNeural, Azure.en-US-BrianMultilingualNeural,
+	//     Azure.en-US-Ava:DragonHDLatestNeural. For a complete list of voices, go to
+	//     [Azure Voice Gallery](https://speech.microsoft.com/portal/voicegallery).)
 	//   - **ElevenLabs:** Use `ElevenLabs.<ModelId>.<VoiceId>` (e.g.,
 	//     `ElevenLabs.BaseModel.John`). The `ModelId` part is optional. To use
 	//     ElevenLabs, you must provide your ElevenLabs API key as an integration secret
@@ -1545,25 +1542,15 @@ type CallDialParams struct {
 	// `greeting_end` or `detect_words` is used and a `machine` is detected, you will
 	// receive another `call.machine.greeting.ended` webhook when the answering machine
 	// greeting ends with a beep or silence. If `detect_beep` is used, you will only
-	// receive `call.machine.greeting.ended` if a beep is detected. If
-	// `answering_machine_detection` is set to `premium_ios_call_screening_detection`,
-	// Premium AMD runs with iOS Call Screening support: after an initial `machine`
-	// result, Telnyx listens for the iOS call-screening prompt to end or for an Apple
-	// Call Screening tone, sends `call.machine.premium.greeting.ended` with
-	// `result=prompt_ended` or `call.machine.premium.call_screening.detected` with
-	// `result=screening` respectively. When the Apple Call Screening tone is detected,
-	// Premium AMD is restarted on the screened call and a
-	// `call.machine.premium.detection.ended` webhook with the post-screening
-	// classification follows.
+	// receive `call.machine.greeting.ended` if a beep is detected.
 	//
-	// Any of "premium", "premium_ios_call_screening_detection", "detect",
-	// "detect_beep", "detect_words", "greeting_end", "disabled".
+	// Any of "premium", "detect", "detect_beep", "detect_words", "greeting_end",
+	// "disabled".
 	AnsweringMachineDetection CallDialParamsAnsweringMachineDetection `json:"answering_machine_detection,omitzero"`
 	// Optional configuration parameters to modify 'answering_machine_detection'
 	// performance. Only `total_analysis_time_millis` and `greeting_duration_millis`
 	// parameters are applicable when `premium` is selected as
-	// answering_machine_detection. `prompt_end_timeout_millis` is additionally
-	// applicable when `premium_ios_call_screening_detection` is selected.
+	// answering_machine_detection.
 	AnsweringMachineDetectionConfig CallDialParamsAnsweringMachineDetectionConfig `json:"answering_machine_detection_config,omitzero"`
 	// AI Assistant configuration and per-call overrides. All fields except `id` are
 	// optional. Omitted assistant fields use the stored configuration. Supplied
@@ -1743,33 +1730,22 @@ func (u *CallDialParamsToUnion) asAny() any {
 // `greeting_end` or `detect_words` is used and a `machine` is detected, you will
 // receive another `call.machine.greeting.ended` webhook when the answering machine
 // greeting ends with a beep or silence. If `detect_beep` is used, you will only
-// receive `call.machine.greeting.ended` if a beep is detected. If
-// `answering_machine_detection` is set to `premium_ios_call_screening_detection`,
-// Premium AMD runs with iOS Call Screening support: after an initial `machine`
-// result, Telnyx listens for the iOS call-screening prompt to end or for an Apple
-// Call Screening tone, sends `call.machine.premium.greeting.ended` with
-// `result=prompt_ended` or `call.machine.premium.call_screening.detected` with
-// `result=screening` respectively. When the Apple Call Screening tone is detected,
-// Premium AMD is restarted on the screened call and a
-// `call.machine.premium.detection.ended` webhook with the post-screening
-// classification follows.
+// receive `call.machine.greeting.ended` if a beep is detected.
 type CallDialParamsAnsweringMachineDetection string
 
 const (
-	CallDialParamsAnsweringMachineDetectionPremium                          CallDialParamsAnsweringMachineDetection = "premium"
-	CallDialParamsAnsweringMachineDetectionPremiumIosCallScreeningDetection CallDialParamsAnsweringMachineDetection = "premium_ios_call_screening_detection"
-	CallDialParamsAnsweringMachineDetectionDetect                           CallDialParamsAnsweringMachineDetection = "detect"
-	CallDialParamsAnsweringMachineDetectionDetectBeep                       CallDialParamsAnsweringMachineDetection = "detect_beep"
-	CallDialParamsAnsweringMachineDetectionDetectWords                      CallDialParamsAnsweringMachineDetection = "detect_words"
-	CallDialParamsAnsweringMachineDetectionGreetingEnd                      CallDialParamsAnsweringMachineDetection = "greeting_end"
-	CallDialParamsAnsweringMachineDetectionDisabled                         CallDialParamsAnsweringMachineDetection = "disabled"
+	CallDialParamsAnsweringMachineDetectionPremium     CallDialParamsAnsweringMachineDetection = "premium"
+	CallDialParamsAnsweringMachineDetectionDetect      CallDialParamsAnsweringMachineDetection = "detect"
+	CallDialParamsAnsweringMachineDetectionDetectBeep  CallDialParamsAnsweringMachineDetection = "detect_beep"
+	CallDialParamsAnsweringMachineDetectionDetectWords CallDialParamsAnsweringMachineDetection = "detect_words"
+	CallDialParamsAnsweringMachineDetectionGreetingEnd CallDialParamsAnsweringMachineDetection = "greeting_end"
+	CallDialParamsAnsweringMachineDetectionDisabled    CallDialParamsAnsweringMachineDetection = "disabled"
 )
 
 // Optional configuration parameters to modify 'answering_machine_detection'
 // performance. Only `total_analysis_time_millis` and `greeting_duration_millis`
 // parameters are applicable when `premium` is selected as
-// answering_machine_detection. `prompt_end_timeout_millis` is additionally
-// applicable when `premium_ios_call_screening_detection` is selected.
+// answering_machine_detection.
 type CallDialParamsAnsweringMachineDetectionConfig struct {
 	// Silence duration threshold after a greeting message or voice for it be
 	// considered human.
@@ -1816,11 +1792,6 @@ type CallDialParamsAnsweringMachineDetectionConfig struct {
 	MaximumNumberOfWords param.Opt[int64] `json:"maximum_number_of_words,omitzero"`
 	// If a single word lasts longer than this threshold, consider it a machine.
 	MaximumWordLengthMillis param.Opt[int64] `json:"maximum_word_length_millis,omitzero"`
-	// Maximum time Telnyx waits, in milliseconds, for the iOS call-screening prompt to
-	// end after Premium AMD initially detects a `machine`. Used when
-	// `answering_machine_detection` is `premium_ios_call_screening_detection`.
-	// Defaults to 5000 milliseconds.
-	PromptEndTimeoutMillis param.Opt[int64] `json:"prompt_end_timeout_millis,omitzero"`
 	// Minimum noise threshold for any analysis.
 	SilenceThreshold param.Opt[int64] `json:"silence_threshold,omitzero"`
 	// Maximum timeout threshold for overall detection.
