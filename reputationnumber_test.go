@@ -57,8 +57,10 @@ func TestReputationNumberListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Reputation.Numbers.List(context.TODO(), telnyx.ReputationNumberListParams{
 		FilterEnterpriseID:        telnyx.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+		FilterOwnershipStatus:     telnyx.ReputationOwnershipStatusVerified,
 		FilterPhoneNumberContains: telnyx.String("+16035551234"),
 		FilterPhoneNumberEq:       telnyx.String("+16035551234"),
+		FilterSource:              telnyx.ReputationNumberSourceExternal,
 		PageNumber:                telnyx.Int(1),
 		PageSize:                  telnyx.Int(20),
 	})

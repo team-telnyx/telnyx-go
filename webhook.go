@@ -7992,6 +7992,317 @@ func (r *NumberOrderStatusUpdateWebhookEventMeta) UnmarshalJSON(data []byte) err
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type NumberReputationExternalVerificationStatusChangedWebhookEvent struct {
+	Data NumberReputationExternalVerificationStatusChangedWebhookEventData `json:"data" api:"required"`
+	Meta NumberReputationExternalVerificationStatusChangedWebhookEventMeta `json:"meta" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r NumberReputationExternalVerificationStatusChangedWebhookEvent) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *NumberReputationExternalVerificationStatusChangedWebhookEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type NumberReputationExternalVerificationStatusChangedWebhookEventData struct {
+	// Identifies the event; the same id is reused if the event is redelivered.
+	ID string `json:"id" api:"required" format:"uuid"`
+	// Any of "number_reputation.external_verification.status_changed".
+	EventType  string                                                                   `json:"event_type" api:"required"`
+	OccurredAt time.Time                                                                `json:"occurred_at" api:"required" format:"date-time"`
+	Payload    NumberReputationExternalVerificationStatusChangedWebhookEventDataPayload `json:"payload" api:"required"`
+	// Any of "event".
+	RecordType string `json:"record_type" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		EventType   respjson.Field
+		OccurredAt  respjson.Field
+		Payload     respjson.Field
+		RecordType  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r NumberReputationExternalVerificationStatusChangedWebhookEventData) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *NumberReputationExternalVerificationStatusChangedWebhookEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type NumberReputationExternalVerificationStatusChangedWebhookEventDataPayload struct {
+	EnterpriseID string `json:"enterprise_id" api:"required" format:"uuid"`
+	// Any of "reputation_external_verification".
+	RecordType string `json:"record_type" api:"required"`
+	// When the review decision was made. Always set: this event is only sent after a
+	// review.
+	ReviewedAt time.Time `json:"reviewed_at" api:"required" format:"date-time"`
+	// The review outcome. `pending` is never delivered: the event is sent only once
+	// the proof is reviewed.
+	//
+	// Any of "approved", "rejected".
+	Status string `json:"status" api:"required"`
+	// Set only when `status` is `rejected`.
+	RejectionReason string `json:"rejection_reason" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		EnterpriseID    respjson.Field
+		RecordType      respjson.Field
+		ReviewedAt      respjson.Field
+		Status          respjson.Field
+		RejectionReason respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r NumberReputationExternalVerificationStatusChangedWebhookEventDataPayload) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *NumberReputationExternalVerificationStatusChangedWebhookEventDataPayload) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type NumberReputationExternalVerificationStatusChangedWebhookEventMeta struct {
+	Attempt     int64  `json:"attempt" api:"required"`
+	DeliveredTo string `json:"delivered_to" api:"required" format:"uri"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Attempt     respjson.Field
+		DeliveredTo respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r NumberReputationExternalVerificationStatusChangedWebhookEventMeta) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *NumberReputationExternalVerificationStatusChangedWebhookEventMeta) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type NumberReputationNumberFlaggedWebhookEvent struct {
+	Data NumberReputationNumberFlaggedWebhookEventData `json:"data" api:"required"`
+	Meta NumberReputationNumberFlaggedWebhookEventMeta `json:"meta" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r NumberReputationNumberFlaggedWebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *NumberReputationNumberFlaggedWebhookEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type NumberReputationNumberFlaggedWebhookEventData struct {
+	// Identifies the event; the same id is reused if the event is redelivered.
+	ID string `json:"id" api:"required" format:"uuid"`
+	// Any of "number_reputation.number.flagged".
+	EventType  string                                               `json:"event_type" api:"required"`
+	OccurredAt time.Time                                            `json:"occurred_at" api:"required" format:"date-time"`
+	Payload    NumberReputationNumberFlaggedWebhookEventDataPayload `json:"payload" api:"required"`
+	// Any of "event".
+	RecordType string `json:"record_type" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		EventType   respjson.Field
+		OccurredAt  respjson.Field
+		Payload     respjson.Field
+		RecordType  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r NumberReputationNumberFlaggedWebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *NumberReputationNumberFlaggedWebhookEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type NumberReputationNumberFlaggedWebhookEventDataPayload struct {
+	// Confirm ownership before this time or the number is removed (carrier change) or
+	// flagged (re-verification).
+	ConfirmBy    time.Time `json:"confirm_by" api:"required" format:"date-time"`
+	EnterpriseID string    `json:"enterprise_id" api:"required" format:"uuid"`
+	// `carrier_changed`: the number moved to a different carrier.
+	// `reverification_due`: the periodic ownership re-verification is due.
+	//
+	// Any of "carrier_changed", "reverification_due".
+	FlagReason string `json:"flag_reason" api:"required"`
+	// Any of "pending_confirmation".
+	OwnershipStatus string `json:"ownership_status" api:"required"`
+	PhoneNumber     string `json:"phone_number" api:"required"`
+	// Any of "reputation_phone_number".
+	RecordType string `json:"record_type" api:"required"`
+	// Where the phone number is hosted. `telnyx`: in your Telnyx inventory.
+	// `external`: a number you own that is hosted with another provider.
+	//
+	// Any of "telnyx", "external".
+	Source ReputationNumberSource `json:"source" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ConfirmBy       respjson.Field
+		EnterpriseID    respjson.Field
+		FlagReason      respjson.Field
+		OwnershipStatus respjson.Field
+		PhoneNumber     respjson.Field
+		RecordType      respjson.Field
+		Source          respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r NumberReputationNumberFlaggedWebhookEventDataPayload) RawJSON() string { return r.JSON.raw }
+func (r *NumberReputationNumberFlaggedWebhookEventDataPayload) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type NumberReputationNumberFlaggedWebhookEventMeta struct {
+	Attempt     int64  `json:"attempt" api:"required"`
+	DeliveredTo string `json:"delivered_to" api:"required" format:"uri"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Attempt     respjson.Field
+		DeliveredTo respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r NumberReputationNumberFlaggedWebhookEventMeta) RawJSON() string { return r.JSON.raw }
+func (r *NumberReputationNumberFlaggedWebhookEventMeta) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type NumberReputationNumberRemovedWebhookEvent struct {
+	Data NumberReputationNumberRemovedWebhookEventData `json:"data" api:"required"`
+	Meta NumberReputationNumberRemovedWebhookEventMeta `json:"meta" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r NumberReputationNumberRemovedWebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *NumberReputationNumberRemovedWebhookEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type NumberReputationNumberRemovedWebhookEventData struct {
+	// Identifies the event; the same id is reused if the event is redelivered.
+	ID string `json:"id" api:"required" format:"uuid"`
+	// Any of "number_reputation.number.removed".
+	EventType  string                                               `json:"event_type" api:"required"`
+	OccurredAt time.Time                                            `json:"occurred_at" api:"required" format:"date-time"`
+	Payload    NumberReputationNumberRemovedWebhookEventDataPayload `json:"payload" api:"required"`
+	// Any of "event".
+	RecordType string `json:"record_type" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		EventType   respjson.Field
+		OccurredAt  respjson.Field
+		Payload     respjson.Field
+		RecordType  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r NumberReputationNumberRemovedWebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *NumberReputationNumberRemovedWebhookEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type NumberReputationNumberRemovedWebhookEventDataPayload struct {
+	EnterpriseID string `json:"enterprise_id" api:"required" format:"uuid"`
+	// Any of "removed".
+	OwnershipStatus string `json:"ownership_status" api:"required"`
+	PhoneNumber     string `json:"phone_number" api:"required"`
+	// Any of "reputation_phone_number".
+	RecordType string `json:"record_type" api:"required"`
+	// `ported_away`: you confirmed you no longer own it after a carrier change.
+	// `unconfirmed_ownership`: the confirmation deadline passed. `reassigned`: the
+	// number was reported as permanently disconnected. `customer_reported`: you
+	// reported that you no longer own it. Removing a number yourself with `DELETE`
+	// sends no event.
+	//
+	// Any of "ported_away", "unconfirmed_ownership", "reassigned",
+	// "customer_reported".
+	RemovalReason string    `json:"removal_reason" api:"required"`
+	RemovedAt     time.Time `json:"removed_at" api:"required" format:"date-time"`
+	// Where the phone number is hosted. `telnyx`: in your Telnyx inventory.
+	// `external`: a number you own that is hosted with another provider.
+	//
+	// Any of "telnyx", "external".
+	Source ReputationNumberSource `json:"source" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		EnterpriseID    respjson.Field
+		OwnershipStatus respjson.Field
+		PhoneNumber     respjson.Field
+		RecordType      respjson.Field
+		RemovalReason   respjson.Field
+		RemovedAt       respjson.Field
+		Source          respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r NumberReputationNumberRemovedWebhookEventDataPayload) RawJSON() string { return r.JSON.raw }
+func (r *NumberReputationNumberRemovedWebhookEventDataPayload) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type NumberReputationNumberRemovedWebhookEventMeta struct {
+	Attempt     int64  `json:"attempt" api:"required"`
+	DeliveredTo string `json:"delivered_to" api:"required" format:"uri"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Attempt     respjson.Field
+		DeliveredTo respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r NumberReputationNumberRemovedWebhookEventMeta) RawJSON() string { return r.JSON.raw }
+func (r *NumberReputationNumberRemovedWebhookEventMeta) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type RecordingAvailableWebhookEvent struct {
 	// Unique event id; deduplicate deliveries on it.
 	ID string `json:"id" api:"required"`
@@ -8253,9 +8564,12 @@ func (r *TranscriptionWebhookEvent) UnmarshalJSON(data []byte) error {
 // [FaxDelivered], [FaxFailed], [FaxMediaProcessed], [FaxQueued],
 // [FaxSendingStarted], [HostedNumberOrderEventWebhookEvent],
 // [InboundMessageWebhookEvent], [NumberOrderStatusUpdateWebhookEvent],
-// [RecordingAvailableWebhookEvent], [ReplacedLinkClickWebhookEvent],
-// [SessionStatusChangedWebhookEvent], [TranscriptCompletedWebhookEvent],
-// [TranscriptionWebhookEvent], [WhatsappAccountUpdate], [WhatsappMessageEcho].
+// [NumberReputationExternalVerificationStatusChangedWebhookEvent],
+// [NumberReputationNumberFlaggedWebhookEvent],
+// [NumberReputationNumberRemovedWebhookEvent], [RecordingAvailableWebhookEvent],
+// [ReplacedLinkClickWebhookEvent], [SessionStatusChangedWebhookEvent],
+// [TranscriptCompletedWebhookEvent], [TranscriptionWebhookEvent],
+// [WhatsappAccountUpdate], [WhatsappMessageEcho].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type UnsafeUnwrapWebhookEventUnion struct {
@@ -8285,10 +8599,13 @@ type UnsafeUnwrapWebhookEventUnion struct {
 	// [OutboundMessage], [FaxDeliveredData], [FaxFailedData], [FaxMediaProcessedData],
 	// [FaxQueuedData], [FaxSendingStartedData],
 	// [HostedNumberOrderEventWebhookEventData], [MessagingInboundMessage],
-	// [NumberOrderStatusUpdateWebhookEventData], [RecordingAvailableWebhookEventData],
-	// [ReplacedLinkClick], [SessionStatusChangedWebhookEventData],
-	// [TranscriptCompletedWebhookEventData], [Transcription],
-	// [WhatsappAccountUpdateData], [WhatsappMessageEchoData]
+	// [NumberOrderStatusUpdateWebhookEventData],
+	// [NumberReputationExternalVerificationStatusChangedWebhookEventData],
+	// [NumberReputationNumberFlaggedWebhookEventData],
+	// [NumberReputationNumberRemovedWebhookEventData],
+	// [RecordingAvailableWebhookEventData], [ReplacedLinkClick],
+	// [SessionStatusChangedWebhookEventData], [TranscriptCompletedWebhookEventData],
+	// [Transcription], [WhatsappAccountUpdateData], [WhatsappMessageEchoData]
 	Data       UnsafeUnwrapWebhookEventUnionData `json:"data"`
 	ID         string                            `json:"id"`
 	Event      string                            `json:"event"`
@@ -8318,7 +8635,10 @@ type UnsafeUnwrapWebhookEventUnion struct {
 	RecordType ConferenceFloorChangedRecordType `json:"record_type"`
 	// This field is a union of [DeliveryUpdateWebhookEventMeta], [FaxDeliveredMeta],
 	// [FaxFailedMeta], [FaxMediaProcessedMeta], [FaxQueuedMeta],
-	// [FaxSendingStartedMeta], [NumberOrderStatusUpdateWebhookEventMeta]
+	// [FaxSendingStartedMeta], [NumberOrderStatusUpdateWebhookEventMeta],
+	// [NumberReputationExternalVerificationStatusChangedWebhookEventMeta],
+	// [NumberReputationNumberFlaggedWebhookEventMeta],
+	// [NumberReputationNumberRemovedWebhookEventMeta]
 	Meta UnsafeUnwrapWebhookEventUnionMeta `json:"meta"`
 	JSON struct {
 		Data                respjson.Field
@@ -8682,6 +9002,21 @@ func (u UnsafeUnwrapWebhookEventUnion) AsNumberOrderEvent() (v NumberOrderStatus
 	return
 }
 
+func (u UnsafeUnwrapWebhookEventUnion) AsNumberReputationExternalVerificationStatusChangedWebhookEvent() (v NumberReputationExternalVerificationStatusChangedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsNumberReputationNumberFlaggedWebhookEvent() (v NumberReputationNumberFlaggedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsNumberReputationNumberRemovedWebhookEvent() (v NumberReputationNumberRemovedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
 func (u UnsafeUnwrapWebhookEventUnion) AsRecordingAvailableWebhookEvent() (v RecordingAvailableWebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
@@ -8767,7 +9102,10 @@ type UnsafeUnwrapWebhookEventUnionData struct {
 	// [FaxMediaProcessedDataPayload], [FaxQueuedDataPayload],
 	// [FaxSendingStartedDataPayload], [HostedNumberOrderEventWebhookEventDataPayload],
 	// [MessagingInboundMessagePayload],
-	// [NumberOrderStatusUpdateWebhookEventDataPayload], [TranscriptionPayload],
+	// [NumberOrderStatusUpdateWebhookEventDataPayload],
+	// [NumberReputationExternalVerificationStatusChangedWebhookEventDataPayload],
+	// [NumberReputationNumberFlaggedWebhookEventDataPayload],
+	// [NumberReputationNumberRemovedWebhookEventDataPayload], [TranscriptionPayload],
 	// [WhatsappAccountUpdateDataPayload], [WhatsappMessageEchoDataPayload]
 	Payload    UnsafeUnwrapWebhookEventUnionDataPayload `json:"payload"`
 	RecordType string                                   `json:"record_type"`
@@ -9082,7 +9420,31 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 	// This field is from variant [NumberOrderStatusUpdateWebhookEventDataPayload].
 	SubNumberOrdersIDs []string `json:"sub_number_orders_ids"`
 	// This field is from variant [NumberOrderStatusUpdateWebhookEventDataPayload].
-	UpdatedAt time.Time `json:"updated_at"`
+	UpdatedAt    time.Time `json:"updated_at"`
+	EnterpriseID string    `json:"enterprise_id"`
+	// This field is from variant
+	// [NumberReputationExternalVerificationStatusChangedWebhookEventDataPayload].
+	ReviewedAt time.Time `json:"reviewed_at"`
+	// This field is from variant
+	// [NumberReputationExternalVerificationStatusChangedWebhookEventDataPayload].
+	RejectionReason string `json:"rejection_reason"`
+	// This field is from variant
+	// [NumberReputationNumberFlaggedWebhookEventDataPayload].
+	ConfirmBy time.Time `json:"confirm_by"`
+	// This field is from variant
+	// [NumberReputationNumberFlaggedWebhookEventDataPayload].
+	FlagReason      string `json:"flag_reason"`
+	OwnershipStatus string `json:"ownership_status"`
+	PhoneNumber     string `json:"phone_number"`
+	// This field is from variant
+	// [NumberReputationNumberFlaggedWebhookEventDataPayload].
+	Source ReputationNumberSource `json:"source"`
+	// This field is from variant
+	// [NumberReputationNumberRemovedWebhookEventDataPayload].
+	RemovalReason string `json:"removal_reason"`
+	// This field is from variant
+	// [NumberReputationNumberRemovedWebhookEventDataPayload].
+	RemovedAt time.Time `json:"removed_at"`
 	// This field is from variant [TranscriptionPayload].
 	TranscriptionData TranscriptionPayloadTranscriptionData `json:"transcription_data"`
 	// This field is from variant [WhatsappAccountUpdateDataPayload].
@@ -9235,6 +9597,16 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 		RequirementsMet          respjson.Field
 		SubNumberOrdersIDs       respjson.Field
 		UpdatedAt                respjson.Field
+		EnterpriseID             respjson.Field
+		ReviewedAt               respjson.Field
+		RejectionReason          respjson.Field
+		ConfirmBy                respjson.Field
+		FlagReason               respjson.Field
+		OwnershipStatus          respjson.Field
+		PhoneNumber              respjson.Field
+		Source                   respjson.Field
+		RemovalReason            respjson.Field
+		RemovedAt                respjson.Field
 		TranscriptionData        respjson.Field
 		Event                    respjson.Field
 		WabaID                   respjson.Field
@@ -9692,9 +10064,12 @@ func (r *UnsafeUnwrapWebhookEventUnionMeta) UnmarshalJSON(data []byte) error {
 // [FaxDelivered], [FaxFailed], [FaxMediaProcessed], [FaxQueued],
 // [FaxSendingStarted], [HostedNumberOrderEventWebhookEvent],
 // [InboundMessageWebhookEvent], [NumberOrderStatusUpdateWebhookEvent],
-// [RecordingAvailableWebhookEvent], [ReplacedLinkClickWebhookEvent],
-// [SessionStatusChangedWebhookEvent], [TranscriptCompletedWebhookEvent],
-// [TranscriptionWebhookEvent], [WhatsappAccountUpdate], [WhatsappMessageEcho].
+// [NumberReputationExternalVerificationStatusChangedWebhookEvent],
+// [NumberReputationNumberFlaggedWebhookEvent],
+// [NumberReputationNumberRemovedWebhookEvent], [RecordingAvailableWebhookEvent],
+// [ReplacedLinkClickWebhookEvent], [SessionStatusChangedWebhookEvent],
+// [TranscriptCompletedWebhookEvent], [TranscriptionWebhookEvent],
+// [WhatsappAccountUpdate], [WhatsappMessageEcho].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type UnwrapWebhookEventUnion struct {
@@ -9724,10 +10099,13 @@ type UnwrapWebhookEventUnion struct {
 	// [OutboundMessage], [FaxDeliveredData], [FaxFailedData], [FaxMediaProcessedData],
 	// [FaxQueuedData], [FaxSendingStartedData],
 	// [HostedNumberOrderEventWebhookEventData], [MessagingInboundMessage],
-	// [NumberOrderStatusUpdateWebhookEventData], [RecordingAvailableWebhookEventData],
-	// [ReplacedLinkClick], [SessionStatusChangedWebhookEventData],
-	// [TranscriptCompletedWebhookEventData], [Transcription],
-	// [WhatsappAccountUpdateData], [WhatsappMessageEchoData]
+	// [NumberOrderStatusUpdateWebhookEventData],
+	// [NumberReputationExternalVerificationStatusChangedWebhookEventData],
+	// [NumberReputationNumberFlaggedWebhookEventData],
+	// [NumberReputationNumberRemovedWebhookEventData],
+	// [RecordingAvailableWebhookEventData], [ReplacedLinkClick],
+	// [SessionStatusChangedWebhookEventData], [TranscriptCompletedWebhookEventData],
+	// [Transcription], [WhatsappAccountUpdateData], [WhatsappMessageEchoData]
 	Data       UnwrapWebhookEventUnionData `json:"data"`
 	ID         string                      `json:"id"`
 	Event      string                      `json:"event"`
@@ -9757,7 +10135,10 @@ type UnwrapWebhookEventUnion struct {
 	RecordType ConferenceFloorChangedRecordType `json:"record_type"`
 	// This field is a union of [DeliveryUpdateWebhookEventMeta], [FaxDeliveredMeta],
 	// [FaxFailedMeta], [FaxMediaProcessedMeta], [FaxQueuedMeta],
-	// [FaxSendingStartedMeta], [NumberOrderStatusUpdateWebhookEventMeta]
+	// [FaxSendingStartedMeta], [NumberOrderStatusUpdateWebhookEventMeta],
+	// [NumberReputationExternalVerificationStatusChangedWebhookEventMeta],
+	// [NumberReputationNumberFlaggedWebhookEventMeta],
+	// [NumberReputationNumberRemovedWebhookEventMeta]
 	Meta UnwrapWebhookEventUnionMeta `json:"meta"`
 	JSON struct {
 		Data                respjson.Field
@@ -10121,6 +10502,21 @@ func (u UnwrapWebhookEventUnion) AsNumberOrderEvent() (v NumberOrderStatusUpdate
 	return
 }
 
+func (u UnwrapWebhookEventUnion) AsNumberReputationExternalVerificationStatusChangedWebhookEvent() (v NumberReputationExternalVerificationStatusChangedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnwrapWebhookEventUnion) AsNumberReputationNumberFlaggedWebhookEvent() (v NumberReputationNumberFlaggedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnwrapWebhookEventUnion) AsNumberReputationNumberRemovedWebhookEvent() (v NumberReputationNumberRemovedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
 func (u UnwrapWebhookEventUnion) AsRecordingAvailableWebhookEvent() (v RecordingAvailableWebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
@@ -10206,7 +10602,10 @@ type UnwrapWebhookEventUnionData struct {
 	// [FaxMediaProcessedDataPayload], [FaxQueuedDataPayload],
 	// [FaxSendingStartedDataPayload], [HostedNumberOrderEventWebhookEventDataPayload],
 	// [MessagingInboundMessagePayload],
-	// [NumberOrderStatusUpdateWebhookEventDataPayload], [TranscriptionPayload],
+	// [NumberOrderStatusUpdateWebhookEventDataPayload],
+	// [NumberReputationExternalVerificationStatusChangedWebhookEventDataPayload],
+	// [NumberReputationNumberFlaggedWebhookEventDataPayload],
+	// [NumberReputationNumberRemovedWebhookEventDataPayload], [TranscriptionPayload],
 	// [WhatsappAccountUpdateDataPayload], [WhatsappMessageEchoDataPayload]
 	Payload    UnwrapWebhookEventUnionDataPayload `json:"payload"`
 	RecordType string                             `json:"record_type"`
@@ -10521,7 +10920,31 @@ type UnwrapWebhookEventUnionDataPayload struct {
 	// This field is from variant [NumberOrderStatusUpdateWebhookEventDataPayload].
 	SubNumberOrdersIDs []string `json:"sub_number_orders_ids"`
 	// This field is from variant [NumberOrderStatusUpdateWebhookEventDataPayload].
-	UpdatedAt time.Time `json:"updated_at"`
+	UpdatedAt    time.Time `json:"updated_at"`
+	EnterpriseID string    `json:"enterprise_id"`
+	// This field is from variant
+	// [NumberReputationExternalVerificationStatusChangedWebhookEventDataPayload].
+	ReviewedAt time.Time `json:"reviewed_at"`
+	// This field is from variant
+	// [NumberReputationExternalVerificationStatusChangedWebhookEventDataPayload].
+	RejectionReason string `json:"rejection_reason"`
+	// This field is from variant
+	// [NumberReputationNumberFlaggedWebhookEventDataPayload].
+	ConfirmBy time.Time `json:"confirm_by"`
+	// This field is from variant
+	// [NumberReputationNumberFlaggedWebhookEventDataPayload].
+	FlagReason      string `json:"flag_reason"`
+	OwnershipStatus string `json:"ownership_status"`
+	PhoneNumber     string `json:"phone_number"`
+	// This field is from variant
+	// [NumberReputationNumberFlaggedWebhookEventDataPayload].
+	Source ReputationNumberSource `json:"source"`
+	// This field is from variant
+	// [NumberReputationNumberRemovedWebhookEventDataPayload].
+	RemovalReason string `json:"removal_reason"`
+	// This field is from variant
+	// [NumberReputationNumberRemovedWebhookEventDataPayload].
+	RemovedAt time.Time `json:"removed_at"`
 	// This field is from variant [TranscriptionPayload].
 	TranscriptionData TranscriptionPayloadTranscriptionData `json:"transcription_data"`
 	// This field is from variant [WhatsappAccountUpdateDataPayload].
@@ -10674,6 +11097,16 @@ type UnwrapWebhookEventUnionDataPayload struct {
 		RequirementsMet          respjson.Field
 		SubNumberOrdersIDs       respjson.Field
 		UpdatedAt                respjson.Field
+		EnterpriseID             respjson.Field
+		ReviewedAt               respjson.Field
+		RejectionReason          respjson.Field
+		ConfirmBy                respjson.Field
+		FlagReason               respjson.Field
+		OwnershipStatus          respjson.Field
+		PhoneNumber              respjson.Field
+		Source                   respjson.Field
+		RemovalReason            respjson.Field
+		RemovedAt                respjson.Field
 		TranscriptionData        respjson.Field
 		Event                    respjson.Field
 		WabaID                   respjson.Field

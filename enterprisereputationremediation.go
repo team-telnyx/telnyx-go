@@ -156,8 +156,9 @@ type RemediationRequest struct {
 	Status       RemediationStatus `json:"status" api:"required"`
 	UpdatedAt    time.Time         `json:"updated_at" api:"required" format:"date-time"`
 	ContactEmail string            `json:"contact_email" api:"nullable" format:"email"`
-	// Per-category buckets. Populated once results are available. Null while the
-	// request is still pending.
+	// Per-category buckets of phone numbers, populated once results are available.
+	// Empty lists are kept (not omitted) so consumers can iterate without
+	// null-checking each key.
 	Results          RemediationPerNumberResults `json:"results" api:"nullable"`
 	Tier1CompletedAt time.Time                   `json:"tier1_completed_at" api:"nullable" format:"date-time"`
 	Tier2CompletedAt time.Time                   `json:"tier2_completed_at" api:"nullable" format:"date-time"`
