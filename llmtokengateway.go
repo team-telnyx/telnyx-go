@@ -14,8 +14,14 @@ import (
 // the [NewLlmTokenGatewayService] method instead.
 type LlmTokenGatewayService struct {
 	Options []option.RequestOption
-	// Manage and report AI Gateway traffic.
+	// Manage and report AI Gateway usage.
 	Usage LlmTokenGatewayUsageService
+	// Manage and report AI Gateway usage.
+	Spend LlmTokenGatewaySpendService
+	// Manage and report AI Gateway usage.
+	TokenGroups LlmTokenGatewayTokenGroupService
+	// Manage and report AI Gateway usage.
+	TokenKeys LlmTokenGatewayTokenKeyService
 }
 
 // NewLlmTokenGatewayService generates a new service that applies the given options
@@ -25,5 +31,8 @@ func NewLlmTokenGatewayService(opts ...option.RequestOption) (r LlmTokenGatewayS
 	r = LlmTokenGatewayService{}
 	r.Options = opts
 	r.Usage = NewLlmTokenGatewayUsageService(opts...)
+	r.Spend = NewLlmTokenGatewaySpendService(opts...)
+	r.TokenGroups = NewLlmTokenGatewayTokenGroupService(opts...)
+	r.TokenKeys = NewLlmTokenGatewayTokenKeyService(opts...)
 	return
 }

@@ -40,6 +40,7 @@ func TestEmailTemplateNewWithOptionalParams(t *testing.T) {
 			},
 		},
 		Variables:      []string{"string"},
+		VariablesMode:  telnyx.EmailTemplateNewParamsVariablesModeAutomatic,
 		IdempotencyKey: telnyx.String("8e03978e-40d5-43e8-bc93-6894a57f9326"),
 	})
 	if err != nil {
@@ -104,7 +105,8 @@ func TestEmailTemplateUpdateWithOptionalParams(t *testing.T) {
 						Default:  telnyx.String("default"),
 					},
 				},
-				Variables: []string{"string"},
+				Variables:     []string{"string"},
+				VariablesMode: telnyx.UpdateEmailTemplateRequestVariablesModeAutomatic,
 			},
 		},
 	)
@@ -131,8 +133,12 @@ func TestEmailTemplateListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.EmailTemplates.List(context.TODO(), telnyx.EmailTemplateListParams{
-		PageCursor: telnyx.String("page_cursor"),
-		PageSize:   telnyx.Int(1),
+		FilterAutoescape:      telnyx.EmailTemplateListParamsFilterAutoescapeTrue,
+		FilterContentType:     telnyx.EmailTemplateListParamsFilterContentTypeHTMLAndText,
+		FilterQuery:           telnyx.String("filter[query]"),
+		FilterStrictVariables: telnyx.EmailTemplateListParamsFilterStrictVariablesTrue,
+		PageCursor:            telnyx.String("page_cursor"),
+		PageSize:              telnyx.Int(1),
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -227,7 +233,8 @@ func TestEmailTemplateReplaceWithOptionalParams(t *testing.T) {
 						Default:  telnyx.String("default"),
 					},
 				},
-				Variables: []string{"string"},
+				Variables:     []string{"string"},
+				VariablesMode: telnyx.UpdateEmailTemplateRequestVariablesModeAutomatic,
 			},
 		},
 	)

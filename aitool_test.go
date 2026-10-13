@@ -43,9 +43,14 @@ func TestAIToolNewWithOptionalParams(t *testing.T) {
 		},
 		Pay: telnyx.PayToolParams{
 			ConnectorName: "connector_name",
-			Currency:      telnyx.String("currency"),
-			Description:   telnyx.String("description"),
-			PaymentMethod: telnyx.String("payment_method"),
+			ConnectorParameters: map[string]any{
+				"campaignid":   "bar",
+				"customer_ref": "bar",
+			},
+			Currency:       telnyx.String("currency"),
+			Description:    telnyx.String("description"),
+			PaymentMethod:  telnyx.String("payment_method"),
+			ValidCardTypes: []string{"visa", "mastercard"},
 		},
 		Retrieval: map[string]any{
 			"foo": "bar",
@@ -129,9 +134,14 @@ func TestAIToolUpdateWithOptionalParams(t *testing.T) {
 			},
 			Pay: telnyx.PayToolParams{
 				ConnectorName: "connector_name",
-				Currency:      telnyx.String("currency"),
-				Description:   telnyx.String("description"),
-				PaymentMethod: telnyx.String("payment_method"),
+				ConnectorParameters: map[string]any{
+					"campaignid":   "bar",
+					"customer_ref": "bar",
+				},
+				Currency:       telnyx.String("currency"),
+				Description:    telnyx.String("description"),
+				PaymentMethod:  telnyx.String("payment_method"),
+				ValidCardTypes: []string{"visa", "mastercard"},
 			},
 			Retrieval: map[string]any{
 				"foo": "bar",

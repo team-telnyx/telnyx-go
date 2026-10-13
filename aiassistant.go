@@ -5419,6 +5419,11 @@ type InferenceEmbeddingVoiceSettings struct {
 	// Lower values create a broader emotional range; higher values produce more
 	// consistent, monotonous output. Only applicable when using ElevenLabs.
 	Temperature float64 `json:"temperature"`
+	// Optional sound played to the caller while the assistant runs a tool (for example
+	// a webhook or MCP tool). It replaces the background audio until the tool
+	// responds, then the background audio resumes. Defaults to null, which plays no
+	// sound; send `null` on update to clear it. Not played in conference calls.
+	ToolCallAudio InferenceEmbeddingVoiceSettingsToolCallAudioUnion `json:"tool_call_audio" api:"nullable"`
 	// Amplifies similarity to the original speaker voice. Increases computational load
 	// and latency slightly. Only applicable when using ElevenLabs.
 	UseSpeakerBoost bool `json:"use_speaker_boost"`
@@ -5438,6 +5443,7 @@ type InferenceEmbeddingVoiceSettings struct {
 		Speed           respjson.Field
 		Style           respjson.Field
 		Temperature     respjson.Field
+		ToolCallAudio   respjson.Field
 		UseSpeakerBoost respjson.Field
 		VoiceSpeed      respjson.Field
 		ExtraFields     map[string]respjson.Field
@@ -5633,6 +5639,93 @@ const (
 	InferenceEmbeddingVoiceSettingsLanguageBoostAfrikaans  InferenceEmbeddingVoiceSettingsLanguageBoost = "Afrikaans"
 )
 
+// InferenceEmbeddingVoiceSettingsToolCallAudioUnion contains all possible
+// properties and values from
+// [InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0],
+// [InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type InferenceEmbeddingVoiceSettingsToolCallAudioUnion struct {
+	Type  string `json:"type"`
+	Value string `json:"value"`
+	// This field is from variant
+	// [InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0].
+	Volume float64 `json:"volume"`
+	JSON   struct {
+		Type   respjson.Field
+		Value  respjson.Field
+		Volume respjson.Field
+		raw    string
+	} `json:"-"`
+}
+
+func (u InferenceEmbeddingVoiceSettingsToolCallAudioUnion) AsInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0() (v InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u InferenceEmbeddingVoiceSettingsToolCallAudioUnion) AsInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1() (v InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u InferenceEmbeddingVoiceSettingsToolCallAudioUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *InferenceEmbeddingVoiceSettingsToolCallAudioUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0 struct {
+	// Select from predefined media options.
+	//
+	// Any of "predefined_media".
+	Type string `json:"type" api:"required"`
+	// The predefined media to use. `typing` plays a keyboard typing sound.
+	//
+	// Any of "typing".
+	Value string `json:"value" api:"required"`
+	// Volume level for the predefined media. Supports values from 0.0 to 1.0 in 0.1
+	// increments. `0.0` plays no sound.
+	Volume float64 `json:"volume"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type        respjson.Field
+		Value       respjson.Field
+		Volume      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0) RawJSON() string { return r.JSON.raw }
+func (r *InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1 struct {
+	// Provide a direct URL to an MP3 file. The audio loops while the tool runs.
+	//
+	// Any of "media_url".
+	Type string `json:"type" api:"required"`
+	// HTTPS URL to an MP3 file.
+	Value string `json:"value" api:"required" format:"uri"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1) RawJSON() string { return r.JSON.raw }
+func (r *InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // The property Voice is required.
 type InferenceEmbeddingVoiceSettingsParam struct {
 	// The voice to be used by the voice assistant. Check the full list of
@@ -5692,6 +5785,11 @@ type InferenceEmbeddingVoiceSettingsParam struct {
 	// "Hungarian", "Norwegian", "Slovenian", "Catalan", "Nynorsk", "Tamil",
 	// "Afrikaans".
 	LanguageBoost InferenceEmbeddingVoiceSettingsLanguageBoost `json:"language_boost,omitzero"`
+	// Optional sound played to the caller while the assistant runs a tool (for example
+	// a webhook or MCP tool). It replaces the background audio until the tool
+	// responds, then the background audio resumes. Defaults to null, which plays no
+	// sound; send `null` on update to clear it. Not played in conference calls.
+	ToolCallAudio InferenceEmbeddingVoiceSettingsToolCallAudioUnionParam `json:"tool_call_audio,omitzero"`
 	// Optional background audio to play on the call. Use a predefined media bed, or
 	// supply a looped MP3 URL. If a media URL is chosen in the portal, customers can
 	// preview it before saving.
@@ -5858,6 +5956,125 @@ func (r *InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember2Param) Unmars
 func init() {
 	apijson.RegisterFieldValidator[InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember2Param](
 		"type", "media_name",
+	)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type InferenceEmbeddingVoiceSettingsToolCallAudioUnionParam struct {
+	OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0 *InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0Param `json:",omitzero,inline"`
+	OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1 *InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1Param `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u InferenceEmbeddingVoiceSettingsToolCallAudioUnionParam) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0, u.OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1)
+}
+func (u *InferenceEmbeddingVoiceSettingsToolCallAudioUnionParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *InferenceEmbeddingVoiceSettingsToolCallAudioUnionParam) asAny() any {
+	if !param.IsOmitted(u.OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0) {
+		return u.OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0
+	} else if !param.IsOmitted(u.OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1) {
+		return u.OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u InferenceEmbeddingVoiceSettingsToolCallAudioUnionParam) GetVolume() *float64 {
+	if vt := u.OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0; vt != nil && vt.Volume.Valid() {
+		return &vt.Volume.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u InferenceEmbeddingVoiceSettingsToolCallAudioUnionParam) GetType() *string {
+	if vt := u.OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1; vt != nil {
+		return (*string)(&vt.Type)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u InferenceEmbeddingVoiceSettingsToolCallAudioUnionParam) GetValue() *string {
+	if vt := u.OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0; vt != nil {
+		return (*string)(&vt.Value)
+	} else if vt := u.OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1; vt != nil {
+		return (*string)(&vt.Value)
+	}
+	return nil
+}
+
+func init() {
+	apijson.RegisterUnion[InferenceEmbeddingVoiceSettingsToolCallAudioUnionParam](
+		"",
+		apijson.Variant[InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0Param](gjson.JSON),
+		apijson.Variant[InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1Param](gjson.JSON),
+	)
+}
+
+// The properties Type, Value are required.
+type InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0Param struct {
+	// Select from predefined media options.
+	//
+	// Any of "predefined_media".
+	Type string `json:"type,omitzero" api:"required"`
+	// The predefined media to use. `typing` plays a keyboard typing sound.
+	//
+	// Any of "typing".
+	Value string `json:"value,omitzero" api:"required"`
+	// Volume level for the predefined media. Supports values from 0.0 to 1.0 in 0.1
+	// increments. `0.0` plays no sound.
+	Volume param.Opt[float64] `json:"volume,omitzero"`
+	paramObj
+}
+
+func (r InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0Param) MarshalJSON() (data []byte, err error) {
+	type shadow InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0Param
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0Param) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0Param](
+		"type", "predefined_media",
+	)
+	apijson.RegisterFieldValidator[InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0Param](
+		"value", "typing",
+	)
+}
+
+// The properties Type, Value are required.
+type InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1Param struct {
+	// Provide a direct URL to an MP3 file. The audio loops while the tool runs.
+	//
+	// Any of "media_url".
+	Type string `json:"type,omitzero" api:"required"`
+	// HTTPS URL to an MP3 file.
+	Value string `json:"value" api:"required" format:"uri"`
+	paramObj
+}
+
+func (r InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1Param) MarshalJSON() (data []byte, err error) {
+	type shadow InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1Param
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1Param) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1Param](
+		"type", "media_url",
 	)
 }
 

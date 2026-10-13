@@ -51,6 +51,7 @@ func TestCallDialWithOptionalParams(t *testing.T) {
 			InitialSilenceMillis:            telnyx.Int(1000),
 			MaximumNumberOfWords:            telnyx.Int(1000),
 			MaximumWordLengthMillis:         telnyx.Int(2000),
+			PromptEndTimeoutMillis:          telnyx.Int(5000),
 			SilenceThreshold:                telnyx.Int(512),
 			TotalAnalysisTimeMillis:         telnyx.Int(5000),
 		},
@@ -174,8 +175,10 @@ func TestCallDialWithOptionalParams(t *testing.T) {
 				Language:            "en-US",
 				SpeechModel:         telnyx.String("nova-3"),
 				TranscriptionEngine: telnyx.ConversationRelayLanguageTranscriptionEngineDeepgram,
-				TranscriptionEngineConfig: map[string]any{
-					"transcription_model": "bar",
+				TranscriptionEngineConfig: telnyx.ConversationRelayTranscriptionEngineConfigParam{
+					EagerEotThreshold: telnyx.Float(0.5),
+					EotThreshold:      telnyx.Float(0.5),
+					InterimResults:    telnyx.Bool(true),
 				},
 				TranscriptionProvider: telnyx.String("Deepgram"),
 				TtsProvider:           telnyx.String("telnyx"),
@@ -193,10 +196,10 @@ func TestCallDialWithOptionalParams(t *testing.T) {
 				"model_id": "bar",
 			},
 			TranscriptionEngine: telnyx.ConversationRelayEmbeddedConfigTranscriptionEngineGoogle,
-			TranscriptionEngineConfig: map[string]any{
-				"transcription_model": "bar",
-				"interim_results":     "bar",
-				"keywords_boosting":   "bar",
+			TranscriptionEngineConfig: telnyx.ConversationRelayTranscriptionEngineConfigParam{
+				EagerEotThreshold: telnyx.Float(0.5),
+				EotThreshold:      telnyx.Float(0.5),
+				InterimResults:    telnyx.Bool(true),
 			},
 			TtsProvider: telnyx.String("telnyx"),
 			Voice:       telnyx.String("Telnyx.KokoroTTS.af"),

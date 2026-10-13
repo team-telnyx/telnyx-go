@@ -264,9 +264,14 @@ type ModelMetadata struct {
 	// Whether the model accepts image inputs in chat completions (multimodal vision
 	// support).
 	IsVisionSupported bool `json:"is_vision_supported"`
-	// Maximum completion (output) tokens the model may generate per request. This
-	// value caps the Chat Completions `max_tokens` default and any larger explicit
-	// value on that model. `null` if unconstrained beyond `context_length`.
+	// Model-specific completion-token ceiling. For Chat Completions, this value clamps
+	// explicit output limits and the 8192 default when that default applies. Models
+	// excluded from the default leave an omitted or null output limit unset for the
+	// serving engine, even when this metadata declares a ceiling; see
+	// `ChatCompletionRequest.max_tokens` for the hosted default and exclusion lists.
+	// This field does not report the effective default. `null` means no separate
+	// completion ceiling is declared; input and output together must still fit
+	// `context_length`.
 	MaxCompletionTokens int64 `json:"max_completion_tokens" api:"nullable"`
 	// Object type. Always `model`.
 	Object string `json:"object"`

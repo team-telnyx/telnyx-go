@@ -202,6 +202,13 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 								Speed:           telnyx.Float(0),
 								Style:           telnyx.Float(0),
 								Temperature:     telnyx.Float(0),
+								ToolCallAudio: telnyx.InferenceEmbeddingVoiceSettingsToolCallAudioUnionParam{
+									OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0: &telnyx.InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0Param{
+										Type:   "predefined_media",
+										Value:  "typing",
+										Volume: telnyx.Float(0.5),
+									},
+								},
 								UseSpeakerBoost: telnyx.Bool(true),
 								VoiceSpeed:      telnyx.Float(0),
 							},
@@ -328,6 +335,13 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 								Speed:           telnyx.Float(0),
 								Style:           telnyx.Float(0),
 								Temperature:     telnyx.Float(0),
+								ToolCallAudio: telnyx.InferenceEmbeddingVoiceSettingsToolCallAudioUnionParam{
+									OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0: &telnyx.InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0Param{
+										Type:   "predefined_media",
+										Value:  "typing",
+										Volume: telnyx.Float(0.5),
+									},
+								},
 								UseSpeakerBoost: telnyx.Bool(true),
 								VoiceSpeed:      telnyx.Float(0),
 							},
@@ -610,6 +624,13 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 					Speed:           telnyx.Float(0),
 					Style:           telnyx.Float(0),
 					Temperature:     telnyx.Float(0),
+					ToolCallAudio: telnyx.InferenceEmbeddingVoiceSettingsToolCallAudioUnionParam{
+						OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0: &telnyx.InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0Param{
+							Type:   "predefined_media",
+							Value:  "typing",
+							Volume: telnyx.Float(0.5),
+						},
+					},
 					UseSpeakerBoost: telnyx.Bool(true),
 					VoiceSpeed:      telnyx.Float(0),
 				},

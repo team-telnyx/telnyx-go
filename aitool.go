@@ -116,20 +116,35 @@ type PayToolParamsResp struct {
 	// The name of the pay connector configured in the Telnyx API. Must reference an
 	// existing pay connector for this organization.
 	ConnectorName string `json:"connector_name" api:"required"`
+	// Custom key/value parameters forwarded to the pay connector as `parameters` in
+	// the processor request. String values may use `{{dynamic_variable}}` templating,
+	// resolved per call.
+	ConnectorParameters map[string]any `json:"connector_parameters"`
 	// Default currency for payments processed by this tool.
 	Currency string `json:"currency"`
-	// Optional description of the pay tool that will be passed to the assistant.
+	// Description of the pay tool shown to the assistant so it knows when to call the
+	// tool. Not sent to the payment connector — the per-call `description` argument
+	// the assistant passes is what reaches the processor.
 	Description string `json:"description" api:"nullable"`
 	// Default payment method for payments processed by this tool.
 	PaymentMethod string `json:"payment_method"`
+	// Restricts accepted card numbers to the listed card types. When the caller enters
+	// a card number that does not match one of the listed types, Pay treats the input
+	// as invalid and re-prompts for the card number.
+	//
+	// Any of "visa", "mastercard", "amex", "maestro", "discover", "optima", "jcb",
+	// "diners-club", "enroute".
+	ValidCardTypes []string `json:"valid_card_types"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ConnectorName respjson.Field
-		Currency      respjson.Field
-		Description   respjson.Field
-		PaymentMethod respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
+		ConnectorName       respjson.Field
+		ConnectorParameters respjson.Field
+		Currency            respjson.Field
+		Description         respjson.Field
+		PaymentMethod       respjson.Field
+		ValidCardTypes      respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 
@@ -153,12 +168,25 @@ type PayToolParams struct {
 	// The name of the pay connector configured in the Telnyx API. Must reference an
 	// existing pay connector for this organization.
 	ConnectorName string `json:"connector_name" api:"required"`
-	// Optional description of the pay tool that will be passed to the assistant.
+	// Description of the pay tool shown to the assistant so it knows when to call the
+	// tool. Not sent to the payment connector — the per-call `description` argument
+	// the assistant passes is what reaches the processor.
 	Description param.Opt[string] `json:"description,omitzero"`
 	// Default currency for payments processed by this tool.
 	Currency param.Opt[string] `json:"currency,omitzero"`
 	// Default payment method for payments processed by this tool.
 	PaymentMethod param.Opt[string] `json:"payment_method,omitzero"`
+	// Custom key/value parameters forwarded to the pay connector as `parameters` in
+	// the processor request. String values may use `{{dynamic_variable}}` templating,
+	// resolved per call.
+	ConnectorParameters map[string]any `json:"connector_parameters,omitzero"`
+	// Restricts accepted card numbers to the listed card types. When the caller enters
+	// a card number that does not match one of the listed types, Pay treats the input
+	// as invalid and re-prompts for the card number.
+	//
+	// Any of "visa", "mastercard", "amex", "maestro", "discover", "optima", "jcb",
+	// "diners-club", "enroute".
+	ValidCardTypes []string `json:"valid_card_types,omitzero"`
 	paramObj
 }
 
