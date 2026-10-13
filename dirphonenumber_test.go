@@ -32,7 +32,6 @@ func TestDirPhoneNumberListWithOptionalParams(t *testing.T) {
 		telnyx.DirPhoneNumberListParams{
 			PageNumber: telnyx.Int(1),
 			PageSize:   telnyx.Int(20),
-			Status:     telnyx.DirPhoneNumberStatusSubmitted,
 		},
 	)
 	if err != nil {

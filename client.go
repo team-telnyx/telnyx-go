@@ -416,6 +416,8 @@ type Client struct {
 	//     own.
 	SpendLimits     SpendLimitService
 	LlmTokenGateway LlmTokenGatewayService
+	// UAC connection operations
+	SipRegistrationStatus SipRegistrationStatusService
 }
 
 // DefaultClientOptions read from the environment (TELNYX_API_KEY,
@@ -649,6 +651,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.MachinePayments = NewMachinePaymentService(opts...)
 	r.SpendLimits = NewSpendLimitService(opts...)
 	r.LlmTokenGateway = NewLlmTokenGatewayService(opts...)
+	r.SipRegistrationStatus = NewSipRegistrationStatusService(opts...)
 
 	return
 }

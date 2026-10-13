@@ -277,7 +277,7 @@ func (r *DirService) GetBpoAuthorizations(ctx context.Context, dirID string, que
 //
 // Returns `400` from `submitted`/`in_review`/`permanently_rejected`. Returns `400`
 // if the DIR's business and financial references have not been submitted. Returns
-// `409` if the DIR has an unresolved infringement claim.
+// `400` if the DIR has an unresolved infringement claim.
 func (r *DirService) Submit(ctx context.Context, dirID string, opts ...option.RequestOption) (res *DirWrapped, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if dirID == "" {
@@ -728,10 +728,12 @@ type DirGetBpoAuthorizationsResponseData struct {
 	//
 	// Any of "bpo_authorization".
 	RecordType string `json:"record_type" api:"required"`
-	// Review state of this authorization. `pending` on create or when the Letter of
-	// Authorization is re-uploaded; an admin moves it to `approved` or `rejected`.
-	// Only an `approved` authorization adds the BPO to this DIR's authorized callers
-	// in the branded calling registry.
+	// Review state of this authorization. `pending` when the authorization is first
+	// added, or when you send a different `loa_document_id` for this BPO in
+	// `bpo_authorizations` (uploading a document alone changes nothing). Approving the
+	// DIR approves its pending authorizations; an admin can also approve or reject one
+	// on its own. Only an `approved` authorization adds the BPO to this DIR's
+	// authorized callers in the branded calling registry.
 	//
 	// Any of "pending", "approved", "rejected".
 	Status string `json:"status" api:"required"`

@@ -283,11 +283,6 @@ type DirPhoneNumberListParams struct {
 	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
 	// Items per page. Maximum 250; values above are clamped to 250.
 	PageSize param.Opt[int64] `query:"page[size],omitzero" json:"-"`
-	// Filter by phone-number status.
-	//
-	// Any of "submitted", "in_review", "verified", "unsuccessful", "suspended",
-	// "expired", "permanently_rejected".
-	Status DirPhoneNumberStatus `query:"status,omitzero" json:"-"`
 	paramObj
 }
 
