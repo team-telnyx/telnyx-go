@@ -902,8 +902,9 @@ type DirNewLoaParams struct {
 	// Telephone numbers to authorize on the DIR, in `+E164` format (`+` followed by
 	// 10-15 digits). Max 15 per request.
 	PhoneNumbers []string `json:"phone_numbers,omitzero" api:"required"`
-	// Third-party reseller / partner managing the enterprise's phone numbers. Omit
-	// when the enterprise works directly with Telnyx.
+	// Third-party reseller / partner managing the enterprise's phone numbers on its
+	// behalf, such as a call center (BPO) acting for a client. Omit when the
+	// enterprise manages its own numbers.
 	Agent AgentInputParam `json:"agent,omitzero"`
 	// Optional. When provided the rendered PDF embeds the signature image, printed
 	// name, and signed-at date. When absent the PDF is returned unsigned so the
