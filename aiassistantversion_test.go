@@ -79,6 +79,11 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 					PollIntervalMs: telnyx.Int(500),
 					TimeoutMs:      telnyx.Int(30000),
 				}},
+				AvatarSettings: telnyx.AvatarSettingsRequestParam{
+					AvatarID:     telnyx.AvatarSettingsRequestAvatarIDElena,
+					BackgroundID: telnyx.AvatarSettingsRequestBackgroundIDOffice,
+					Model:        telnyx.AvatarSettingsRequestModelFoxtrot1,
+				},
 				ConversationFlow: telnyx.ConversationFlowReqParam{
 					Nodes: []telnyx.ConversationFlowReqNodesUnionParam{{
 						OfPrompt: &telnyx.FlowNodeReqParam{

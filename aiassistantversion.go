@@ -173,6 +173,9 @@ type UpdateAssistantParam struct {
 	// capability for the conversation; it does not fail the call. Omit this field to
 	// leave the assistant's agents unchanged; send an empty array to remove them all.
 	A2aAgents []AssistantA2AAgentParam `json:"a2a_agents,omitzero"`
+	// **Beta:** Configuration for the Telnyx open-source avatar provider. The launch
+	// catalog supports six avatars and office, studio, or reception backgrounds.
+	AvatarSettings AvatarSettingsRequestParam `json:"avatar_settings,omitzero"`
 	// Conversation flow as supplied by API clients (create / update).
 	//
 	// A directed graph of `FlowNodeReq` connected by `FlowEdge`s. Validation enforces

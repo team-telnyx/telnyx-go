@@ -3484,6 +3484,68 @@ const (
 	AuthenticationMethodCertificate AuthenticationMethod = "certificate"
 )
 
+// **Beta:** Configuration for the Telnyx open-source avatar provider. The launch
+// catalog supports six avatars and office, studio, or reception backgrounds.
+//
+// The properties AvatarID, BackgroundID, Model, Provider are required.
+type AvatarSettingsRequestParam struct {
+	// The Telnyx avatar to render.
+	//
+	// Any of "elena", "ben", "jordan", "lin", "avery", "raphael".
+	AvatarID AvatarSettingsRequestAvatarID `json:"avatar_id,omitzero" api:"required"`
+	// The background to render.
+	//
+	// Any of "office", "studio", "reception".
+	BackgroundID AvatarSettingsRequestBackgroundID `json:"background_id,omitzero" api:"required"`
+	// Required avatar model identifier, separate from `avatar_id`. The supported value
+	// is `foxtrot-1`. Omission, null, and unsupported model identifiers are rejected.
+	//
+	// Any of "foxtrot-1".
+	Model AvatarSettingsRequestModel `json:"model,omitzero" api:"required"`
+	// Selects the Telnyx open-source avatar provider.
+	//
+	// This field can be elided, and will marshal its zero value as "telnyx".
+	Provider constant.Telnyx `json:"provider" default:"telnyx"`
+	paramObj
+}
+
+func (r AvatarSettingsRequestParam) MarshalJSON() (data []byte, err error) {
+	type shadow AvatarSettingsRequestParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AvatarSettingsRequestParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The Telnyx avatar to render.
+type AvatarSettingsRequestAvatarID string
+
+const (
+	AvatarSettingsRequestAvatarIDElena   AvatarSettingsRequestAvatarID = "elena"
+	AvatarSettingsRequestAvatarIDBen     AvatarSettingsRequestAvatarID = "ben"
+	AvatarSettingsRequestAvatarIDJordan  AvatarSettingsRequestAvatarID = "jordan"
+	AvatarSettingsRequestAvatarIDLin     AvatarSettingsRequestAvatarID = "lin"
+	AvatarSettingsRequestAvatarIDAvery   AvatarSettingsRequestAvatarID = "avery"
+	AvatarSettingsRequestAvatarIDRaphael AvatarSettingsRequestAvatarID = "raphael"
+)
+
+// The background to render.
+type AvatarSettingsRequestBackgroundID string
+
+const (
+	AvatarSettingsRequestBackgroundIDOffice    AvatarSettingsRequestBackgroundID = "office"
+	AvatarSettingsRequestBackgroundIDStudio    AvatarSettingsRequestBackgroundID = "studio"
+	AvatarSettingsRequestBackgroundIDReception AvatarSettingsRequestBackgroundID = "reception"
+)
+
+// Required avatar model identifier, separate from `avatar_id`. The supported value
+// is `foxtrot-1`. Omission, null, and unsupported model identifiers are rejected.
+type AvatarSettingsRequestModel string
+
+const (
+	AvatarSettingsRequestModelFoxtrot1 AvatarSettingsRequestModel = "foxtrot-1"
+)
+
 // Conversation flow as returned by the API.
 type ConversationFlow struct {
 	// All nodes in the flow.
@@ -5138,6 +5200,9 @@ type InferenceEmbedding struct {
 	// fetches combined. An agent whose card cannot be fetched costs the assistant that
 	// capability for the conversation; it does not fail the call.
 	A2aAgents []AssistantA2AAgent `json:"a2a_agents"`
+	// **Beta:** Configuration for the Telnyx open-source avatar provider. The launch
+	// catalog supports six avatars and office, studio, or reception backgrounds.
+	AvatarSettings TelnyxAvatarSettings `json:"avatar_settings" api:"nullable"`
 	// Conversation flow as returned by the API.
 	ConversationFlow ConversationFlow `json:"conversation_flow"`
 	// Splits the conversation between a frontend model that talks to the caller and a
@@ -5247,6 +5312,7 @@ type InferenceEmbedding struct {
 		Model                            respjson.Field
 		Name                             respjson.Field
 		A2aAgents                        respjson.Field
+		AvatarSettings                   respjson.Field
 		ConversationFlow                 respjson.Field
 		DelegationSettings               respjson.Field
 		Description                      respjson.Field
@@ -7864,6 +7930,70 @@ func init() {
 	)
 }
 
+// **Beta:** Configuration for the Telnyx open-source avatar provider. The launch
+// catalog supports six avatars and office, studio, or reception backgrounds.
+type TelnyxAvatarSettings struct {
+	// The Telnyx avatar to render.
+	//
+	// Any of "elena", "ben", "jordan", "lin", "avery", "raphael".
+	AvatarID TelnyxAvatarSettingsAvatarID `json:"avatar_id" api:"required"`
+	// The background to render.
+	//
+	// Any of "office", "studio", "reception".
+	BackgroundID TelnyxAvatarSettingsBackgroundID `json:"background_id" api:"required"`
+	// Required avatar model identifier, separate from `avatar_id`. The supported value
+	// is `foxtrot-1`. Omission, null, and unsupported model identifiers are rejected.
+	//
+	// Any of "foxtrot-1".
+	Model TelnyxAvatarSettingsModel `json:"model" api:"required"`
+	// Selects the Telnyx open-source avatar provider.
+	Provider constant.Telnyx `json:"provider" default:"telnyx"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AvatarID     respjson.Field
+		BackgroundID respjson.Field
+		Model        respjson.Field
+		Provider     respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TelnyxAvatarSettings) RawJSON() string { return r.JSON.raw }
+func (r *TelnyxAvatarSettings) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The Telnyx avatar to render.
+type TelnyxAvatarSettingsAvatarID string
+
+const (
+	TelnyxAvatarSettingsAvatarIDElena   TelnyxAvatarSettingsAvatarID = "elena"
+	TelnyxAvatarSettingsAvatarIDBen     TelnyxAvatarSettingsAvatarID = "ben"
+	TelnyxAvatarSettingsAvatarIDJordan  TelnyxAvatarSettingsAvatarID = "jordan"
+	TelnyxAvatarSettingsAvatarIDLin     TelnyxAvatarSettingsAvatarID = "lin"
+	TelnyxAvatarSettingsAvatarIDAvery   TelnyxAvatarSettingsAvatarID = "avery"
+	TelnyxAvatarSettingsAvatarIDRaphael TelnyxAvatarSettingsAvatarID = "raphael"
+)
+
+// The background to render.
+type TelnyxAvatarSettingsBackgroundID string
+
+const (
+	TelnyxAvatarSettingsBackgroundIDOffice    TelnyxAvatarSettingsBackgroundID = "office"
+	TelnyxAvatarSettingsBackgroundIDStudio    TelnyxAvatarSettingsBackgroundID = "studio"
+	TelnyxAvatarSettingsBackgroundIDReception TelnyxAvatarSettingsBackgroundID = "reception"
+)
+
+// Required avatar model identifier, separate from `avatar_id`. The supported value
+// is `foxtrot-1`. Omission, null, and unsupported model identifiers are rejected.
+type TelnyxAvatarSettingsModel string
+
+const (
+	TelnyxAvatarSettingsModelFoxtrot1 TelnyxAvatarSettingsModel = "foxtrot-1"
+)
+
 // A standalone tool step in a conversation flow, as returned by the API.
 type ToolNode struct {
 	// Caller-supplied unique identifier for this node within the flow.
@@ -9497,6 +9627,9 @@ type AIAssistantNewParams struct {
 	// fetches combined. An agent whose card cannot be fetched costs the assistant that
 	// capability for the conversation; it does not fail the call.
 	A2aAgents []AssistantA2AAgentParam `json:"a2a_agents,omitzero"`
+	// **Beta:** Configuration for the Telnyx open-source avatar provider. The launch
+	// catalog supports six avatars and office, studio, or reception backgrounds.
+	AvatarSettings AvatarSettingsRequestParam `json:"avatar_settings,omitzero"`
 	// Conversation flow as supplied by API clients (create / update).
 	//
 	// A directed graph of `FlowNodeReq` connected by `FlowEdge`s. Validation enforces
@@ -9649,6 +9782,9 @@ type AIAssistantUpdateParams struct {
 	// capability for the conversation; it does not fail the call. Omit this field to
 	// leave the assistant's agents unchanged; send an empty array to remove them all.
 	A2aAgents []AssistantA2AAgentParam `json:"a2a_agents,omitzero"`
+	// **Beta:** Configuration for the Telnyx open-source avatar provider. The launch
+	// catalog supports six avatars and office, studio, or reception backgrounds.
+	AvatarSettings AvatarSettingsRequestParam `json:"avatar_settings,omitzero"`
 	// Conversation flow as supplied by API clients (create / update).
 	//
 	// A directed graph of `FlowNodeReq` connected by `FlowEdge`s. Validation enforces
