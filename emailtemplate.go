@@ -79,7 +79,11 @@ func (r *EmailTemplateService) Update(ctx context.Context, id string, body Email
 	return res, err
 }
 
-// Lists templates sorted newest first by `created_at desc, id desc`.
+// Lists templates sorted newest first by `created_at desc, id desc`. Optional
+// filters match a case-insensitive literal name/subject query, stored body
+// presence, and the `strict_variables` and `autoescape` settings. Filters
+// intersect, remain scoped to the authenticated account, and apply before cursor
+// pagination. Invalid filter names or values return 400.
 func (r *EmailTemplateService) List(ctx context.Context, query EmailTemplateListParams, opts ...option.RequestOption) (res *pagination.EmailCursorPagination[EmailTemplate], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -97,7 +101,11 @@ func (r *EmailTemplateService) List(ctx context.Context, query EmailTemplateList
 	return res, nil
 }
 
-// Lists templates sorted newest first by `created_at desc, id desc`.
+// Lists templates sorted newest first by `created_at desc, id desc`. Optional
+// filters match a case-insensitive literal name/subject query, stored body
+// presence, and the `strict_variables` and `autoescape` settings. Filters
+// intersect, remain scoped to the authenticated account, and apply before cursor
+// pagination. Invalid filter names or values return 400.
 func (r *EmailTemplateService) ListAutoPaging(ctx context.Context, query EmailTemplateListParams, opts ...option.RequestOption) *pagination.EmailCursorPaginationAutoPager[EmailTemplate] {
 	return pagination.NewEmailCursorPaginationAutoPager(r.List(ctx, query, opts...))
 }
@@ -149,6 +157,23 @@ func (r *EmailTemplateService) Replace(ctx context.Context, id string, body Emai
 }
 
 type EmailTemplate struct {
+	Subject string `json:"subject" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Subject     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+	EmailTemplateCommon
+}
+
+// Returns the unmodified JSON received from the API
+func (r EmailTemplate) RawJSON() string { return r.JSON.raw }
+func (r *EmailTemplate) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type EmailTemplateCommon struct {
 	ID string `json:"id" api:"required" format:"uuid"`
 	// Whether HTML autoescaping is enabled for this template. When `true`, only
 	// rendered `html_body` expression output is HTML-escaped at the output boundary;
@@ -158,19 +183,25 @@ type EmailTemplate struct {
 	HTMLBody   string    `json:"html_body" api:"required"`
 	Name       string    `json:"name" api:"required"`
 	// Any of "email_template".
-	RecordType EmailTemplateRecordType `json:"record_type" api:"required"`
+	RecordType EmailTemplateCommonRecordType `json:"record_type" api:"required"`
 	// Whether strict variable validation is enabled for this template. When `true`,
 	// sends and renders that are missing a variable marked `required: true` in
 	// `variable_schema` fail with 422 naming the variable.
 	StrictVariables bool      `json:"strict_variables" api:"required"`
-	Subject         string    `json:"subject" api:"required"`
 	TextBody        string    `json:"text_body" api:"required"`
 	UpdatedAt       time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// Structured variable requirements, or `null` when the template uses only the
 	// legacy `variables` array.
-	VariableSchema map[string]EmailTemplateVariableSchema `json:"variable_schema" api:"required"`
-	// Legacy unstructured variable names. This path remains supported unchanged.
+	VariableSchema map[string]EmailTemplateCommonVariableSchema `json:"variable_schema" api:"required"`
+	// Persisted variable names. In `explicit` mode this array preserves the exact
+	// provided order, duplicates, and string contents; in `automatic` mode it is
+	// derived from the stored subject and bodies.
 	Variables []string `json:"variables" api:"required"`
+	// `automatic` when variable names are derived from template content; `explicit`
+	// when `variables` is the exact manually managed array.
+	//
+	// Any of "automatic", "explicit".
+	VariablesMode EmailTemplateCommonVariablesMode `json:"variables_mode" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID              respjson.Field
@@ -180,29 +211,29 @@ type EmailTemplate struct {
 		Name            respjson.Field
 		RecordType      respjson.Field
 		StrictVariables respjson.Field
-		Subject         respjson.Field
 		TextBody        respjson.Field
 		UpdatedAt       respjson.Field
 		VariableSchema  respjson.Field
 		Variables       respjson.Field
+		VariablesMode   respjson.Field
 		ExtraFields     map[string]respjson.Field
 		raw             string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r EmailTemplate) RawJSON() string { return r.JSON.raw }
-func (r *EmailTemplate) UnmarshalJSON(data []byte) error {
+func (r EmailTemplateCommon) RawJSON() string { return r.JSON.raw }
+func (r *EmailTemplateCommon) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type EmailTemplateRecordType string
+type EmailTemplateCommonRecordType string
 
 const (
-	EmailTemplateRecordTypeEmailTemplate EmailTemplateRecordType = "email_template"
+	EmailTemplateCommonRecordTypeEmailTemplate EmailTemplateCommonRecordType = "email_template"
 )
 
-type EmailTemplateVariableSchema struct {
+type EmailTemplateCommonVariableSchema struct {
 	// Whether the variable must be supplied when strict variable validation is
 	// enabled.
 	Required bool `json:"required" api:"required"`
@@ -218,10 +249,19 @@ type EmailTemplateVariableSchema struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r EmailTemplateVariableSchema) RawJSON() string { return r.JSON.raw }
-func (r *EmailTemplateVariableSchema) UnmarshalJSON(data []byte) error {
+func (r EmailTemplateCommonVariableSchema) RawJSON() string { return r.JSON.raw }
+func (r *EmailTemplateCommonVariableSchema) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// `automatic` when variable names are derived from template content; `explicit`
+// when `variables` is the exact manually managed array.
+type EmailTemplateCommonVariablesMode string
+
+const (
+	EmailTemplateCommonVariablesModeAutomatic EmailTemplateCommonVariablesMode = "automatic"
+	EmailTemplateCommonVariablesModeExplicit  EmailTemplateCommonVariablesMode = "explicit"
+)
 
 type EmailTemplateResponse struct {
 	Data EmailTemplate `json:"data" api:"required"`
@@ -254,7 +294,19 @@ type UpdateEmailTemplateRequestParam struct {
 	// Structured variable requirements. Required variables cannot define defaults;
 	// invalid combinations return 422. Set to `null` to clear the schema.
 	VariableSchema map[string]UpdateEmailTemplateRequestVariableSchemaParam `json:"variable_schema,omitzero"`
-	Variables      []string                                                 `json:"variables,omitzero"`
+	// Persisted variable names. In `automatic` mode a non-null array is rejected; in
+	// `explicit` mode this is the exact manual array and each item is limited to 255
+	// Unicode code points.
+	Variables []string `json:"variables,omitzero"`
+	// Controls how `variables` is maintained. Setting `automatic` re-extracts
+	// immediately from the effective subject, HTML body, and text body and rejects a
+	// simultaneous non-null array. Setting `explicit` requires the exact non-null
+	// array, including valid `[]`. With the mode omitted, a non-null array selects
+	// explicit mode, null selects automatic mode, and omitting both fields preserves
+	// the current mode. Source-content changes re-extract only in automatic mode.
+	//
+	// Any of "automatic", "explicit".
+	VariablesMode UpdateEmailTemplateRequestVariablesMode `json:"variables_mode,omitzero"`
 	paramObj
 }
 
@@ -284,10 +336,23 @@ func (r *UpdateEmailTemplateRequestVariableSchemaParam) UnmarshalJSON(data []byt
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Controls how `variables` is maintained. Setting `automatic` re-extracts
+// immediately from the effective subject, HTML body, and text body and rejects a
+// simultaneous non-null array. Setting `explicit` requires the exact non-null
+// array, including valid `[]`. With the mode omitted, a non-null array selects
+// explicit mode, null selects automatic mode, and omitting both fields preserves
+// the current mode. Source-content changes re-extract only in automatic mode.
+type UpdateEmailTemplateRequestVariablesMode string
+
+const (
+	UpdateEmailTemplateRequestVariablesModeAutomatic UpdateEmailTemplateRequestVariablesMode = "automatic"
+	UpdateEmailTemplateRequestVariablesModeExplicit  UpdateEmailTemplateRequestVariablesMode = "explicit"
+)
+
 type EmailTemplateRenderResponse struct {
 	// Template object with `subject`, `html_body`, and `text_body` replaced by their
-	// Liquid-rendered values. All other template fields (id, name, variables, etc.)
-	// remain unchanged.
+	// Liquid-rendered values. Rendered content is not limited by the stored
+	// template-field lengths. All other template fields remain unchanged.
 	Data EmailTemplateRenderResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -304,15 +369,17 @@ func (r *EmailTemplateRenderResponse) UnmarshalJSON(data []byte) error {
 }
 
 // Template object with `subject`, `html_body`, and `text_body` replaced by their
-// Liquid-rendered values. All other template fields (id, name, variables, etc.)
-// remain unchanged.
+// Liquid-rendered values. Rendered content is not limited by the stored
+// template-field lengths. All other template fields remain unchanged.
 type EmailTemplateRenderResponseData struct {
+	Subject string `json:"subject" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Subject     respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
-	EmailTemplate
+	EmailTemplateCommon
 }
 
 // Returns the unmodified JSON received from the API
@@ -355,8 +422,19 @@ type EmailTemplateNewParams struct {
 	// such as `false` and `0` pass (they are present, not empty). Optional variables
 	// fall back to their `default` when absent.
 	VariableSchema map[string]EmailTemplateNewParamsVariableSchema `json:"variable_schema,omitzero"`
-	// Template variables. Auto-extracted from subject/body fields when absent.
+	// Persisted variable names. In `automatic` mode a non-null array is rejected; in
+	// `explicit` mode this is the exact manual array and each item is limited to 255
+	// Unicode code points.
 	Variables []string `json:"variables,omitzero"`
+	// Controls how `variables` is maintained. If both fields are omitted (or
+	// `variables` is null), the template uses `automatic` mode and extracts variable
+	// names from the effective subject, HTML body, and text body. A non-null
+	// `variables` array with no mode selects `explicit`. `automatic` rejects a
+	// simultaneous non-null array; `explicit` requires a non-null array, including
+	// valid `[]`, and preserves its exact order, duplicates, and string contents.
+	//
+	// Any of "automatic", "explicit".
+	VariablesMode EmailTemplateNewParamsVariablesMode `json:"variables_mode,omitzero"`
 	paramObj
 }
 
@@ -386,6 +464,19 @@ func (r *EmailTemplateNewParamsVariableSchema) UnmarshalJSON(data []byte) error 
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Controls how `variables` is maintained. If both fields are omitted (or
+// `variables` is null), the template uses `automatic` mode and extracts variable
+// names from the effective subject, HTML body, and text body. A non-null
+// `variables` array with no mode selects `explicit`. `automatic` rejects a
+// simultaneous non-null array; `explicit` requires a non-null array, including
+// valid `[]`, and preserves its exact order, duplicates, and string contents.
+type EmailTemplateNewParamsVariablesMode string
+
+const (
+	EmailTemplateNewParamsVariablesModeAutomatic EmailTemplateNewParamsVariablesMode = "automatic"
+	EmailTemplateNewParamsVariablesModeExplicit  EmailTemplateNewParamsVariablesMode = "explicit"
+)
+
 type EmailTemplateUpdateParams struct {
 	UpdateEmailTemplateRequest UpdateEmailTemplateRequestParam
 	paramObj
@@ -399,11 +490,34 @@ func (r *EmailTemplateUpdateParams) UnmarshalJSON(data []byte) error {
 }
 
 type EmailTemplateListParams struct {
+	// Case-insensitive literal substring match over the template `name` or stored
+	// `subject` only; bodies are never searched. `%`, `_`, and `\` are literal
+	// characters with no wildcard meaning. A blank value is treated as omitted.
+	FilterQuery param.Opt[string] `query:"filter[query],omitzero" json:"-"`
 	// Opaque URL-safe Base64 cursor returned by a previous list response.
 	PageCursor param.Opt[string] `query:"page_cursor,omitzero" json:"-"`
 	// Number of results to return. Defaults to 25; maximum is 100. Invalid values are
 	// clamped to the valid range.
 	PageSize param.Opt[int64] `query:"page_size,omitzero" json:"-"`
+	// Exact match on the template's `autoescape` option. Only the exact query strings
+	// `true` and `false` are accepted; other values, including blank, return 400.
+	//
+	// Any of "true", "false".
+	FilterAutoescape EmailTemplateListParamsFilterAutoescape `query:"filter[autoescape],omitzero" json:"-"`
+	// Matches templates by stored body presence. `html_and_text` requires both an HTML
+	// and text body; `html_only` requires HTML and no text body; `text_only` requires
+	// text and no HTML body; `no_body` requires neither. `null` and exactly `""` count
+	// as absent; whitespace-only strings count as content. An empty or unsupported
+	// value returns a 400 response.
+	//
+	// Any of "html_and_text", "html_only", "text_only", "no_body".
+	FilterContentType EmailTemplateListParamsFilterContentType `query:"filter[content_type],omitzero" json:"-"`
+	// Exact match on the template's `strict_variables` option. Only the exact query
+	// strings `true` and `false` are accepted; other values, including blank,
+	// return 400.
+	//
+	// Any of "true", "false".
+	FilterStrictVariables EmailTemplateListParamsFilterStrictVariables `query:"filter[strict_variables],omitzero" json:"-"`
 	paramObj
 }
 
@@ -415,6 +529,39 @@ func (r EmailTemplateListParams) URLQuery() (v url.Values, err error) {
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
+
+// Exact match on the template's `autoescape` option. Only the exact query strings
+// `true` and `false` are accepted; other values, including blank, return 400.
+type EmailTemplateListParamsFilterAutoescape string
+
+const (
+	EmailTemplateListParamsFilterAutoescapeTrue  EmailTemplateListParamsFilterAutoescape = "true"
+	EmailTemplateListParamsFilterAutoescapeFalse EmailTemplateListParamsFilterAutoescape = "false"
+)
+
+// Matches templates by stored body presence. `html_and_text` requires both an HTML
+// and text body; `html_only` requires HTML and no text body; `text_only` requires
+// text and no HTML body; `no_body` requires neither. `null` and exactly `""` count
+// as absent; whitespace-only strings count as content. An empty or unsupported
+// value returns a 400 response.
+type EmailTemplateListParamsFilterContentType string
+
+const (
+	EmailTemplateListParamsFilterContentTypeHTMLAndText EmailTemplateListParamsFilterContentType = "html_and_text"
+	EmailTemplateListParamsFilterContentTypeHTMLOnly    EmailTemplateListParamsFilterContentType = "html_only"
+	EmailTemplateListParamsFilterContentTypeTextOnly    EmailTemplateListParamsFilterContentType = "text_only"
+	EmailTemplateListParamsFilterContentTypeNoBody      EmailTemplateListParamsFilterContentType = "no_body"
+)
+
+// Exact match on the template's `strict_variables` option. Only the exact query
+// strings `true` and `false` are accepted; other values, including blank,
+// return 400.
+type EmailTemplateListParamsFilterStrictVariables string
+
+const (
+	EmailTemplateListParamsFilterStrictVariablesTrue  EmailTemplateListParamsFilterStrictVariables = "true"
+	EmailTemplateListParamsFilterStrictVariablesFalse EmailTemplateListParamsFilterStrictVariables = "false"
+)
 
 type EmailTemplateRenderParams struct {
 	// Variables for Liquid template rendering. Non-object values are silently treated

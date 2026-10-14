@@ -92,14 +92,23 @@ func (r *EnterpriseReputationNumberService) ListAutoPaging(ctx context.Context, 
 }
 
 // Add up to 100 phone numbers to reputation monitoring on this enterprise. Each
-// must be in E.164 format (`+1NPANXXXXXX` for US/CA) and belong to your Telnyx
-// phone-number inventory.
+// must be in E.164 format (`+1NPANXXXXXX` for US/CA). A number in your Telnyx
+// phone-number inventory is accepted as `source: telnyx`; a number that is not is
+// treated as hosted with another provider and must meet the requirements below.
 //
 // **Prerequisite**: reputation must already be enabled on this enterprise (see
 // `POST .../reputation`).
 //
 // **Pricing:** This is a billable action. See https://telnyx.com/pricing/numbers
 // for current pricing.
+//
+// A phone number that is not in your Telnyx inventory is treated as a number
+// hosted with another provider (`source: external`). It must be a US local number,
+// and the enterprise's ownership proof must be approved first
+// (`POST /enterprises/{enterprise_id}/reputation/external_verification`);
+// otherwise the request fails with a 400 whose `detail` contains
+// `external_verification_required`. Ownership of such numbers is checked every
+// day.
 func (r *EnterpriseReputationNumberService) Associate(ctx context.Context, enterpriseID string, body EnterpriseReputationNumberAssociateParams, opts ...option.RequestOption) (res *ReputationPhoneNumberList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if enterpriseID == "" {
@@ -129,6 +138,31 @@ func (r *EnterpriseReputationNumberService) Disassociate(ctx context.Context, ph
 	return err
 }
 
+// Answer an ownership question about a phone number hosted with another provider.
+//
+// Send `still_own: true` to confirm you still own a number whose
+// `ownership_status` is `pending_confirmation` or `flagged`; its status returns to
+// `verified` and, after a carrier change, the new carrier becomes the one on
+// record.
+//
+// Send `still_own: false` to report that you no longer own the number. It is
+// removed from Number Reputation immediately, whatever its current status, and the
+// response shows it with `ownership_status: removed`.
+func (r *EnterpriseReputationNumberService) OwnershipConfirm(ctx context.Context, phoneNumber string, params EnterpriseReputationNumberOwnershipConfirmParams, opts ...option.RequestOption) (res *ReputationPhoneNumberWithReputation, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if params.EnterpriseID == "" {
+		err = errors.New("missing required enterprise_id parameter")
+		return nil, err
+	}
+	if phoneNumber == "" {
+		err = errors.New("missing required phone_number parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("enterprises/%s/reputation/numbers/%s/ownership_confirm", params.EnterpriseID, url.PathEscape(phoneNumber))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
+	return res, err
+}
+
 // Immediately refresh the stored reputation data for the listed numbers. This is
 // in addition to the periodic refresh determined by `check_frequency`. Up to 100
 // numbers per call. The response carries the kicked-off jobs; the actual refresh
@@ -147,25 +181,110 @@ func (r *EnterpriseReputationNumberService) Refresh(ctx context.Context, enterpr
 	return res, err
 }
 
+// Get the ownership status of a phone number, when it was last checked, the
+// carrier recorded as its baseline, and the history of ownership events.
+func (r *EnterpriseReputationNumberService) GetOwnership(ctx context.Context, phoneNumber string, query EnterpriseReputationNumberGetOwnershipParams, opts ...option.RequestOption) (res *EnterpriseReputationNumberGetOwnershipResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if query.EnterpriseID == "" {
+		err = errors.New("missing required enterprise_id parameter")
+		return nil, err
+	}
+	if phoneNumber == "" {
+		err = errors.New("missing required phone_number parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("enterprises/%s/reputation/numbers/%s/ownership", query.EnterpriseID, url.PathEscape(phoneNumber))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return res, err
+}
+
+// Where the phone number is hosted. `telnyx`: in your Telnyx inventory.
+// `external`: a number you own that is hosted with another provider.
+type ReputationNumberSource string
+
+const (
+	ReputationNumberSourceTelnyx   ReputationNumberSource = "telnyx"
+	ReputationNumberSourceExternal ReputationNumberSource = "external"
+)
+
+// Result of ongoing ownership checks. `verified`: the number is with the carrier
+// on record. `pending_confirmation`: the number's carrier changed, or a periodic
+// ownership re-verification is due; confirm you still own it before `confirm_by`.
+// `flagged`: a periodic re-verification went unanswered; the number stays
+// monitored and is not removed, but confirm ownership
+// (`POST .../ownership_confirm`) to return it to `verified`. `removed`: the number
+// is no longer monitored; returned by `POST .../ownership_confirm` with
+// `still_own: false`, and when listing numbers with
+// `filter[ownership_status]=removed`.
+type ReputationOwnershipStatus string
+
+const (
+	ReputationOwnershipStatusVerified            ReputationOwnershipStatus = "verified"
+	ReputationOwnershipStatusFlagged             ReputationOwnershipStatus = "flagged"
+	ReputationOwnershipStatusPendingConfirmation ReputationOwnershipStatus = "pending_confirmation"
+	ReputationOwnershipStatusRemoved             ReputationOwnershipStatus = "removed"
+)
+
 type ReputationPhoneNumber struct {
-	ID           string    `json:"id" format:"uuid"`
+	ID string `json:"id" format:"uuid"`
+	// Deadline to confirm you still own the number. Set only while `ownership_status`
+	// is `pending_confirmation`.
+	ConfirmBy    time.Time `json:"confirm_by" api:"nullable" format:"date-time"`
 	CreatedAt    time.Time `json:"created_at" format:"date-time"`
 	EnterpriseID string    `json:"enterprise_id" format:"uuid"`
+	// Why the number's ownership was flagged. `carrier_changed` when an ownership
+	// check found the number with a different carrier.
+	FlagReason string `json:"flag_reason" api:"nullable"`
+	// Result of ongoing ownership checks. `verified`: the number is with the carrier
+	// on record. `pending_confirmation`: the number's carrier changed, or a periodic
+	// ownership re-verification is due; confirm you still own it before `confirm_by`.
+	// `flagged`: a periodic re-verification went unanswered; the number stays
+	// monitored and is not removed, but confirm ownership
+	// (`POST .../ownership_confirm`) to return it to `verified`. `removed`: the number
+	// is no longer monitored; returned by `POST .../ownership_confirm` with
+	// `still_own: false`, and when listing numbers with
+	// `filter[ownership_status]=removed`.
+	//
+	// Any of "verified", "flagged", "pending_confirmation", "removed".
+	OwnershipStatus ReputationOwnershipStatus `json:"ownership_status"`
 	// E.164 with leading `+`.
 	PhoneNumber string `json:"phone_number"`
-	// `null` until the first refresh has been collected for this number.
+	// Why a number was removed. `ported_away`: you confirmed the number left your
+	// control after a carrier change. `unconfirmed_ownership`: a carrier change was
+	// not confirmed before the deadline. `reassigned`: the number was reported as
+	// permanently disconnected. `customer_reported`: you reported that you no longer
+	// own the number. `customer_removed`: you removed the number.
+	//
+	// Any of "ported_away", "unconfirmed_ownership", "reassigned",
+	// "customer_reported", "customer_removed".
+	RemovalReason ReputationPhoneNumberRemovalReason `json:"removal_reason" api:"nullable"`
+	// When the number was removed. Set only for removed numbers.
+	RemovedAt time.Time `json:"removed_at" api:"nullable" format:"date-time"`
+	// Reputation snapshot for a phone number. Each metric is a 0–100 score;
+	// `spam_risk` is a coarse bucket. Field set may grow over time - read by key.
 	ReputationData shared.ReputationData `json:"reputation_data" api:"nullable"`
-	UpdatedAt      time.Time             `json:"updated_at" format:"date-time"`
+	// Where the phone number is hosted. `telnyx`: in your Telnyx inventory.
+	// `external`: a number you own that is hosted with another provider.
+	//
+	// Any of "telnyx", "external".
+	Source    ReputationNumberSource `json:"source"`
+	UpdatedAt time.Time              `json:"updated_at" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID             respjson.Field
-		CreatedAt      respjson.Field
-		EnterpriseID   respjson.Field
-		PhoneNumber    respjson.Field
-		ReputationData respjson.Field
-		UpdatedAt      respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
+		ID              respjson.Field
+		ConfirmBy       respjson.Field
+		CreatedAt       respjson.Field
+		EnterpriseID    respjson.Field
+		FlagReason      respjson.Field
+		OwnershipStatus respjson.Field
+		PhoneNumber     respjson.Field
+		RemovalReason   respjson.Field
+		RemovedAt       respjson.Field
+		ReputationData  respjson.Field
+		Source          respjson.Field
+		UpdatedAt       respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
 	} `json:"-"`
 }
 
@@ -174,6 +293,21 @@ func (r ReputationPhoneNumber) RawJSON() string { return r.JSON.raw }
 func (r *ReputationPhoneNumber) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// Why a number was removed. `ported_away`: you confirmed the number left your
+// control after a carrier change. `unconfirmed_ownership`: a carrier change was
+// not confirmed before the deadline. `reassigned`: the number was reported as
+// permanently disconnected. `customer_reported`: you reported that you no longer
+// own the number. `customer_removed`: you removed the number.
+type ReputationPhoneNumberRemovalReason string
+
+const (
+	ReputationPhoneNumberRemovalReasonPortedAway           ReputationPhoneNumberRemovalReason = "ported_away"
+	ReputationPhoneNumberRemovalReasonUnconfirmedOwnership ReputationPhoneNumberRemovalReason = "unconfirmed_ownership"
+	ReputationPhoneNumberRemovalReasonReassigned           ReputationPhoneNumberRemovalReason = "reassigned"
+	ReputationPhoneNumberRemovalReasonCustomerReported     ReputationPhoneNumberRemovalReason = "customer_reported"
+	ReputationPhoneNumberRemovalReasonCustomerRemoved      ReputationPhoneNumberRemovalReason = "customer_removed"
+)
 
 type ReputationPhoneNumberList struct {
 	Data []ReputationPhoneNumber `json:"data" api:"required"`
@@ -273,6 +407,97 @@ func (r *EnterpriseReputationNumberRefreshResponseDataResult) UnmarshalJSON(data
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type EnterpriseReputationNumberGetOwnershipResponse struct {
+	Data EnterpriseReputationNumberGetOwnershipResponseData `json:"data" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EnterpriseReputationNumberGetOwnershipResponse) RawJSON() string { return r.JSON.raw }
+func (r *EnterpriseReputationNumberGetOwnershipResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type EnterpriseReputationNumberGetOwnershipResponseData struct {
+	// Service provider ID (SPID) of the carrier that held the number when its
+	// ownership was last established.
+	BaselineCarrier    string    `json:"baseline_carrier" api:"nullable"`
+	BaselineRecordedAt time.Time `json:"baseline_recorded_at" api:"nullable" format:"date-time"`
+	ConfirmBy          time.Time `json:"confirm_by" api:"nullable" format:"date-time"`
+	FlagReason         string    `json:"flag_reason" api:"nullable"`
+	// Ownership events, most recent first.
+	History []EnterpriseReputationNumberGetOwnershipResponseDataHistory `json:"history"`
+	// When ownership of the number was last checked.
+	LastCheckedAt time.Time `json:"last_checked_at" api:"nullable" format:"date-time"`
+	// Result of ongoing ownership checks. `verified`: the number is with the carrier
+	// on record. `pending_confirmation`: the number's carrier changed, or a periodic
+	// ownership re-verification is due; confirm you still own it before `confirm_by`.
+	// `flagged`: a periodic re-verification went unanswered; the number stays
+	// monitored and is not removed, but confirm ownership
+	// (`POST .../ownership_confirm`) to return it to `verified`. `removed`: the number
+	// is no longer monitored; returned by `POST .../ownership_confirm` with
+	// `still_own: false`, and when listing numbers with
+	// `filter[ownership_status]=removed`.
+	//
+	// Any of "verified", "flagged", "pending_confirmation", "removed".
+	OwnershipStatus ReputationOwnershipStatus `json:"ownership_status"`
+	PhoneNumber     string                    `json:"phone_number"`
+	// Where the phone number is hosted. `telnyx`: in your Telnyx inventory.
+	// `external`: a number you own that is hosted with another provider.
+	//
+	// Any of "telnyx", "external".
+	Source ReputationNumberSource `json:"source"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		BaselineCarrier    respjson.Field
+		BaselineRecordedAt respjson.Field
+		ConfirmBy          respjson.Field
+		FlagReason         respjson.Field
+		History            respjson.Field
+		LastCheckedAt      respjson.Field
+		OwnershipStatus    respjson.Field
+		PhoneNumber        respjson.Field
+		Source             respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EnterpriseReputationNumberGetOwnershipResponseData) RawJSON() string { return r.JSON.raw }
+func (r *EnterpriseReputationNumberGetOwnershipResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type EnterpriseReputationNumberGetOwnershipResponseDataHistory struct {
+	// `added`, `check`, `flag`, `confirm` or `removed`.
+	EventType  string    `json:"event_type"`
+	OccurredAt time.Time `json:"occurred_at" format:"date-time"`
+	// What the event found or did, for example `unchanged` or `carrier_changed`.
+	Outcome string `json:"outcome" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		EventType   respjson.Field
+		OccurredAt  respjson.Field
+		Outcome     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EnterpriseReputationNumberGetOwnershipResponseDataHistory) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *EnterpriseReputationNumberGetOwnershipResponseDataHistory) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type EnterpriseReputationNumberGetParams struct {
 	EnterpriseID string `path:"enterprise_id" api:"required" format:"uuid" json:"-"`
 	// When true, fetches fresh reputation data (incurs API cost). When false
@@ -299,6 +524,16 @@ type EnterpriseReputationNumberListParams struct {
 	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
 	// Items per page. Default 10. Maximum 250; values above are clamped to 250.
 	PageSize param.Opt[int64] `query:"page[size],omitzero" json:"-"`
+	// Only numbers with this ownership status. `removed` lists the numbers that were
+	// removed, each with its `removal_reason` and `removed_at`; removed numbers are
+	// not returned otherwise.
+	//
+	// Any of "verified", "flagged", "pending_confirmation", "removed".
+	FilterOwnershipStatus ReputationOwnershipStatus `query:"filter[ownership_status],omitzero" json:"-"`
+	// Only numbers with this source.
+	//
+	// Any of "telnyx", "external".
+	FilterSource ReputationNumberSource `query:"filter[source],omitzero" json:"-"`
 	paramObj
 }
 
@@ -330,6 +565,24 @@ type EnterpriseReputationNumberDisassociateParams struct {
 	paramObj
 }
 
+type EnterpriseReputationNumberOwnershipConfirmParams struct {
+	EnterpriseID string `path:"enterprise_id" api:"required" format:"uuid" json:"-"`
+	// `true` confirms you still own the number. `false` reports that you no longer own
+	// it and removes it from Number Reputation.
+	StillOwn bool `json:"still_own" api:"required"`
+	// Optional id of an uploaded document supporting the confirmation.
+	EvidenceDocumentID param.Opt[string] `json:"evidence_document_id,omitzero"`
+	paramObj
+}
+
+func (r EnterpriseReputationNumberOwnershipConfirmParams) MarshalJSON() (data []byte, err error) {
+	type shadow EnterpriseReputationNumberOwnershipConfirmParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *EnterpriseReputationNumberOwnershipConfirmParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type EnterpriseReputationNumberRefreshParams struct {
 	// Phone numbers to refresh reputation data for. 1–100 numbers per request, each in
 	// E.164 format. Reputation refreshes are subject to per-enterprise rate limits.
@@ -343,4 +596,9 @@ func (r EnterpriseReputationNumberRefreshParams) MarshalJSON() (data []byte, err
 }
 func (r *EnterpriseReputationNumberRefreshParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+type EnterpriseReputationNumberGetOwnershipParams struct {
+	EnterpriseID string `path:"enterprise_id" api:"required" format:"uuid" json:"-"`
+	paramObj
 }

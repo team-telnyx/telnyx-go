@@ -103,7 +103,7 @@ func TestCallActionAnswerWithOptionalParams(t *testing.T) {
 					LlmAPIKeyRef: telnyx.String("llm_api_key_ref"),
 					Model:        telnyx.String("model"),
 				},
-				Greeting:     telnyx.String("Hi, I'm your assistant. How can I help?"),
+				Greeting:     telnyx.String("greeting"),
 				Instructions: telnyx.String("You are a friendly voice assistant."),
 				LlmAPIKeyRef: telnyx.String("my_llm_api_key"),
 				McpServers: []map[string]any{{
@@ -116,13 +116,20 @@ func TestCallActionAnswerWithOptionalParams(t *testing.T) {
 				},
 				OpenAIAPIKeyRef: telnyx.String("my_openai_api_key"),
 				Tools: []telnyx.CallAssistantRequestToolsUnionParam{{
-					OfHangup: &telnyx.HangupToolParam{
-						Hangup: telnyx.HangupToolParams{
-							Description: telnyx.String("description"),
+					OfBookAppointment: &shared.BookAppointmentToolParam{
+						BookAppointment: shared.BookAppointmentToolParams{
+							APIKeyRef:        "my_calcom_api_key",
+							EventTypeID:      0,
+							AttendeeName:     telnyx.String("attendee_name"),
+							AttendeeTimezone: telnyx.String("attendee_timezone"),
 						},
-						Type: telnyx.HangupToolTypeHangup,
+						Type: shared.BookAppointmentToolTypeBookAppointment,
 					},
 				}},
+				Transcription: telnyx.TranscriptionConfigParam{
+					Language: telnyx.String("language"),
+					Model:    telnyx.TranscriptionConfigModelDistilWhisperDistilLargeV2,
+				},
 				VoiceSettings: telnyx.VoiceSettingsParam{
 					Voice:     "voice",
 					APIKeyRef: telnyx.String("api_key_ref"),
@@ -165,8 +172,10 @@ func TestCallActionAnswerWithOptionalParams(t *testing.T) {
 					Language:            "en-US",
 					SpeechModel:         telnyx.String("nova-3"),
 					TranscriptionEngine: telnyx.ConversationRelayLanguageTranscriptionEngineDeepgram,
-					TranscriptionEngineConfig: map[string]any{
-						"transcription_model": "bar",
+					TranscriptionEngineConfig: telnyx.ConversationRelayTranscriptionEngineConfigParam{
+						EagerEotThreshold: telnyx.Float(0.5),
+						EotThreshold:      telnyx.Float(0.5),
+						InterimResults:    telnyx.Bool(true),
 					},
 					TranscriptionProvider: telnyx.String("Deepgram"),
 					TtsProvider:           telnyx.String("telnyx"),
@@ -184,10 +193,10 @@ func TestCallActionAnswerWithOptionalParams(t *testing.T) {
 					"model_id": "bar",
 				},
 				TranscriptionEngine: telnyx.ConversationRelayEmbeddedConfigTranscriptionEngineGoogle,
-				TranscriptionEngineConfig: map[string]any{
-					"transcription_model": "bar",
-					"interim_results":     "bar",
-					"keywords_boosting":   "bar",
+				TranscriptionEngineConfig: telnyx.ConversationRelayTranscriptionEngineConfigParam{
+					EagerEotThreshold: telnyx.Float(0.5),
+					EotThreshold:      telnyx.Float(0.5),
+					InterimResults:    telnyx.Bool(true),
 				},
 				TtsProvider: telnyx.String("telnyx"),
 				Voice:       telnyx.String("Telnyx.KokoroTTS.af"),
@@ -736,11 +745,15 @@ func TestCallActionPayWithOptionalParams(t *testing.T) {
 			Metadata: map[string]any{
 				"order_id": "bar",
 			},
+			MinPostalCodeLength: telnyx.Int(5),
 			Parameters: map[string]any{
 				"customer_id": "bar",
 			},
 			PaymentMethod: telnyx.CallActionPayParamsPaymentMethodCreditCard,
 			PaymentToken:  telnyx.String("tok_abc123"),
+			PostalCode: telnyx.CallActionPayParamsPostalCodeUnion{
+				OfBool: telnyx.Bool(false),
+			},
 			Prompts: telnyx.CallActionPayParamsPrompts{
 				BankAccountNumber: telnyx.PayPromptValueUnionParam{
 					OfString: telnyx.String("x"),
@@ -1075,6 +1088,10 @@ func TestCallActionStartAIAssistantWithOptionalParams(t *testing.T) {
 						Type: shared.BookAppointmentToolTypeBookAppointment,
 					},
 				}},
+				Transcription: telnyx.TranscriptionConfigParam{
+					Language: telnyx.String("language"),
+					Model:    telnyx.TranscriptionConfigModelDistilWhisperDistilLargeV2,
+				},
 				VoiceSettings: telnyx.VoiceSettingsParam{
 					Voice:     "voice",
 					APIKeyRef: telnyx.String("api_key_ref"),
@@ -1166,8 +1183,10 @@ func TestCallActionStartConversationRelayWithOptionalParams(t *testing.T) {
 					Language:            "en-US",
 					SpeechModel:         telnyx.String("nova-3"),
 					TranscriptionEngine: telnyx.ConversationRelayLanguageTranscriptionEngineDeepgram,
-					TranscriptionEngineConfig: map[string]any{
-						"transcription_model": "bar",
+					TranscriptionEngineConfig: telnyx.ConversationRelayTranscriptionEngineConfigParam{
+						EagerEotThreshold: telnyx.Float(0.5),
+						EotThreshold:      telnyx.Float(0.5),
+						InterimResults:    telnyx.Bool(true),
 					},
 					TranscriptionProvider: telnyx.String("Deepgram"),
 					TtsProvider:           telnyx.String("telnyx"),
@@ -1199,8 +1218,10 @@ func TestCallActionStartConversationRelayWithOptionalParams(t *testing.T) {
 				Language:            "en-US",
 				SpeechModel:         telnyx.String("nova-3"),
 				TranscriptionEngine: telnyx.ConversationRelayLanguageTranscriptionEngineDeepgram,
-				TranscriptionEngineConfig: map[string]any{
-					"transcription_model": "bar",
+				TranscriptionEngineConfig: telnyx.ConversationRelayTranscriptionEngineConfigParam{
+					EagerEotThreshold: telnyx.Float(0.5),
+					EotThreshold:      telnyx.Float(0.5),
+					InterimResults:    telnyx.Bool(true),
 				},
 				TranscriptionProvider: telnyx.String("Deepgram"),
 				TtsProvider:           telnyx.String("telnyx"),
@@ -1221,10 +1242,10 @@ func TestCallActionStartConversationRelayWithOptionalParams(t *testing.T) {
 				"foo": "bar",
 			},
 			TranscriptionEngine: telnyx.CallActionStartConversationRelayParamsTranscriptionEngineGoogle,
-			TranscriptionEngineConfig: map[string]any{
-				"transcription_model": "bar",
-				"interim_results":     "bar",
-				"keywords_boosting":   "bar",
+			TranscriptionEngineConfig: telnyx.ConversationRelayTranscriptionEngineConfigParam{
+				EagerEotThreshold: telnyx.Float(0.5),
+				EotThreshold:      telnyx.Float(0.5),
+				InterimResults:    telnyx.Bool(true),
 			},
 			TtsProvider: telnyx.String("telnyx"),
 			URL:         telnyx.String("wss://example.com/conversation-relay"),
@@ -1916,6 +1937,7 @@ func TestCallActionTransferWithOptionalParams(t *testing.T) {
 				InitialSilenceMillis:            telnyx.Int(1000),
 				MaximumNumberOfWords:            telnyx.Int(1000),
 				MaximumWordLengthMillis:         telnyx.Int(2000),
+				PromptEndTimeoutMillis:          telnyx.Int(5000),
 				SilenceThreshold:                telnyx.Int(512),
 				TotalAnalysisTimeMillis:         telnyx.Int(5000),
 			},

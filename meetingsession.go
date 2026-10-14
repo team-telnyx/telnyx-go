@@ -114,12 +114,12 @@ func (r *MeetingSessionService) Delete(ctx context.Context, id string, opts ...o
 	return res, err
 }
 
-// Irreversibly requests deletion of provider-hosted aggregate recording media
-// under the provider contract. The operation retains the Telnyx-local Meeting
-// session, transcript segments, events, artifacts, and usage records. It is
-// separate from `DELETE /meeting_sessions/{id}`, which stops or cancels
-// participation without deleting the persisted session. A missing/foreign session
-// returns 404; provider deletion failures return 502.
+// Irreversibly requests deletion of the aggregate recording media for the session.
+// The operation retains the Telnyx-local Meeting session, transcript segments,
+// events, artifacts, and usage records. It is separate from
+// `DELETE /meeting_sessions/{id}`, which stops or cancels participation without
+// deleting the persisted session. A missing/foreign session returns 404; provider
+// deletion failures return 502.
 func (r *MeetingSessionService) DeleteRecordingMedia(ctx context.Context, id string, opts ...option.RequestOption) (res *MeetingSessionDeleteRecordingMediaResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -464,7 +464,7 @@ type MeetingSessionDeleteRecordingMediaResponseData struct {
 	DeletionStatus string `json:"deletion_status" api:"required"`
 	// The account-scoped Meeting Session identifier.
 	MeetingSessionID string                          `json:"meeting_session_id" api:"required"`
-	Provider         constant.Recall                 `json:"provider" default:"recall"`
+	Provider         constant.Telnyx                 `json:"provider" default:"telnyx"`
 	Scope            constant.ProviderRecordingMedia `json:"scope" default:"provider_recording_media"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -538,8 +538,7 @@ func (r *MeetingSessionGetRecordingsResponse) UnmarshalJSON(data []byte) error {
 }
 
 type MeetingSessionGetRecordingsResponseData struct {
-	// Expiry timestamp when supplied by the provider, or null. The current adapter
-	// returns null.
+	// Expiry timestamp when available, or null. Currently returns null.
 	ExpiresAt string `json:"expires_at" api:"required"`
 	Type      string `json:"type" api:"required"`
 	// Current provider download URL. The API does not guarantee URL lifetime or

@@ -47,6 +47,8 @@ type AIAssistantService struct {
 	Tags AIAssistantTagService
 	// Configure AI assistant specifications
 	Instructions AIAssistantInstructionService
+	// Configure AI assistant specifications
+	Deleted AIAssistantDeletedService
 }
 
 // NewAIAssistantService generates a new service that applies the given options to
@@ -62,6 +64,7 @@ func NewAIAssistantService(opts ...option.RequestOption) (r AIAssistantService) 
 	r.Versions = NewAIAssistantVersionService(opts...)
 	r.Tags = NewAIAssistantTagService(opts...)
 	r.Instructions = NewAIAssistantInstructionService(opts...)
+	r.Deleted = NewAIAssistantDeletedService(opts...)
 	return
 }
 
@@ -112,14 +115,28 @@ func (r *AIAssistantService) List(ctx context.Context, opts ...option.RequestOpt
 }
 
 // Delete an AI Assistant by `assistant_id`.
-func (r *AIAssistantService) Delete(ctx context.Context, assistantID string, opts ...option.RequestOption) (res *AIAssistantDeleteResponse, err error) {
+//
+// By default this performs a soft delete: the assistant moves to the Recently
+// Deleted list and stays restorable for 30 days, after which it is permanently
+// deleted automatically. The assistant's versions and TeXML application are
+// preserved during the retention window.
+//
+// Pass `hard_delete=true` to skip the retention window and permanently delete the
+// assistant immediately. A hard delete erases the assistant and all of its
+// versions, and deletes its TeXML application unless phone numbers are still
+// assigned to it. It does not delete conversations, recordings, shared tools the
+// assistant referenced, or knowledge-base embeddings.
+//
+// Deletion fails with `400` if other assistants reference this one through a
+// handoff tool or a conversation-flow edge — remove those references first.
+func (r *AIAssistantService) Delete(ctx context.Context, assistantID string, body AIAssistantDeleteParams, opts ...option.RequestOption) (res *AIAssistantDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if assistantID == "" {
 		err = errors.New("missing required assistant_id parameter")
 		return nil, err
 	}
 	path := fmt.Sprintf("ai/assistants/%s", url.PathEscape(assistantID))
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
 	return res, err
 }
 
@@ -182,6 +199,22 @@ func (r *AIAssistantService) Imports(ctx context.Context, params AIAssistantImpo
 	return res, err
 }
 
+// Restore a soft-deleted assistant from the Recently Deleted list.
+//
+// The assistant becomes fully active again with its versions and TeXML application
+// as they were at deletion time. Restoring does not re-enable numbers or
+// connections that were released separately after the deletion.
+func (r *AIAssistantService) Restore(ctx context.Context, assistantID string, opts ...option.RequestOption) (res *InferenceEmbedding, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if assistantID == "" {
+		err = errors.New("missing required assistant_id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("ai/assistants/%s/restore", url.PathEscape(assistantID))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
+	return res, err
+}
+
 // Send an SMS message for an assistant. This endpoint:
 //
 //  1. Validates the assistant exists and has messaging profile configured
@@ -203,6 +236,35 @@ func (r *AIAssistantService) SendSMS(ctx context.Context, assistantID string, pa
 		return nil, err
 	}
 	path := fmt.Sprintf("ai/assistants/%s/chat/sms", url.PathEscape(assistantID))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
+	return res, err
+}
+
+// Start a WhatsApp conversation with a customer from the business side. This
+// endpoint:
+//
+//  1. Validates that `from` is a WhatsApp number on your account whose messaging
+//     profile has this assistant configured
+//  2. Creates a new `whatsapp_chat` conversation with the provided metadata
+//  3. Asks the assistant to pick one of its approved WhatsApp templates and fill
+//     its variables from `content`
+//  4. Sends the template from `from` to `to`
+//  5. Returns the conversation ID and the message ID
+//
+// When the customer replies, the reply is routed to the same conversation and the
+// assistant answers within the 24-hour customer service window. The assistant
+// needs a `whatsapp_template` tool with at least one approved template, data
+// retention enabled and PII redaction disabled.
+func (r *AIAssistantService) Whatsapp(ctx context.Context, assistantID string, params AIAssistantWhatsappParams, opts ...option.RequestOption) (res *AIAssistantWhatsappResponse, err error) {
+	if !param.IsOmitted(params.IdempotencyKey) {
+		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey.Value)))
+	}
+	opts = slices.Concat(r.Options, opts)
+	if assistantID == "" {
+		err = errors.New("missing required assistant_id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("ai/assistants/%s/chat/whatsapp", url.PathEscape(assistantID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
@@ -3422,6 +3484,68 @@ const (
 	AuthenticationMethodCertificate AuthenticationMethod = "certificate"
 )
 
+// **Beta:** Configuration for the Telnyx open-source avatar provider. The launch
+// catalog supports six avatars and office, studio, or reception backgrounds.
+//
+// The properties AvatarID, BackgroundID, Model, Provider are required.
+type AvatarSettingsRequestParam struct {
+	// The Telnyx avatar to render.
+	//
+	// Any of "elena", "ben", "jordan", "lin", "avery", "raphael".
+	AvatarID AvatarSettingsRequestAvatarID `json:"avatar_id,omitzero" api:"required"`
+	// The background to render.
+	//
+	// Any of "office", "studio", "reception".
+	BackgroundID AvatarSettingsRequestBackgroundID `json:"background_id,omitzero" api:"required"`
+	// Required avatar model identifier, separate from `avatar_id`. The supported value
+	// is `foxtrot-1`. Omission, null, and unsupported model identifiers are rejected.
+	//
+	// Any of "foxtrot-1".
+	Model AvatarSettingsRequestModel `json:"model,omitzero" api:"required"`
+	// Selects the Telnyx open-source avatar provider.
+	//
+	// This field can be elided, and will marshal its zero value as "telnyx".
+	Provider constant.Telnyx `json:"provider" default:"telnyx"`
+	paramObj
+}
+
+func (r AvatarSettingsRequestParam) MarshalJSON() (data []byte, err error) {
+	type shadow AvatarSettingsRequestParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AvatarSettingsRequestParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The Telnyx avatar to render.
+type AvatarSettingsRequestAvatarID string
+
+const (
+	AvatarSettingsRequestAvatarIDElena   AvatarSettingsRequestAvatarID = "elena"
+	AvatarSettingsRequestAvatarIDBen     AvatarSettingsRequestAvatarID = "ben"
+	AvatarSettingsRequestAvatarIDJordan  AvatarSettingsRequestAvatarID = "jordan"
+	AvatarSettingsRequestAvatarIDLin     AvatarSettingsRequestAvatarID = "lin"
+	AvatarSettingsRequestAvatarIDAvery   AvatarSettingsRequestAvatarID = "avery"
+	AvatarSettingsRequestAvatarIDRaphael AvatarSettingsRequestAvatarID = "raphael"
+)
+
+// The background to render.
+type AvatarSettingsRequestBackgroundID string
+
+const (
+	AvatarSettingsRequestBackgroundIDOffice    AvatarSettingsRequestBackgroundID = "office"
+	AvatarSettingsRequestBackgroundIDStudio    AvatarSettingsRequestBackgroundID = "studio"
+	AvatarSettingsRequestBackgroundIDReception AvatarSettingsRequestBackgroundID = "reception"
+)
+
+// Required avatar model identifier, separate from `avatar_id`. The supported value
+// is `foxtrot-1`. Omission, null, and unsupported model identifiers are rejected.
+type AvatarSettingsRequestModel string
+
+const (
+	AvatarSettingsRequestModelFoxtrot1 AvatarSettingsRequestModel = "foxtrot-1"
+)
+
 // Conversation flow as returned by the API.
 type ConversationFlow struct {
 	// All nodes in the flow.
@@ -3481,11 +3605,10 @@ type ConversationFlowNodesUnion struct {
 	VoiceSettings InferenceEmbeddingVoiceSettings `json:"voice_settings"`
 	// This field is from variant [ToolNode].
 	SharedToolID string `json:"shared_tool_id"`
+	Message      string `json:"message"`
 	// This field is from variant [ToolNode].
 	Tool []AssistantToolUnion `json:"tool"`
-	// This field is from variant [SpeakNode].
-	Message string `json:"message"`
-	JSON    struct {
+	JSON struct {
 		ID               respjson.Field
 		Instructions     respjson.Field
 		ExternalLlm      respjson.Field
@@ -3501,8 +3624,8 @@ type ConversationFlowNodesUnion struct {
 		Type             respjson.Field
 		VoiceSettings    respjson.Field
 		SharedToolID     respjson.Field
-		Tool             respjson.Field
 		Message          respjson.Field
+		Tool             respjson.Field
 		raw              string
 	} `json:"-"`
 }
@@ -3570,7 +3693,7 @@ func (r *ConversationFlowNodesUnion) UnmarshalJSON(data []byte) error {
 // The properties Nodes, StartNodeID are required.
 type ConversationFlowReqParam struct {
 	// All nodes in the flow. Must contain `start_node_id`. Each node is a prompt node
-	// (`type: prompt`) or a tool node (`type: tool`).
+	// (`type: prompt`), a tool node (`type: tool`), or a speak node (`type: speak`).
 	Nodes []ConversationFlowReqNodesUnionParam `json:"nodes,omitzero" api:"required"`
 	// ID of the node where the conversation begins.
 	StartNodeID string `json:"start_node_id" api:"required"`
@@ -3696,14 +3819,6 @@ func (u ConversationFlowReqNodesUnionParam) GetSharedToolID() *string {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u ConversationFlowReqNodesUnionParam) GetMessage() *string {
-	if vt := u.OfSpeak; vt != nil {
-		return &vt.Message
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
 func (u ConversationFlowReqNodesUnionParam) GetID() *string {
 	if vt := u.OfPrompt; vt != nil {
 		return (*string)(&vt.ID)
@@ -3739,6 +3854,16 @@ func (u ConversationFlowReqNodesUnionParam) GetType() *string {
 	return nil
 }
 
+// Returns a pointer to the underlying variant's property, if present.
+func (u ConversationFlowReqNodesUnionParam) GetMessage() *string {
+	if vt := u.OfTool; vt != nil && vt.Message.Valid() {
+		return &vt.Message.Value
+	} else if vt := u.OfSpeak; vt != nil {
+		return (*string)(&vt.Message)
+	}
+	return nil
+}
+
 // Returns a pointer to the underlying variant's Position property, if present.
 func (u ConversationFlowReqNodesUnionParam) GetPosition() *NodePositionParam {
 	if vt := u.OfPrompt; vt != nil {
@@ -3758,6 +3883,151 @@ func init() {
 		apijson.Discriminator[ToolNodeReqParam]("tool"),
 		apijson.Discriminator[SpeakNodeReqParam]("speak"),
 	)
+}
+
+// Splits the conversation between a frontend model that talks to the caller and a
+// backend model that does the work. On the GPT-Live route the frontend model
+// cannot call tools at all — when it needs something done it raises a delegation
+// and waits. On the chat completion route the frontend keeps a single `delegate`
+// tool that returns immediately, so the conversation carries on while the backend
+// works. Either way the backend's answer is spoken as commentary or kept as silent
+// context, depending on `speak_results`. Beta feature.
+type DelegationSettings struct {
+	// Whether the assistant delegates work to a backend model. Defaults to `true`: a
+	// GPT-Live assistant with delegation disabled can hold a conversation but can
+	// never look anything up or run a tool.
+	Enabled bool `json:"enabled"`
+	// Run the backend on your own OpenAI-compatible endpoint instead of a
+	// Telnyx-hosted model. As above, a raw `api_key` here is rejected — reference an
+	// integration secret with `external_llm.llm_api_key_ref` instead.
+	ExternalLlm ExternalLlm `json:"external_llm"`
+	// Extra instructions for the backend model, in addition to the assistant's own.
+	// Use this for the business rules the backend needs and the talking model does
+	// not.
+	Instructions string `json:"instructions"`
+	// Integration secret identifier for the backend model's API key. Required for
+	// models from providers other than Telnyx, OpenAI and Anthropic. A raw `api_key`
+	// is rejected rather than ignored, so that no plaintext credential is stored on
+	// the assistant.
+	LlmAPIKeyRef string `json:"llm_api_key_ref"`
+	// Who answers a delegation. `telnyx` runs the backend model on Telnyx with the
+	// assistant's own tools, MCP servers and observability. `client` relays the
+	// delegation to a server you host over the WebSocket configured in
+	// `websocket_settings`: Telnyx sends a `session.delegation.created` frame and
+	// waits for your `session.delegation.completed` answer. That answer is text only,
+	// since the socket offers no tool vocabulary. If no socket is connected the
+	// delegation is refused and the assistant tells the caller it cannot look things
+	// up right now. Defaults to `telnyx`.
+	//
+	// Any of "telnyx", "client".
+	Mode DelegationSettingsMode `json:"mode"`
+	// The backend model that answers delegations. Must be a model available for AI
+	// Assistants. When enabling `telnyx` delegation, explicitly set this field or
+	// `external_llm.model`; a configuration without either backend model is rejected.
+	// Only applies when `mode` is `telnyx`.
+	Model string `json:"model"`
+	// Whether the backend's answer is spoken to the caller. When `true` the result is
+	// appended as commentary and paraphrased aloud; when `false` it is kept as silent
+	// context that informs later answers without being read out. Defaults to `true`.
+	SpeakResults bool `json:"speak_results"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Enabled      respjson.Field
+		ExternalLlm  respjson.Field
+		Instructions respjson.Field
+		LlmAPIKeyRef respjson.Field
+		Mode         respjson.Field
+		Model        respjson.Field
+		SpeakResults respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r DelegationSettings) RawJSON() string { return r.JSON.raw }
+func (r *DelegationSettings) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this DelegationSettings to a DelegationSettingsParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// DelegationSettingsParam.Overrides()
+func (r DelegationSettings) ToParam() DelegationSettingsParam {
+	return param.Override[DelegationSettingsParam](json.RawMessage(r.RawJSON()))
+}
+
+// Who answers a delegation. `telnyx` runs the backend model on Telnyx with the
+// assistant's own tools, MCP servers and observability. `client` relays the
+// delegation to a server you host over the WebSocket configured in
+// `websocket_settings`: Telnyx sends a `session.delegation.created` frame and
+// waits for your `session.delegation.completed` answer. That answer is text only,
+// since the socket offers no tool vocabulary. If no socket is connected the
+// delegation is refused and the assistant tells the caller it cannot look things
+// up right now. Defaults to `telnyx`.
+type DelegationSettingsMode string
+
+const (
+	DelegationSettingsModeTelnyx DelegationSettingsMode = "telnyx"
+	DelegationSettingsModeClient DelegationSettingsMode = "client"
+)
+
+// Splits the conversation between a frontend model that talks to the caller and a
+// backend model that does the work. On the GPT-Live route the frontend model
+// cannot call tools at all — when it needs something done it raises a delegation
+// and waits. On the chat completion route the frontend keeps a single `delegate`
+// tool that returns immediately, so the conversation carries on while the backend
+// works. Either way the backend's answer is spoken as commentary or kept as silent
+// context, depending on `speak_results`. Beta feature.
+type DelegationSettingsParam struct {
+	// Whether the assistant delegates work to a backend model. Defaults to `true`: a
+	// GPT-Live assistant with delegation disabled can hold a conversation but can
+	// never look anything up or run a tool.
+	Enabled param.Opt[bool] `json:"enabled,omitzero"`
+	// Extra instructions for the backend model, in addition to the assistant's own.
+	// Use this for the business rules the backend needs and the talking model does
+	// not.
+	Instructions param.Opt[string] `json:"instructions,omitzero"`
+	// Integration secret identifier for the backend model's API key. Required for
+	// models from providers other than Telnyx, OpenAI and Anthropic. A raw `api_key`
+	// is rejected rather than ignored, so that no plaintext credential is stored on
+	// the assistant.
+	LlmAPIKeyRef param.Opt[string] `json:"llm_api_key_ref,omitzero"`
+	// The backend model that answers delegations. Must be a model available for AI
+	// Assistants. When enabling `telnyx` delegation, explicitly set this field or
+	// `external_llm.model`; a configuration without either backend model is rejected.
+	// Only applies when `mode` is `telnyx`.
+	Model param.Opt[string] `json:"model,omitzero"`
+	// Whether the backend's answer is spoken to the caller. When `true` the result is
+	// appended as commentary and paraphrased aloud; when `false` it is kept as silent
+	// context that informs later answers without being read out. Defaults to `true`.
+	SpeakResults param.Opt[bool] `json:"speak_results,omitzero"`
+	// Run the backend on your own OpenAI-compatible endpoint instead of a
+	// Telnyx-hosted model. As above, a raw `api_key` here is rejected — reference an
+	// integration secret with `external_llm.llm_api_key_ref` instead.
+	ExternalLlm ExternalLlmParam `json:"external_llm,omitzero"`
+	// Who answers a delegation. `telnyx` runs the backend model on Telnyx with the
+	// assistant's own tools, MCP servers and observability. `client` relays the
+	// delegation to a server you host over the WebSocket configured in
+	// `websocket_settings`: Telnyx sends a `session.delegation.created` frame and
+	// waits for your `session.delegation.completed` answer. That answer is text only,
+	// since the socket offers no tool vocabulary. If no socket is connected the
+	// delegation is refused and the assistant tells the caller it cannot look things
+	// up right now. Defaults to `telnyx`.
+	//
+	// Any of "telnyx", "client".
+	Mode DelegationSettingsMode `json:"mode,omitzero"`
+	paramObj
+}
+
+func (r DelegationSettingsParam) MarshalJSON() (data []byte, err error) {
+	type shadow DelegationSettingsParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DelegationSettingsParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // If `telephony` is enabled, the assistant will be able to make and receive calls.
@@ -3811,6 +4081,51 @@ type ExternalLlm struct {
 // Returns the unmodified JSON received from the API
 func (r ExternalLlm) RawJSON() string { return r.JSON.raw }
 func (r *ExternalLlm) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this ExternalLlm to a ExternalLlmParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// ExternalLlmParam.Overrides()
+func (r ExternalLlm) ToParam() ExternalLlmParam {
+	return param.Override[ExternalLlmParam](json.RawMessage(r.RawJSON()))
+}
+
+// The properties BaseURL, Model are required.
+type ExternalLlmParam struct {
+	// Base URL for the external LLM endpoint.
+	BaseURL string `json:"base_url" api:"required"`
+	// Model identifier to use with the external LLM endpoint.
+	Model string `json:"model" api:"required"`
+	// Integration secret identifier for the client certificate used with certificate
+	// authentication.
+	CertificateRef param.Opt[string] `json:"certificate_ref,omitzero"`
+	// When `true`, Telnyx forwards the assistant's dynamic variables to the external
+	// LLM endpoint as a top-level `extra_metadata` object on the chat completion
+	// request body. Defaults to `false`. Example payload sent to the external
+	// endpoint:
+	// `{"extra_metadata": {"customer_name": "Jane", "account_id": "acct_789", "telnyx_agent_target": "+13125550100", "telnyx_end_user_target": "+13125550123"}}`.
+	// Distinct from OpenAI's native `metadata` field, which has its own size and type
+	// limits.
+	ForwardMetadata param.Opt[bool] `json:"forward_metadata,omitzero"`
+	// Integration secret identifier for the external LLM API key.
+	LlmAPIKeyRef param.Opt[string] `json:"llm_api_key_ref,omitzero"`
+	// URL used to retrieve an access token when certificate authentication is enabled.
+	TokenRetrievalURL param.Opt[string] `json:"token_retrieval_url,omitzero"`
+	// Authentication method used when connecting to the external LLM endpoint.
+	//
+	// Any of "token", "certificate".
+	AuthenticationMethod AuthenticationMethod `json:"authentication_method,omitzero"`
+	paramObj
+}
+
+func (r ExternalLlmParam) MarshalJSON() (data []byte, err error) {
+	type shadow ExternalLlmParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ExternalLlmParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -3894,9 +4209,14 @@ func (r *FallbackConfigReqParam) UnmarshalJSON(data []byte) error {
 // Directed transition from one node to a target, gated by a condition.
 //
 // The target is either another node in the same flow (`NodeTarget`) or a different
-// assistant (`AssistantTarget`). Multiple edges may share a `start_node_id`; the
-// runtime evaluates them in the order they're declared and takes the first whose
-// condition is true.
+// assistant (`AssistantTarget`). Multiple edges may share a `start_node_id`. On
+// calls, `expression` conditions are evaluated before the model turn and take
+// precedence over `llm` conditions regardless of declaration order, while `llm`
+// conditions are offered to the assistant's model as transition tools and fire
+// when the model selects one. On chat channels, an `expression` condition that is
+// true when the turn begins routes before the reply is generated; all conditioned
+// edges that remain are considered together in declaration order after the reply,
+// and the first true one wins.
 type FlowEdge struct {
 	// Caller-supplied unique identifier for this edge within the flow.
 	ID string `json:"id" api:"required"`
@@ -4009,13 +4329,20 @@ func (r *FlowEdgeConditionUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Edge condition evaluated by the LLM from a natural-language prompt.
+// Edge condition routed by the assistant's LLM from a natural-language prompt.
 //
-// The model is asked to judge the prompt against conversation context and returns
-// true/false. Use this for fuzzy intents that aren't expressible as a
-// deterministic expression (e.g. 'user wants to escalate to a human').
+// How the edge is decided depends on the channel. On calls, each outgoing `llm`
+// condition is offered to the assistant's model as a transition tool alongside the
+// assistant's tools, and the edge fires when the model selects it; the platform
+// does not evaluate the prompt itself, and instructions that forbid or discourage
+// tool calls can stop these edges from firing. On chat channels, the edge prompts
+// are evaluated in a separate model call after the reply, which does not use the
+// assistant's instructions. Use this for fuzzy intents that aren't expressible as
+// a deterministic expression (e.g. 'user wants to escalate to a human').
 type FlowEdgeConditionLlm struct {
-	// Natural-language criterion the LLM judges as true/false.
+	// Natural-language criterion the model routes on. On calls this is offered to the
+	// model as the transition tool's description; on chat channels it is judged as a
+	// statement in the post-reply evaluation call.
 	Prompt string       `json:"prompt" api:"required"`
 	Type   constant.Llm `json:"type" default:"llm"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -4222,9 +4549,14 @@ func (r *FlowEdgeTargetAssistant) UnmarshalJSON(data []byte) error {
 // Directed transition from one node to a target, gated by a condition.
 //
 // The target is either another node in the same flow (`NodeTarget`) or a different
-// assistant (`AssistantTarget`). Multiple edges may share a `start_node_id`; the
-// runtime evaluates them in the order they're declared and takes the first whose
-// condition is true.
+// assistant (`AssistantTarget`). Multiple edges may share a `start_node_id`. On
+// calls, `expression` conditions are evaluated before the model turn and take
+// precedence over `llm` conditions regardless of declaration order, while `llm`
+// conditions are offered to the assistant's model as transition tools and fire
+// when the model selects one. On chat channels, an `expression` condition that is
+// true when the turn begins routes before the reply is generated; all conditioned
+// edges that remain are considered together in declaration order after the reply,
+// and the first true one wins.
 //
 // The properties ID, Condition, StartNodeID, Target are required.
 type FlowEdgeParam struct {
@@ -4314,15 +4646,22 @@ func init() {
 	)
 }
 
-// Edge condition evaluated by the LLM from a natural-language prompt.
+// Edge condition routed by the assistant's LLM from a natural-language prompt.
 //
-// The model is asked to judge the prompt against conversation context and returns
-// true/false. Use this for fuzzy intents that aren't expressible as a
-// deterministic expression (e.g. 'user wants to escalate to a human').
+// How the edge is decided depends on the channel. On calls, each outgoing `llm`
+// condition is offered to the assistant's model as a transition tool alongside the
+// assistant's tools, and the edge fires when the model selects it; the platform
+// does not evaluate the prompt itself, and instructions that forbid or discourage
+// tool calls can stop these edges from firing. On chat channels, the edge prompts
+// are evaluated in a separate model call after the reply, which does not use the
+// assistant's instructions. Use this for fuzzy intents that aren't expressible as
+// a deterministic expression (e.g. 'user wants to escalate to a human').
 //
 // The properties Prompt, Type are required.
 type FlowEdgeConditionLlmParam struct {
-	// Natural-language criterion the LLM judges as true/false.
+	// Natural-language criterion the model routes on. On calls this is offered to the
+	// model as the transition tool's description; on chat channels it is judged as a
+	// statement in the post-reply evaluation call.
 	Prompt string `json:"prompt" api:"required"`
 	// This field can be elided, and will marshal its zero value as "llm".
 	Type constant.Llm `json:"type" default:"llm"`
@@ -4691,10 +5030,15 @@ type FlowNodeReqParam struct {
 	// Any of "replace", "append".
 	ToolsMode FlowNodeReqToolsMode `json:"tools_mode,omitzero"`
 	// Per-node transcription override (model/language/region). Unset fields cascade
-	// from the assistant-level transcription.
+	// from the assistant-level transcription. A node that sets `model`,
+	// `fallback_models`, or `challenger` doesn't inherit the assistant's
+	// `fallback_models` or `challenger`; it uses only the ones it sets. Otherwise it
+	// inherits them, and they must fit the model and language the node runs; a change
+	// they no longer fit is rejected.
 	Transcription TranscriptionSettingsParam `json:"transcription,omitzero"`
 	// Node kind discriminator. `prompt` (default) is an LLM-driven step; `tool` is a
-	// standalone tool execution (see `ToolNodeReq`).
+	// standalone tool execution and `speak` a scripted message (see `ToolNodeReq` /
+	// `SpeakNodeReq`).
 	//
 	// Any of "prompt".
 	Type FlowNodeReqType `json:"type,omitzero"`
@@ -4733,7 +5077,8 @@ const (
 )
 
 // Node kind discriminator. `prompt` (default) is an LLM-driven step; `tool` is a
-// standalone tool execution (see `ToolNodeReq`).
+// standalone tool execution and `speak` a scripted message (see `ToolNodeReq` /
+// `SpeakNodeReq`).
 type FlowNodeReqType string
 
 const (
@@ -4855,9 +5200,20 @@ type InferenceEmbedding struct {
 	// fetches combined. An agent whose card cannot be fetched costs the assistant that
 	// capability for the conversation; it does not fail the call.
 	A2aAgents []AssistantA2AAgent `json:"a2a_agents"`
+	// **Beta:** Configuration for the Telnyx open-source avatar provider. The launch
+	// catalog supports six avatars and office, studio, or reception backgrounds.
+	AvatarSettings TelnyxAvatarSettings `json:"avatar_settings" api:"nullable"`
 	// Conversation flow as returned by the API.
 	ConversationFlow ConversationFlow `json:"conversation_flow"`
-	Description      string           `json:"description"`
+	// Splits the conversation between a frontend model that talks to the caller and a
+	// backend model that does the work. On the GPT-Live route the frontend model
+	// cannot call tools at all — when it needs something done it raises a delegation
+	// and waits. On the chat completion route the frontend keeps a single `delegate`
+	// tool that returns immediately, so the conversation carries on while the backend
+	// works. Either way the backend's answer is spoken as commentary or kept as silent
+	// context, depending on `speak_results`. Beta feature.
+	DelegationSettings DelegationSettings `json:"delegation_settings"`
+	Description        string             `json:"description"`
 	// Map of dynamic variables and their values
 	DynamicVariables map[string]any `json:"dynamic_variables"`
 	// Timeout in milliseconds for the dynamic variables webhook. Must be between 1 and
@@ -4940,6 +5296,12 @@ type InferenceEmbedding struct {
 	// Human-readable name for the assistant version.
 	VersionName   string                          `json:"version_name"`
 	VoiceSettings InferenceEmbeddingVoiceSettings `json:"voice_settings"`
+	// Streams conversation and telephony events to a WebSocket server you host, and
+	// accepts messages injected back into the conversation. Telnyx opens the
+	// connection as a client, once per conversation. Delivery is best effort
+	// throughout: while the connection is down events are dropped rather than queued,
+	// and no socket failure is ever allowed to affect the call. Beta feature.
+	WebsocketSettings WebsocketSettings `json:"websocket_settings"`
 	// Configuration settings for the assistant's web widget.
 	WidgetSettings WidgetSettings `json:"widget_settings"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -4950,7 +5312,9 @@ type InferenceEmbedding struct {
 		Model                            respjson.Field
 		Name                             respjson.Field
 		A2aAgents                        respjson.Field
+		AvatarSettings                   respjson.Field
 		ConversationFlow                 respjson.Field
+		DelegationSettings               respjson.Field
 		Description                      respjson.Field
 		DynamicVariables                 respjson.Field
 		DynamicVariablesWebhookTimeoutMs respjson.Field
@@ -4978,6 +5342,7 @@ type InferenceEmbedding struct {
 		VersionID                        respjson.Field
 		VersionName                      respjson.Field
 		VoiceSettings                    respjson.Field
+		WebsocketSettings                respjson.Field
 		WidgetSettings                   respjson.Field
 		ExtraFields                      map[string]respjson.Field
 		raw                              string
@@ -5120,12 +5485,18 @@ type InferenceEmbeddingVoiceSettings struct {
 	// Lower values create a broader emotional range; higher values produce more
 	// consistent, monotonous output. Only applicable when using ElevenLabs.
 	Temperature float64 `json:"temperature"`
+	// Optional sound played to the caller while the assistant runs a tool (for example
+	// a webhook or MCP tool). It replaces the background audio until the tool
+	// responds, then the background audio resumes. Defaults to null, which plays no
+	// sound; send `null` on update to clear it. Not played in conference calls.
+	ToolCallAudio InferenceEmbeddingVoiceSettingsToolCallAudioUnion `json:"tool_call_audio" api:"nullable"`
 	// Amplifies similarity to the original speaker voice. Increases computational load
 	// and latency slightly. Only applicable when using ElevenLabs.
 	UseSpeakerBoost bool `json:"use_speaker_boost"`
-	// The speed of the voice in the range [0.25, 2.0]. 1.0 is deafult speed. Larger
-	// numbers make the voice faster, smaller numbers make it slower. This is only
-	// applicable for Telnyx Natural voices and Soniox voices (0.7 to 1.3 for Soniox).
+	// The speed of the voice in the range [0.6, 1.5]. 1.0 is the default speed. Larger
+	// numbers make the voice faster, smaller numbers make it slower. Applies to Telnyx
+	// `Ultra` voices; values outside this range are rejected by the synthesis engine.
+	// Soniox voices support a speed range of 0.7 to 1.3.
 	VoiceSpeed float64 `json:"voice_speed"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -5138,6 +5509,7 @@ type InferenceEmbeddingVoiceSettings struct {
 		Speed           respjson.Field
 		Style           respjson.Field
 		Temperature     respjson.Field
+		ToolCallAudio   respjson.Field
 		UseSpeakerBoost respjson.Field
 		VoiceSpeed      respjson.Field
 		ExtraFields     map[string]respjson.Field
@@ -5333,6 +5705,93 @@ const (
 	InferenceEmbeddingVoiceSettingsLanguageBoostAfrikaans  InferenceEmbeddingVoiceSettingsLanguageBoost = "Afrikaans"
 )
 
+// InferenceEmbeddingVoiceSettingsToolCallAudioUnion contains all possible
+// properties and values from
+// [InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0],
+// [InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type InferenceEmbeddingVoiceSettingsToolCallAudioUnion struct {
+	Type  string `json:"type"`
+	Value string `json:"value"`
+	// This field is from variant
+	// [InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0].
+	Volume float64 `json:"volume"`
+	JSON   struct {
+		Type   respjson.Field
+		Value  respjson.Field
+		Volume respjson.Field
+		raw    string
+	} `json:"-"`
+}
+
+func (u InferenceEmbeddingVoiceSettingsToolCallAudioUnion) AsInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0() (v InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u InferenceEmbeddingVoiceSettingsToolCallAudioUnion) AsInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1() (v InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u InferenceEmbeddingVoiceSettingsToolCallAudioUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *InferenceEmbeddingVoiceSettingsToolCallAudioUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0 struct {
+	// Select from predefined media options.
+	//
+	// Any of "predefined_media".
+	Type string `json:"type" api:"required"`
+	// The predefined media to use. `typing` plays a keyboard typing sound.
+	//
+	// Any of "typing".
+	Value string `json:"value" api:"required"`
+	// Volume level for the predefined media. Supports values from 0.0 to 1.0 in 0.1
+	// increments. `0.0` plays no sound.
+	Volume float64 `json:"volume"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type        respjson.Field
+		Value       respjson.Field
+		Volume      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0) RawJSON() string { return r.JSON.raw }
+func (r *InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1 struct {
+	// Provide a direct URL to an MP3 file. The audio loops while the tool runs.
+	//
+	// Any of "media_url".
+	Type string `json:"type" api:"required"`
+	// HTTPS URL to an MP3 file.
+	Value string `json:"value" api:"required" format:"uri"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1) RawJSON() string { return r.JSON.raw }
+func (r *InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // The property Voice is required.
 type InferenceEmbeddingVoiceSettingsParam struct {
 	// The voice to be used by the voice assistant. Check the full list of
@@ -5375,9 +5834,10 @@ type InferenceEmbeddingVoiceSettingsParam struct {
 	// Amplifies similarity to the original speaker voice. Increases computational load
 	// and latency slightly. Only applicable when using ElevenLabs.
 	UseSpeakerBoost param.Opt[bool] `json:"use_speaker_boost,omitzero"`
-	// The speed of the voice in the range [0.25, 2.0]. 1.0 is deafult speed. Larger
-	// numbers make the voice faster, smaller numbers make it slower. This is only
-	// applicable for Telnyx Natural voices and Soniox voices (0.7 to 1.3 for Soniox).
+	// The speed of the voice in the range [0.6, 1.5]. 1.0 is the default speed. Larger
+	// numbers make the voice faster, smaller numbers make it slower. Applies to Telnyx
+	// `Ultra` voices; values outside this range are rejected by the synthesis engine.
+	// Soniox voices support a speed range of 0.7 to 1.3.
 	VoiceSpeed param.Opt[float64] `json:"voice_speed,omitzero"`
 	// Enhances recognition for specific languages and dialects during MiniMax TTS
 	// synthesis. Default is null (no boost). Set to 'auto' for automatic language
@@ -5391,6 +5851,11 @@ type InferenceEmbeddingVoiceSettingsParam struct {
 	// "Hungarian", "Norwegian", "Slovenian", "Catalan", "Nynorsk", "Tamil",
 	// "Afrikaans".
 	LanguageBoost InferenceEmbeddingVoiceSettingsLanguageBoost `json:"language_boost,omitzero"`
+	// Optional sound played to the caller while the assistant runs a tool (for example
+	// a webhook or MCP tool). It replaces the background audio until the tool
+	// responds, then the background audio resumes. Defaults to null, which plays no
+	// sound; send `null` on update to clear it. Not played in conference calls.
+	ToolCallAudio InferenceEmbeddingVoiceSettingsToolCallAudioUnionParam `json:"tool_call_audio,omitzero"`
 	// Optional background audio to play on the call. Use a predefined media bed, or
 	// supply a looped MP3 URL. If a media URL is chosen in the portal, customers can
 	// preview it before saving.
@@ -5557,6 +6022,125 @@ func (r *InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember2Param) Unmars
 func init() {
 	apijson.RegisterFieldValidator[InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember2Param](
 		"type", "media_name",
+	)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type InferenceEmbeddingVoiceSettingsToolCallAudioUnionParam struct {
+	OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0 *InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0Param `json:",omitzero,inline"`
+	OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1 *InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1Param `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u InferenceEmbeddingVoiceSettingsToolCallAudioUnionParam) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0, u.OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1)
+}
+func (u *InferenceEmbeddingVoiceSettingsToolCallAudioUnionParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *InferenceEmbeddingVoiceSettingsToolCallAudioUnionParam) asAny() any {
+	if !param.IsOmitted(u.OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0) {
+		return u.OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0
+	} else if !param.IsOmitted(u.OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1) {
+		return u.OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u InferenceEmbeddingVoiceSettingsToolCallAudioUnionParam) GetVolume() *float64 {
+	if vt := u.OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0; vt != nil && vt.Volume.Valid() {
+		return &vt.Volume.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u InferenceEmbeddingVoiceSettingsToolCallAudioUnionParam) GetType() *string {
+	if vt := u.OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1; vt != nil {
+		return (*string)(&vt.Type)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u InferenceEmbeddingVoiceSettingsToolCallAudioUnionParam) GetValue() *string {
+	if vt := u.OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0; vt != nil {
+		return (*string)(&vt.Value)
+	} else if vt := u.OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1; vt != nil {
+		return (*string)(&vt.Value)
+	}
+	return nil
+}
+
+func init() {
+	apijson.RegisterUnion[InferenceEmbeddingVoiceSettingsToolCallAudioUnionParam](
+		"",
+		apijson.Variant[InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0Param](gjson.JSON),
+		apijson.Variant[InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1Param](gjson.JSON),
+	)
+}
+
+// The properties Type, Value are required.
+type InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0Param struct {
+	// Select from predefined media options.
+	//
+	// Any of "predefined_media".
+	Type string `json:"type,omitzero" api:"required"`
+	// The predefined media to use. `typing` plays a keyboard typing sound.
+	//
+	// Any of "typing".
+	Value string `json:"value,omitzero" api:"required"`
+	// Volume level for the predefined media. Supports values from 0.0 to 1.0 in 0.1
+	// increments. `0.0` plays no sound.
+	Volume param.Opt[float64] `json:"volume,omitzero"`
+	paramObj
+}
+
+func (r InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0Param) MarshalJSON() (data []byte, err error) {
+	type shadow InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0Param
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0Param) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0Param](
+		"type", "predefined_media",
+	)
+	apijson.RegisterFieldValidator[InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0Param](
+		"value", "typing",
+	)
+}
+
+// The properties Type, Value are required.
+type InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1Param struct {
+	// Provide a direct URL to an MP3 file. The audio loops while the tool runs.
+	//
+	// Any of "media_url".
+	Type string `json:"type,omitzero" api:"required"`
+	// HTTPS URL to an MP3 file.
+	Value string `json:"value" api:"required" format:"uri"`
+	paramObj
+}
+
+func (r InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1Param) MarshalJSON() (data []byte, err error) {
+	type shadow InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1Param
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1Param) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1Param](
+		"type", "media_url",
 	)
 }
 
@@ -6840,6 +7424,13 @@ func (r *StartSpeakingPlanParam) UnmarshalJSON(data []byte) error {
 }
 
 type TelephonySettings struct {
+	// When enabled, the `messages` array of the `call.conversation.ended` webhook
+	// contains the full conversation history in order: user and assistant turns,
+	// assistant tool calls (`tool_calls`), tool results (`role: tool` with
+	// `tool_call_id`), and informational `system` and `developer` entries. The
+	// assistant's instructions are never included. When disabled, `messages` contains
+	// only user and assistant text turns.
+	ConversationEndedFullHistory bool `json:"conversation_ended_full_history"`
 	// Default Texml App used for voice calls with your assistant. This will be created
 	// automatically on assistant creation.
 	DefaultTexmlAppID string `json:"default_texml_app_id"`
@@ -6904,6 +7495,7 @@ type TelephonySettings struct {
 	VoicemailDetection TelephonySettingsVoicemailDetection `json:"voicemail_detection"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ConversationEndedFullHistory    respjson.Field
 		DefaultTexmlAppID               respjson.Field
 		DisableDtmf                     respjson.Field
 		FallbackDestination             respjson.Field
@@ -7108,6 +7700,13 @@ func (r *TelephonySettingsVoicemailDetectionOnVoicemailDetectedVoicemailMessage)
 }
 
 type TelephonySettingsParam struct {
+	// When enabled, the `messages` array of the `call.conversation.ended` webhook
+	// contains the full conversation history in order: user and assistant turns,
+	// assistant tool calls (`tool_calls`), tool results (`role: tool` with
+	// `tool_call_id`), and informational `system` and `developer` entries. The
+	// assistant's instructions are never included. When disabled, `messages` contains
+	// only user and assistant text turns.
+	ConversationEndedFullHistory param.Opt[bool] `json:"conversation_ended_full_history,omitzero"`
 	// Default Texml App used for voice calls with your assistant. This will be created
 	// automatically on assistant creation.
 	DefaultTexmlAppID param.Opt[string] `json:"default_texml_app_id,omitzero"`
@@ -7346,17 +7945,89 @@ func init() {
 	)
 }
 
+// **Beta:** Configuration for the Telnyx open-source avatar provider. The launch
+// catalog supports six avatars and office, studio, or reception backgrounds.
+type TelnyxAvatarSettings struct {
+	// The Telnyx avatar to render.
+	//
+	// Any of "elena", "ben", "jordan", "lin", "avery", "raphael".
+	AvatarID TelnyxAvatarSettingsAvatarID `json:"avatar_id" api:"required"`
+	// The background to render.
+	//
+	// Any of "office", "studio", "reception".
+	BackgroundID TelnyxAvatarSettingsBackgroundID `json:"background_id" api:"required"`
+	// Required avatar model identifier, separate from `avatar_id`. The supported value
+	// is `foxtrot-1`. Omission, null, and unsupported model identifiers are rejected.
+	//
+	// Any of "foxtrot-1".
+	Model TelnyxAvatarSettingsModel `json:"model" api:"required"`
+	// Selects the Telnyx open-source avatar provider.
+	Provider constant.Telnyx `json:"provider" default:"telnyx"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AvatarID     respjson.Field
+		BackgroundID respjson.Field
+		Model        respjson.Field
+		Provider     respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TelnyxAvatarSettings) RawJSON() string { return r.JSON.raw }
+func (r *TelnyxAvatarSettings) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The Telnyx avatar to render.
+type TelnyxAvatarSettingsAvatarID string
+
+const (
+	TelnyxAvatarSettingsAvatarIDElena   TelnyxAvatarSettingsAvatarID = "elena"
+	TelnyxAvatarSettingsAvatarIDBen     TelnyxAvatarSettingsAvatarID = "ben"
+	TelnyxAvatarSettingsAvatarIDJordan  TelnyxAvatarSettingsAvatarID = "jordan"
+	TelnyxAvatarSettingsAvatarIDLin     TelnyxAvatarSettingsAvatarID = "lin"
+	TelnyxAvatarSettingsAvatarIDAvery   TelnyxAvatarSettingsAvatarID = "avery"
+	TelnyxAvatarSettingsAvatarIDRaphael TelnyxAvatarSettingsAvatarID = "raphael"
+)
+
+// The background to render.
+type TelnyxAvatarSettingsBackgroundID string
+
+const (
+	TelnyxAvatarSettingsBackgroundIDOffice    TelnyxAvatarSettingsBackgroundID = "office"
+	TelnyxAvatarSettingsBackgroundIDStudio    TelnyxAvatarSettingsBackgroundID = "studio"
+	TelnyxAvatarSettingsBackgroundIDReception TelnyxAvatarSettingsBackgroundID = "reception"
+)
+
+// Required avatar model identifier, separate from `avatar_id`. The supported value
+// is `foxtrot-1`. Omission, null, and unsupported model identifiers are rejected.
+type TelnyxAvatarSettingsModel string
+
+const (
+	TelnyxAvatarSettingsModelFoxtrot1 TelnyxAvatarSettingsModel = "foxtrot-1"
+)
+
 // A standalone tool step in a conversation flow, as returned by the API.
 type ToolNode struct {
 	// Caller-supplied unique identifier for this node within the flow.
 	ID string `json:"id" api:"required"`
 	// ID of the single shared (org-level) tool this node executes. When the flow
 	// reaches this node the tool runs as a deliberate step (no LLM turn); its outgoing
-	// `tool_result` edges then route on the outcome. Arguments are filled from the
-	// conversation's dynamic variables by name — a dynamic variable whose name matches
-	// one of the tool's parameters supplies that argument. Cross-validated against the
-	// org's shared tools on write.
+	// `llm` / `expression` edges route the flow on the tool's outcome. Arguments are
+	// filled from the conversation's dynamic variables by name — a dynamic variable
+	// whose name matches one of the tool's parameters supplies that argument.
+	// Cross-validated against the org's shared tools on write.
 	SharedToolID string `json:"shared_tool_id" api:"required"`
+	// Optional message delivered to the user verbatim immediately before the tool
+	// executes — an announcement such as 'One moment while I look that up.' No LLM
+	// turn and no customer turn: the message is spoken/sent, then the tool runs, in
+	// the same deterministic step. `{{variable}}` placeholders are interpolated from
+	// the conversation's dynamic variables (unresolved → empty string); the tool's own
+	// result is not yet available when the message is rendered. Omit for a silent tool
+	// step.
+	Message string `json:"message"`
 	// Optional human-readable label, displayed in authoring UIs.
 	Name string `json:"name"`
 	// Optional canvas coordinates used by authoring UIs to lay out the graph. Ignored
@@ -7375,6 +8046,7 @@ type ToolNode struct {
 	JSON struct {
 		ID           respjson.Field
 		SharedToolID respjson.Field
+		Message      respjson.Field
 		Name         respjson.Field
 		Position     respjson.Field
 		Tool         respjson.Field
@@ -7401,8 +8073,10 @@ const (
 //
 // Unlike a prompt node, a tool node has no instructions or model — it isn't an LLM
 // turn. Reaching it deterministically runs one shared tool (arguments filled from
-// matching dynamic variables by name), then routes on the result via outgoing
-// `tool_result` edges.
+// matching dynamic variables by name), then routes via outgoing `llm` /
+// `expression` edges, with exactly one `default` fallback edge required when the
+// node has any outgoing edges (the tool's outcome is readable as
+// `telnyx_last_tool_status_code` in `expression` conditions).
 //
 // The properties ID, SharedToolID are required.
 type ToolNodeReqParam struct {
@@ -7410,11 +8084,19 @@ type ToolNodeReqParam struct {
 	ID string `json:"id" api:"required"`
 	// ID of the single shared (org-level) tool this node executes. When the flow
 	// reaches this node the tool runs as a deliberate step (no LLM turn); its outgoing
-	// `tool_result` edges then route on the outcome. Arguments are filled from the
-	// conversation's dynamic variables by name — a dynamic variable whose name matches
-	// one of the tool's parameters supplies that argument. Cross-validated against the
-	// org's shared tools on write.
+	// `llm` / `expression` edges route the flow on the tool's outcome. Arguments are
+	// filled from the conversation's dynamic variables by name — a dynamic variable
+	// whose name matches one of the tool's parameters supplies that argument.
+	// Cross-validated against the org's shared tools on write.
 	SharedToolID string `json:"shared_tool_id" api:"required"`
+	// Optional message delivered to the user verbatim immediately before the tool
+	// executes — an announcement such as 'One moment while I look that up.' No LLM
+	// turn and no customer turn: the message is spoken/sent, then the tool runs, in
+	// the same deterministic step. `{{variable}}` placeholders are interpolated from
+	// the conversation's dynamic variables (unresolved → empty string); the tool's own
+	// result is not yet available when the message is rendered. Omit for a silent tool
+	// step.
+	Message param.Opt[string] `json:"message,omitzero"`
 	// Optional human-readable label, displayed in authoring UIs.
 	Name param.Opt[string] `json:"name,omitzero"`
 	// Optional canvas coordinates used by authoring UIs to lay out the graph. Ignored
@@ -7506,6 +8188,18 @@ type TranscriptionSettings struct {
 	// Integration secret identifier for the transcription provider API key. Currently
 	// used for Azure transcription regions that require a customer-provided API key.
 	APIKeyRef string `json:"api_key_ref"`
+	// A second speech-to-text model that transcribes alongside `transcription.model`,
+	// and the rule that decides which transcript the assistant uses.
+	Challenger TranscriptionSettingsChallenger `json:"challenger" api:"nullable"`
+	// Up to 3 streaming models that take over transcription, in this order, when the
+	// model in use fails, at the start of a call or mid-call. `model` must be a
+	// streaming model too, and must support `language` alongside other models. On
+	// update, a list replaces the stored one: omit the field to keep the stored list,
+	// or send `null` or `[]` to remove it. When an update changes `model` or
+	// `language`, stored fallbacks that no longer fit are removed without an error.
+	// Can't be combined with `challenger`, the language booster; to replace a stored
+	// language booster, send `challenger: null` in the same request.
+	FallbackModels []TranscriptionSettingsFallbackModel `json:"fallback_models" api:"nullable"`
 	// The language of the audio to be transcribed. If not set, or if set to `auto`,
 	// supported models will automatically detect the language. For `deepgram/flux`,
 	// supported values are: `auto` (Telnyx language detection controls the language
@@ -7547,12 +8241,14 @@ type TranscriptionSettings struct {
 	//   - `reson8/turns` is a turn-based streaming model covering 10 European languages
 	//     with automatic language detection.
 	//   - `cohere/ar-stt` is a non-streaming Arabic and English transcription model.
+	//   - `telnyx/basira` is a non-streaming Arabic transcription model.
 	//
 	// Any of "deepgram/flux", "deepgram/nova-3", "deepgram/nova-2", "azure/fast",
 	// "assemblyai/universal-3-5-pro", "assemblyai/universal-streaming",
 	// "xai/grok-stt", "soniox/stt-rt-v4", "soniox/stt-rt-v5", "nvidia/parakeet-v3",
 	// "omi-health/omi-med-stt-v1", "humain/realtime", "reson8/turns", "cohere/ar-stt",
-	// "distil-whisper/distil-large-v2", "openai/whisper-large-v3-turbo".
+	// "telnyx/basira", "distil-whisper/distil-large-v2",
+	// "openai/whisper-large-v3-turbo".
 	Model TranscriptionSettingsModel `json:"model"`
 	// Region on third party cloud providers (currently Azure) if using one of their
 	// models. Some regions require `api_key_ref`.
@@ -7560,13 +8256,15 @@ type TranscriptionSettings struct {
 	Settings TranscriptionSettingsConfig `json:"settings"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		APIKeyRef   respjson.Field
-		Language    respjson.Field
-		Model       respjson.Field
-		Region      respjson.Field
-		Settings    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		APIKeyRef      respjson.Field
+		Challenger     respjson.Field
+		FallbackModels respjson.Field
+		Language       respjson.Field
+		Model          respjson.Field
+		Region         respjson.Field
+		Settings       respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
 	} `json:"-"`
 }
 
@@ -7583,6 +8281,115 @@ func (r *TranscriptionSettings) UnmarshalJSON(data []byte) error {
 // TranscriptionSettingsParam.Overrides()
 func (r TranscriptionSettings) ToParam() TranscriptionSettingsParam {
 	return param.Override[TranscriptionSettingsParam](json.RawMessage(r.RawJSON()))
+}
+
+// A second speech-to-text model that transcribes alongside `transcription.model`,
+// and the rule that decides which transcript the assistant uses.
+type TranscriptionSettingsChallenger struct {
+	// The language booster's model. It must be the same kind of model as
+	// `transcription.model`: both streaming (`deepgram/flux`, `deepgram/nova-3`,
+	// `deepgram/nova-2`, `assemblyai/universal-3-5-pro` or its legacy alias
+	// `assemblyai/universal-streaming`, `xai/grok-stt`, `soniox/stt-rt-v4`,
+	// `soniox/stt-rt-v5`, `humain/realtime`, `reson8/turns`) or both non-streaming
+	// (`azure/fast`, `nvidia/parakeet-v3`, `omi-health/omi-med-stt-v1`,
+	// `cohere/ar-stt`, `distil-whisper/distil-large-v2`,
+	// `openai/whisper-large-v3-turbo`, `telnyx/basira`). It can be the same model as
+	// `transcription.model` on a different `language`.
+	//
+	// Any of "deepgram/flux", "deepgram/nova-3", "deepgram/nova-2", "azure/fast",
+	// "assemblyai/universal-3-5-pro", "assemblyai/universal-streaming",
+	// "xai/grok-stt", "soniox/stt-rt-v4", "soniox/stt-rt-v5", "nvidia/parakeet-v3",
+	// "omi-health/omi-med-stt-v1", "humain/realtime", "reson8/turns", "cohere/ar-stt",
+	// "telnyx/basira", "distil-whisper/distil-large-v2",
+	// "openai/whisper-large-v3-turbo".
+	Model string `json:"model" api:"required"`
+	// The language this model transcribes. Omit it or set it to `null` to use the
+	// language of `transcription.model`. The request is rejected when this model
+	// doesn't support the language it would run. It is also rejected when it would run
+	// the same model on the same language as `transcription.model`.
+	Language string `json:"language" api:"nullable"`
+	// How the assistant picks the transcript it uses. The models are compared on how
+	// complete and confident their transcripts are, not on language, so the rules work
+	// best when both models understand the callers' language.
+	//
+	//   - `best_turn` (default): both models transcribe the whole call. Each turn uses
+	//     the language booster's transcript only when it scores higher than the
+	//     transcript of `transcription.model` (clearly higher with non-streaming
+	//     models). With streaming models, `transcription.model` also decides when each
+	//     turn ends. Available for every pair.
+	//   - `best_engine`: both models transcribe the first turns, then the call continues
+	//     alone on the model whose transcripts scored higher. If neither clearly leads,
+	//     `transcription.model` continues. Streaming models only.
+	//   - `merge_words`: both models transcribe each utterance and their words are
+	//     merged, keeping Arabic and English spoken in the same sentence. Available only
+	//     for `telnyx/basira` with `cohere/ar-stt`, in either order. The pair runs on
+	//     the language that applies to `telnyx/basira` (its own, or that of
+	//     `transcription.model`), which must be Arabic (`ar` or an `ar-` locale),
+	//     `multi`, or `auto`.
+	//
+	// Any of "best_turn", "best_engine", "merge_words".
+	Rule string `json:"rule"`
+	// Settings for the language booster, with the same fields and limits as
+	// `transcription.settings`. Fields that don't apply to this model's provider are
+	// dropped, and the provider's defaults fill in the rest. Omit it or set it to
+	// `null` to use the settings of `transcription.model` where they apply to this
+	// model.
+	Settings TranscriptionSettingsConfig `json:"settings" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Model       respjson.Field
+		Language    respjson.Field
+		Rule        respjson.Field
+		Settings    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TranscriptionSettingsChallenger) RawJSON() string { return r.JSON.raw }
+func (r *TranscriptionSettingsChallenger) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A streaming speech-to-text model that takes over transcription when the model in
+// use fails.
+type TranscriptionSettingsFallbackModel struct {
+	// The fallback model. It must be a streaming model other than
+	// `transcription.model` and the other fallbacks: `deepgram/flux`,
+	// `deepgram/nova-3`, `deepgram/nova-2`, `assemblyai/universal-3-5-pro` (or its
+	// legacy alias `assemblyai/universal-streaming`), `xai/grok-stt`,
+	// `soniox/stt-rt-v4`, `soniox/stt-rt-v5`, `humain/realtime`, or `reson8/turns`.
+	//
+	// Any of "deepgram/flux", "deepgram/nova-3", "deepgram/nova-2",
+	// "assemblyai/universal-3-5-pro", "assemblyai/universal-streaming",
+	// "xai/grok-stt", "soniox/stt-rt-v4", "soniox/stt-rt-v5", "humain/realtime",
+	// "reson8/turns".
+	Model string `json:"model" api:"required"`
+	// The language the fallback transcribes. Omit it or set it to `null` to use the
+	// language of `transcription.model`. The request is rejected when the fallback
+	// model doesn't support the language it would run.
+	Language string `json:"language" api:"nullable"`
+	// Settings for the fallback, with the same fields and limits as
+	// `transcription.settings`. Fields that don't apply to this model's provider are
+	// dropped, and the provider's defaults fill in the rest. Omit it or set it to
+	// `null` to use the settings of `transcription.model` where they apply to this
+	// model.
+	Settings TranscriptionSettingsConfig `json:"settings" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Model       respjson.Field
+		Language    respjson.Field
+		Settings    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TranscriptionSettingsFallbackModel) RawJSON() string { return r.JSON.raw }
+func (r *TranscriptionSettingsFallbackModel) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // The speech to text model to be used by the voice assistant. All Deepgram models
@@ -7608,6 +8415,7 @@ func (r TranscriptionSettings) ToParam() TranscriptionSettingsParam {
 //   - `reson8/turns` is a turn-based streaming model covering 10 European languages
 //     with automatic language detection.
 //   - `cohere/ar-stt` is a non-streaming Arabic and English transcription model.
+//   - `telnyx/basira` is a non-streaming Arabic transcription model.
 type TranscriptionSettingsModel string
 
 const (
@@ -7625,6 +8433,7 @@ const (
 	TranscriptionSettingsModelHumainRealtime               TranscriptionSettingsModel = "humain/realtime"
 	TranscriptionSettingsModelReson8Turns                  TranscriptionSettingsModel = "reson8/turns"
 	TranscriptionSettingsModelCohereArStt                  TranscriptionSettingsModel = "cohere/ar-stt"
+	TranscriptionSettingsModelTelnyxBasira                 TranscriptionSettingsModel = "telnyx/basira"
 	TranscriptionSettingsModelDistilWhisperDistilLargeV2   TranscriptionSettingsModel = "distil-whisper/distil-large-v2"
 	TranscriptionSettingsModelOpenAIWhisperLargeV3Turbo    TranscriptionSettingsModel = "openai/whisper-large-v3-turbo"
 )
@@ -7654,6 +8463,18 @@ type TranscriptionSettingsParam struct {
 	// Region on third party cloud providers (currently Azure) if using one of their
 	// models. Some regions require `api_key_ref`.
 	Region param.Opt[string] `json:"region,omitzero"`
+	// A second speech-to-text model that transcribes alongside `transcription.model`,
+	// and the rule that decides which transcript the assistant uses.
+	Challenger TranscriptionSettingsChallengerParam `json:"challenger,omitzero"`
+	// Up to 3 streaming models that take over transcription, in this order, when the
+	// model in use fails, at the start of a call or mid-call. `model` must be a
+	// streaming model too, and must support `language` alongside other models. On
+	// update, a list replaces the stored one: omit the field to keep the stored list,
+	// or send `null` or `[]` to remove it. When an update changes `model` or
+	// `language`, stored fallbacks that no longer fit are removed without an error.
+	// Can't be combined with `challenger`, the language booster; to replace a stored
+	// language booster, send `challenger: null` in the same request.
+	FallbackModels []TranscriptionSettingsFallbackModelParam `json:"fallback_models,omitzero"`
 	// The speech to text model to be used by the voice assistant. All Deepgram models
 	// are run on-premise.
 	//
@@ -7677,12 +8498,14 @@ type TranscriptionSettingsParam struct {
 	//   - `reson8/turns` is a turn-based streaming model covering 10 European languages
 	//     with automatic language detection.
 	//   - `cohere/ar-stt` is a non-streaming Arabic and English transcription model.
+	//   - `telnyx/basira` is a non-streaming Arabic transcription model.
 	//
 	// Any of "deepgram/flux", "deepgram/nova-3", "deepgram/nova-2", "azure/fast",
 	// "assemblyai/universal-3-5-pro", "assemblyai/universal-streaming",
 	// "xai/grok-stt", "soniox/stt-rt-v4", "soniox/stt-rt-v5", "nvidia/parakeet-v3",
 	// "omi-health/omi-med-stt-v1", "humain/realtime", "reson8/turns", "cohere/ar-stt",
-	// "distil-whisper/distil-large-v2", "openai/whisper-large-v3-turbo".
+	// "telnyx/basira", "distil-whisper/distil-large-v2",
+	// "openai/whisper-large-v3-turbo".
 	Model    TranscriptionSettingsModel       `json:"model,omitzero"`
 	Settings TranscriptionSettingsConfigParam `json:"settings,omitzero"`
 	paramObj
@@ -7694,6 +8517,123 @@ func (r TranscriptionSettingsParam) MarshalJSON() (data []byte, err error) {
 }
 func (r *TranscriptionSettingsParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+// A second speech-to-text model that transcribes alongside `transcription.model`,
+// and the rule that decides which transcript the assistant uses.
+//
+// The property Model is required.
+type TranscriptionSettingsChallengerParam struct {
+	// The language booster's model. It must be the same kind of model as
+	// `transcription.model`: both streaming (`deepgram/flux`, `deepgram/nova-3`,
+	// `deepgram/nova-2`, `assemblyai/universal-3-5-pro` or its legacy alias
+	// `assemblyai/universal-streaming`, `xai/grok-stt`, `soniox/stt-rt-v4`,
+	// `soniox/stt-rt-v5`, `humain/realtime`, `reson8/turns`) or both non-streaming
+	// (`azure/fast`, `nvidia/parakeet-v3`, `omi-health/omi-med-stt-v1`,
+	// `cohere/ar-stt`, `distil-whisper/distil-large-v2`,
+	// `openai/whisper-large-v3-turbo`, `telnyx/basira`). It can be the same model as
+	// `transcription.model` on a different `language`.
+	//
+	// Any of "deepgram/flux", "deepgram/nova-3", "deepgram/nova-2", "azure/fast",
+	// "assemblyai/universal-3-5-pro", "assemblyai/universal-streaming",
+	// "xai/grok-stt", "soniox/stt-rt-v4", "soniox/stt-rt-v5", "nvidia/parakeet-v3",
+	// "omi-health/omi-med-stt-v1", "humain/realtime", "reson8/turns", "cohere/ar-stt",
+	// "telnyx/basira", "distil-whisper/distil-large-v2",
+	// "openai/whisper-large-v3-turbo".
+	Model string `json:"model,omitzero" api:"required"`
+	// The language this model transcribes. Omit it or set it to `null` to use the
+	// language of `transcription.model`. The request is rejected when this model
+	// doesn't support the language it would run. It is also rejected when it would run
+	// the same model on the same language as `transcription.model`.
+	Language param.Opt[string] `json:"language,omitzero"`
+	// How the assistant picks the transcript it uses. The models are compared on how
+	// complete and confident their transcripts are, not on language, so the rules work
+	// best when both models understand the callers' language.
+	//
+	//   - `best_turn` (default): both models transcribe the whole call. Each turn uses
+	//     the language booster's transcript only when it scores higher than the
+	//     transcript of `transcription.model` (clearly higher with non-streaming
+	//     models). With streaming models, `transcription.model` also decides when each
+	//     turn ends. Available for every pair.
+	//   - `best_engine`: both models transcribe the first turns, then the call continues
+	//     alone on the model whose transcripts scored higher. If neither clearly leads,
+	//     `transcription.model` continues. Streaming models only.
+	//   - `merge_words`: both models transcribe each utterance and their words are
+	//     merged, keeping Arabic and English spoken in the same sentence. Available only
+	//     for `telnyx/basira` with `cohere/ar-stt`, in either order. The pair runs on
+	//     the language that applies to `telnyx/basira` (its own, or that of
+	//     `transcription.model`), which must be Arabic (`ar` or an `ar-` locale),
+	//     `multi`, or `auto`.
+	//
+	// Any of "best_turn", "best_engine", "merge_words".
+	Rule string `json:"rule,omitzero"`
+	// Settings for the language booster, with the same fields and limits as
+	// `transcription.settings`. Fields that don't apply to this model's provider are
+	// dropped, and the provider's defaults fill in the rest. Omit it or set it to
+	// `null` to use the settings of `transcription.model` where they apply to this
+	// model.
+	Settings TranscriptionSettingsConfigParam `json:"settings,omitzero"`
+	paramObj
+}
+
+func (r TranscriptionSettingsChallengerParam) MarshalJSON() (data []byte, err error) {
+	type shadow TranscriptionSettingsChallengerParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TranscriptionSettingsChallengerParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[TranscriptionSettingsChallengerParam](
+		"model", "deepgram/flux", "deepgram/nova-3", "deepgram/nova-2", "azure/fast", "assemblyai/universal-3-5-pro", "assemblyai/universal-streaming", "xai/grok-stt", "soniox/stt-rt-v4", "soniox/stt-rt-v5", "nvidia/parakeet-v3", "omi-health/omi-med-stt-v1", "humain/realtime", "reson8/turns", "cohere/ar-stt", "telnyx/basira", "distil-whisper/distil-large-v2", "openai/whisper-large-v3-turbo",
+	)
+	apijson.RegisterFieldValidator[TranscriptionSettingsChallengerParam](
+		"rule", "best_turn", "best_engine", "merge_words",
+	)
+}
+
+// A streaming speech-to-text model that takes over transcription when the model in
+// use fails.
+//
+// The property Model is required.
+type TranscriptionSettingsFallbackModelParam struct {
+	// The fallback model. It must be a streaming model other than
+	// `transcription.model` and the other fallbacks: `deepgram/flux`,
+	// `deepgram/nova-3`, `deepgram/nova-2`, `assemblyai/universal-3-5-pro` (or its
+	// legacy alias `assemblyai/universal-streaming`), `xai/grok-stt`,
+	// `soniox/stt-rt-v4`, `soniox/stt-rt-v5`, `humain/realtime`, or `reson8/turns`.
+	//
+	// Any of "deepgram/flux", "deepgram/nova-3", "deepgram/nova-2",
+	// "assemblyai/universal-3-5-pro", "assemblyai/universal-streaming",
+	// "xai/grok-stt", "soniox/stt-rt-v4", "soniox/stt-rt-v5", "humain/realtime",
+	// "reson8/turns".
+	Model string `json:"model,omitzero" api:"required"`
+	// The language the fallback transcribes. Omit it or set it to `null` to use the
+	// language of `transcription.model`. The request is rejected when the fallback
+	// model doesn't support the language it would run.
+	Language param.Opt[string] `json:"language,omitzero"`
+	// Settings for the fallback, with the same fields and limits as
+	// `transcription.settings`. Fields that don't apply to this model's provider are
+	// dropped, and the provider's defaults fill in the rest. Omit it or set it to
+	// `null` to use the settings of `transcription.model` where they apply to this
+	// model.
+	Settings TranscriptionSettingsConfigParam `json:"settings,omitzero"`
+	paramObj
+}
+
+func (r TranscriptionSettingsFallbackModelParam) MarshalJSON() (data []byte, err error) {
+	type shadow TranscriptionSettingsFallbackModelParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TranscriptionSettingsFallbackModelParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[TranscriptionSettingsFallbackModelParam](
+		"model", "deepgram/flux", "deepgram/nova-3", "deepgram/nova-2", "assemblyai/universal-3-5-pro", "assemblyai/universal-streaming", "xai/grok-stt", "soniox/stt-rt-v4", "soniox/stt-rt-v5", "humain/realtime", "reson8/turns",
+	)
 }
 
 type TranscriptionSettingsConfig struct {
@@ -7980,9 +8920,9 @@ type VoiceSettingsParam struct {
 	// Amplifies similarity to the original speaker voice. Increases computational load
 	// and latency slightly. Only applicable when using ElevenLabs.
 	UseSpeakerBoost param.Opt[bool] `json:"use_speaker_boost,omitzero"`
-	// The speed of the voice in the range [0.25, 2.0]. 1.0 is deafult speed. Larger
-	// numbers make the voice faster, smaller numbers make it slower. This is only
-	// applicable for Telnyx Natural voices.
+	// The speed of the voice in the range [0.6, 1.5]. 1.0 is the default speed. Larger
+	// numbers make the voice faster, smaller numbers make it slower. Applies to Telnyx
+	// `Ultra` voices; values outside this range are rejected by the synthesis engine.
 	VoiceSpeed param.Opt[float64] `json:"voice_speed,omitzero"`
 	// Enhances recognition for specific languages and dialects during MiniMax TTS
 	// synthesis. Default is null (no boost). Set to 'auto' for automatic language
@@ -8381,6 +9321,76 @@ func init() {
 	)
 }
 
+// Streams conversation and telephony events to a WebSocket server you host, and
+// accepts messages injected back into the conversation. Telnyx opens the
+// connection as a client, once per conversation. Delivery is best effort
+// throughout: while the connection is down events are dropped rather than queued,
+// and no socket failure is ever allowed to affect the call. Beta feature.
+type WebsocketSettings struct {
+	// Integration secret identifier whose value Telnyx sends as an
+	// `Authorization: Bearer <value>` header on the upgrade request. Resolved on every
+	// connection attempt, so a rotated secret is picked up by the next reconnect.
+	AuthRef string `json:"auth_ref"`
+	// Whether Telnyx opens a WebSocket to `url` for each of this assistant's
+	// conversations. Defaults to `false`.
+	Enabled bool `json:"enabled"`
+	// The `ws://` or `wss://` endpoint Telnyx connects to. Required when `enabled` is
+	// `true`. Must be externally reachable — localhost, private IP ranges and `.local`
+	// domains are rejected.
+	URL string `json:"url"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AuthRef     respjson.Field
+		Enabled     respjson.Field
+		URL         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebsocketSettings) RawJSON() string { return r.JSON.raw }
+func (r *WebsocketSettings) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this WebsocketSettings to a WebsocketSettingsParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// WebsocketSettingsParam.Overrides()
+func (r WebsocketSettings) ToParam() WebsocketSettingsParam {
+	return param.Override[WebsocketSettingsParam](json.RawMessage(r.RawJSON()))
+}
+
+// Streams conversation and telephony events to a WebSocket server you host, and
+// accepts messages injected back into the conversation. Telnyx opens the
+// connection as a client, once per conversation. Delivery is best effort
+// throughout: while the connection is down events are dropped rather than queued,
+// and no socket failure is ever allowed to affect the call. Beta feature.
+type WebsocketSettingsParam struct {
+	// Integration secret identifier whose value Telnyx sends as an
+	// `Authorization: Bearer <value>` header on the upgrade request. Resolved on every
+	// connection attempt, so a rotated secret is picked up by the next reconnect.
+	AuthRef param.Opt[string] `json:"auth_ref,omitzero"`
+	// Whether Telnyx opens a WebSocket to `url` for each of this assistant's
+	// conversations. Defaults to `false`.
+	Enabled param.Opt[bool] `json:"enabled,omitzero"`
+	// The `ws://` or `wss://` endpoint Telnyx connects to. Required when `enabled` is
+	// `true`. Must be externally reachable — localhost, private IP ranges and `.local`
+	// domains are rejected.
+	URL param.Opt[string] `json:"url,omitzero"`
+	paramObj
+}
+
+func (r WebsocketSettingsParam) MarshalJSON() (data []byte, err error) {
+	type shadow WebsocketSettingsParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *WebsocketSettingsParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // Configuration settings for the assistant's web widget.
 type WidgetSettings struct {
 	// Text displayed while the agent is processing.
@@ -8562,6 +9572,26 @@ func (r *AIAssistantSendSMSResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type AIAssistantWhatsappResponse struct {
+	// ID of the conversation created for this WhatsApp chat.
+	ConversationID string `json:"conversation_id" api:"required"`
+	// ID of the WhatsApp template message that was sent.
+	MessageID string `json:"message_id" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ConversationID respjson.Field
+		MessageID      respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AIAssistantWhatsappResponse) RawJSON() string { return r.JSON.raw }
+func (r *AIAssistantWhatsappResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type AIAssistantNewParams struct {
 	// System instructions for the assistant. These may be templated with
 	// [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables)
@@ -8612,12 +9642,23 @@ type AIAssistantNewParams struct {
 	// fetches combined. An agent whose card cannot be fetched costs the assistant that
 	// capability for the conversation; it does not fail the call.
 	A2aAgents []AssistantA2AAgentParam `json:"a2a_agents,omitzero"`
+	// **Beta:** Configuration for the Telnyx open-source avatar provider. The launch
+	// catalog supports six avatars and office, studio, or reception backgrounds.
+	AvatarSettings AvatarSettingsRequestParam `json:"avatar_settings,omitzero"`
 	// Conversation flow as supplied by API clients (create / update).
 	//
 	// A directed graph of `FlowNodeReq` connected by `FlowEdge`s. Validation enforces
 	// unique node/edge IDs, that `start_node_id` references a real node, and that
 	// every edge's endpoints reference real nodes.
 	ConversationFlow ConversationFlowReqParam `json:"conversation_flow,omitzero"`
+	// Splits the conversation between a frontend model that talks to the caller and a
+	// backend model that does the work. On the GPT-Live route the frontend model
+	// cannot call tools at all — when it needs something done it raises a delegation
+	// and waits. On the chat completion route the frontend keeps a single `delegate`
+	// tool that returns immediately, so the conversation carries on while the backend
+	// works. Either way the backend's answer is spoken as commentary or kept as silent
+	// context, depending on `speak_results`. Beta feature.
+	DelegationSettings DelegationSettingsParam `json:"delegation_settings,omitzero"`
 	// Map of dynamic variables and their default values
 	DynamicVariables map[string]any         `json:"dynamic_variables,omitzero"`
 	EnabledFeatures  []EnabledFeatures      `json:"enabled_features,omitzero"`
@@ -8662,6 +9703,12 @@ type AIAssistantNewParams struct {
 	Tools         []AssistantToolUnionParam            `json:"tools,omitzero"`
 	Transcription TranscriptionSettingsParam           `json:"transcription,omitzero"`
 	VoiceSettings InferenceEmbeddingVoiceSettingsParam `json:"voice_settings,omitzero"`
+	// Streams conversation and telephony events to a WebSocket server you host, and
+	// accepts messages injected back into the conversation. Telnyx opens the
+	// connection as a client, once per conversation. Delivery is best effort
+	// throughout: while the connection is down events are dropped rather than queued,
+	// and no socket failure is ever allowed to affect the call. Beta feature.
+	WebsocketSettings WebsocketSettingsParam `json:"websocket_settings,omitzero"`
 	// Configuration settings for the assistant's web widget.
 	WidgetSettings WidgetSettingsParam `json:"widget_settings,omitzero"`
 	paramObj
@@ -8750,12 +9797,23 @@ type AIAssistantUpdateParams struct {
 	// capability for the conversation; it does not fail the call. Omit this field to
 	// leave the assistant's agents unchanged; send an empty array to remove them all.
 	A2aAgents []AssistantA2AAgentParam `json:"a2a_agents,omitzero"`
+	// **Beta:** Configuration for the Telnyx open-source avatar provider. The launch
+	// catalog supports six avatars and office, studio, or reception backgrounds.
+	AvatarSettings AvatarSettingsRequestParam `json:"avatar_settings,omitzero"`
 	// Conversation flow as supplied by API clients (create / update).
 	//
 	// A directed graph of `FlowNodeReq` connected by `FlowEdge`s. Validation enforces
 	// unique node/edge IDs, that `start_node_id` references a real node, and that
 	// every edge's endpoints reference real nodes.
 	ConversationFlow ConversationFlowReqParam `json:"conversation_flow,omitzero"`
+	// Splits the conversation between a frontend model that talks to the caller and a
+	// backend model that does the work. On the GPT-Live route the frontend model
+	// cannot call tools at all — when it needs something done it raises a delegation
+	// and waits. On the chat completion route the frontend keeps a single `delegate`
+	// tool that returns immediately, so the conversation carries on while the backend
+	// works. Either way the backend's answer is spoken as commentary or kept as silent
+	// context, depending on `speak_results`. Beta feature.
+	DelegationSettings DelegationSettingsParam `json:"delegation_settings,omitzero"`
 	// Map of dynamic variables and their default values
 	DynamicVariables map[string]any         `json:"dynamic_variables,omitzero"`
 	EnabledFeatures  []EnabledFeatures      `json:"enabled_features,omitzero"`
@@ -8811,6 +9869,12 @@ type AIAssistantUpdateParams struct {
 	Tools         []AssistantToolUnionParam            `json:"tools,omitzero"`
 	Transcription TranscriptionSettingsParam           `json:"transcription,omitzero"`
 	VoiceSettings InferenceEmbeddingVoiceSettingsParam `json:"voice_settings,omitzero"`
+	// Streams conversation and telephony events to a WebSocket server you host, and
+	// accepts messages injected back into the conversation. Telnyx opens the
+	// connection as a client, once per conversation. Delivery is best effort
+	// throughout: while the connection is down events are dropped rather than queued,
+	// and no socket failure is ever allowed to affect the call. Beta feature.
+	WebsocketSettings WebsocketSettingsParam `json:"websocket_settings,omitzero"`
 	// Configuration settings for the assistant's web widget.
 	WidgetSettings WidgetSettingsParam `json:"widget_settings,omitzero"`
 	paramObj
@@ -8822,6 +9886,22 @@ func (r AIAssistantUpdateParams) MarshalJSON() (data []byte, err error) {
 }
 func (r *AIAssistantUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+type AIAssistantDeleteParams struct {
+	// Permanently delete the assistant immediately instead of soft-deleting it to the
+	// Recently Deleted list, where it stays restorable for 30 days.
+	HardDelete param.Opt[bool] `query:"hard_delete,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [AIAssistantDeleteParams]'s query parameters as
+// `url.Values`.
+func (r AIAssistantDeleteParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
 }
 
 type AIAssistantChatParams struct {
@@ -8922,6 +10002,59 @@ func (u *AIAssistantSendSMSParamsConversationMetadataUnion) UnmarshalJSON(data [
 }
 
 func (u *AIAssistantSendSMSParamsConversationMetadataUnion) asAny() any {
+	if !param.IsOmitted(u.OfString) {
+		return &u.OfString.Value
+	} else if !param.IsOmitted(u.OfInt) {
+		return &u.OfInt.Value
+	} else if !param.IsOmitted(u.OfBool) {
+		return &u.OfBool.Value
+	}
+	return nil
+}
+
+type AIAssistantWhatsappParams struct {
+	// Instruction for the assistant, including the values for the template variables,
+	// e.g. `Send the login verification code 482913 to the customer.`
+	Content string `json:"content" api:"required"`
+	// WhatsApp number on your account to send from, in E.164 format. Its messaging
+	// profile must have this assistant configured.
+	From string `json:"from" api:"required"`
+	// Customer to message, as an E.164 phone number or a WhatsApp business-scoped user
+	// ID (BSUID).
+	To             string            `json:"to" api:"required"`
+	IdempotencyKey param.Opt[string] `header:"Idempotency-Key,omitzero" json:"-"`
+	// Metadata stored on the conversation. Keys starting with `telnyx_` and the
+	// `assistant_id` key are reserved.
+	ConversationMetadata map[string]AIAssistantWhatsappParamsConversationMetadataUnion `json:"conversation_metadata,omitzero"`
+	paramObj
+}
+
+func (r AIAssistantWhatsappParams) MarshalJSON() (data []byte, err error) {
+	type shadow AIAssistantWhatsappParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIAssistantWhatsappParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type AIAssistantWhatsappParamsConversationMetadataUnion struct {
+	OfString param.Opt[string] `json:",omitzero,inline"`
+	OfInt    param.Opt[int64]  `json:",omitzero,inline"`
+	OfBool   param.Opt[bool]   `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u AIAssistantWhatsappParamsConversationMetadataUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfString, u.OfInt, u.OfBool)
+}
+func (u *AIAssistantWhatsappParamsConversationMetadataUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *AIAssistantWhatsappParamsConversationMetadataUnion) asAny() any {
 	if !param.IsOmitted(u.OfString) {
 		return &u.OfString.Value
 	} else if !param.IsOmitted(u.OfInt) {

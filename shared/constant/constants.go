@@ -33,8 +33,11 @@ type Default string                // Always "default"
 type Ein string                    // Always "EIN"
 type Expression string             // Always "expression"
 type Function string               // Always "function"
+type GuardrailEvent string         // Always "guardrail_event"
+type GuardrailEvaluation string    // Always "guardrail.evaluation"
 type Handoff string                // Always "handoff"
 type Hangup string                 // Always "hangup"
+type InferenceRequest string       // Always "inference.request"
 type Invite string                 // Always "invite"
 type Ios string                    // Always "ios"
 type Jpeg string                   // Always "jpeg"
@@ -49,7 +52,6 @@ type NumberLiteral string          // Always "number_literal"
 type Pay string                    // Always "pay"
 type PredefinedMedia string        // Always "predefined_media"
 type ProviderRecordingMedia string // Always "provider_recording_media"
-type Recall string                 // Always "recall"
 type Refer string                  // Always "refer"
 type RequestResponseDelayed string // Always "request_response_delayed"
 type RequestStart string           // Always "request_start"
@@ -61,7 +63,10 @@ type Simple string                 // Always "simple"
 type SkipTurn string               // Always "skip_turn"
 type StockSymbol string            // Always "STOCK_SYMBOL"
 type StringLiteral string          // Always "string_literal"
+type Telnyx string                 // Always "telnyx"
 type Text string                   // Always "text"
+type TokenGroup string             // Always "token_group"
+type TokenKey string               // Always "token_key"
 type Transfer string               // Always "transfer"
 type UpdateDynamicVariables string // Always "update_dynamic_variables"
 type Variable string               // Always "variable"
@@ -81,8 +86,11 @@ func (c Default) Default() Default                               { return "defau
 func (c Ein) Default() Ein                                       { return "EIN" }
 func (c Expression) Default() Expression                         { return "expression" }
 func (c Function) Default() Function                             { return "function" }
+func (c GuardrailEvent) Default() GuardrailEvent                 { return "guardrail_event" }
+func (c GuardrailEvaluation) Default() GuardrailEvaluation       { return "guardrail.evaluation" }
 func (c Handoff) Default() Handoff                               { return "handoff" }
 func (c Hangup) Default() Hangup                                 { return "hangup" }
+func (c InferenceRequest) Default() InferenceRequest             { return "inference.request" }
 func (c Invite) Default() Invite                                 { return "invite" }
 func (c Ios) Default() Ios                                       { return "ios" }
 func (c Jpeg) Default() Jpeg                                     { return "jpeg" }
@@ -97,7 +105,6 @@ func (c NumberLiteral) Default() NumberLiteral                   { return "numbe
 func (c Pay) Default() Pay                                       { return "pay" }
 func (c PredefinedMedia) Default() PredefinedMedia               { return "predefined_media" }
 func (c ProviderRecordingMedia) Default() ProviderRecordingMedia { return "provider_recording_media" }
-func (c Recall) Default() Recall                                 { return "recall" }
 func (c Refer) Default() Refer                                   { return "refer" }
 func (c RequestResponseDelayed) Default() RequestResponseDelayed { return "request_response_delayed" }
 func (c RequestStart) Default() RequestStart                     { return "request_start" }
@@ -109,7 +116,10 @@ func (c Simple) Default() Simple                                 { return "simpl
 func (c SkipTurn) Default() SkipTurn                             { return "skip_turn" }
 func (c StockSymbol) Default() StockSymbol                       { return "STOCK_SYMBOL" }
 func (c StringLiteral) Default() StringLiteral                   { return "string_literal" }
+func (c Telnyx) Default() Telnyx                                 { return "telnyx" }
 func (c Text) Default() Text                                     { return "text" }
+func (c TokenGroup) Default() TokenGroup                         { return "token_group" }
+func (c TokenKey) Default() TokenKey                             { return "token_key" }
 func (c Transfer) Default() Transfer                             { return "transfer" }
 func (c UpdateDynamicVariables) Default() UpdateDynamicVariables { return "update_dynamic_variables" }
 func (c Variable) Default() Variable                             { return "variable" }
@@ -129,8 +139,11 @@ func (c Default) MarshalJSON() ([]byte, error)                { return marshalSt
 func (c Ein) MarshalJSON() ([]byte, error)                    { return marshalString(c) }
 func (c Expression) MarshalJSON() ([]byte, error)             { return marshalString(c) }
 func (c Function) MarshalJSON() ([]byte, error)               { return marshalString(c) }
+func (c GuardrailEvent) MarshalJSON() ([]byte, error)         { return marshalString(c) }
+func (c GuardrailEvaluation) MarshalJSON() ([]byte, error)    { return marshalString(c) }
 func (c Handoff) MarshalJSON() ([]byte, error)                { return marshalString(c) }
 func (c Hangup) MarshalJSON() ([]byte, error)                 { return marshalString(c) }
+func (c InferenceRequest) MarshalJSON() ([]byte, error)       { return marshalString(c) }
 func (c Invite) MarshalJSON() ([]byte, error)                 { return marshalString(c) }
 func (c Ios) MarshalJSON() ([]byte, error)                    { return marshalString(c) }
 func (c Jpeg) MarshalJSON() ([]byte, error)                   { return marshalString(c) }
@@ -145,7 +158,6 @@ func (c NumberLiteral) MarshalJSON() ([]byte, error)          { return marshalSt
 func (c Pay) MarshalJSON() ([]byte, error)                    { return marshalString(c) }
 func (c PredefinedMedia) MarshalJSON() ([]byte, error)        { return marshalString(c) }
 func (c ProviderRecordingMedia) MarshalJSON() ([]byte, error) { return marshalString(c) }
-func (c Recall) MarshalJSON() ([]byte, error)                 { return marshalString(c) }
 func (c Refer) MarshalJSON() ([]byte, error)                  { return marshalString(c) }
 func (c RequestResponseDelayed) MarshalJSON() ([]byte, error) { return marshalString(c) }
 func (c RequestStart) MarshalJSON() ([]byte, error)           { return marshalString(c) }
@@ -157,7 +169,10 @@ func (c Simple) MarshalJSON() ([]byte, error)                 { return marshalSt
 func (c SkipTurn) MarshalJSON() ([]byte, error)               { return marshalString(c) }
 func (c StockSymbol) MarshalJSON() ([]byte, error)            { return marshalString(c) }
 func (c StringLiteral) MarshalJSON() ([]byte, error)          { return marshalString(c) }
+func (c Telnyx) MarshalJSON() ([]byte, error)                 { return marshalString(c) }
 func (c Text) MarshalJSON() ([]byte, error)                   { return marshalString(c) }
+func (c TokenGroup) MarshalJSON() ([]byte, error)             { return marshalString(c) }
+func (c TokenKey) MarshalJSON() ([]byte, error)               { return marshalString(c) }
 func (c Transfer) MarshalJSON() ([]byte, error)               { return marshalString(c) }
 func (c UpdateDynamicVariables) MarshalJSON() ([]byte, error) { return marshalString(c) }
 func (c Variable) MarshalJSON() ([]byte, error)               { return marshalString(c) }

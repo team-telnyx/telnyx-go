@@ -51,6 +51,7 @@ func TestPhoneNumberJobListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.PhoneNumbers.Jobs.List(context.TODO(), telnyx.PhoneNumberJobListParams{
 		Filter: telnyx.PhoneNumberJobListParamsFilter{
+			CustomerReference: telnyx.String("yourcustomerrefhere"),
 			PhoneNumber: telnyx.PhoneNumberJobListParamsFilterPhoneNumberUnion{
 				OfString: telnyx.String("+15551234567,1234567890123456789"),
 			},

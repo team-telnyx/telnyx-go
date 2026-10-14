@@ -55,9 +55,33 @@ func (r *CallActionService) AddAIAssistantMessages(ctx context.Context, callCont
 // Answer an incoming call. You must issue this command before executing subsequent
 // commands on an incoming call.
 //
+// To answer with an AI assistant, include `assistant.id` and any per-call
+// overrides in the `assistant` object. Telnyx attempts to warm up the assistant
+// before answering the call, then starts the assistant automatically when the call
+// is answered. Do not also send `ai_assistant_start` for this flow. The HTTP
+// success response can arrive before the call is answered; use the `call.answered`
+// webhook to track the answer. If warm-up fails, Telnyx falls back to starting the
+// assistant after answering.
+//
+// When `assistant.id` is supplied, obtain the conversation ID from
+// `data.payload.conversation_id` in the
+// [call.conversation.created](/api-reference/callbacks/call-conversation-created)
+// webhook and correlate it using `data.payload.call_control_id`. The `answer` HTTP
+// response does not include `conversation_id`. The created event is emitted during
+// assistant startup and does not indicate that the assistant is ready to speak.
+//
+// Set the assistant voice with `assistant.voice_settings.voice` and speech-to-text
+// settings with `assistant.transcription`. You can reuse one stored assistant with
+// different per-call settings. Warm-up prepares assistant configuration and
+// dependencies; it does not wait for the greeting audio to be ready or guarantee
+// zero silence after answer. A plain `answer` followed by `ai_assistant_start`
+// performs assistant startup after the call has already been answered.
+//
 // **Expected Webhooks:**
 //
 //   - `call.answered`
+//   - `call.conversation.created` when the requested assistant conversation is
+//     created
 //   - `call.hold` and `call.unhold` if the call is held/unheld
 //   - `call.deepfake_detection.result` if `deepfake_detection` was enabled
 //   - `call.deepfake_detection.error` if `deepfake_detection` was enabled and an
@@ -135,6 +159,8 @@ func (r *CallActionService) Gather(ctx context.Context, callControlID string, bo
 //
 // **Expected Webhooks:**
 //
+//   - [`call.conversation.created`](/api-reference/callbacks/call-conversation-created)
+//     includes `conversation_id` during startup
 //   - `call.ai_gather.ended`
 //   - `call.conversation.ended`
 //   - `call.ai_gather.partial_results` (if `send_partial_results` is set to `true`)
@@ -395,8 +421,10 @@ func (r *CallActionService) Speak(ctx context.Context, callControlID string, bod
 //
 // **Expected Webhooks:**
 //
-// - `call.conversation.ended`
-// - `call.conversation_insights.generated`
+//   - [`call.conversation.created`](/api-reference/callbacks/call-conversation-created)
+//     includes `conversation_id` during startup
+//   - `call.conversation.ended`
+//   - `call.conversation_insights.generated`
 func (r *CallActionService) StartAIAssistant(ctx context.Context, callControlID string, body CallActionStartAIAssistantParams, opts ...option.RequestOption) (res *CallActionStartAIAssistantResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
@@ -737,6 +765,9 @@ func (r *CallActionService) SwitchSupervisorRole(ctx context.Context, callContro
 //     `answering_machine_detection=premium` was requested
 //   - `call.machine.premium.greeting.ended` if `answering_machine_detection=premium`
 //     was requested and a beep was detected
+//   - `call.machine.premium.call_screening.detected` if
+//     `answering_machine_detection=premium_ios_call_screening_detection` was
+//     requested and an Apple Call Screening tone was detected
 func (r *CallActionService) Transfer(ctx context.Context, callControlID string, body CallActionTransferParams, opts ...option.RequestOption) (res *CallActionTransferResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if callControlID == "" {
@@ -951,6 +982,34 @@ const (
 	ConversationRelayInterruptibleSpeech ConversationRelayInterruptible = "speech"
 	ConversationRelayInterruptibleDtmf   ConversationRelayInterruptible = "dtmf"
 )
+
+// Engine-specific transcription settings for Conversation Relay. This accepts the
+// same provider-specific options used by the Call Transcription Start command,
+// such as `transcription_model`, without requiring the engine discriminator to be
+// repeated inside this object. With Deepgram Flux (`deepgram/flux`),
+// `interim_results`, `eot_threshold` and `eager_eot_threshold` control the interim
+// prompts and the `eagerEndOfTurn` and `turnResumed` frames sent to your WebSocket
+// server.
+type ConversationRelayTranscriptionEngineConfigParam struct {
+	// Deepgram Flux: confidence at which an `eagerEndOfTurn` frame is sent before the
+	// final prompt, followed by `turnResumed` if the caller keeps talking. When
+	// omitted, these frames are not sent.
+	EagerEotThreshold param.Opt[float64] `json:"eager_eot_threshold,omitzero"`
+	// Deepgram Flux: confidence required to end the caller's turn.
+	EotThreshold param.Opt[float64] `json:"eot_threshold,omitzero"`
+	// Deepgram Flux: send interim transcripts as `prompt` frames with `last: false`.
+	InterimResults param.Opt[bool] `json:"interim_results,omitzero"`
+	ExtraFields    map[string]any  `json:"-"`
+	paramObj
+}
+
+func (r ConversationRelayTranscriptionEngineConfigParam) MarshalJSON() (data []byte, err error) {
+	type shadow ConversationRelayTranscriptionEngineConfigParam
+	return param.MarshalWithExtras(r, (*shadow)(&r), r.ExtraFields)
+}
+func (r *ConversationRelayTranscriptionEngineConfigParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // The properties TranscriptionEngine, TranscriptionModel are required.
 type DeepgramNova2ConfigParam struct {
@@ -1575,9 +1634,10 @@ type TelnyxVoiceSettingsParam struct {
 	//
 	// Any of "telnyx".
 	Type TelnyxVoiceSettingsType `json:"type,omitzero" api:"required"`
-	// The voice speed to be used for the voice. The voice speed must be between 0.1
-	// and 2.0. Default value is 1.0. Not supported for `Telnyx.Bayan.*` or
-	// `Telnyx.Sukhan.*` voices.
+	// The voice speed to be used for the voice. Telnyx `Ultra` voices accept values
+	// from 0.6 to 1.5; values outside that range are rejected by the synthesis engine.
+	// `Qwen3TTS` and `KokoroTTS` accept the field but do not apply it. Default value
+	// is 1.0. Not supported for `Telnyx.Bayan.*` or `Telnyx.Sukhan.*` voices.
 	VoiceSpeed param.Opt[float64] `json:"voice_speed,omitzero"`
 	paramObj
 }
@@ -3903,14 +3963,18 @@ type CallActionAnswerParams struct {
 	SendSilenceWhenIdle param.Opt[bool] `json:"send_silence_when_idle,omitzero"`
 	// The destination WebSocket address where the stream is going to be delivered.
 	StreamURL param.Opt[string] `json:"stream_url,omitzero"`
-	// Enable transcription upon call answer. The default value is false.
+	// Enable standalone call transcription upon call answer. The default value is
+	// false. Configure this feature with `transcription_config`. To configure speech
+	// recognition for an AI assistant, use `assistant.transcription` instead.
 	Transcription param.Opt[bool] `json:"transcription,omitzero"`
 	// Use this field to override the URL for which Telnyx will send subsequent
 	// webhooks to for this call.
 	WebhookURL param.Opt[string] `json:"webhook_url,omitzero"`
-	// AI Assistant configuration. All fields except `id` are optional — the
-	// assistant's stored configuration will be used as fallback for any omitted
-	// fields.
+	// AI Assistant configuration and per-call overrides. All fields except `id` are
+	// optional. Omitted assistant fields use the stored configuration. Supplied
+	// `voice_settings` and `transcription` objects replace their stored objects rather
+	// than merging individual settings; include every setting you want to retain.
+	// `dynamic_variables` are merged, with request values taking precedence.
 	Assistant CallAssistantRequestParam `json:"assistant,omitzero"`
 	// Starts a Conversation Relay session automatically when the answered/dialed call
 	// is answered. This embedded shape is supported on `answer` and `dial`. It uses
@@ -4434,10 +4498,10 @@ type CallActionGatherUsingAIParams struct {
 	//     the `VoiceId` (e.g., `AWS.Polly.Joanna-Neural`). Check the
 	//     [available voices](https://docs.aws.amazon.com/polly/latest/dg/available-voices.html)
 	//     for compatibility.
-	//   - **Azure:** Use `Azure.<VoiceId>. (e.g. Azure.en-CA-ClaraNeural,
-	//     Azure.en-CA-LiamNeural, Azure.en-US-BrianMultilingualNeural,
-	//     Azure.en-US-Ava:DragonHDLatestNeural. For a complete list of voices, go to
-	//     [Azure Voice Gallery](https://speech.microsoft.com/portal/voicegallery).)
+	//   - **Azure:** Use `Azure.<VoiceId>` (e.g., `Azure.en-CA-ClaraNeural`,
+	//     `Azure.en-CA-LiamNeural`, `Azure.en-US-BrianMultilingualNeural`,
+	//     `Azure.en-US-Ava:DragonHDLatestNeural`). For a complete list of voices, go to
+	//     [Azure Voice Gallery](https://speech.microsoft.com/portal/voicegallery).
 	//   - **ElevenLabs:** Use `ElevenLabs.<ModelId>.<VoiceId>` (e.g.,
 	//     `ElevenLabs.BaseModel.John`). The `ModelId` part is optional. To use
 	//     ElevenLabs, you must provide your ElevenLabs API key as an integration secret
@@ -5257,6 +5321,12 @@ type CallActionPayParams struct {
 	Language param.Opt[string] `json:"language,omitzero"`
 	// Maximum number of attempts for each payment collection step.
 	MaxAttempts param.Opt[int64] `json:"max_attempts,omitzero"`
+	// Minimum number of digits the caller must enter when collecting a credit-card
+	// billing postal code. Applies only when `postal_code` is `true` or `"true"` and
+	// no `payment_token` is supplied. The default is 1. The maximum number of digits
+	// collected is the greater of 10 and this value. This does not validate the length
+	// of a postal code supplied directly in `postal_code`.
+	MinPostalCodeLength param.Opt[int64] `json:"min_postal_code_length,omitzero"`
 	// Existing payment token. When supplied, payment-detail collection is skipped.
 	PaymentToken param.Opt[string] `json:"payment_token,omitzero"`
 	// Speech synthesis service level used for payment prompts. Pay defaults to
@@ -5280,6 +5350,15 @@ type CallActionPayParams struct {
 	//
 	// Any of "credit-card", "ach-debit".
 	PaymentMethod CallActionPayParamsPaymentMethod `json:"payment_method,omitzero"`
+	// Controls billing postal code collection for credit-card payments when no
+	// `payment_token` is supplied. Set to `true` or the string `"true"` (the default)
+	// to prompt the caller for a postal code. Set to `false` or the string `"false"`
+	// to skip the postal code prompt without supplying a postal code to the payment
+	// connector. Supply any other non-empty string, such as `"90210"`, to use that
+	// postal code without prompting. Empty or whitespace-only strings are rejected.
+	// This option does not affect ACH debit payments or payments using an existing
+	// token.
+	PostalCode CallActionPayParamsPostalCodeUnion `json:"postal_code,omitzero"`
 	// Custom text-to-speech prompts keyed by payment collection step.
 	Prompts CallActionPayParamsPrompts `json:"prompts,omitzero"`
 	// Transaction to perform. If omitted, Pay infers `tokenize` when `amount` is
@@ -5321,6 +5400,31 @@ const (
 	CallActionPayParamsPaymentMethodCreditCard CallActionPayParamsPaymentMethod = "credit-card"
 	CallActionPayParamsPaymentMethodACHDebit   CallActionPayParamsPaymentMethod = "ach-debit"
 )
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type CallActionPayParamsPostalCodeUnion struct {
+	OfString param.Opt[string] `json:",omitzero,inline"`
+	OfBool   param.Opt[bool]   `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u CallActionPayParamsPostalCodeUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfString, u.OfBool)
+}
+func (u *CallActionPayParamsPostalCodeUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *CallActionPayParamsPostalCodeUnion) asAny() any {
+	if !param.IsOmitted(u.OfString) {
+		return &u.OfString.Value
+	} else if !param.IsOmitted(u.OfBool) {
+		return &u.OfBool.Value
+	}
+	return nil
+}
 
 // Custom text-to-speech prompts keyed by payment collection step.
 type CallActionPayParamsPrompts struct {
@@ -5387,9 +5491,12 @@ func (r *CallActionReferParams) UnmarshalJSON(data []byte) error {
 }
 
 type CallActionRejectParams struct {
-	// Cause for call rejection.
+	// Cause for call rejection. The cause sets the SIP response the caller receives:
+	// `USER_BUSY` sends 486 User Busy, `CALL_REJECTED` sends 603 Decline, `NOT_FOUND`
+	// sends 404 Not Found, and `TEMPORARILY_UNAVAILABLE` sends 480 Temporarily
+	// Unavailable.
 	//
-	// Any of "CALL_REJECTED", "USER_BUSY".
+	// Any of "CALL_REJECTED", "NOT_FOUND", "TEMPORARILY_UNAVAILABLE", "USER_BUSY".
 	Cause CallActionRejectParamsCause `json:"cause,omitzero" api:"required"`
 	// Use this field to add state to every subsequent webhook. It must be a valid
 	// Base-64 encoded string.
@@ -5408,12 +5515,17 @@ func (r *CallActionRejectParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Cause for call rejection.
+// Cause for call rejection. The cause sets the SIP response the caller receives:
+// `USER_BUSY` sends 486 User Busy, `CALL_REJECTED` sends 603 Decline, `NOT_FOUND`
+// sends 404 Not Found, and `TEMPORARILY_UNAVAILABLE` sends 480 Temporarily
+// Unavailable.
 type CallActionRejectParamsCause string
 
 const (
-	CallActionRejectParamsCauseCallRejected CallActionRejectParamsCause = "CALL_REJECTED"
-	CallActionRejectParamsCauseUserBusy     CallActionRejectParamsCause = "USER_BUSY"
+	CallActionRejectParamsCauseCallRejected           CallActionRejectParamsCause = "CALL_REJECTED"
+	CallActionRejectParamsCauseNotFound               CallActionRejectParamsCause = "NOT_FOUND"
+	CallActionRejectParamsCauseTemporarilyUnavailable CallActionRejectParamsCause = "TEMPORARILY_UNAVAILABLE"
+	CallActionRejectParamsCauseUserBusy               CallActionRejectParamsCause = "USER_BUSY"
 )
 
 type CallActionResumeRecordingParams struct {
@@ -5899,9 +6011,11 @@ type CallActionStartAIAssistantParams struct {
 	// updated. The assistant's own `telephony_settings.send_message_history_updates`
 	// overrides this value when it is set.
 	SendMessageHistoryUpdates param.Opt[bool] `json:"send_message_history_updates,omitzero"`
-	// AI Assistant configuration. All fields except `id` are optional — the
-	// assistant's stored configuration will be used as fallback for any omitted
-	// fields.
+	// AI Assistant configuration and per-call overrides. All fields except `id` are
+	// optional. Omitted assistant fields use the stored configuration. Supplied
+	// `voice_settings` and `transcription` objects replace their stored objects rather
+	// than merging individual settings; include every setting you want to retain.
+	// `dynamic_variables` are merged, with request values taking precedence.
 	Assistant CallAssistantRequestParam `json:"assistant,omitzero"`
 	// Settings for handling user interruptions during assistant speech
 	InterruptionSettings InterruptionSettingsParam `json:"interruption_settings,omitzero"`
@@ -6077,10 +6191,10 @@ type CallActionStartConversationRelayParams struct {
 	//     the `VoiceId` (e.g., `AWS.Polly.Joanna-Neural`). Check the
 	//     [available voices](https://docs.aws.amazon.com/polly/latest/dg/available-voices.html)
 	//     for compatibility.
-	//   - **Azure:** Use `Azure.<VoiceId>. (e.g. Azure.en-CA-ClaraNeural,
-	//     Azure.en-CA-LiamNeural, Azure.en-US-BrianMultilingualNeural,
-	//     Azure.en-US-Ava:DragonHDLatestNeural. For a complete list of voices, go to
-	//     [Azure Voice Gallery](https://speech.microsoft.com/portal/voicegallery).)
+	//   - **Azure:** Use `Azure.<VoiceId>` (e.g., `Azure.en-CA-ClaraNeural`,
+	//     `Azure.en-CA-LiamNeural`, `Azure.en-US-BrianMultilingualNeural`,
+	//     `Azure.en-US-Ava:DragonHDLatestNeural`). For a complete list of voices, go to
+	//     [Azure Voice Gallery](https://speech.microsoft.com/portal/voicegallery).
 	//   - **ElevenLabs:** Use `ElevenLabs.<ModelId>.<VoiceId>` (e.g.,
 	//     `ElevenLabs.BaseModel.John`). The `ModelId` part is optional. To use
 	//     ElevenLabs, you must provide your ElevenLabs API key as an integration secret
@@ -6153,8 +6267,11 @@ type CallActionStartConversationRelayParams struct {
 	// Engine-specific transcription settings for Conversation Relay. This accepts the
 	// same provider-specific options used by the Call Transcription Start command,
 	// such as `transcription_model`, without requiring the engine discriminator to be
-	// repeated inside this object.
-	TranscriptionEngineConfig map[string]any `json:"transcription_engine_config,omitzero"`
+	// repeated inside this object. With Deepgram Flux (`deepgram/flux`),
+	// `interim_results`, `eot_threshold` and `eager_eot_threshold` control the interim
+	// prompts and the `eagerEndOfTurn` and `turnResumed` frames sent to your WebSocket
+	// server.
+	TranscriptionEngineConfig ConversationRelayTranscriptionEngineConfigParam `json:"transcription_engine_config,omitzero"`
 	// The settings associated with the voice selected
 	VoiceSettings CallActionStartConversationRelayParamsVoiceSettingsUnion `json:"voice_settings,omitzero"`
 	paramObj
@@ -7566,15 +7683,25 @@ type CallActionTransferParams struct {
 	// 'greeting_end' or 'detect_words' is used and a 'machine' is detected, you will
 	// receive another 'call.machine.greeting.ended' webhook when the answering machine
 	// greeting ends with a beep or silence. If `detect_beep` is used, you will only
-	// receive 'call.machine.greeting.ended' if a beep is detected.
+	// receive 'call.machine.greeting.ended' if a beep is detected. If
+	// `answering_machine_detection` is set to `premium_ios_call_screening_detection`,
+	// Premium AMD runs with iOS Call Screening support: after an initial `machine`
+	// result, Telnyx listens for the iOS call-screening prompt to end or for an Apple
+	// Call Screening tone, sends `call.machine.premium.greeting.ended` with
+	// `result=prompt_ended` or `call.machine.premium.call_screening.detected` with
+	// `result=screening` respectively. When the Apple Call Screening tone is detected,
+	// Premium AMD is restarted on the screened call and a
+	// `call.machine.premium.detection.ended` webhook with the post-screening
+	// classification follows.
 	//
-	// Any of "premium", "detect", "detect_beep", "detect_words", "greeting_end",
-	// "disabled".
+	// Any of "premium", "premium_ios_call_screening_detection", "detect",
+	// "detect_beep", "detect_words", "greeting_end", "disabled".
 	AnsweringMachineDetection CallActionTransferParamsAnsweringMachineDetection `json:"answering_machine_detection,omitzero"`
 	// Optional configuration parameters to modify 'answering_machine_detection'
 	// performance. Only `total_analysis_time_millis` and `greeting_duration_millis`
 	// parameters are applicable when `premium` is selected as
-	// answering_machine_detection.
+	// answering_machine_detection. `prompt_end_timeout_millis` is additionally
+	// applicable when `premium_ios_call_screening_detection` is selected.
 	AnsweringMachineDetectionConfig CallActionTransferParamsAnsweringMachineDetectionConfig `json:"answering_machine_detection_config,omitzero"`
 	// Custom headers to be added to the SIP INVITE.
 	CustomHeaders []CustomSipHeaderParam `json:"custom_headers,omitzero"`
@@ -7668,22 +7795,33 @@ func (r *CallActionTransferParams) UnmarshalJSON(data []byte) error {
 // 'greeting_end' or 'detect_words' is used and a 'machine' is detected, you will
 // receive another 'call.machine.greeting.ended' webhook when the answering machine
 // greeting ends with a beep or silence. If `detect_beep` is used, you will only
-// receive 'call.machine.greeting.ended' if a beep is detected.
+// receive 'call.machine.greeting.ended' if a beep is detected. If
+// `answering_machine_detection` is set to `premium_ios_call_screening_detection`,
+// Premium AMD runs with iOS Call Screening support: after an initial `machine`
+// result, Telnyx listens for the iOS call-screening prompt to end or for an Apple
+// Call Screening tone, sends `call.machine.premium.greeting.ended` with
+// `result=prompt_ended` or `call.machine.premium.call_screening.detected` with
+// `result=screening` respectively. When the Apple Call Screening tone is detected,
+// Premium AMD is restarted on the screened call and a
+// `call.machine.premium.detection.ended` webhook with the post-screening
+// classification follows.
 type CallActionTransferParamsAnsweringMachineDetection string
 
 const (
-	CallActionTransferParamsAnsweringMachineDetectionPremium     CallActionTransferParamsAnsweringMachineDetection = "premium"
-	CallActionTransferParamsAnsweringMachineDetectionDetect      CallActionTransferParamsAnsweringMachineDetection = "detect"
-	CallActionTransferParamsAnsweringMachineDetectionDetectBeep  CallActionTransferParamsAnsweringMachineDetection = "detect_beep"
-	CallActionTransferParamsAnsweringMachineDetectionDetectWords CallActionTransferParamsAnsweringMachineDetection = "detect_words"
-	CallActionTransferParamsAnsweringMachineDetectionGreetingEnd CallActionTransferParamsAnsweringMachineDetection = "greeting_end"
-	CallActionTransferParamsAnsweringMachineDetectionDisabled    CallActionTransferParamsAnsweringMachineDetection = "disabled"
+	CallActionTransferParamsAnsweringMachineDetectionPremium                          CallActionTransferParamsAnsweringMachineDetection = "premium"
+	CallActionTransferParamsAnsweringMachineDetectionPremiumIosCallScreeningDetection CallActionTransferParamsAnsweringMachineDetection = "premium_ios_call_screening_detection"
+	CallActionTransferParamsAnsweringMachineDetectionDetect                           CallActionTransferParamsAnsweringMachineDetection = "detect"
+	CallActionTransferParamsAnsweringMachineDetectionDetectBeep                       CallActionTransferParamsAnsweringMachineDetection = "detect_beep"
+	CallActionTransferParamsAnsweringMachineDetectionDetectWords                      CallActionTransferParamsAnsweringMachineDetection = "detect_words"
+	CallActionTransferParamsAnsweringMachineDetectionGreetingEnd                      CallActionTransferParamsAnsweringMachineDetection = "greeting_end"
+	CallActionTransferParamsAnsweringMachineDetectionDisabled                         CallActionTransferParamsAnsweringMachineDetection = "disabled"
 )
 
 // Optional configuration parameters to modify 'answering_machine_detection'
 // performance. Only `total_analysis_time_millis` and `greeting_duration_millis`
 // parameters are applicable when `premium` is selected as
-// answering_machine_detection.
+// answering_machine_detection. `prompt_end_timeout_millis` is additionally
+// applicable when `premium_ios_call_screening_detection` is selected.
 type CallActionTransferParamsAnsweringMachineDetectionConfig struct {
 	// Silence duration threshold after a greeting message or voice for it be
 	// considered human.
@@ -7730,6 +7868,11 @@ type CallActionTransferParamsAnsweringMachineDetectionConfig struct {
 	MaximumNumberOfWords param.Opt[int64] `json:"maximum_number_of_words,omitzero"`
 	// If a single word lasts longer than this threshold, consider it a machine.
 	MaximumWordLengthMillis param.Opt[int64] `json:"maximum_word_length_millis,omitzero"`
+	// Maximum time Telnyx waits, in milliseconds, for the iOS call-screening prompt to
+	// end after Premium AMD initially detects a `machine`. Used when
+	// `answering_machine_detection` is `premium_ios_call_screening_detection`.
+	// Defaults to 5000 milliseconds.
+	PromptEndTimeoutMillis param.Opt[int64] `json:"prompt_end_timeout_millis,omitzero"`
 	// Minimum noise threshold for any analysis.
 	SilenceThreshold param.Opt[int64] `json:"silence_threshold,omitzero"`
 	// Maximum timeout threshold for overall detection.

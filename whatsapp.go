@@ -22,6 +22,7 @@ type WhatsappService struct {
 	PhoneNumbers WhatsappPhoneNumberService
 	// Manage Whatsapp business accounts
 	UserData WhatsappUserDataService
+	Signup   WhatsappSignupService
 }
 
 // NewWhatsappService generates a new service that applies the given options to
@@ -34,5 +35,6 @@ func NewWhatsappService(opts ...option.RequestOption) (r WhatsappService) {
 	r.Templates = NewWhatsappTemplateService(opts...)
 	r.PhoneNumbers = NewWhatsappPhoneNumberService(opts...)
 	r.UserData = NewWhatsappUserDataService(opts...)
+	r.Signup = NewWhatsappSignupService(opts...)
 	return
 }
