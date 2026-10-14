@@ -617,6 +617,13 @@ type CallConversationEndedPayload struct {
 	From string `json:"from"`
 	// The large language model used during the conversation.
 	LlmModel string `json:"llm_model"`
+	// The conversation transcript, in order. By default it contains only `user` and
+	// `assistant` text turns. When the assistant's
+	// `telephony_settings.conversation_ended_full_history` is `true`, it contains the
+	// full conversation history, including assistant tool calls, tool results, and
+	// `system` and `developer` entries. Redacted when data retention is disabled for
+	// the account.
+	Messages []CallConversationEndedPayloadMessage `json:"messages"`
 	// Reason the conversation ended. For Conversation Relay, `customer_disconnect`
 	// indicates that the customer WebSocket disconnected.
 	Reason string `json:"reason" api:"nullable"`
@@ -643,6 +650,7 @@ type CallConversationEndedPayload struct {
 		DurationSec      respjson.Field
 		From             respjson.Field
 		LlmModel         respjson.Field
+		Messages         respjson.Field
 		Reason           respjson.Field
 		SttModel         respjson.Field
 		To               respjson.Field
@@ -657,6 +665,89 @@ type CallConversationEndedPayload struct {
 // Returns the unmodified JSON received from the API
 func (r CallConversationEndedPayload) RawJSON() string { return r.JSON.raw }
 func (r *CallConversationEndedPayload) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CallConversationEndedPayloadMessage struct {
+	// The text of the message. For a tool result, the tool output. May be absent on an
+	// assistant message that only contains `tool_calls`.
+	Content string `json:"content"`
+	// The author of the message. `tool`, `system`, and `developer` only appear when
+	// `conversation_ended_full_history` is enabled. `system` and `developer` entries
+	// are informational (for example idle check-ins, voicemail prompts,
+	// participant-left notices, or messages added through the API); their wording is
+	// not a stable contract.
+	//
+	// Any of "user", "assistant", "tool", "system", "developer".
+	Role string `json:"role"`
+	// ISO 8601 datetime of when the message was added to the conversation.
+	Timestamp time.Time `json:"timestamp" format:"date-time"`
+	// The `id` of the tool call this message answers. Only present on `tool` messages
+	// when `conversation_ended_full_history` is enabled.
+	ToolCallID string `json:"tool_call_id"`
+	// Tools the assistant called in this turn. Only present on `assistant` messages
+	// when `conversation_ended_full_history` is enabled.
+	ToolCalls []CallConversationEndedPayloadMessagesToolCall `json:"tool_calls"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Content     respjson.Field
+		Role        respjson.Field
+		Timestamp   respjson.Field
+		ToolCallID  respjson.Field
+		ToolCalls   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CallConversationEndedPayloadMessage) RawJSON() string { return r.JSON.raw }
+func (r *CallConversationEndedPayloadMessage) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CallConversationEndedPayloadMessagesToolCall struct {
+	// Identifier of the tool call, referenced by the matching tool result's
+	// `tool_call_id`.
+	ID       string                                                `json:"id"`
+	Function CallConversationEndedPayloadMessagesToolCallsFunction `json:"function"`
+	// The type of tool call.
+	//
+	// Any of "function".
+	Type string `json:"type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Function    respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CallConversationEndedPayloadMessagesToolCall) RawJSON() string { return r.JSON.raw }
+func (r *CallConversationEndedPayloadMessagesToolCall) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CallConversationEndedPayloadMessagesToolCallsFunction struct {
+	// The arguments passed to the tool, as a JSON-encoded string.
+	Arguments string `json:"arguments"`
+	// The name of the tool that was called.
+	Name string `json:"name"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Arguments   respjson.Field
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CallConversationEndedPayloadMessagesToolCallsFunction) RawJSON() string { return r.JSON.raw }
+func (r *CallConversationEndedPayloadMessagesToolCallsFunction) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -9728,7 +9819,9 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 	DurationSec int64 `json:"duration_sec"`
 	// This field is from variant [CallConversationEndedPayload].
 	LlmModel string `json:"llm_model"`
-	Reason   string `json:"reason"`
+	// This field is from variant [CallConversationEndedPayload].
+	Messages []CallConversationEndedPayloadMessage `json:"messages"`
+	Reason   string                                `json:"reason"`
 	// This field is from variant [CallConversationEndedPayload].
 	SttModel string `json:"stt_model"`
 	// This field is from variant [CallConversationEndedPayload].
@@ -9985,6 +10078,7 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 		AssistantID              respjson.Field
 		DurationSec              respjson.Field
 		LlmModel                 respjson.Field
+		Messages                 respjson.Field
 		Reason                   respjson.Field
 		SttModel                 respjson.Field
 		TtsModelID               respjson.Field
@@ -11328,7 +11422,9 @@ type UnwrapWebhookEventUnionDataPayload struct {
 	DurationSec int64 `json:"duration_sec"`
 	// This field is from variant [CallConversationEndedPayload].
 	LlmModel string `json:"llm_model"`
-	Reason   string `json:"reason"`
+	// This field is from variant [CallConversationEndedPayload].
+	Messages []CallConversationEndedPayloadMessage `json:"messages"`
+	Reason   string                                `json:"reason"`
 	// This field is from variant [CallConversationEndedPayload].
 	SttModel string `json:"stt_model"`
 	// This field is from variant [CallConversationEndedPayload].
@@ -11585,6 +11681,7 @@ type UnwrapWebhookEventUnionDataPayload struct {
 		AssistantID              respjson.Field
 		DurationSec              respjson.Field
 		LlmModel                 respjson.Field
+		Messages                 respjson.Field
 		Reason                   respjson.Field
 		SttModel                 respjson.Field
 		TtsModelID               respjson.Field

@@ -7424,6 +7424,13 @@ func (r *StartSpeakingPlanParam) UnmarshalJSON(data []byte) error {
 }
 
 type TelephonySettings struct {
+	// When enabled, the `messages` array of the `call.conversation.ended` webhook
+	// contains the full conversation history in order: user and assistant turns,
+	// assistant tool calls (`tool_calls`), tool results (`role: tool` with
+	// `tool_call_id`), and informational `system` and `developer` entries. The
+	// assistant's instructions are never included. When disabled, `messages` contains
+	// only user and assistant text turns.
+	ConversationEndedFullHistory bool `json:"conversation_ended_full_history"`
 	// Default Texml App used for voice calls with your assistant. This will be created
 	// automatically on assistant creation.
 	DefaultTexmlAppID string `json:"default_texml_app_id"`
@@ -7488,6 +7495,7 @@ type TelephonySettings struct {
 	VoicemailDetection TelephonySettingsVoicemailDetection `json:"voicemail_detection"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ConversationEndedFullHistory    respjson.Field
 		DefaultTexmlAppID               respjson.Field
 		DisableDtmf                     respjson.Field
 		FallbackDestination             respjson.Field
@@ -7692,6 +7700,13 @@ func (r *TelephonySettingsVoicemailDetectionOnVoicemailDetectedVoicemailMessage)
 }
 
 type TelephonySettingsParam struct {
+	// When enabled, the `messages` array of the `call.conversation.ended` webhook
+	// contains the full conversation history in order: user and assistant turns,
+	// assistant tool calls (`tool_calls`), tool results (`role: tool` with
+	// `tool_call_id`), and informational `system` and `developer` entries. The
+	// assistant's instructions are never included. When disabled, `messages` contains
+	// only user and assistant text turns.
+	ConversationEndedFullHistory param.Opt[bool] `json:"conversation_ended_full_history,omitzero"`
 	// Default Texml App used for voice calls with your assistant. This will be created
 	// automatically on assistant creation.
 	DefaultTexmlAppID param.Opt[string] `json:"default_texml_app_id,omitzero"`

@@ -450,10 +450,11 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 		},
 		Tags: []string{"string"},
 		TelephonySettings: telnyx.TelephonySettingsParam{
-			DefaultTexmlAppID:   telnyx.String("default_texml_app_id"),
-			DisableDtmf:         telnyx.Bool(true),
-			FallbackDestination: telnyx.String("fallback_destination"),
-			NoiseSuppression:    telnyx.TelephonySettingsNoiseSuppressionAicoustics,
+			ConversationEndedFullHistory: telnyx.Bool(true),
+			DefaultTexmlAppID:            telnyx.String("default_texml_app_id"),
+			DisableDtmf:                  telnyx.Bool(true),
+			FallbackDestination:          telnyx.String("fallback_destination"),
+			NoiseSuppression:             telnyx.TelephonySettingsNoiseSuppressionAicoustics,
 			NoiseSuppressionConfig: telnyx.TelephonySettingsNoiseSuppressionConfigParam{
 				AttenuationLimit: telnyx.Int(0),
 				EnhancementLevel: telnyx.Float(0),
@@ -1108,10 +1109,11 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 			PromoteToMain: telnyx.Bool(true),
 			Tags:          []string{"string"},
 			TelephonySettings: telnyx.TelephonySettingsParam{
-				DefaultTexmlAppID:   telnyx.String("default_texml_app_id"),
-				DisableDtmf:         telnyx.Bool(true),
-				FallbackDestination: telnyx.String("fallback_destination"),
-				NoiseSuppression:    telnyx.TelephonySettingsNoiseSuppressionAicoustics,
+				ConversationEndedFullHistory: telnyx.Bool(true),
+				DefaultTexmlAppID:            telnyx.String("default_texml_app_id"),
+				DisableDtmf:                  telnyx.Bool(true),
+				FallbackDestination:          telnyx.String("fallback_destination"),
+				NoiseSuppression:             telnyx.TelephonySettingsNoiseSuppressionAicoustics,
 				NoiseSuppressionConfig: telnyx.TelephonySettingsNoiseSuppressionConfigParam{
 					AttenuationLimit: telnyx.Int(0),
 					EnhancementLevel: telnyx.Float(0),
