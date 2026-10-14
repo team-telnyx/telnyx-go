@@ -51,6 +51,8 @@ type AIService struct {
 	Knowledge AIKnowledgeService
 	Typesafe  AITypesafeService
 	Memory    AIMemoryService
+	// Create and manage real-time AI avatars
+	Avatars AIAvatarService
 }
 
 // NewAIService generates a new service that applies the given options to each
@@ -76,6 +78,7 @@ func NewAIService(opts ...option.RequestOption) (r AIService) {
 	r.Knowledge = NewAIKnowledgeService(opts...)
 	r.Typesafe = NewAITypesafeService(opts...)
 	r.Memory = NewAIMemoryService(opts...)
+	r.Avatars = NewAIAvatarService(opts...)
 	return
 }
 

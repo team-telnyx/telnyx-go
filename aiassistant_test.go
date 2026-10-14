@@ -47,7 +47,7 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 			TimeoutMs:      telnyx.Int(30000),
 		}},
 		AvatarSettings: telnyx.AvatarSettingsRequestParam{
-			AvatarID:     telnyx.AvatarSettingsRequestAvatarIDElena,
+			AvatarID:     telnyx.AvatarIDElena,
 			BackgroundID: telnyx.AvatarSettingsRequestBackgroundIDOffice,
 			Model:        telnyx.AvatarSettingsRequestModelFoxtrot1,
 		},
@@ -703,7 +703,7 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 				TimeoutMs:      telnyx.Int(30000),
 			}},
 			AvatarSettings: telnyx.AvatarSettingsRequestParam{
-				AvatarID:     telnyx.AvatarSettingsRequestAvatarIDElena,
+				AvatarID:     telnyx.AvatarIDElena,
 				BackgroundID: telnyx.AvatarSettingsRequestBackgroundIDOffice,
 				Model:        telnyx.AvatarSettingsRequestModelFoxtrot1,
 			},

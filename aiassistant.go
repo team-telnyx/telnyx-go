@@ -911,7 +911,7 @@ func (r *AssistantMcpServerParam) UnmarshalJSON(data []byte) error {
 // [AssistantToolClientSideTool], [RetrievalTool], [AssistantToolHandoff],
 // [AssistantToolHangup], [AssistantToolTransfer], [AssistantToolInvite],
 // [AssistantToolRefer], [AssistantToolSendDtmf], [AssistantToolSendMessage],
-// [AssistantToolSkipTurn], [AssistantToolPay],
+// [AssistantToolSkipTurn], [AssistantToolVision], [AssistantToolPay],
 // [AssistantToolUpdateDynamicVariables].
 //
 // Use the [AssistantToolUnion.AsAny] method to switch on the variant.
@@ -922,7 +922,7 @@ type AssistantToolUnion struct {
 	Function FunctionDefinition `json:"function"`
 	// Any of "function", "webhook", "client_side_tool", "retrieval", "handoff",
 	// "hangup", "transfer", "invite", "refer", "send_dtmf", "send_message",
-	// "skip_turn", "pay", "update_dynamic_variables".
+	// "skip_turn", "vision", "pay", "update_dynamic_variables".
 	Type   string `json:"type"`
 	Shared bool   `json:"shared"`
 	// This field is from variant [InferenceEmbeddingWebhookToolParamsResp].
@@ -949,6 +949,8 @@ type AssistantToolUnion struct {
 	SendMessage AssistantToolSendMessageSendMessage `json:"send_message"`
 	// This field is from variant [AssistantToolSkipTurn].
 	SkipTurn AssistantToolSkipTurnSkipTurn `json:"skip_turn"`
+	// This field is from variant [AssistantToolVision].
+	Vision VisionToolParamsResp `json:"vision"`
 	// This field is from variant [AssistantToolPay].
 	Pay PayToolParamsResp `json:"pay"`
 	// This field is from variant [AssistantToolUpdateDynamicVariables].
@@ -969,6 +971,7 @@ type AssistantToolUnion struct {
 		SendDtmf               respjson.Field
 		SendMessage            respjson.Field
 		SkipTurn               respjson.Field
+		Vision                 respjson.Field
 		Pay                    respjson.Field
 		UpdateDynamicVariables respjson.Field
 		raw                    string
@@ -993,6 +996,7 @@ func (AssistantToolRefer) implAssistantToolUnion()                      {}
 func (AssistantToolSendDtmf) implAssistantToolUnion()                   {}
 func (AssistantToolSendMessage) implAssistantToolUnion()                {}
 func (AssistantToolSkipTurn) implAssistantToolUnion()                   {}
+func (AssistantToolVision) implAssistantToolUnion()                     {}
 func (AssistantToolPay) implAssistantToolUnion()                        {}
 func (AssistantToolUpdateDynamicVariables) implAssistantToolUnion()     {}
 
@@ -1011,6 +1015,7 @@ func (AssistantToolUpdateDynamicVariables) implAssistantToolUnion()     {}
 //	case telnyx.AssistantToolSendDtmf:
 //	case telnyx.AssistantToolSendMessage:
 //	case telnyx.AssistantToolSkipTurn:
+//	case telnyx.AssistantToolVision:
 //	case telnyx.AssistantToolPay:
 //	case telnyx.AssistantToolUpdateDynamicVariables:
 //	default:
@@ -1042,6 +1047,8 @@ func (u AssistantToolUnion) AsAny() anyAssistantTool {
 		return u.AsSendMessage()
 	case "skip_turn":
 		return u.AsSkipTurn()
+	case "vision":
+		return u.AsVision()
 	case "pay":
 		return u.AsPay()
 	case "update_dynamic_variables":
@@ -1106,6 +1113,11 @@ func (u AssistantToolUnion) AsSendMessage() (v AssistantToolSendMessage) {
 }
 
 func (u AssistantToolUnion) AsSkipTurn() (v AssistantToolSkipTurn) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u AssistantToolUnion) AsVision() (v AssistantToolVision) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -1697,10 +1709,22 @@ type AssistantToolTransferTransferWarmTransferAcceptance struct {
 	//
 	// Any of "private", "shared".
 	EndUserTargetContextMode string `json:"end_user_target_context_mode"`
+	// Fail closed when the acceptance consult cannot run. Off by default: if the
+	// consult cannot be set up for any reason — including where acceptance is
+	// unavailable at all (`gather_using_ai`, Conversation Relay or web calls, a
+	// conference, or additional invited participants) — the transfer degrades to a
+	// plain warm transfer (the warm transfer message is played to the destination as
+	// audio and the calls are bridged anyway). Set to true to treat those paths as a
+	// decline instead: the destination is disconnected without being asked, the
+	// assistant returns to the caller, and no bridge happens without an acceptance.
+	// Only consult-setup failures are affected; the destination must still explicitly
+	// accept on every consult that does run.
+	RequireAcceptance bool `json:"require_acceptance"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled                  respjson.Field
 		EndUserTargetContextMode respjson.Field
+		RequireAcceptance        respjson.Field
 		ExtraFields              map[string]respjson.Field
 		raw                      string
 	} `json:"-"`
@@ -2144,6 +2168,38 @@ func (r *AssistantToolSkipTurnSkipTurn) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// (BETA) Lets the assistant look at recent image frames the client sent into the
+// conversation (for example webcam or screen-share frames). Frames are sent with
+// `conversation.item.create` and `item.buffer: true`; they never trigger a
+// response on their own. The assistant decides when to look and which frames it
+// needs. Requires a model that supports image input.
+type AssistantToolVision struct {
+	Type constant.Vision `json:"type" default:"vision"`
+	// Whether this tool comes from the shared Tools Library. Responses merge shared
+	// tools into `tools` with `shared: true`; inline tools carry `shared: false`.
+	// Read-only: set by the server, not accepted in requests. When updating an
+	// assistant, omit `shared: true` tools from the request `tools` array and manage
+	// them through `tool_ids` instead — re-sending their definitions creates an inline
+	// duplicate (rejected with error code 10015 when the type allows only one instance
+	// per assistant).
+	Shared bool                 `json:"shared"`
+	Vision VisionToolParamsResp `json:"vision"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type        respjson.Field
+		Shared      respjson.Field
+		Vision      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AssistantToolVision) RawJSON() string { return r.JSON.raw }
+func (r *AssistantToolVision) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // (BETA) The pay tool allows the assistant to collect card payments from the
 // caller via DTMF during the conversation. Recording is automatically paused while
 // the pay tool is active and resumes when the payment flow completes. The
@@ -2308,6 +2364,7 @@ type AssistantToolUnionParam struct {
 	OfSendDtmf               *AssistantToolSendDtmfParam               `json:",omitzero,inline"`
 	OfSendMessage            *AssistantToolSendMessageParam            `json:",omitzero,inline"`
 	OfSkipTurn               *AssistantToolSkipTurnParam               `json:",omitzero,inline"`
+	OfVision                 *AssistantToolVisionParam                 `json:",omitzero,inline"`
 	OfPay                    *AssistantToolPayParam                    `json:",omitzero,inline"`
 	OfUpdateDynamicVariables *AssistantToolUpdateDynamicVariablesParam `json:",omitzero,inline"`
 	paramUnion
@@ -2326,6 +2383,7 @@ func (u AssistantToolUnionParam) MarshalJSON() ([]byte, error) {
 		u.OfSendDtmf,
 		u.OfSendMessage,
 		u.OfSkipTurn,
+		u.OfVision,
 		u.OfPay,
 		u.OfUpdateDynamicVariables)
 }
@@ -2358,6 +2416,8 @@ func (u *AssistantToolUnionParam) asAny() any {
 		return u.OfSendMessage
 	} else if !param.IsOmitted(u.OfSkipTurn) {
 		return u.OfSkipTurn
+	} else if !param.IsOmitted(u.OfVision) {
+		return u.OfVision
 	} else if !param.IsOmitted(u.OfPay) {
 		return u.OfPay
 	} else if !param.IsOmitted(u.OfUpdateDynamicVariables) {
@@ -2471,6 +2531,14 @@ func (u AssistantToolUnionParam) GetSkipTurn() *AssistantToolSkipTurnSkipTurnPar
 }
 
 // Returns a pointer to the underlying variant's property, if present.
+func (u AssistantToolUnionParam) GetVision() *VisionToolParams {
+	if vt := u.OfVision; vt != nil {
+		return &vt.Vision
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
 func (u AssistantToolUnionParam) GetPay() *PayToolParams {
 	if vt := u.OfPay; vt != nil {
 		return &vt.Pay
@@ -2512,6 +2580,8 @@ func (u AssistantToolUnionParam) GetType() *string {
 		return (*string)(&vt.Type)
 	} else if vt := u.OfSkipTurn; vt != nil {
 		return (*string)(&vt.Type)
+	} else if vt := u.OfVision; vt != nil {
+		return (*string)(&vt.Type)
 	} else if vt := u.OfPay; vt != nil {
 		return (*string)(&vt.Type)
 	} else if vt := u.OfUpdateDynamicVariables; vt != nil {
@@ -2535,6 +2605,7 @@ func init() {
 		apijson.Discriminator[AssistantToolSendDtmfParam]("send_dtmf"),
 		apijson.Discriminator[AssistantToolSendMessageParam]("send_message"),
 		apijson.Discriminator[AssistantToolSkipTurnParam]("skip_turn"),
+		apijson.Discriminator[AssistantToolVisionParam]("vision"),
 		apijson.Discriminator[AssistantToolPayParam]("pay"),
 		apijson.Discriminator[AssistantToolUpdateDynamicVariablesParam]("update_dynamic_variables"),
 	)
@@ -2989,6 +3060,17 @@ func init() {
 type AssistantToolTransferTransferWarmTransferAcceptanceParam struct {
 	// Whether the destination must accept the transfer before the calls are bridged.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
+	// Fail closed when the acceptance consult cannot run. Off by default: if the
+	// consult cannot be set up for any reason — including where acceptance is
+	// unavailable at all (`gather_using_ai`, Conversation Relay or web calls, a
+	// conference, or additional invited participants) — the transfer degrades to a
+	// plain warm transfer (the warm transfer message is played to the destination as
+	// audio and the calls are bridged anyway). Set to true to treat those paths as a
+	// decline instead: the destination is disconnected without being asked, the
+	// assistant returns to the caller, and no bridge happens without an acceptance.
+	// Only consult-setup failures are affected; the destination must still explicitly
+	// accept on every consult that does run.
+	RequireAcceptance param.Opt[bool] `json:"require_acceptance,omitzero"`
 	// Controls whether the private exchange between the assistant and the transfer
 	// destination is kept out of the conversation. With `private` (default) the
 	// exchange never reaches the conversation history, AI conversations, webhooks or
@@ -3354,6 +3436,28 @@ func (r *AssistantToolSkipTurnSkipTurnParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// (BETA) Lets the assistant look at recent image frames the client sent into the
+// conversation (for example webcam or screen-share frames). Frames are sent with
+// `conversation.item.create` and `item.buffer: true`; they never trigger a
+// response on their own. The assistant decides when to look and which frames it
+// needs. Requires a model that supports image input.
+//
+// The property Type is required.
+type AssistantToolVisionParam struct {
+	Vision VisionToolParams `json:"vision,omitzero"`
+	// This field can be elided, and will marshal its zero value as "vision".
+	Type constant.Vision `json:"type" default:"vision"`
+	paramObj
+}
+
+func (r AssistantToolVisionParam) MarshalJSON() (data []byte, err error) {
+	type shadow AssistantToolVisionParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AssistantToolVisionParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // (BETA) The pay tool allows the assistant to collect card payments from the
 // caller via DTMF during the conversation. Recording is automatically paused while
 // the pay tool is active and resumes when the payment flow completes. The
@@ -3484,15 +3588,14 @@ const (
 	AuthenticationMethodCertificate AuthenticationMethod = "certificate"
 )
 
-// **Beta:** Configuration for the Telnyx open-source avatar provider. The launch
-// catalog supports six avatars and office, studio, or reception backgrounds.
+// **Beta:** Configuration for the Telnyx open-source avatar provider. Use one of
+// the six stock avatars or an organization-owned custom avatar returned by the
+// Avatars API. Supported backgrounds are office, studio, and reception.
 //
 // The properties AvatarID, BackgroundID, Model, Provider are required.
 type AvatarSettingsRequestParam struct {
-	// The Telnyx avatar to render.
-	//
-	// Any of "elena", "ben", "jordan", "lin", "avery", "raphael".
-	AvatarID AvatarSettingsRequestAvatarID `json:"avatar_id,omitzero" api:"required"`
+	// The Telnyx stock avatar or organization-owned custom avatar to render.
+	AvatarID AvatarID `json:"avatar_id,omitzero" api:"required"`
 	// The background to render.
 	//
 	// Any of "office", "studio", "reception".
@@ -3516,18 +3619,6 @@ func (r AvatarSettingsRequestParam) MarshalJSON() (data []byte, err error) {
 func (r *AvatarSettingsRequestParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-// The Telnyx avatar to render.
-type AvatarSettingsRequestAvatarID string
-
-const (
-	AvatarSettingsRequestAvatarIDElena   AvatarSettingsRequestAvatarID = "elena"
-	AvatarSettingsRequestAvatarIDBen     AvatarSettingsRequestAvatarID = "ben"
-	AvatarSettingsRequestAvatarIDJordan  AvatarSettingsRequestAvatarID = "jordan"
-	AvatarSettingsRequestAvatarIDLin     AvatarSettingsRequestAvatarID = "lin"
-	AvatarSettingsRequestAvatarIDAvery   AvatarSettingsRequestAvatarID = "avery"
-	AvatarSettingsRequestAvatarIDRaphael AvatarSettingsRequestAvatarID = "raphael"
-)
 
 // The background to render.
 type AvatarSettingsRequestBackgroundID string
@@ -5200,8 +5291,9 @@ type InferenceEmbedding struct {
 	// fetches combined. An agent whose card cannot be fetched costs the assistant that
 	// capability for the conversation; it does not fail the call.
 	A2aAgents []AssistantA2AAgent `json:"a2a_agents"`
-	// **Beta:** Configuration for the Telnyx open-source avatar provider. The launch
-	// catalog supports six avatars and office, studio, or reception backgrounds.
+	// **Beta:** Configuration for the Telnyx open-source avatar provider. Use one of
+	// the six stock avatars or an organization-owned custom avatar returned by the
+	// Avatars API. Supported backgrounds are office, studio, and reception.
 	AvatarSettings TelnyxAvatarSettings `json:"avatar_settings" api:"nullable"`
 	// Conversation flow as returned by the API.
 	ConversationFlow ConversationFlow `json:"conversation_flow"`
@@ -7945,13 +8037,12 @@ func init() {
 	)
 }
 
-// **Beta:** Configuration for the Telnyx open-source avatar provider. The launch
-// catalog supports six avatars and office, studio, or reception backgrounds.
+// **Beta:** Configuration for the Telnyx open-source avatar provider. Use one of
+// the six stock avatars or an organization-owned custom avatar returned by the
+// Avatars API. Supported backgrounds are office, studio, and reception.
 type TelnyxAvatarSettings struct {
-	// The Telnyx avatar to render.
-	//
-	// Any of "elena", "ben", "jordan", "lin", "avery", "raphael".
-	AvatarID TelnyxAvatarSettingsAvatarID `json:"avatar_id" api:"required"`
+	// The Telnyx stock avatar or organization-owned custom avatar to render.
+	AvatarID AvatarID `json:"avatar_id" api:"required"`
 	// The background to render.
 	//
 	// Any of "office", "studio", "reception".
@@ -7979,18 +8070,6 @@ func (r TelnyxAvatarSettings) RawJSON() string { return r.JSON.raw }
 func (r *TelnyxAvatarSettings) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-// The Telnyx avatar to render.
-type TelnyxAvatarSettingsAvatarID string
-
-const (
-	TelnyxAvatarSettingsAvatarIDElena   TelnyxAvatarSettingsAvatarID = "elena"
-	TelnyxAvatarSettingsAvatarIDBen     TelnyxAvatarSettingsAvatarID = "ben"
-	TelnyxAvatarSettingsAvatarIDJordan  TelnyxAvatarSettingsAvatarID = "jordan"
-	TelnyxAvatarSettingsAvatarIDLin     TelnyxAvatarSettingsAvatarID = "lin"
-	TelnyxAvatarSettingsAvatarIDAvery   TelnyxAvatarSettingsAvatarID = "avery"
-	TelnyxAvatarSettingsAvatarIDRaphael TelnyxAvatarSettingsAvatarID = "raphael"
-)
 
 // The background to render.
 type TelnyxAvatarSettingsBackgroundID string
@@ -9642,8 +9721,9 @@ type AIAssistantNewParams struct {
 	// fetches combined. An agent whose card cannot be fetched costs the assistant that
 	// capability for the conversation; it does not fail the call.
 	A2aAgents []AssistantA2AAgentParam `json:"a2a_agents,omitzero"`
-	// **Beta:** Configuration for the Telnyx open-source avatar provider. The launch
-	// catalog supports six avatars and office, studio, or reception backgrounds.
+	// **Beta:** Configuration for the Telnyx open-source avatar provider. Use one of
+	// the six stock avatars or an organization-owned custom avatar returned by the
+	// Avatars API. Supported backgrounds are office, studio, and reception.
 	AvatarSettings AvatarSettingsRequestParam `json:"avatar_settings,omitzero"`
 	// Conversation flow as supplied by API clients (create / update).
 	//
@@ -9797,8 +9877,9 @@ type AIAssistantUpdateParams struct {
 	// capability for the conversation; it does not fail the call. Omit this field to
 	// leave the assistant's agents unchanged; send an empty array to remove them all.
 	A2aAgents []AssistantA2AAgentParam `json:"a2a_agents,omitzero"`
-	// **Beta:** Configuration for the Telnyx open-source avatar provider. The launch
-	// catalog supports six avatars and office, studio, or reception backgrounds.
+	// **Beta:** Configuration for the Telnyx open-source avatar provider. Use one of
+	// the six stock avatars or an organization-owned custom avatar returned by the
+	// Avatars API. Supported backgrounds are office, studio, and reception.
 	AvatarSettings AvatarSettingsRequestParam `json:"avatar_settings,omitzero"`
 	// Conversation flow as supplied by API clients (create / update).
 	//

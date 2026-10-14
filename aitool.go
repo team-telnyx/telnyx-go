@@ -335,6 +335,48 @@ func (r *UpdateDynamicVariablesToolParamsUpdatableVariable) UnmarshalJSON(data [
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type VisionToolParamsResp struct {
+	// Frames received longer ago than this many seconds are not shown to the
+	// assistant, so it never describes a frozen or disconnected camera as live.
+	MaxFrameAgeSecs int64 `json:"max_frame_age_secs"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		MaxFrameAgeSecs respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VisionToolParamsResp) RawJSON() string { return r.JSON.raw }
+func (r *VisionToolParamsResp) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this VisionToolParamsResp to a VisionToolParams.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// VisionToolParams.Overrides()
+func (r VisionToolParamsResp) ToParam() VisionToolParams {
+	return param.Override[VisionToolParams](json.RawMessage(r.RawJSON()))
+}
+
+type VisionToolParams struct {
+	// Frames received longer ago than this many seconds are not shown to the
+	// assistant, so it never describes a frozen or disconnected camera as live.
+	MaxFrameAgeSecs param.Opt[int64] `json:"max_frame_age_secs,omitzero"`
+	paramObj
+}
+
+func (r VisionToolParams) MarshalJSON() (data []byte, err error) {
+	type shadow VisionToolParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *VisionToolParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type AIToolNewParams struct {
 	DisplayName    string            `json:"display_name" api:"required"`
 	Type           string            `json:"type" api:"required"`
@@ -348,6 +390,7 @@ type AIToolNewParams struct {
 	Retrieval      map[string]any    `json:"retrieval,omitzero"`
 	// Configuration for an update_dynamic_variables tool.
 	UpdateDynamicVariables UpdateDynamicVariablesToolParams `json:"update_dynamic_variables,omitzero"`
+	Vision                 VisionToolParams                 `json:"vision,omitzero"`
 	Webhook                map[string]any                   `json:"webhook,omitzero"`
 	paramObj
 }
@@ -372,6 +415,7 @@ type AIToolUpdateParams struct {
 	Retrieval      map[string]any    `json:"retrieval,omitzero"`
 	// Configuration for an update_dynamic_variables tool.
 	UpdateDynamicVariables UpdateDynamicVariablesToolParams `json:"update_dynamic_variables,omitzero"`
+	Vision                 VisionToolParams                 `json:"vision,omitzero"`
 	Webhook                map[string]any                   `json:"webhook,omitzero"`
 	paramObj
 }
