@@ -60,8 +60,10 @@ func TestEnterpriseReputationNumberListWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"4a6192a4-573d-446d-b3ce-aff9117272a6",
 		telnyx.EnterpriseReputationNumberListParams{
+			FilterOwnershipStatus:     telnyx.ReputationOwnershipStatusVerified,
 			FilterPhoneNumberContains: telnyx.String("+16035551234"),
 			FilterPhoneNumberEq:       telnyx.String("+16035551234"),
+			FilterSource:              telnyx.ReputationNumberSourceExternal,
 			PageNumber:                telnyx.Int(1),
 			PageSize:                  telnyx.Int(10),
 		},
@@ -133,6 +135,37 @@ func TestEnterpriseReputationNumberDisassociate(t *testing.T) {
 	}
 }
 
+func TestEnterpriseReputationNumberOwnershipConfirmWithOptionalParams(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := telnyx.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Enterprises.Reputation.Numbers.OwnershipConfirm(
+		context.TODO(),
+		"+19493253498",
+		telnyx.EnterpriseReputationNumberOwnershipConfirmParams{
+			EnterpriseID:       "4a6192a4-573d-446d-b3ce-aff9117272a6",
+			StillOwn:           true,
+			EvidenceDocumentID: telnyx.String("2a7e8337-e803-4057-a4ae-26c40eb0bc6c"),
+		},
+	)
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
 func TestEnterpriseReputationNumberRefresh(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
@@ -151,6 +184,35 @@ func TestEnterpriseReputationNumberRefresh(t *testing.T) {
 		"4a6192a4-573d-446d-b3ce-aff9117272a6",
 		telnyx.EnterpriseReputationNumberRefreshParams{
 			PhoneNumbers: []string{"+19493253498"},
+		},
+	)
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestEnterpriseReputationNumberGetOwnership(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := telnyx.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Enterprises.Reputation.Numbers.GetOwnership(
+		context.TODO(),
+		"+19493253498",
+		telnyx.EnterpriseReputationNumberGetOwnershipParams{
+			EnterpriseID: "4a6192a4-573d-446d-b3ce-aff9117272a6",
 		},
 	)
 	if err != nil {

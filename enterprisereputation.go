@@ -33,6 +33,8 @@ type EnterpriseReputationService struct {
 	Loa EnterpriseReputationLoaService
 	// Phone-number reputation monitoring (spam-score lookup and tracking).
 	Remediation EnterpriseReputationRemediationService
+	// Phone-number reputation monitoring (spam-score lookup and tracking).
+	ExternalVerification EnterpriseReputationExternalVerificationService
 }
 
 // NewEnterpriseReputationService generates a new service that applies the given
@@ -44,6 +46,7 @@ func NewEnterpriseReputationService(opts ...option.RequestOption) (r EnterpriseR
 	r.Numbers = NewEnterpriseReputationNumberService(opts...)
 	r.Loa = NewEnterpriseReputationLoaService(opts...)
 	r.Remediation = NewEnterpriseReputationRemediationService(opts...)
+	r.ExternalVerification = NewEnterpriseReputationExternalVerificationService(opts...)
 	return
 }
 
@@ -124,6 +127,21 @@ func (r *EnterpriseReputationService) UpdateFrequency(ctx context.Context, enter
 	return res, err
 }
 
+// Set the HTTPS URL that receives number-ownership events for this enterprise:
+// `number_reputation.number.flagged`, `number_reputation.number.removed` and
+// `number_reputation.external_verification.status_changed`. Send
+// `webhook_url: null` to stop receiving them.
+func (r *EnterpriseReputationService) UpdateWebhook(ctx context.Context, enterpriseID string, body EnterpriseReputationUpdateWebhookParams, opts ...option.RequestOption) (res *EnterpriseReputationPublicWrapped, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if enterpriseID == "" {
+		err = errors.New("missing required enterprise_id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("enterprises/%s/reputation/webhook", enterpriseID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
+	return res, err
+}
+
 type EnterpriseReputationPublic struct {
 	// How often Telnyx refreshes the stored reputation data for this enterprise's
 	// registered numbers.
@@ -132,6 +150,11 @@ type EnterpriseReputationPublic struct {
 	CheckFrequency ReputationCheckFrequency `json:"check_frequency"`
 	CreatedAt      time.Time                `json:"created_at" format:"date-time"`
 	EnterpriseID   string                   `json:"enterprise_id" format:"uuid"`
+	// Review state of the ownership proof that allows adding phone numbers hosted with
+	// another provider.
+	//
+	// Any of "pending", "approved", "rejected".
+	ExternalVerificationStatus ExternalVerificationStatus `json:"external_verification_status" api:"nullable"`
 	// Id of the signed LOA document.
 	LoaDocumentID string `json:"loa_document_id" api:"nullable"`
 	// Customer-facing Letter-of-Authorization verification state. `approved` is
@@ -146,18 +169,22 @@ type EnterpriseReputationPublic struct {
 	// Any of "pending", "approved", "deleted", "rejected".
 	Status    EnterpriseReputationPublicStatus `json:"status"`
 	UpdatedAt time.Time                        `json:"updated_at" format:"date-time"`
+	// HTTPS URL that receives number-ownership webhook events for this enterprise.
+	WebhookURL string `json:"webhook_url" api:"nullable" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		CheckFrequency   respjson.Field
-		CreatedAt        respjson.Field
-		EnterpriseID     respjson.Field
-		LoaDocumentID    respjson.Field
-		LoaStatus        respjson.Field
-		RejectionReasons respjson.Field
-		Status           respjson.Field
-		UpdatedAt        respjson.Field
-		ExtraFields      map[string]respjson.Field
-		raw              string
+		CheckFrequency             respjson.Field
+		CreatedAt                  respjson.Field
+		EnterpriseID               respjson.Field
+		ExternalVerificationStatus respjson.Field
+		LoaDocumentID              respjson.Field
+		LoaStatus                  respjson.Field
+		RejectionReasons           respjson.Field
+		Status                     respjson.Field
+		UpdatedAt                  respjson.Field
+		WebhookURL                 respjson.Field
+		ExtraFields                map[string]respjson.Field
+		raw                        string
 	} `json:"-"`
 }
 
@@ -251,5 +278,20 @@ func (r EnterpriseReputationUpdateFrequencyParams) MarshalJSON() (data []byte, e
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *EnterpriseReputationUpdateFrequencyParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type EnterpriseReputationUpdateWebhookParams struct {
+	// HTTPS URL on a publicly routable host. Send `null` to stop receiving
+	// number-ownership events.
+	WebhookURL param.Opt[string] `json:"webhook_url,omitzero" api:"required" format:"uri"`
+	paramObj
+}
+
+func (r EnterpriseReputationUpdateWebhookParams) MarshalJSON() (data []byte, err error) {
+	type shadow EnterpriseReputationUpdateWebhookParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *EnterpriseReputationUpdateWebhookParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }

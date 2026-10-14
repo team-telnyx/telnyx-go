@@ -336,6 +336,12 @@ type AIConversationListParams struct {
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Filter by assistant ID (e.g., `metadata->assistant_id=eq.assistant-123`)
 	MetadataAssistantID param.Opt[string] `query:"metadata->assistant_id,omitzero" json:"-"`
+	// Filter by assistant version ID (e.g.,
+	// `metadata->assistant_version_id=eq.20250812T114318034399`). The version that
+	// handled the conversation is stored in metadata when the conversation starts;
+	// conversations created before this field was tracked, or that never resolved a
+	// version, have no `assistant_version_id` and do not match this filter.
+	MetadataAssistantVersionID param.Opt[string] `query:"metadata->assistant_version_id,omitzero" json:"-"`
 	// Filter by call control ID (e.g., `metadata->call_control_id=eq.v3:123`)
 	MetadataCallControlID param.Opt[string] `query:"metadata->call_control_id,omitzero" json:"-"`
 	// Filter by the phone number, SIP URI, or other identifier for the agent (e.g.,

@@ -72,11 +72,11 @@ func (r *DirPhoneNumberService) ListAutoPaging(ctx context.Context, dirID string
 }
 
 // Register phone numbers under a DIR. The enterprise is resolved server-side from
-// the DIR id. Same body, failure modes, and batch semantics whichever path form
-// you use.
+// the DIR id.
 //
-// **Pricing:** This is a billable action. See https://telnyx.com/pricing/numbers
-// for current pricing.
+// **Pricing:** Adding phone numbers is free. Branded Calling fees are charged per
+// DIR and per branded call. See https://telnyx.com/pricing/branded-calling for
+// current pricing.
 func (r *DirPhoneNumberService) Add(ctx context.Context, dirID string, body DirPhoneNumberAddParams, opts ...option.RequestOption) (res *DirPhoneNumberAddResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if dirID == "" {
@@ -283,11 +283,6 @@ type DirPhoneNumberListParams struct {
 	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
 	// Items per page. Maximum 250; values above are clamped to 250.
 	PageSize param.Opt[int64] `query:"page[size],omitzero" json:"-"`
-	// Filter by phone-number status.
-	//
-	// Any of "submitted", "in_review", "verified", "unsuccessful", "suspended",
-	// "expired", "permanently_rejected".
-	Status DirPhoneNumberStatus `query:"status,omitzero" json:"-"`
 	paramObj
 }
 
@@ -322,6 +317,8 @@ func (r *DirPhoneNumberAddParams) UnmarshalJSON(data []byte) error {
 }
 
 type DirPhoneNumberRemoveParams struct {
+	// The phone numbers to remove from this brand, in E.164 format, up to 100 per
+	// request. They must currently be attached to this brand.
 	PhoneNumbers []string `json:"phone_numbers,omitzero" api:"required"`
 	paramObj
 }

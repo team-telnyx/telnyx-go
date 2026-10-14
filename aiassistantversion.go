@@ -173,12 +173,23 @@ type UpdateAssistantParam struct {
 	// capability for the conversation; it does not fail the call. Omit this field to
 	// leave the assistant's agents unchanged; send an empty array to remove them all.
 	A2aAgents []AssistantA2AAgentParam `json:"a2a_agents,omitzero"`
+	// **Beta:** Configuration for the Telnyx open-source avatar provider. The launch
+	// catalog supports six avatars and office, studio, or reception backgrounds.
+	AvatarSettings AvatarSettingsRequestParam `json:"avatar_settings,omitzero"`
 	// Conversation flow as supplied by API clients (create / update).
 	//
 	// A directed graph of `FlowNodeReq` connected by `FlowEdge`s. Validation enforces
 	// unique node/edge IDs, that `start_node_id` references a real node, and that
 	// every edge's endpoints reference real nodes.
 	ConversationFlow ConversationFlowReqParam `json:"conversation_flow,omitzero"`
+	// Splits the conversation between a frontend model that talks to the caller and a
+	// backend model that does the work. On the GPT-Live route the frontend model
+	// cannot call tools at all — when it needs something done it raises a delegation
+	// and waits. On the chat completion route the frontend keeps a single `delegate`
+	// tool that returns immediately, so the conversation carries on while the backend
+	// works. Either way the backend's answer is spoken as commentary or kept as silent
+	// context, depending on `speak_results`. Beta feature.
+	DelegationSettings DelegationSettingsParam `json:"delegation_settings,omitzero"`
 	// Map of dynamic variables and their default values
 	DynamicVariables map[string]any         `json:"dynamic_variables,omitzero"`
 	EnabledFeatures  []EnabledFeatures      `json:"enabled_features,omitzero"`
@@ -234,6 +245,12 @@ type UpdateAssistantParam struct {
 	Tools         []AssistantToolUnionParam            `json:"tools,omitzero"`
 	Transcription TranscriptionSettingsParam           `json:"transcription,omitzero"`
 	VoiceSettings InferenceEmbeddingVoiceSettingsParam `json:"voice_settings,omitzero"`
+	// Streams conversation and telephony events to a WebSocket server you host, and
+	// accepts messages injected back into the conversation. Telnyx opens the
+	// connection as a client, once per conversation. Delivery is best effort
+	// throughout: while the connection is down events are dropped rather than queued,
+	// and no socket failure is ever allowed to affect the call. Beta feature.
+	WebsocketSettings WebsocketSettingsParam `json:"websocket_settings,omitzero"`
 	// Configuration settings for the assistant's web widget.
 	WidgetSettings WidgetSettingsParam `json:"widget_settings,omitzero"`
 	paramObj

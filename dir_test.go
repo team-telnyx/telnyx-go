@@ -58,8 +58,12 @@ func TestDirUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"16635d38-75a6-4481-82e8-69af60e05011",
 		telnyx.DirUpdateParams{
-			AuthorizerEmail:        telnyx.String("dev@stainless.com"),
-			AuthorizerName:         telnyx.String("authorizer_name"),
+			AuthorizerEmail: telnyx.String("dev@stainless.com"),
+			AuthorizerName:  telnyx.String("authorizer_name"),
+			BpoAuthorizations: []telnyx.BpoAuthorizationInputParam{{
+				BpoEnterpriseID: "4a6192a4-573d-446d-b3ce-aff9117272a6",
+				LoaDocumentID:   "2a7e8337-e803-4057-a4ae-26c40eb0bc6c",
+			}},
 			CallReasons:            []string{"Appointment reminders", "Billing inquiries", "Lab results"},
 			CertifyBrandIsAccurate: telnyx.Bool(true),
 			CertifyIPOwnership:     telnyx.Bool(true),
@@ -70,8 +74,9 @@ func TestDirUpdateWithOptionalParams(t *testing.T) {
 				DocumentType: telnyx.DocumentDocumentTypeBusinessRegistration,
 				Description:  telnyx.String("Certificate of incorporation."),
 			}},
-			LogoURL:   telnyx.String("https://acmeplumbing.example.com/logo-v2-256.bmp"),
-			Reselling: telnyx.Bool(true),
+			LogoURL:    telnyx.String("https://acmeplumbing.example.com/logo-v2-256.bmp"),
+			Reselling:  telnyx.Bool(true),
+			WebhookURL: telnyx.String("https://mapleridge.example.com/webhooks/branded-calling"),
 		},
 	)
 	if err != nil {
@@ -129,13 +134,57 @@ func TestDirDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Dir.Delete(context.TODO(), "16635d38-75a6-4481-82e8-69af60e05011")
+	_, err := client.Dir.Delete(context.TODO(), "16635d38-75a6-4481-82e8-69af60e05011")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
 		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestDirBpoLoaWithOptionalParams(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(200)
+		w.Write([]byte("abc"))
+	}))
+	defer server.Close()
+	baseURL := server.URL
+	client := telnyx.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	resp, err := client.Dir.BpoLoa(
+		context.TODO(),
+		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+		telnyx.DirBpoLoaParams{
+			BpoEnterpriseID: "4a6192a4-573d-446d-b3ce-aff9117272a6",
+			Signature: telnyx.SignaturePayloadParam{
+				ImageBase64: "x",
+				SignerName:  telnyx.String("signer_name"),
+			},
+		},
+	)
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+	defer resp.Body.Close()
+
+	b, err := io.ReadAll(resp.Body)
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+	if !bytes.Equal(b, []byte("abc")) {
+		t.Fatalf("return value not %s: %s", "abc", b)
 	}
 }
 
@@ -222,7 +271,7 @@ func TestDirNewLoaWithOptionalParams(t *testing.T) {
 				Dba:                telnyx.String("dba"),
 				ExtendedAddress:    telnyx.String("extended_address"),
 			},
-			Signature: telnyx.DirNewLoaParamsSignature{
+			Signature: telnyx.SignaturePayloadParam{
 				ImageBase64: "x",
 				SignerName:  telnyx.String("signer_name"),
 			},
@@ -247,6 +296,36 @@ func TestDirNewLoaWithOptionalParams(t *testing.T) {
 	}
 	if !bytes.Equal(b, []byte("abc")) {
 		t.Fatalf("return value not %s: %s", "abc", b)
+	}
+}
+
+func TestDirGetBpoAuthorizationsWithOptionalParams(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := telnyx.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Dir.GetBpoAuthorizations(
+		context.TODO(),
+		"16635d38-75a6-4481-82e8-69af60e05011",
+		telnyx.DirGetBpoAuthorizationsParams{
+			PageNumber: telnyx.Int(1),
+			PageSize:   telnyx.Int(20),
+		},
+	)
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
 	}
 }
 

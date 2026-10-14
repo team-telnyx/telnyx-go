@@ -13,8 +13,7 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewAIMemoryService] method instead.
 type AIMemoryService struct {
-	Options []option.RequestOption
-	// Whether a write has finished.
+	Options    []option.RequestOption
 	Namespaces AIMemoryNamespaceService
 }
 

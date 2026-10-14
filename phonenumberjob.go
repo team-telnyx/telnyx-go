@@ -56,9 +56,10 @@ func (r *PhoneNumberJobService) Get(ctx context.Context, id string, opts ...opti
 }
 
 // Returns background jobs that operate on phone numbers. Filter by job type,
-// target phone numbers, or job status, and sort by creation time. Multiple
-// phone-number or status values use OR semantics within that filter; different
-// filter categories use AND semantics. Results include pagination metadata.
+// target phone numbers, job status, or creation-time customer reference, and sort
+// by creation time. Multiple phone-number or status values use OR semantics within
+// that filter; different filter categories use AND semantics. Results include
+// pagination metadata.
 func (r *PhoneNumberJobService) List(ctx context.Context, query PhoneNumberJobListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[PhoneNumbersJob], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -77,9 +78,10 @@ func (r *PhoneNumberJobService) List(ctx context.Context, query PhoneNumberJobLi
 }
 
 // Returns background jobs that operate on phone numbers. Filter by job type,
-// target phone numbers, or job status, and sort by creation time. Multiple
-// phone-number or status values use OR semantics within that filter; different
-// filter categories use AND semantics. Results include pagination metadata.
+// target phone numbers, job status, or creation-time customer reference, and sort
+// by creation time. Multiple phone-number or status values use OR semantics within
+// that filter; different filter categories use AND semantics. Results include
+// pagination metadata.
 func (r *PhoneNumberJobService) ListAutoPaging(ctx context.Context, query PhoneNumberJobListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[PhoneNumbersJob] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
@@ -321,7 +323,8 @@ type PhoneNumberJobListParams struct {
 	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
 	PageSize   param.Opt[int64] `query:"page[size],omitzero" json:"-"`
 	// Consolidated filter parameter (deepObject style). Originally: filter[type],
-	// filter[phone_number], filter[phone_number][], filter[status][]
+	// filter[phone_number], filter[phone_number][], filter[status][],
+	// filter[customer_reference]
 	Filter PhoneNumberJobListParamsFilter `query:"filter,omitzero" json:"-"`
 	// Specifies the sort order for results. If not given, results are sorted by
 	// created_at in descending order.
@@ -341,8 +344,16 @@ func (r PhoneNumberJobListParams) URLQuery() (v url.Values, err error) {
 }
 
 // Consolidated filter parameter (deepObject style). Originally: filter[type],
-// filter[phone_number], filter[phone_number][], filter[status][]
+// filter[phone_number], filter[phone_number][], filter[status][],
+// filter[customer_reference]
 type PhoneNumberJobListParamsFilter struct {
+	// Returns jobs whose creation-time customer reference exactly matches the supplied
+	// value, not the current reference on a phone number. Only jobs within the lookup
+	// window (90 days by default) are returned. Supply a single non-blank string of up
+	// to 250 characters, without null characters, using
+	// `filter[customer_reference]=yourcustomerrefhere`. An invalid filter value
+	// returns HTTP 422.
+	CustomerReference param.Opt[string] `query:"customer_reference,omitzero" json:"-"`
 	// Returns jobs that targeted any of the supplied account-owned phone numbers.
 	// Values beginning with `+` must contain 1 to 20 digits after the plus sign. The
 	// 10-value limit is enforced before duplicate values are removed. Unmatched or

@@ -116,6 +116,30 @@ func (r *AIMemoryNamespaceProfileService) Ingest(ctx context.Context, profileID 
 	return res, err
 }
 
+// Try a candidate note on one profile and see how that profile's summary would
+// read under it, without saving the note and without touching the stored summary.
+// Composes the same source query the apply path
+// (`PATCH /ai/memory/namespaces/{namespace}/settings`) would use, so a preview
+// cannot drift from what saving the note would produce. Reads the candidate alone
+// -- the namespace's current instructions and the profile's stored summary are
+// neither read nor replaced. Bounded at 120 seconds: the summary is generated on
+// the spot rather than read from a stored one. Nothing about the request is
+// stored.
+func (r *AIMemoryNamespaceProfileService) Preview(ctx context.Context, profileID string, params AIMemoryNamespaceProfilePreviewParams, opts ...option.RequestOption) (res *AIMemoryNamespaceProfilePreviewResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if params.Namespace == "" {
+		err = errors.New("missing required namespace parameter")
+		return nil, err
+	}
+	if profileID == "" {
+		err = errors.New("missing required profile_id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("ai/memory/namespaces/%s/profiles/%s/summary/preview", url.PathEscape(params.Namespace), url.PathEscape(profileID))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
+	return res, err
+}
+
 // Ranked memories for a question. Matching runs over the profile's memories and
 // returns them in rank order with a relevance `score`; the score is null where the
 // deployment's reranker is a passthrough, in which case order is the only signal.
@@ -305,6 +329,43 @@ type AIMemoryNamespaceProfileIngestResponseData struct {
 // Returns the unmodified JSON received from the API
 func (r AIMemoryNamespaceProfileIngestResponseData) RawJSON() string { return r.JSON.raw }
 func (r *AIMemoryNamespaceProfileIngestResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type AIMemoryNamespaceProfilePreviewResponse struct {
+	Data AIMemoryNamespaceProfilePreviewResponseData `json:"data" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AIMemoryNamespaceProfilePreviewResponse) RawJSON() string { return r.JSON.raw }
+func (r *AIMemoryNamespaceProfilePreviewResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type AIMemoryNamespaceProfilePreviewResponseData struct {
+	ProfileID string `json:"profile_id" api:"required"`
+	// The summary this profile would carry under the candidate note. Null when nothing
+	// was generated -- the same signal `GET /summary` uses for a profile with no card
+	// yet.
+	Text string `json:"text" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ProfileID   respjson.Field
+		Text        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AIMemoryNamespaceProfilePreviewResponseData) RawJSON() string { return r.JSON.raw }
+func (r *AIMemoryNamespaceProfilePreviewResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -519,6 +580,25 @@ func (u *AIMemoryNamespaceProfileIngestParamsBodyUnionMember1Union) asAny() any 
 		return &u.OfBool.Value
 	}
 	return nil
+}
+
+type AIMemoryNamespaceProfilePreviewParams struct {
+	// The namespace. `default` exists for every organization.
+	Namespace string `path:"namespace" api:"required" json:"-"`
+	// The candidate note to try. `null`, empty, or whitespace-only previews the
+	// neutral default -- the summary a profile returns to when instructions are
+	// cleared. Capped at 2000 characters, the same cap `PATCH /settings` applies on
+	// save; a longer note is refused with `422` before anything is generated.
+	Instructions param.Opt[string] `json:"instructions,omitzero"`
+	paramObj
+}
+
+func (r AIMemoryNamespaceProfilePreviewParams) MarshalJSON() (data []byte, err error) {
+	type shadow AIMemoryNamespaceProfilePreviewParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AIMemoryNamespaceProfilePreviewParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type AIMemoryNamespaceProfileRecallParams struct {

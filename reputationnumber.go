@@ -119,6 +119,16 @@ type ReputationNumberListParams struct {
 	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
 	// Items per page. Maximum 250; values above are clamped to 250.
 	PageSize param.Opt[int64] `query:"page[size],omitzero" json:"-"`
+	// Only numbers with this ownership status. `removed` lists the numbers that were
+	// removed, each with its `removal_reason` and `removed_at`; removed numbers are
+	// not returned otherwise.
+	//
+	// Any of "verified", "flagged", "pending_confirmation", "removed".
+	FilterOwnershipStatus ReputationOwnershipStatus `query:"filter[ownership_status],omitzero" json:"-"`
+	// Only numbers with this source.
+	//
+	// Any of "telnyx", "external".
+	FilterSource ReputationNumberSource `query:"filter[source],omitzero" json:"-"`
 	paramObj
 }
 

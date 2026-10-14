@@ -113,7 +113,8 @@ type PortingPhoneNumberBlock struct {
 	PhoneNumberRange PortingPhoneNumberBlockPhoneNumberRange `json:"phone_number_range"`
 	// Specifies the phone number type for this porting phone number block.
 	//
-	// Any of "landline", "local", "mobile", "national", "shared_cost", "toll_free".
+	// Any of "landline", "local", "mobile", "multipurpose", "national", "other",
+	// "shared_cost", "toll_free".
 	PhoneNumberType PortingPhoneNumberBlockPhoneNumberType `json:"phone_number_type"`
 	// Identifies the type of the resource.
 	RecordType string `json:"record_type"`
@@ -188,12 +189,14 @@ func (r *PortingPhoneNumberBlockPhoneNumberRange) UnmarshalJSON(data []byte) err
 type PortingPhoneNumberBlockPhoneNumberType string
 
 const (
-	PortingPhoneNumberBlockPhoneNumberTypeLandline   PortingPhoneNumberBlockPhoneNumberType = "landline"
-	PortingPhoneNumberBlockPhoneNumberTypeLocal      PortingPhoneNumberBlockPhoneNumberType = "local"
-	PortingPhoneNumberBlockPhoneNumberTypeMobile     PortingPhoneNumberBlockPhoneNumberType = "mobile"
-	PortingPhoneNumberBlockPhoneNumberTypeNational   PortingPhoneNumberBlockPhoneNumberType = "national"
-	PortingPhoneNumberBlockPhoneNumberTypeSharedCost PortingPhoneNumberBlockPhoneNumberType = "shared_cost"
-	PortingPhoneNumberBlockPhoneNumberTypeTollFree   PortingPhoneNumberBlockPhoneNumberType = "toll_free"
+	PortingPhoneNumberBlockPhoneNumberTypeLandline     PortingPhoneNumberBlockPhoneNumberType = "landline"
+	PortingPhoneNumberBlockPhoneNumberTypeLocal        PortingPhoneNumberBlockPhoneNumberType = "local"
+	PortingPhoneNumberBlockPhoneNumberTypeMobile       PortingPhoneNumberBlockPhoneNumberType = "mobile"
+	PortingPhoneNumberBlockPhoneNumberTypeMultipurpose PortingPhoneNumberBlockPhoneNumberType = "multipurpose"
+	PortingPhoneNumberBlockPhoneNumberTypeNational     PortingPhoneNumberBlockPhoneNumberType = "national"
+	PortingPhoneNumberBlockPhoneNumberTypeOther        PortingPhoneNumberBlockPhoneNumberType = "other"
+	PortingPhoneNumberBlockPhoneNumberTypeSharedCost   PortingPhoneNumberBlockPhoneNumberType = "shared_cost"
+	PortingPhoneNumberBlockPhoneNumberTypeTollFree     PortingPhoneNumberBlockPhoneNumberType = "toll_free"
 )
 
 type PortingOrderPhoneNumberBlockNewResponse struct {

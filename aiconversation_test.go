@@ -116,6 +116,7 @@ func TestAIConversationListWithOptionalParams(t *testing.T) {
 		LastMessageAt:                     telnyx.String("last_message_at"),
 		Limit:                             telnyx.Int(1),
 		MetadataAssistantID:               telnyx.String("metadata->assistant_id"),
+		MetadataAssistantVersionID:        telnyx.String("metadata->assistant_version_id"),
 		MetadataCallControlID:             telnyx.String("metadata->call_control_id"),
 		MetadataTelnyxAgentTarget:         telnyx.String("metadata->telnyx_agent_target"),
 		MetadataTelnyxConversationChannel: telnyx.String("metadata->telnyx_conversation_channel"),
