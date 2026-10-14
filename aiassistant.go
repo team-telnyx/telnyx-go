@@ -8732,9 +8732,10 @@ type TranscriptionSettingsConfig struct {
 	// emits end-of-utterance events at the cadence configured by
 	// `max_endpoint_delay_ms`.
 	EnableEndpointDetection bool `json:"enable_endpoint_detection"`
-	// Available only for assemblyai/universal-3-5-pro (and its legacy alias
-	// assemblyai/universal-streaming). Confidence level required to trigger an end of
-	// turn. Higher values require more certainty before ending a turn.
+	// Deprecated and ignored. Accepted for backwards compatibility. AssemblyAI turn
+	// detection is configured with min_turn_silence and max_turn_silence.
+	//
+	// Deprecated: deprecated
 	EndOfTurnConfidenceThreshold float64 `json:"end_of_turn_confidence_threshold"`
 	// Available only for deepgram/flux. Confidence required to trigger an end of turn.
 	// Higher values = more reliable turn detection but slightly increased latency.
@@ -8745,10 +8746,13 @@ type TranscriptionSettingsConfig struct {
 	// Available only for soniox/stt-rt-v4 and soniox/stt-rt-v5. When true, Soniox
 	// streams interim (non-final) results in addition to finalized transcripts.
 	InterimResults bool `json:"interim_results"`
-	// Available only for deepgram/nova-3 and deepgram/flux. A comma-separated list of
-	// key terms to boost for recognition during transcription. Helps improve accuracy
-	// for domain-specific terminology, proper nouns, or uncommon words. This field may
-	// be templated with
+	// A comma-separated list of key terms to boost for recognition during
+	// transcription, used by Deepgram, Reson8, Speechmatics Linden 1 and AssemblyAI
+	// models. Helps improve accuracy for domain-specific terminology, proper nouns, or
+	// uncommon words. At most 1000 characters in total. For
+	// assemblyai/universal-3-5-pro (and its legacy alias
+	// assemblyai/universal-streaming), also at most 100 terms of up to 50 characters
+	// each. This field may be templated with
 	// [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables)
 	// using mustache syntax (e.g. `Telnyx,{{customer_name}},VoIP`). Variables are
 	// resolved at call time before the value is sent to the speech-to-text engine.
@@ -8770,7 +8774,12 @@ type TranscriptionSettingsConfig struct {
 	// before a turn can end. Must be less than or equal to max_turn_silence.
 	MinTurnSilence int64 `json:"min_turn_silence"`
 	Numerals       bool  `json:"numerals"`
-	SmartFormat    bool  `json:"smart_format"`
+	// Available only for assemblyai/universal-3-5-pro (and its legacy alias
+	// assemblyai/universal-streaming). Context about the conversation (domain, names,
+	// terms) to improve transcription; describe the content, do not give instructions.
+	// Leave empty unless needed. At most 1750 characters.
+	Prompt      string `json:"prompt"`
+	SmartFormat bool   `json:"smart_format"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Context                      respjson.Field
@@ -8786,6 +8795,7 @@ type TranscriptionSettingsConfig struct {
 		MaxTurnSilence               respjson.Field
 		MinTurnSilence               respjson.Field
 		Numerals                     respjson.Field
+		Prompt                       respjson.Field
 		SmartFormat                  respjson.Field
 		ExtraFields                  map[string]respjson.Field
 		raw                          string
@@ -8825,9 +8835,10 @@ type TranscriptionSettingsConfigParam struct {
 	// emits end-of-utterance events at the cadence configured by
 	// `max_endpoint_delay_ms`.
 	EnableEndpointDetection param.Opt[bool] `json:"enable_endpoint_detection,omitzero"`
-	// Available only for assemblyai/universal-3-5-pro (and its legacy alias
-	// assemblyai/universal-streaming). Confidence level required to trigger an end of
-	// turn. Higher values require more certainty before ending a turn.
+	// Deprecated and ignored. Accepted for backwards compatibility. AssemblyAI turn
+	// detection is configured with min_turn_silence and max_turn_silence.
+	//
+	// Deprecated: deprecated
 	EndOfTurnConfidenceThreshold param.Opt[float64] `json:"end_of_turn_confidence_threshold,omitzero"`
 	// Available only for deepgram/flux. Confidence required to trigger an end of turn.
 	// Higher values = more reliable turn detection but slightly increased latency.
@@ -8838,10 +8849,13 @@ type TranscriptionSettingsConfigParam struct {
 	// Available only for soniox/stt-rt-v4 and soniox/stt-rt-v5. When true, Soniox
 	// streams interim (non-final) results in addition to finalized transcripts.
 	InterimResults param.Opt[bool] `json:"interim_results,omitzero"`
-	// Available only for deepgram/nova-3 and deepgram/flux. A comma-separated list of
-	// key terms to boost for recognition during transcription. Helps improve accuracy
-	// for domain-specific terminology, proper nouns, or uncommon words. This field may
-	// be templated with
+	// A comma-separated list of key terms to boost for recognition during
+	// transcription, used by Deepgram, Reson8, Speechmatics Linden 1 and AssemblyAI
+	// models. Helps improve accuracy for domain-specific terminology, proper nouns, or
+	// uncommon words. At most 1000 characters in total. For
+	// assemblyai/universal-3-5-pro (and its legacy alias
+	// assemblyai/universal-streaming), also at most 100 terms of up to 50 characters
+	// each. This field may be templated with
 	// [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables)
 	// using mustache syntax (e.g. `Telnyx,{{customer_name}},VoIP`). Variables are
 	// resolved at call time before the value is sent to the speech-to-text engine.
@@ -8859,7 +8873,12 @@ type TranscriptionSettingsConfigParam struct {
 	// before a turn can end. Must be less than or equal to max_turn_silence.
 	MinTurnSilence param.Opt[int64] `json:"min_turn_silence,omitzero"`
 	Numerals       param.Opt[bool]  `json:"numerals,omitzero"`
-	SmartFormat    param.Opt[bool]  `json:"smart_format,omitzero"`
+	// Available only for assemblyai/universal-3-5-pro (and its legacy alias
+	// assemblyai/universal-streaming). Context about the conversation (domain, names,
+	// terms) to improve transcription; describe the content, do not give instructions.
+	// Leave empty unless needed. At most 1750 characters.
+	Prompt      param.Opt[string] `json:"prompt,omitzero"`
+	SmartFormat param.Opt[bool]   `json:"smart_format,omitzero"`
 	// Available only for soniox/stt-rt-v4 and soniox/stt-rt-v5. A list of ISO 639-1
 	// language codes (e.g. `["nl", "fr"]`) to pin recognition to multiple languages at
 	// once, overriding the single hint derived from `language`.
