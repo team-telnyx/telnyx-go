@@ -3597,7 +3597,7 @@ const (
 // The properties AvatarID, BackgroundID, Model, Provider are required.
 type AvatarSettingsRequestParam struct {
 	// The Telnyx stock avatar or organization-owned custom avatar to render.
-	AvatarID AvatarID `json:"avatar_id,omitzero" api:"required"`
+	AvatarID AvatarIDParam `json:"avatar_id" api:"required"`
 	// The background to render.
 	//
 	// Any of "office", "studio", "reception".

@@ -80,7 +80,7 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 					TimeoutMs:      telnyx.Int(30000),
 				}},
 				AvatarSettings: telnyx.AvatarSettingsRequestParam{
-					AvatarID:     telnyx.AvatarIDElena,
+					AvatarID:     "elena",
 					BackgroundID: telnyx.AvatarSettingsRequestBackgroundIDOffice,
 					Model:        telnyx.AvatarSettingsRequestModelFoxtrot1,
 				},

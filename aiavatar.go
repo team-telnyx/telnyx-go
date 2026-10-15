@@ -5,6 +5,7 @@ package telnyx
 import (
 	"bytes"
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"mime/multipart"
@@ -71,9 +72,13 @@ func (r *AIAvatarService) New(ctx context.Context, body AIAvatarNewParams, opts 
 // Returns a Telnyx stock avatar or a custom avatar owned by the authenticated
 // organization. A custom avatar belonging to another organization is returned as
 // not found.
-func (r *AIAvatarService) Get(ctx context.Context, avatarID AvatarID, opts ...option.RequestOption) (res *AvatarResponse, err error) {
+func (r *AIAvatarService) Get(ctx context.Context, avatarID AvatarIDParam, opts ...option.RequestOption) (res *AvatarResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := fmt.Sprintf("ai/avatars/%v", avatarID)
+	if avatarID == "" {
+		err = errors.New("missing required avatar_id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("ai/avatars/%s", url.PathEscape(avatarID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -81,9 +86,13 @@ func (r *AIAvatarService) Get(ctx context.Context, avatarID AvatarID, opts ...op
 // Updates the customer-facing name of a custom avatar owned by the authenticated
 // organization. Stock avatars cannot be modified. To replace the image, create a
 // new custom avatar so existing references keep their original content.
-func (r *AIAvatarService) Update(ctx context.Context, avatarID AvatarID, body AIAvatarUpdateParams, opts ...option.RequestOption) (res *AvatarResponse, err error) {
+func (r *AIAvatarService) Update(ctx context.Context, avatarID AvatarIDParam, body AIAvatarUpdateParams, opts ...option.RequestOption) (res *AvatarResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := fmt.Sprintf("ai/avatars/%v", avatarID)
+	if avatarID == "" {
+		err = errors.New("missing required avatar_id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("ai/avatars/%s", url.PathEscape(avatarID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }
@@ -92,7 +101,9 @@ func (r *AIAvatarService) Update(ctx context.Context, avatarID AvatarID, body AI
 // available to the authenticated organization. Custom avatars owned by other
 // organizations are never returned. The `image_url` value is suitable for
 // displaying a thumbnail and may be refreshed by listing or retrieving the avatar
-// again.
+// again. `suggested_voice_id` recommends a compatible Telnyx voice for stock
+// avatars and is an empty string for custom avatars; it does not change an AI
+// Assistant's voice automatically.
 func (r *AIAvatarService) List(ctx context.Context, query AIAvatarListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[Avatar], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -114,15 +125,19 @@ func (r *AIAvatarService) List(ctx context.Context, query AIAvatarListParams, op
 // available to the authenticated organization. Custom avatars owned by other
 // organizations are never returned. The `image_url` value is suitable for
 // displaying a thumbnail and may be refreshed by listing or retrieving the avatar
-// again.
+// again. `suggested_voice_id` recommends a compatible Telnyx voice for stock
+// avatars and is an empty string for custom avatars; it does not change an AI
+// Assistant's voice automatically.
 func (r *AIAvatarService) ListAutoPaging(ctx context.Context, query AIAvatarListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[Avatar] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 type Avatar struct {
-	// Stable identifier of a Telnyx stock avatar or an organization-owned custom
-	// avatar. Custom avatar IDs are returned by the Avatars API and use the `avatar_`
-	// prefix.
+	// Stable identifier returned by the Avatars API. Discover available stock IDs with
+	// GET /v2/ai/avatars and filter[avatar_type]=stock rather than maintaining a fixed
+	// list. Custom avatar IDs use the `avatar_` prefix and must belong to the
+	// authenticated organization. The service validates that the selected avatar is
+	// available.
 	ID AvatarID `json:"id" api:"required"`
 	// Whether the avatar is provided by Telnyx or was uploaded by the authenticated
 	// organization.
@@ -150,6 +165,11 @@ type Avatar struct {
 	ImageURLExpiresAt time.Time `json:"image_url_expires_at" format:"date-time"`
 	// Size of a custom avatar image in bytes.
 	SizeBytes int64 `json:"size_bytes"`
+	// Optional recommended Telnyx text-to-speech voice for this avatar. An omitted
+	// field or empty string means no recommendation is available. Custom avatars have
+	// no suggested voice. It is informational and selecting the avatar does not
+	// automatically change the AI Assistant's configured voice.
+	SuggestedVoiceID string `json:"suggested_voice_id"`
 	// Time when the custom avatar was last updated.
 	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
 	// Decoded width of a custom avatar image.
@@ -167,6 +187,7 @@ type Avatar struct {
 		HeightPx          respjson.Field
 		ImageURLExpiresAt respjson.Field
 		SizeBytes         respjson.Field
+		SuggestedVoiceID  respjson.Field
 		UpdatedAt         respjson.Field
 		WidthPx           respjson.Field
 		ExtraFields       map[string]respjson.Field
@@ -189,19 +210,9 @@ const (
 	AvatarContentTypeImageWebp AvatarContentType = "image/webp"
 )
 
-// Stable identifier of a Telnyx stock avatar or an organization-owned custom
-// avatar. Custom avatar IDs are returned by the Avatars API and use the `avatar_`
-// prefix.
-type AvatarID string
+type AvatarID = string
 
-const (
-	AvatarIDElena   AvatarID = "elena"
-	AvatarIDBen     AvatarID = "ben"
-	AvatarIDJordan  AvatarID = "jordan"
-	AvatarIDLin     AvatarID = "lin"
-	AvatarIDAvery   AvatarID = "avery"
-	AvatarIDRaphael AvatarID = "raphael"
-)
+type AvatarIDParam = string
 
 type AvatarResponse struct {
 	Data Avatar `json:"data" api:"required"`
@@ -269,6 +280,8 @@ func (r *AIAvatarUpdateParams) UnmarshalJSON(data []byte) error {
 }
 
 type AIAvatarListParams struct {
+	// Return the avatar with this exact ID.
+	FilterID param.Opt[AvatarIDParam] `query:"filter[id],omitzero" json:"-"`
 	// Return avatars whose names contain this value, using case-insensitive matching.
 	FilterName param.Opt[string] `query:"filter[name],omitzero" json:"-"`
 	// Page number to retrieve, starting at 1.
@@ -279,8 +292,6 @@ type AIAvatarListParams struct {
 	//
 	// Any of "stock", "custom".
 	FilterAvatarType AvatarType `query:"filter[avatar_type],omitzero" json:"-"`
-	// Return the avatar with this exact ID.
-	FilterID AvatarID `query:"filter[id],omitzero" json:"-"`
 	paramObj
 }
 

@@ -54,7 +54,7 @@ func TestAIAvatarGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.AI.Avatars.Get(context.TODO(), telnyx.AvatarIDElena)
+	_, err := client.AI.Avatars.Get(context.TODO(), "avatar_0123456789abcdef0123456789abcdef")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {
@@ -79,7 +79,7 @@ func TestAIAvatarUpdate(t *testing.T) {
 	)
 	_, err := client.AI.Avatars.Update(
 		context.TODO(),
-		telnyx.AvatarIDElena,
+		"avatar_0123456789abcdef0123456789abcdef",
 		telnyx.AIAvatarUpdateParams{
 			Name: "Updated portrait",
 		},
@@ -108,7 +108,7 @@ func TestAIAvatarListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.AI.Avatars.List(context.TODO(), telnyx.AIAvatarListParams{
 		FilterAvatarType: telnyx.AvatarTypeStock,
-		FilterID:         telnyx.AvatarIDElena,
+		FilterID:         telnyx.String("avatar_0123456789abcdef0123456789abcdef"),
 		FilterName:       telnyx.String("x"),
 		PageNumber:       telnyx.Int(1),
 		PageSize:         telnyx.Int(1),
