@@ -18,7 +18,6 @@ func ValueOf[T Constant[T]]() T {
 	return t.Default()
 }
 
-type Anam string                   // Always "anam"
 type Android string                // Always "android"
 type Arithmetic string             // Always "arithmetic"
 type Assistant string              // Always "assistant"
@@ -72,7 +71,6 @@ type UpdateDynamicVariables string // Always "update_dynamic_variables"
 type Variable string               // Always "variable"
 type Vision string                 // Always "vision"
 
-func (c Anam) Default() Anam                                     { return "anam" }
 func (c Android) Default() Android                               { return "android" }
 func (c Arithmetic) Default() Arithmetic                         { return "arithmetic" }
 func (c Assistant) Default() Assistant                           { return "assistant" }
@@ -126,7 +124,6 @@ func (c UpdateDynamicVariables) Default() UpdateDynamicVariables { return "updat
 func (c Variable) Default() Variable                             { return "variable" }
 func (c Vision) Default() Vision                                 { return "vision" }
 
-func (c Anam) MarshalJSON() ([]byte, error)                   { return marshalString(c) }
 func (c Android) MarshalJSON() ([]byte, error)                { return marshalString(c) }
 func (c Arithmetic) MarshalJSON() ([]byte, error)             { return marshalString(c) }
 func (c Assistant) MarshalJSON() ([]byte, error)              { return marshalString(c) }

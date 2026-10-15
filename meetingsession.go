@@ -50,13 +50,18 @@ func NewMeetingSessionService(opts ...option.RequestOption) (r MeetingSessionSer
 // request body, replay lookup is scoped to the authenticated account and compares
 // only the key; the request payload is not fingerprinted or compared. If a session
 // with that key already exists for the account, the existing session is replayed
-// (200); otherwise a new session is created (201). Supports bring-your-own-key
-// (BYOK) configuration. The session may enter asynchronous states (e.g. joining,
-// waiting_for_admission) before becoming active. Optional `camera_image` input is
-// write-only and applies only when no Avatar or Assistant webpage output takes
-// precedence. An ignored URL is not fetched. An effective URL source is resolved
-// before bot creation; neither the source URL nor image bytes are persisted,
-// returned, or logged. Treat signed URLs as credentials.
+// (200); otherwise a new session is created (201). The session may enter
+// asynchronous states (e.g. joining, waiting_for_admission) before becoming
+// active. Optional `camera_image` input is write-only and applies only when no
+// avatar or Assistant webpage output takes precedence. An ignored URL is not
+// fetched. An effective URL source is resolved before bot creation; neither the
+// source URL nor image bytes are persisted, returned, or logged. Treat signed URLs
+// as credentials. With `assistant.avatar: true`, the assistant is read before the
+// bot is created: an assistant without a Telnyx avatar configured is rejected with
+// 400 `invalid_request` (message prefix `assistant_avatar_not_configured:`), an
+// unknown assistant with 400 `invalid_request` (prefix `assistant_not_found:`),
+// and a failed lookup with 503 `assistant_lookup_unavailable`; no bot is created
+// in any of these cases.
 func (r *MeetingSessionService) New(ctx context.Context, body MeetingSessionNewParams, opts ...option.RequestOption) (res *MeetingSessionResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "meeting_sessions"
@@ -189,9 +194,13 @@ type MeetingSession struct {
 	AssistantState MeetingSessionAssistantState `json:"assistant_state" api:"required"`
 	// Timestamp of the last assistant state change, or null.
 	AssistantStateChangedAt time.Time `json:"assistant_state_changed_at" api:"required" format:"date-time"`
-	// Avatar configuration if an avatar is attached, otherwise null.
+	// The assistant's avatar, captured from its `avatar_settings` when the session was
+	// created. For display only; later changes to the assistant do not update it.
 	Avatar MeetingSessionAvatar `json:"avatar" api:"required"`
-	// Current state of the avatar connection, or null if no avatar is attached.
+	// Current state of the avatar, or null if the session has no avatar. `starting`
+	// until the avatar's video is playing, then `connected`; `degraded` when the
+	// session has fallen back to voice-only (the `avatar.degraded` event carries the
+	// reason); `disconnected` when the avatar has ended.
 	//
 	// Any of "starting", "connected", "degraded", "disconnected".
 	AvatarState MeetingSessionAvatarState `json:"avatar_state" api:"required"`
@@ -316,18 +325,25 @@ const (
 	MeetingSessionAssistantStateEnded     MeetingSessionAssistantState = "ended"
 )
 
-// Avatar configuration if an avatar is attached, otherwise null.
+// The assistant's avatar, captured from its `avatar_settings` when the session was
+// created. For display only; later changes to the assistant do not update it.
 type MeetingSessionAvatar struct {
 	// Identifier of the avatar.
 	AvatarID string `json:"avatar_id" api:"required"`
+	// Identifier of the avatar's background.
+	BackgroundID string `json:"background_id" api:"required"`
+	// Avatar rendering model, for example `foxtrot-1`.
+	Model string `json:"model" api:"required"`
 	// Avatar provider identifier.
-	Provider constant.Anam `json:"provider" default:"anam"`
+	Provider constant.Telnyx `json:"provider" default:"telnyx"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		AvatarID    respjson.Field
-		Provider    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		AvatarID     respjson.Field
+		BackgroundID respjson.Field
+		Model        respjson.Field
+		Provider     respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
 	} `json:"-"`
 }
 
@@ -337,7 +353,10 @@ func (r *MeetingSessionAvatar) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Current state of the avatar connection, or null if no avatar is attached.
+// Current state of the avatar, or null if the session has no avatar. `starting`
+// until the avatar's video is playing, then `connected`; `degraded` when the
+// session has fallen back to voice-only (the `avatar.degraded` event carries the
+// reason); `disconnected` when the avatar has ended.
 type MeetingSessionAvatarState string
 
 const (
@@ -648,6 +667,7 @@ type MeetingSessionNewParams struct {
 	// is attached**: the value is accepted and echoed back on the session, but the
 	// assistant owns the voice and the line is never delivered, with no event
 	// reporting the omission. Use `chat_on_enter` to announce an assistant-backed bot.
+	// Rejected with 400 `invalid_request` when `assistant.avatar` is `true`.
 	SpeakOnEnter param.Opt[string] `json:"speak_on_enter,omitzero"`
 	// If true, generate a summary artifact when the session ends.
 	SummarizeOnEnd param.Opt[bool] `json:"summarize_on_end,omitzero"`
@@ -664,8 +684,6 @@ type MeetingSessionNewParams struct {
 	// connection, caller ID and loopback SIP URI previously required here have been
 	// removed and are now rejected as unknown fields.
 	Assistant MeetingSessionNewParamsAssistant `json:"assistant,omitzero"`
-	// Request options for attaching a bring-your-own-key avatar to the session.
-	Avatar MeetingSessionNewParamsAvatar `json:"avatar,omitzero"`
 	// Write-only static camera-tile image for this session, not a native account or
 	// participant profile photo. Supply exactly one JPEG source. When effective, the
 	// image is used as the bot's static camera/video output; presentation varies by
@@ -696,6 +714,17 @@ func (r *MeetingSessionNewParams) UnmarshalJSON(data []byte) error {
 type MeetingSessionNewParamsAssistant struct {
 	// Identifier of the assistant to attach.
 	ID string `json:"id" api:"required"`
+	// Beta. Show the avatar configured on the assistant (its `avatar_settings`; see
+	// [AI Assistant avatars](/docs/inference/ai-assistants/avatars)) as the bot's
+	// camera, lip-synced to the assistant's own speech. The request carries no avatar
+	// ID or key: the assistant is read at creation and the request is rejected with
+	// 400 `invalid_request` if it has no Telnyx avatar configured. Supported on Google
+	// Meet, Zoom, Microsoft Teams and Webex; other platforms return 422
+	// `unsupported_capability`. REST-only. Not echoed back on `assistant`; the
+	// session's top-level `avatar` and `avatar_state` fields report it instead. If the
+	// avatar fails, the session continues voice-only and `avatar_state` becomes
+	// `degraded`.
+	Avatar param.Opt[bool] `json:"avatar,omitzero"`
 	// Leave the meeting when the Assistant's conversation reaches a terminal state --
 	// `ended` **or** `failed`. Off by default, which leaves the bot in the meeting
 	// after the Assistant stops. Fires once: a second terminal transition does not
@@ -737,30 +766,6 @@ func init() {
 	apijson.RegisterFieldValidator[MeetingSessionNewParamsAssistant](
 		"audio_gate", "half_duplex", "full_duplex",
 	)
-}
-
-// Request options for attaching a bring-your-own-key avatar to the session.
-//
-// The properties APIKey, AvatarID, Provider are required.
-type MeetingSessionNewParamsAvatar struct {
-	// Bring-your-own-key API key for the avatar provider. The key is never stored or
-	// returned by the API.
-	APIKey string `json:"api_key" api:"required"`
-	// Identifier of the avatar to use.
-	AvatarID string `json:"avatar_id" api:"required"`
-	// Avatar provider identifier. Currently only "anam" is supported.
-	//
-	// This field can be elided, and will marshal its zero value as "anam".
-	Provider constant.Anam `json:"provider" default:"anam"`
-	paramObj
-}
-
-func (r MeetingSessionNewParamsAvatar) MarshalJSON() (data []byte, err error) {
-	type shadow MeetingSessionNewParamsAvatar
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *MeetingSessionNewParamsAvatar) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
 }
 
 // Only one field can be non-zero.

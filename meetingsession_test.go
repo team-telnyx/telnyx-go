@@ -31,16 +31,12 @@ func TestMeetingSessionNewWithOptionalParams(t *testing.T) {
 		MeetingURL: "https://zoom.us/j/1234567890",
 		Assistant: telnyx.MeetingSessionNewParamsAssistant{
 			ID:        "asst_fake-uuid-1234",
-			AudioGate: "half_duplex",
+			AudioGate: "full_duplex",
+			Avatar:    telnyx.Bool(true),
 			DynamicVariables: map[string]string{
-				"candidate_name": "Ada Lovelace",
-				"role":           "Staff Engineer",
+				"foo": "string",
 			},
 			LeaveOnEnd: telnyx.Bool(true),
-		},
-		Avatar: telnyx.MeetingSessionNewParamsAvatar{
-			APIKey:   "fake_avatar_api_key_do_not_use",
-			AvatarID: "avatar_fake-001",
 		},
 		BargeIn: telnyx.Bool(true),
 		BotName: telnyx.String("Notetaker"),
