@@ -123,8 +123,8 @@ func (r *MeetingSessionService) Delete(ctx context.Context, id string, opts ...o
 // The operation retains the Telnyx-local Meeting session, transcript segments,
 // events, artifacts, and usage records. It is separate from
 // `DELETE /meeting_sessions/{id}`, which stops or cancels participation without
-// deleting the persisted session. A missing/foreign session returns 404; provider
-// deletion failures return 502.
+// deleting the persisted session. A missing/foreign session returns 404; a
+// deletion request whose outcome is unknown returns 502.
 func (r *MeetingSessionService) DeleteRecordingMedia(ctx context.Context, id string, opts ...option.RequestOption) (res *MeetingSessionDeleteRecordingMediaResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -148,18 +148,6 @@ func (r *MeetingSessionService) GetEvents(ctx context.Context, id string, query 
 	}
 	path := fmt.Sprintf("meeting_sessions/%s/events", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return res, err
-}
-
-// Returns recordings for a meeting session.
-func (r *MeetingSessionService) GetRecordings(ctx context.Context, id string, opts ...option.RequestOption) (res *MeetingSessionGetRecordingsResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
-	if id == "" {
-		err = errors.New("missing required id parameter")
-		return nil, err
-	}
-	path := fmt.Sprintf("meeting_sessions/%s/recordings", url.PathEscape(id))
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
 
@@ -537,45 +525,6 @@ type MeetingSessionGetEventsResponseData struct {
 // Returns the unmodified JSON received from the API
 func (r MeetingSessionGetEventsResponseData) RawJSON() string { return r.JSON.raw }
 func (r *MeetingSessionGetEventsResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type MeetingSessionGetRecordingsResponse struct {
-	Data []MeetingSessionGetRecordingsResponseData `json:"data" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r MeetingSessionGetRecordingsResponse) RawJSON() string { return r.JSON.raw }
-func (r *MeetingSessionGetRecordingsResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type MeetingSessionGetRecordingsResponseData struct {
-	// Expiry timestamp when available, or null. Currently returns null.
-	ExpiresAt string `json:"expires_at" api:"required"`
-	Type      string `json:"type" api:"required"`
-	// Current provider download URL. The API does not guarantee URL lifetime or
-	// refresh behavior.
-	URL string `json:"url" api:"required" format:"uri"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ExpiresAt   respjson.Field
-		Type        respjson.Field
-		URL         respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r MeetingSessionGetRecordingsResponseData) RawJSON() string { return r.JSON.raw }
-func (r *MeetingSessionGetRecordingsResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
