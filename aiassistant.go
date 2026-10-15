@@ -3588,9 +3588,11 @@ const (
 	AuthenticationMethodCertificate AuthenticationMethod = "certificate"
 )
 
-// **Beta:** Configuration for the Telnyx open-source avatar provider. Use one of
-// the six stock avatars or an organization-owned custom avatar returned by the
-// Avatars API. Supported backgrounds are office, studio, and reception.
+// **Beta:** Configuration for the Telnyx open-source avatar provider. Use a stock
+// avatar or an organization-owned custom avatar returned by the Avatars API.
+// Discover the available stock catalog with GET /v2/ai/avatars and
+// filter[avatar_type]=stock; follow meta.total_pages to load every page. Supported
+// backgrounds are office, studio, and reception.
 //
 // The properties AvatarID, BackgroundID, Model, Provider are required.
 type AvatarSettingsRequestParam struct {
@@ -5291,9 +5293,11 @@ type InferenceEmbedding struct {
 	// fetches combined. An agent whose card cannot be fetched costs the assistant that
 	// capability for the conversation; it does not fail the call.
 	A2aAgents []AssistantA2AAgent `json:"a2a_agents"`
-	// **Beta:** Configuration for the Telnyx open-source avatar provider. Use one of
-	// the six stock avatars or an organization-owned custom avatar returned by the
-	// Avatars API. Supported backgrounds are office, studio, and reception.
+	// **Beta:** Configuration for the Telnyx open-source avatar provider. Use a stock
+	// avatar or an organization-owned custom avatar returned by the Avatars API.
+	// Discover the available stock catalog with GET /v2/ai/avatars and
+	// filter[avatar_type]=stock; follow meta.total_pages to load every page. Supported
+	// backgrounds are office, studio, and reception.
 	AvatarSettings TelnyxAvatarSettings `json:"avatar_settings" api:"nullable"`
 	// Conversation flow as returned by the API.
 	ConversationFlow ConversationFlow `json:"conversation_flow"`
@@ -8065,9 +8069,11 @@ func init() {
 	)
 }
 
-// **Beta:** Configuration for the Telnyx open-source avatar provider. Use one of
-// the six stock avatars or an organization-owned custom avatar returned by the
-// Avatars API. Supported backgrounds are office, studio, and reception.
+// **Beta:** Configuration for the Telnyx open-source avatar provider. Use a stock
+// avatar or an organization-owned custom avatar returned by the Avatars API.
+// Discover the available stock catalog with GET /v2/ai/avatars and
+// filter[avatar_type]=stock; follow meta.total_pages to load every page. Supported
+// backgrounds are office, studio, and reception.
 type TelnyxAvatarSettings struct {
 	// The Telnyx stock avatar or organization-owned custom avatar to render.
 	AvatarID AvatarID `json:"avatar_id" api:"required"`
@@ -9768,9 +9774,11 @@ type AIAssistantNewParams struct {
 	// fetches combined. An agent whose card cannot be fetched costs the assistant that
 	// capability for the conversation; it does not fail the call.
 	A2aAgents []AssistantA2AAgentParam `json:"a2a_agents,omitzero"`
-	// **Beta:** Configuration for the Telnyx open-source avatar provider. Use one of
-	// the six stock avatars or an organization-owned custom avatar returned by the
-	// Avatars API. Supported backgrounds are office, studio, and reception.
+	// **Beta:** Configuration for the Telnyx open-source avatar provider. Use a stock
+	// avatar or an organization-owned custom avatar returned by the Avatars API.
+	// Discover the available stock catalog with GET /v2/ai/avatars and
+	// filter[avatar_type]=stock; follow meta.total_pages to load every page. Supported
+	// backgrounds are office, studio, and reception.
 	AvatarSettings AvatarSettingsRequestParam `json:"avatar_settings,omitzero"`
 	// Conversation flow as supplied by API clients (create / update).
 	//
@@ -9924,9 +9932,11 @@ type AIAssistantUpdateParams struct {
 	// capability for the conversation; it does not fail the call. Omit this field to
 	// leave the assistant's agents unchanged; send an empty array to remove them all.
 	A2aAgents []AssistantA2AAgentParam `json:"a2a_agents,omitzero"`
-	// **Beta:** Configuration for the Telnyx open-source avatar provider. Use one of
-	// the six stock avatars or an organization-owned custom avatar returned by the
-	// Avatars API. Supported backgrounds are office, studio, and reception.
+	// **Beta:** Configuration for the Telnyx open-source avatar provider. Use a stock
+	// avatar or an organization-owned custom avatar returned by the Avatars API.
+	// Discover the available stock catalog with GET /v2/ai/avatars and
+	// filter[avatar_type]=stock; follow meta.total_pages to load every page. Supported
+	// backgrounds are office, studio, and reception.
 	AvatarSettings AvatarSettingsRequestParam `json:"avatar_settings,omitzero"`
 	// Conversation flow as supplied by API clients (create / update).
 	//
