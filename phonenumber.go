@@ -149,6 +149,67 @@ func (r *PhoneNumberService) SlimListAutoPaging(ctx context.Context, query Phone
 	return pagination.NewDefaultFlatPaginationAutoPager(r.SlimList(ctx, query, opts...))
 }
 
+type NumbersError73c9788e53 struct {
+	Code   string                       `json:"code"`
+	Detail string                       `json:"detail"`
+	Meta   NumbersError73c9788e53Meta   `json:"meta"`
+	Source NumbersError73c9788e53Source `json:"source"`
+	Title  string                       `json:"title"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Code        respjson.Field
+		Detail      respjson.Field
+		Meta        respjson.Field
+		Source      respjson.Field
+		Title       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r NumbersError73c9788e53) RawJSON() string { return r.JSON.raw }
+func (r *NumbersError73c9788e53) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type NumbersError73c9788e53Meta struct {
+	// URL with additional information on the error.
+	URL string `json:"url"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		URL         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r NumbersError73c9788e53Meta) RawJSON() string { return r.JSON.raw }
+func (r *NumbersError73c9788e53Meta) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type NumbersError73c9788e53Source struct {
+	// Indicates which query parameter caused the error.
+	Parameter string `json:"parameter"`
+	// JSON pointer (RFC6901) to the offending entity.
+	Pointer string `json:"pointer"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Parameter   respjson.Field
+		Pointer     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r NumbersError73c9788e53Source) RawJSON() string { return r.JSON.raw }
+func (r *NumbersError73c9788e53Source) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type NumbersPhoneNumberDetailed struct {
 	// Identifies the resource.
 	ID string `json:"id" api:"required"`
