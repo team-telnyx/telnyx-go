@@ -73,7 +73,10 @@ func (r *AIAssistantVersionService) Update(ctx context.Context, versionID string
 }
 
 // Retrieves all versions of a specific assistant with complete configuration and
-// metadata
+// metadata. An assistant keeps at most 10 versions, including the main version.
+// When an update takes it past that limit, the oldest versions are permanently
+// deleted. The main version and any version referenced by a traffic distribution
+// rule are never deleted this way.
 func (r *AIAssistantVersionService) List(ctx context.Context, assistantID string, opts ...option.RequestOption) (res *AssistantsList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if assistantID == "" {
@@ -173,8 +176,11 @@ type UpdateAssistantParam struct {
 	// capability for the conversation; it does not fail the call. Omit this field to
 	// leave the assistant's agents unchanged; send an empty array to remove them all.
 	A2aAgents []AssistantA2AAgentParam `json:"a2a_agents,omitzero"`
-	// **Beta:** Configuration for the Telnyx open-source avatar provider. The launch
-	// catalog supports six avatars and office, studio, or reception backgrounds.
+	// **Beta:** Configuration for the Telnyx open-source avatar provider. Use a stock
+	// avatar or an organization-owned custom avatar returned by the Avatars API.
+	// Discover the available stock catalog with GET /v2/ai/avatars and
+	// filter[avatar_type]=stock; follow meta.total_pages to load every page. Supported
+	// backgrounds are office, studio, and reception.
 	AvatarSettings AvatarSettingsRequestParam `json:"avatar_settings,omitzero"`
 	// Conversation flow as supplied by API clients (create / update).
 	//

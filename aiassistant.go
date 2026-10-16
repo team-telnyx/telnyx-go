@@ -94,7 +94,10 @@ func (r *AIAssistantService) Get(ctx context.Context, assistantID string, query 
 
 // Updates the specified AI assistant's attributes and returns the updated
 // assistant. The request can also control how the change is promoted across
-// assistant versions.
+// assistant versions. Every update saves a new version, and an assistant keeps at
+// most 10 versions: once it has more, the oldest versions are permanently deleted,
+// except the main version and any version referenced by a traffic distribution
+// rule.
 func (r *AIAssistantService) Update(ctx context.Context, assistantID string, body AIAssistantUpdateParams, opts ...option.RequestOption) (res *InferenceEmbedding, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if assistantID == "" {
@@ -911,7 +914,7 @@ func (r *AssistantMcpServerParam) UnmarshalJSON(data []byte) error {
 // [AssistantToolClientSideTool], [RetrievalTool], [AssistantToolHandoff],
 // [AssistantToolHangup], [AssistantToolTransfer], [AssistantToolInvite],
 // [AssistantToolRefer], [AssistantToolSendDtmf], [AssistantToolSendMessage],
-// [AssistantToolSkipTurn], [AssistantToolPay],
+// [AssistantToolSkipTurn], [AssistantToolVision], [AssistantToolPay],
 // [AssistantToolUpdateDynamicVariables].
 //
 // Use the [AssistantToolUnion.AsAny] method to switch on the variant.
@@ -922,7 +925,7 @@ type AssistantToolUnion struct {
 	Function FunctionDefinition `json:"function"`
 	// Any of "function", "webhook", "client_side_tool", "retrieval", "handoff",
 	// "hangup", "transfer", "invite", "refer", "send_dtmf", "send_message",
-	// "skip_turn", "pay", "update_dynamic_variables".
+	// "skip_turn", "vision", "pay", "update_dynamic_variables".
 	Type   string `json:"type"`
 	Shared bool   `json:"shared"`
 	// This field is from variant [InferenceEmbeddingWebhookToolParamsResp].
@@ -949,6 +952,8 @@ type AssistantToolUnion struct {
 	SendMessage AssistantToolSendMessageSendMessage `json:"send_message"`
 	// This field is from variant [AssistantToolSkipTurn].
 	SkipTurn AssistantToolSkipTurnSkipTurn `json:"skip_turn"`
+	// This field is from variant [AssistantToolVision].
+	Vision VisionToolParamsResp `json:"vision"`
 	// This field is from variant [AssistantToolPay].
 	Pay PayToolParamsResp `json:"pay"`
 	// This field is from variant [AssistantToolUpdateDynamicVariables].
@@ -969,6 +974,7 @@ type AssistantToolUnion struct {
 		SendDtmf               respjson.Field
 		SendMessage            respjson.Field
 		SkipTurn               respjson.Field
+		Vision                 respjson.Field
 		Pay                    respjson.Field
 		UpdateDynamicVariables respjson.Field
 		raw                    string
@@ -993,6 +999,7 @@ func (AssistantToolRefer) implAssistantToolUnion()                      {}
 func (AssistantToolSendDtmf) implAssistantToolUnion()                   {}
 func (AssistantToolSendMessage) implAssistantToolUnion()                {}
 func (AssistantToolSkipTurn) implAssistantToolUnion()                   {}
+func (AssistantToolVision) implAssistantToolUnion()                     {}
 func (AssistantToolPay) implAssistantToolUnion()                        {}
 func (AssistantToolUpdateDynamicVariables) implAssistantToolUnion()     {}
 
@@ -1011,6 +1018,7 @@ func (AssistantToolUpdateDynamicVariables) implAssistantToolUnion()     {}
 //	case telnyx.AssistantToolSendDtmf:
 //	case telnyx.AssistantToolSendMessage:
 //	case telnyx.AssistantToolSkipTurn:
+//	case telnyx.AssistantToolVision:
 //	case telnyx.AssistantToolPay:
 //	case telnyx.AssistantToolUpdateDynamicVariables:
 //	default:
@@ -1042,6 +1050,8 @@ func (u AssistantToolUnion) AsAny() anyAssistantTool {
 		return u.AsSendMessage()
 	case "skip_turn":
 		return u.AsSkipTurn()
+	case "vision":
+		return u.AsVision()
 	case "pay":
 		return u.AsPay()
 	case "update_dynamic_variables":
@@ -1106,6 +1116,11 @@ func (u AssistantToolUnion) AsSendMessage() (v AssistantToolSendMessage) {
 }
 
 func (u AssistantToolUnion) AsSkipTurn() (v AssistantToolSkipTurn) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u AssistantToolUnion) AsVision() (v AssistantToolVision) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -1378,6 +1393,11 @@ type AssistantToolTransferTransfer struct {
 	// variable string like `{{ targets }}` where `targets` is returned by the dynamic
 	// variables webhook and resolves to an array of target objects at runtime.
 	Targets AssistantToolTransferTransferTargetsUnion `json:"targets" api:"required"`
+	// Plays a short beep once the transfer completes and the calls are bridged, so the
+	// transfer destination knows the caller is now on the line. The warm transfer
+	// message plays before the bridge; this marks the moment the caller actually
+	// joins. Works with and without `warm_transfer_acceptance`.
+	BridgeBeep AssistantToolTransferTransferBridgeBeep `json:"bridge_beep"`
 	// Custom headers to be added to the SIP INVITE for the transfer command.
 	CustomHeaders []AssistantToolTransferTransferCustomHeader `json:"custom_headers"`
 	// A description of the transfer tool. By default, Telnyx generates this
@@ -1421,6 +1441,7 @@ type AssistantToolTransferTransfer struct {
 	JSON struct {
 		From                     respjson.Field
 		Targets                  respjson.Field
+		BridgeBeep               respjson.Field
 		CustomHeaders            respjson.Field
 		Description              respjson.Field
 		Diversion                respjson.Field
@@ -1513,6 +1534,33 @@ type AssistantToolTransferTransferTargetsTargetsListItem struct {
 // Returns the unmodified JSON received from the API
 func (r AssistantToolTransferTransferTargetsTargetsListItem) RawJSON() string { return r.JSON.raw }
 func (r *AssistantToolTransferTransferTargetsTargetsListItem) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Plays a short beep once the transfer completes and the calls are bridged, so the
+// transfer destination knows the caller is now on the line. The warm transfer
+// message plays before the bridge; this marks the moment the caller actually
+// joins. Works with and without `warm_transfer_acceptance`.
+type AssistantToolTransferTransferBridgeBeep struct {
+	// Whether to play the beep when the calls are bridged.
+	Enabled bool `json:"enabled"`
+	// Who hears the beep. `self` plays it to the transfer destination only; `both`
+	// plays it to the destination and the original caller.
+	//
+	// Any of "self", "both".
+	TargetLegs string `json:"target_legs"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Enabled     respjson.Field
+		TargetLegs  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AssistantToolTransferTransferBridgeBeep) RawJSON() string { return r.JSON.raw }
+func (r *AssistantToolTransferTransferBridgeBeep) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1697,10 +1745,32 @@ type AssistantToolTransferTransferWarmTransferAcceptance struct {
 	//
 	// Any of "private", "shared".
 	EndUserTargetContextMode string `json:"end_user_target_context_mode"`
+	// Fail closed when the acceptance consult cannot run. Off by default: if the
+	// consult cannot be set up for any reason — including where acceptance is
+	// unavailable at all (`gather_using_ai`, Conversation Relay or web calls, a
+	// conference, or additional invited participants) — the transfer degrades to a
+	// plain warm transfer (the warm transfer message is played to the destination as
+	// audio and the calls are bridged anyway). Set to true to treat those paths as a
+	// decline instead: the destination is disconnected without being asked, the
+	// assistant returns to the caller, and no bridge happens without an acceptance.
+	// Only consult-setup failures are affected; the destination must still explicitly
+	// accept on every consult that does run.
+	RequireAcceptance bool `json:"require_acceptance"`
+	// How long, in seconds, the destination has to accept the transfer, counted from
+	// when the private consult starts (right after the destination answers, or after
+	// `warm_message_delay_ms`). The caller keeps hearing ringback the whole time. If
+	// no acceptance arrives in time, the destination is hung up and the assistant
+	// returns to the caller (the transfer fails as a timeout). Raise it for
+	// destinations that answer before a human is on the line, such as a call-center
+	// queue/ACD or an IVR playing hold audio; keep it as short as practical, since the
+	// caller waits on ringback until it expires.
+	TimeoutSecs int64 `json:"timeout_secs"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled                  respjson.Field
 		EndUserTargetContextMode respjson.Field
+		RequireAcceptance        respjson.Field
+		TimeoutSecs              respjson.Field
 		ExtraFields              map[string]respjson.Field
 		raw                      string
 	} `json:"-"`
@@ -2144,6 +2214,38 @@ func (r *AssistantToolSkipTurnSkipTurn) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// (BETA) Lets the assistant look at recent image frames the client sent into the
+// conversation (for example webcam or screen-share frames). Frames are sent with
+// `conversation.item.create` and `item.buffer: true`; they never trigger a
+// response on their own. The assistant decides when to look and which frames it
+// needs. Requires a model that supports image input.
+type AssistantToolVision struct {
+	Type constant.Vision `json:"type" default:"vision"`
+	// Whether this tool comes from the shared Tools Library. Responses merge shared
+	// tools into `tools` with `shared: true`; inline tools carry `shared: false`.
+	// Read-only: set by the server, not accepted in requests. When updating an
+	// assistant, omit `shared: true` tools from the request `tools` array and manage
+	// them through `tool_ids` instead — re-sending their definitions creates an inline
+	// duplicate (rejected with error code 10015 when the type allows only one instance
+	// per assistant).
+	Shared bool                 `json:"shared"`
+	Vision VisionToolParamsResp `json:"vision"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type        respjson.Field
+		Shared      respjson.Field
+		Vision      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AssistantToolVision) RawJSON() string { return r.JSON.raw }
+func (r *AssistantToolVision) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // (BETA) The pay tool allows the assistant to collect card payments from the
 // caller via DTMF during the conversation. Recording is automatically paused while
 // the pay tool is active and resumes when the payment flow completes. The
@@ -2308,6 +2410,7 @@ type AssistantToolUnionParam struct {
 	OfSendDtmf               *AssistantToolSendDtmfParam               `json:",omitzero,inline"`
 	OfSendMessage            *AssistantToolSendMessageParam            `json:",omitzero,inline"`
 	OfSkipTurn               *AssistantToolSkipTurnParam               `json:",omitzero,inline"`
+	OfVision                 *AssistantToolVisionParam                 `json:",omitzero,inline"`
 	OfPay                    *AssistantToolPayParam                    `json:",omitzero,inline"`
 	OfUpdateDynamicVariables *AssistantToolUpdateDynamicVariablesParam `json:",omitzero,inline"`
 	paramUnion
@@ -2326,6 +2429,7 @@ func (u AssistantToolUnionParam) MarshalJSON() ([]byte, error) {
 		u.OfSendDtmf,
 		u.OfSendMessage,
 		u.OfSkipTurn,
+		u.OfVision,
 		u.OfPay,
 		u.OfUpdateDynamicVariables)
 }
@@ -2358,6 +2462,8 @@ func (u *AssistantToolUnionParam) asAny() any {
 		return u.OfSendMessage
 	} else if !param.IsOmitted(u.OfSkipTurn) {
 		return u.OfSkipTurn
+	} else if !param.IsOmitted(u.OfVision) {
+		return u.OfVision
 	} else if !param.IsOmitted(u.OfPay) {
 		return u.OfPay
 	} else if !param.IsOmitted(u.OfUpdateDynamicVariables) {
@@ -2471,6 +2577,14 @@ func (u AssistantToolUnionParam) GetSkipTurn() *AssistantToolSkipTurnSkipTurnPar
 }
 
 // Returns a pointer to the underlying variant's property, if present.
+func (u AssistantToolUnionParam) GetVision() *VisionToolParams {
+	if vt := u.OfVision; vt != nil {
+		return &vt.Vision
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
 func (u AssistantToolUnionParam) GetPay() *PayToolParams {
 	if vt := u.OfPay; vt != nil {
 		return &vt.Pay
@@ -2512,6 +2626,8 @@ func (u AssistantToolUnionParam) GetType() *string {
 		return (*string)(&vt.Type)
 	} else if vt := u.OfSkipTurn; vt != nil {
 		return (*string)(&vt.Type)
+	} else if vt := u.OfVision; vt != nil {
+		return (*string)(&vt.Type)
 	} else if vt := u.OfPay; vt != nil {
 		return (*string)(&vt.Type)
 	} else if vt := u.OfUpdateDynamicVariables; vt != nil {
@@ -2535,6 +2651,7 @@ func init() {
 		apijson.Discriminator[AssistantToolSendDtmfParam]("send_dtmf"),
 		apijson.Discriminator[AssistantToolSendMessageParam]("send_message"),
 		apijson.Discriminator[AssistantToolSkipTurnParam]("skip_turn"),
+		apijson.Discriminator[AssistantToolVisionParam]("vision"),
 		apijson.Discriminator[AssistantToolPayParam]("pay"),
 		apijson.Discriminator[AssistantToolUpdateDynamicVariablesParam]("update_dynamic_variables"),
 	)
@@ -2747,6 +2864,11 @@ type AssistantToolTransferTransferParam struct {
 	// Natural language instructions for your agent for how to provide context for the
 	// transfer recipient.
 	WarmTransferInstructions param.Opt[string] `json:"warm_transfer_instructions,omitzero"`
+	// Plays a short beep once the transfer completes and the calls are bridged, so the
+	// transfer destination knows the caller is now on the line. The warm transfer
+	// message plays before the bridge; this marks the moment the caller actually
+	// joins. Works with and without `warm_transfer_acceptance`.
+	BridgeBeep AssistantToolTransferTransferBridgeBeepParam `json:"bridge_beep,omitzero"`
 	// Custom headers to be added to the SIP INVITE for the transfer command.
 	CustomHeaders []AssistantToolTransferTransferCustomHeaderParam `json:"custom_headers,omitzero"`
 	// Configuration for voicemail detection (AMD - Answering Machine Detection) on the
@@ -2832,6 +2954,35 @@ func (r AssistantToolTransferTransferTargetsTargetsListItemParam) MarshalJSON() 
 }
 func (r *AssistantToolTransferTransferTargetsTargetsListItemParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+// Plays a short beep once the transfer completes and the calls are bridged, so the
+// transfer destination knows the caller is now on the line. The warm transfer
+// message plays before the bridge; this marks the moment the caller actually
+// joins. Works with and without `warm_transfer_acceptance`.
+type AssistantToolTransferTransferBridgeBeepParam struct {
+	// Whether to play the beep when the calls are bridged.
+	Enabled param.Opt[bool] `json:"enabled,omitzero"`
+	// Who hears the beep. `self` plays it to the transfer destination only; `both`
+	// plays it to the destination and the original caller.
+	//
+	// Any of "self", "both".
+	TargetLegs string `json:"target_legs,omitzero"`
+	paramObj
+}
+
+func (r AssistantToolTransferTransferBridgeBeepParam) MarshalJSON() (data []byte, err error) {
+	type shadow AssistantToolTransferTransferBridgeBeepParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AssistantToolTransferTransferBridgeBeepParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[AssistantToolTransferTransferBridgeBeepParam](
+		"target_legs", "self", "both",
+	)
 }
 
 type AssistantToolTransferTransferCustomHeaderParam struct {
@@ -2989,6 +3140,26 @@ func init() {
 type AssistantToolTransferTransferWarmTransferAcceptanceParam struct {
 	// Whether the destination must accept the transfer before the calls are bridged.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
+	// Fail closed when the acceptance consult cannot run. Off by default: if the
+	// consult cannot be set up for any reason — including where acceptance is
+	// unavailable at all (`gather_using_ai`, Conversation Relay or web calls, a
+	// conference, or additional invited participants) — the transfer degrades to a
+	// plain warm transfer (the warm transfer message is played to the destination as
+	// audio and the calls are bridged anyway). Set to true to treat those paths as a
+	// decline instead: the destination is disconnected without being asked, the
+	// assistant returns to the caller, and no bridge happens without an acceptance.
+	// Only consult-setup failures are affected; the destination must still explicitly
+	// accept on every consult that does run.
+	RequireAcceptance param.Opt[bool] `json:"require_acceptance,omitzero"`
+	// How long, in seconds, the destination has to accept the transfer, counted from
+	// when the private consult starts (right after the destination answers, or after
+	// `warm_message_delay_ms`). The caller keeps hearing ringback the whole time. If
+	// no acceptance arrives in time, the destination is hung up and the assistant
+	// returns to the caller (the transfer fails as a timeout). Raise it for
+	// destinations that answer before a human is on the line, such as a call-center
+	// queue/ACD or an IVR playing hold audio; keep it as short as practical, since the
+	// caller waits on ringback until it expires.
+	TimeoutSecs param.Opt[int64] `json:"timeout_secs,omitzero"`
 	// Controls whether the private exchange between the assistant and the transfer
 	// destination is kept out of the conversation. With `private` (default) the
 	// exchange never reaches the conversation history, AI conversations, webhooks or
@@ -3354,6 +3525,28 @@ func (r *AssistantToolSkipTurnSkipTurnParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// (BETA) Lets the assistant look at recent image frames the client sent into the
+// conversation (for example webcam or screen-share frames). Frames are sent with
+// `conversation.item.create` and `item.buffer: true`; they never trigger a
+// response on their own. The assistant decides when to look and which frames it
+// needs. Requires a model that supports image input.
+//
+// The property Type is required.
+type AssistantToolVisionParam struct {
+	Vision VisionToolParams `json:"vision,omitzero"`
+	// This field can be elided, and will marshal its zero value as "vision".
+	Type constant.Vision `json:"type" default:"vision"`
+	paramObj
+}
+
+func (r AssistantToolVisionParam) MarshalJSON() (data []byte, err error) {
+	type shadow AssistantToolVisionParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AssistantToolVisionParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // (BETA) The pay tool allows the assistant to collect card payments from the
 // caller via DTMF during the conversation. Recording is automatically paused while
 // the pay tool is active and resumes when the payment flow completes. The
@@ -3484,15 +3677,16 @@ const (
 	AuthenticationMethodCertificate AuthenticationMethod = "certificate"
 )
 
-// **Beta:** Configuration for the Telnyx open-source avatar provider. The launch
-// catalog supports six avatars and office, studio, or reception backgrounds.
+// **Beta:** Configuration for the Telnyx open-source avatar provider. Use a stock
+// avatar or an organization-owned custom avatar returned by the Avatars API.
+// Discover the available stock catalog with GET /v2/ai/avatars and
+// filter[avatar_type]=stock; follow meta.total_pages to load every page. Supported
+// backgrounds are office, studio, and reception.
 //
 // The properties AvatarID, BackgroundID, Model, Provider are required.
 type AvatarSettingsRequestParam struct {
-	// The Telnyx avatar to render.
-	//
-	// Any of "elena", "ben", "jordan", "lin", "avery", "raphael".
-	AvatarID AvatarSettingsRequestAvatarID `json:"avatar_id,omitzero" api:"required"`
+	// The Telnyx stock avatar or organization-owned custom avatar to render.
+	AvatarID AvatarIDParam `json:"avatar_id" api:"required"`
 	// The background to render.
 	//
 	// Any of "office", "studio", "reception".
@@ -3516,18 +3710,6 @@ func (r AvatarSettingsRequestParam) MarshalJSON() (data []byte, err error) {
 func (r *AvatarSettingsRequestParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-// The Telnyx avatar to render.
-type AvatarSettingsRequestAvatarID string
-
-const (
-	AvatarSettingsRequestAvatarIDElena   AvatarSettingsRequestAvatarID = "elena"
-	AvatarSettingsRequestAvatarIDBen     AvatarSettingsRequestAvatarID = "ben"
-	AvatarSettingsRequestAvatarIDJordan  AvatarSettingsRequestAvatarID = "jordan"
-	AvatarSettingsRequestAvatarIDLin     AvatarSettingsRequestAvatarID = "lin"
-	AvatarSettingsRequestAvatarIDAvery   AvatarSettingsRequestAvatarID = "avery"
-	AvatarSettingsRequestAvatarIDRaphael AvatarSettingsRequestAvatarID = "raphael"
-)
 
 // The background to render.
 type AvatarSettingsRequestBackgroundID string
@@ -5200,8 +5382,11 @@ type InferenceEmbedding struct {
 	// fetches combined. An agent whose card cannot be fetched costs the assistant that
 	// capability for the conversation; it does not fail the call.
 	A2aAgents []AssistantA2AAgent `json:"a2a_agents"`
-	// **Beta:** Configuration for the Telnyx open-source avatar provider. The launch
-	// catalog supports six avatars and office, studio, or reception backgrounds.
+	// **Beta:** Configuration for the Telnyx open-source avatar provider. Use a stock
+	// avatar or an organization-owned custom avatar returned by the Avatars API.
+	// Discover the available stock catalog with GET /v2/ai/avatars and
+	// filter[avatar_type]=stock; follow meta.total_pages to load every page. Supported
+	// backgrounds are office, studio, and reception.
 	AvatarSettings TelnyxAvatarSettings `json:"avatar_settings" api:"nullable"`
 	// Conversation flow as returned by the API.
 	ConversationFlow ConversationFlow `json:"conversation_flow"`
@@ -7473,18 +7658,32 @@ type TelephonySettings struct {
 	// work with assistants that have telephony enabled.
 	SupportsUnauthenticatedWebCalls bool `json:"supports_unauthenticated_web_calls"`
 	// Maximum duration in seconds for the AI assistant to participate on the call.
-	// When this limit is reached the assistant will be stopped. This limit does not
-	// apply to portions of a call without an active assistant (for instance, a call
-	// transferred to a human representative).
+	// When this limit is reached the assistant will be stopped. Stopping the assistant
+	// does not itself hang up the call, and what happens next depends on how the
+	// assistant is running. On Call Control (ai_assistant_start) the call leg stays
+	// connected and continues to be billed until it is hung up (for example with the
+	// Hangup call command) or until the call ends for another reason. On TeXML, the
+	// assistant's `<Connect><AIAssistant>` instruction ends; in the default TeXML
+	// setup for assistants no instructions follow it, so the call is hung up. Your
+	// application receives a call.conversation.ended webhook when the assistant stops.
+	// This limit does not apply to portions of a call without an active assistant (for
+	// instance, a call transferred to a human representative).
 	TimeLimitSecs int64 `json:"time_limit_secs"`
 	// Duration in seconds of end user silence before the assistant checks in on the
 	// user. When this limit is reached the assistant will prompt the user to respond.
 	// This is distinct from user_idle_timeout_secs which stops the assistant entirely.
 	UserIdleReplySecs int64 `json:"user_idle_reply_secs"`
 	// Maximum duration in seconds of end user silence on the call. When this limit is
-	// reached the assistant will be stopped. This limit does not apply to portions of
-	// a call without an active assistant (for instance, a call transferred to a human
-	// representative).
+	// reached the assistant will be stopped. Stopping the assistant does not itself
+	// hang up the call, and what happens next depends on how the assistant is running.
+	// On Call Control (ai_assistant_start) the call leg stays connected and continues
+	// to be billed until it is hung up (for example with the Hangup call command) or
+	// until the call ends for another reason. On TeXML, the assistant's
+	// `<Connect><AIAssistant>` instruction ends; in the default TeXML setup for
+	// assistants no instructions follow it, so the call is hung up. Your application
+	// receives a call.conversation.ended webhook when the assistant stops. This limit
+	// does not apply to portions of a call without an active assistant (for instance,
+	// a call transferred to a human representative).
 	UserIdleTimeoutSecs int64 `json:"user_idle_timeout_secs"`
 	// Configuration for voicemail detection (AMD - Answering Machine Detection) on
 	// outgoing calls. These settings only apply if AMD is enabled on the Dial command.
@@ -7736,18 +7935,32 @@ type TelephonySettingsParam struct {
 	// work with assistants that have telephony enabled.
 	SupportsUnauthenticatedWebCalls param.Opt[bool] `json:"supports_unauthenticated_web_calls,omitzero"`
 	// Maximum duration in seconds for the AI assistant to participate on the call.
-	// When this limit is reached the assistant will be stopped. This limit does not
-	// apply to portions of a call without an active assistant (for instance, a call
-	// transferred to a human representative).
+	// When this limit is reached the assistant will be stopped. Stopping the assistant
+	// does not itself hang up the call, and what happens next depends on how the
+	// assistant is running. On Call Control (ai_assistant_start) the call leg stays
+	// connected and continues to be billed until it is hung up (for example with the
+	// Hangup call command) or until the call ends for another reason. On TeXML, the
+	// assistant's `<Connect><AIAssistant>` instruction ends; in the default TeXML
+	// setup for assistants no instructions follow it, so the call is hung up. Your
+	// application receives a call.conversation.ended webhook when the assistant stops.
+	// This limit does not apply to portions of a call without an active assistant (for
+	// instance, a call transferred to a human representative).
 	TimeLimitSecs param.Opt[int64] `json:"time_limit_secs,omitzero"`
 	// Duration in seconds of end user silence before the assistant checks in on the
 	// user. When this limit is reached the assistant will prompt the user to respond.
 	// This is distinct from user_idle_timeout_secs which stops the assistant entirely.
 	UserIdleReplySecs param.Opt[int64] `json:"user_idle_reply_secs,omitzero"`
 	// Maximum duration in seconds of end user silence on the call. When this limit is
-	// reached the assistant will be stopped. This limit does not apply to portions of
-	// a call without an active assistant (for instance, a call transferred to a human
-	// representative).
+	// reached the assistant will be stopped. Stopping the assistant does not itself
+	// hang up the call, and what happens next depends on how the assistant is running.
+	// On Call Control (ai_assistant_start) the call leg stays connected and continues
+	// to be billed until it is hung up (for example with the Hangup call command) or
+	// until the call ends for another reason. On TeXML, the assistant's
+	// `<Connect><AIAssistant>` instruction ends; in the default TeXML setup for
+	// assistants no instructions follow it, so the call is hung up. Your application
+	// receives a call.conversation.ended webhook when the assistant stops. This limit
+	// does not apply to portions of a call without an active assistant (for instance,
+	// a call transferred to a human representative).
 	UserIdleTimeoutSecs param.Opt[int64] `json:"user_idle_timeout_secs,omitzero"`
 	// The noise suppression engine to use. 'aicoustics' is STT-optimized and
 	// recommended for AI assistants (configure through noise_suppression_config). Use
@@ -7945,13 +8158,14 @@ func init() {
 	)
 }
 
-// **Beta:** Configuration for the Telnyx open-source avatar provider. The launch
-// catalog supports six avatars and office, studio, or reception backgrounds.
+// **Beta:** Configuration for the Telnyx open-source avatar provider. Use a stock
+// avatar or an organization-owned custom avatar returned by the Avatars API.
+// Discover the available stock catalog with GET /v2/ai/avatars and
+// filter[avatar_type]=stock; follow meta.total_pages to load every page. Supported
+// backgrounds are office, studio, and reception.
 type TelnyxAvatarSettings struct {
-	// The Telnyx avatar to render.
-	//
-	// Any of "elena", "ben", "jordan", "lin", "avery", "raphael".
-	AvatarID TelnyxAvatarSettingsAvatarID `json:"avatar_id" api:"required"`
+	// The Telnyx stock avatar or organization-owned custom avatar to render.
+	AvatarID AvatarID `json:"avatar_id" api:"required"`
 	// The background to render.
 	//
 	// Any of "office", "studio", "reception".
@@ -7979,18 +8193,6 @@ func (r TelnyxAvatarSettings) RawJSON() string { return r.JSON.raw }
 func (r *TelnyxAvatarSettings) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-// The Telnyx avatar to render.
-type TelnyxAvatarSettingsAvatarID string
-
-const (
-	TelnyxAvatarSettingsAvatarIDElena   TelnyxAvatarSettingsAvatarID = "elena"
-	TelnyxAvatarSettingsAvatarIDBen     TelnyxAvatarSettingsAvatarID = "ben"
-	TelnyxAvatarSettingsAvatarIDJordan  TelnyxAvatarSettingsAvatarID = "jordan"
-	TelnyxAvatarSettingsAvatarIDLin     TelnyxAvatarSettingsAvatarID = "lin"
-	TelnyxAvatarSettingsAvatarIDAvery   TelnyxAvatarSettingsAvatarID = "avery"
-	TelnyxAvatarSettingsAvatarIDRaphael TelnyxAvatarSettingsAvatarID = "raphael"
-)
 
 // The background to render.
 type TelnyxAvatarSettingsBackgroundID string
@@ -8653,9 +8855,10 @@ type TranscriptionSettingsConfig struct {
 	// emits end-of-utterance events at the cadence configured by
 	// `max_endpoint_delay_ms`.
 	EnableEndpointDetection bool `json:"enable_endpoint_detection"`
-	// Available only for assemblyai/universal-3-5-pro (and its legacy alias
-	// assemblyai/universal-streaming). Confidence level required to trigger an end of
-	// turn. Higher values require more certainty before ending a turn.
+	// Deprecated and ignored. Accepted for backwards compatibility. AssemblyAI turn
+	// detection is configured with min_turn_silence and max_turn_silence.
+	//
+	// Deprecated: deprecated
 	EndOfTurnConfidenceThreshold float64 `json:"end_of_turn_confidence_threshold"`
 	// Available only for deepgram/flux. Confidence required to trigger an end of turn.
 	// Higher values = more reliable turn detection but slightly increased latency.
@@ -8666,10 +8869,13 @@ type TranscriptionSettingsConfig struct {
 	// Available only for soniox/stt-rt-v4 and soniox/stt-rt-v5. When true, Soniox
 	// streams interim (non-final) results in addition to finalized transcripts.
 	InterimResults bool `json:"interim_results"`
-	// Available only for deepgram/nova-3 and deepgram/flux. A comma-separated list of
-	// key terms to boost for recognition during transcription. Helps improve accuracy
-	// for domain-specific terminology, proper nouns, or uncommon words. This field may
-	// be templated with
+	// A comma-separated list of key terms to boost for recognition during
+	// transcription, used by Deepgram, Reson8, Speechmatics Linden 1 and AssemblyAI
+	// models. Helps improve accuracy for domain-specific terminology, proper nouns, or
+	// uncommon words. At most 1000 characters in total. For
+	// assemblyai/universal-3-5-pro (and its legacy alias
+	// assemblyai/universal-streaming), also at most 100 terms of up to 50 characters
+	// each. This field may be templated with
 	// [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables)
 	// using mustache syntax (e.g. `Telnyx,{{customer_name}},VoIP`). Variables are
 	// resolved at call time before the value is sent to the speech-to-text engine.
@@ -8691,7 +8897,12 @@ type TranscriptionSettingsConfig struct {
 	// before a turn can end. Must be less than or equal to max_turn_silence.
 	MinTurnSilence int64 `json:"min_turn_silence"`
 	Numerals       bool  `json:"numerals"`
-	SmartFormat    bool  `json:"smart_format"`
+	// Available only for assemblyai/universal-3-5-pro (and its legacy alias
+	// assemblyai/universal-streaming). Context about the conversation (domain, names,
+	// terms) to improve transcription; describe the content, do not give instructions.
+	// Leave empty unless needed. At most 1750 characters.
+	Prompt      string `json:"prompt"`
+	SmartFormat bool   `json:"smart_format"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Context                      respjson.Field
@@ -8707,6 +8918,7 @@ type TranscriptionSettingsConfig struct {
 		MaxTurnSilence               respjson.Field
 		MinTurnSilence               respjson.Field
 		Numerals                     respjson.Field
+		Prompt                       respjson.Field
 		SmartFormat                  respjson.Field
 		ExtraFields                  map[string]respjson.Field
 		raw                          string
@@ -8746,9 +8958,10 @@ type TranscriptionSettingsConfigParam struct {
 	// emits end-of-utterance events at the cadence configured by
 	// `max_endpoint_delay_ms`.
 	EnableEndpointDetection param.Opt[bool] `json:"enable_endpoint_detection,omitzero"`
-	// Available only for assemblyai/universal-3-5-pro (and its legacy alias
-	// assemblyai/universal-streaming). Confidence level required to trigger an end of
-	// turn. Higher values require more certainty before ending a turn.
+	// Deprecated and ignored. Accepted for backwards compatibility. AssemblyAI turn
+	// detection is configured with min_turn_silence and max_turn_silence.
+	//
+	// Deprecated: deprecated
 	EndOfTurnConfidenceThreshold param.Opt[float64] `json:"end_of_turn_confidence_threshold,omitzero"`
 	// Available only for deepgram/flux. Confidence required to trigger an end of turn.
 	// Higher values = more reliable turn detection but slightly increased latency.
@@ -8759,10 +8972,13 @@ type TranscriptionSettingsConfigParam struct {
 	// Available only for soniox/stt-rt-v4 and soniox/stt-rt-v5. When true, Soniox
 	// streams interim (non-final) results in addition to finalized transcripts.
 	InterimResults param.Opt[bool] `json:"interim_results,omitzero"`
-	// Available only for deepgram/nova-3 and deepgram/flux. A comma-separated list of
-	// key terms to boost for recognition during transcription. Helps improve accuracy
-	// for domain-specific terminology, proper nouns, or uncommon words. This field may
-	// be templated with
+	// A comma-separated list of key terms to boost for recognition during
+	// transcription, used by Deepgram, Reson8, Speechmatics Linden 1 and AssemblyAI
+	// models. Helps improve accuracy for domain-specific terminology, proper nouns, or
+	// uncommon words. At most 1000 characters in total. For
+	// assemblyai/universal-3-5-pro (and its legacy alias
+	// assemblyai/universal-streaming), also at most 100 terms of up to 50 characters
+	// each. This field may be templated with
 	// [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables)
 	// using mustache syntax (e.g. `Telnyx,{{customer_name}},VoIP`). Variables are
 	// resolved at call time before the value is sent to the speech-to-text engine.
@@ -8780,7 +8996,12 @@ type TranscriptionSettingsConfigParam struct {
 	// before a turn can end. Must be less than or equal to max_turn_silence.
 	MinTurnSilence param.Opt[int64] `json:"min_turn_silence,omitzero"`
 	Numerals       param.Opt[bool]  `json:"numerals,omitzero"`
-	SmartFormat    param.Opt[bool]  `json:"smart_format,omitzero"`
+	// Available only for assemblyai/universal-3-5-pro (and its legacy alias
+	// assemblyai/universal-streaming). Context about the conversation (domain, names,
+	// terms) to improve transcription; describe the content, do not give instructions.
+	// Leave empty unless needed. At most 1750 characters.
+	Prompt      param.Opt[string] `json:"prompt,omitzero"`
+	SmartFormat param.Opt[bool]   `json:"smart_format,omitzero"`
 	// Available only for soniox/stt-rt-v4 and soniox/stt-rt-v5. A list of ISO 639-1
 	// language codes (e.g. `["nl", "fr"]`) to pin recognition to multiple languages at
 	// once, overriding the single hint derived from `language`.
@@ -9642,8 +9863,11 @@ type AIAssistantNewParams struct {
 	// fetches combined. An agent whose card cannot be fetched costs the assistant that
 	// capability for the conversation; it does not fail the call.
 	A2aAgents []AssistantA2AAgentParam `json:"a2a_agents,omitzero"`
-	// **Beta:** Configuration for the Telnyx open-source avatar provider. The launch
-	// catalog supports six avatars and office, studio, or reception backgrounds.
+	// **Beta:** Configuration for the Telnyx open-source avatar provider. Use a stock
+	// avatar or an organization-owned custom avatar returned by the Avatars API.
+	// Discover the available stock catalog with GET /v2/ai/avatars and
+	// filter[avatar_type]=stock; follow meta.total_pages to load every page. Supported
+	// backgrounds are office, studio, and reception.
 	AvatarSettings AvatarSettingsRequestParam `json:"avatar_settings,omitzero"`
 	// Conversation flow as supplied by API clients (create / update).
 	//
@@ -9797,8 +10021,11 @@ type AIAssistantUpdateParams struct {
 	// capability for the conversation; it does not fail the call. Omit this field to
 	// leave the assistant's agents unchanged; send an empty array to remove them all.
 	A2aAgents []AssistantA2AAgentParam `json:"a2a_agents,omitzero"`
-	// **Beta:** Configuration for the Telnyx open-source avatar provider. The launch
-	// catalog supports six avatars and office, studio, or reception backgrounds.
+	// **Beta:** Configuration for the Telnyx open-source avatar provider. Use a stock
+	// avatar or an organization-owned custom avatar returned by the Avatars API.
+	// Discover the available stock catalog with GET /v2/ai/avatars and
+	// filter[avatar_type]=stock; follow meta.total_pages to load every page. Supported
+	// backgrounds are office, studio, and reception.
 	AvatarSettings AvatarSettingsRequestParam `json:"avatar_settings,omitzero"`
 	// Conversation flow as supplied by API clients (create / update).
 	//

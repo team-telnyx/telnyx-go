@@ -65,6 +65,9 @@ func TestAIToolNewWithOptionalParams(t *testing.T) {
 				Type:        telnyx.String("string"),
 			}},
 		},
+		Vision: telnyx.VisionToolParams{
+			MaxFrameAgeSecs: telnyx.Int(1),
+		},
 		Webhook: map[string]any{
 			"foo": "bar",
 		},
@@ -156,6 +159,9 @@ func TestAIToolUpdateWithOptionalParams(t *testing.T) {
 					Description: telnyx.String("The caller's full name."),
 					Type:        telnyx.String("string"),
 				}},
+			},
+			Vision: telnyx.VisionToolParams{
+				MaxFrameAgeSecs: telnyx.Int(1),
 			},
 			Webhook: map[string]any{
 				"foo": "bar",
