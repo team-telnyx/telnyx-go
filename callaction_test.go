@@ -607,6 +607,7 @@ func TestCallActionHangupWithOptionalParams(t *testing.T) {
 				Name:  "head_2",
 				Value: "val_2",
 			}},
+			Reason: telnyx.String("Call completed elsewhere"),
 		},
 	)
 	if err != nil {

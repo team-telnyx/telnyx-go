@@ -18,7 +18,6 @@ func ValueOf[T Constant[T]]() T {
 	return t.Default()
 }
 
-type Anam string                   // Always "anam"
 type Android string                // Always "android"
 type Arithmetic string             // Always "arithmetic"
 type Assistant string              // Always "assistant"
@@ -70,8 +69,8 @@ type TokenKey string               // Always "token_key"
 type Transfer string               // Always "transfer"
 type UpdateDynamicVariables string // Always "update_dynamic_variables"
 type Variable string               // Always "variable"
+type Vision string                 // Always "vision"
 
-func (c Anam) Default() Anam                                     { return "anam" }
 func (c Android) Default() Android                               { return "android" }
 func (c Arithmetic) Default() Arithmetic                         { return "arithmetic" }
 func (c Assistant) Default() Assistant                           { return "assistant" }
@@ -123,8 +122,8 @@ func (c TokenKey) Default() TokenKey                             { return "token
 func (c Transfer) Default() Transfer                             { return "transfer" }
 func (c UpdateDynamicVariables) Default() UpdateDynamicVariables { return "update_dynamic_variables" }
 func (c Variable) Default() Variable                             { return "variable" }
+func (c Vision) Default() Vision                                 { return "vision" }
 
-func (c Anam) MarshalJSON() ([]byte, error)                   { return marshalString(c) }
 func (c Android) MarshalJSON() ([]byte, error)                { return marshalString(c) }
 func (c Arithmetic) MarshalJSON() ([]byte, error)             { return marshalString(c) }
 func (c Assistant) MarshalJSON() ([]byte, error)              { return marshalString(c) }
@@ -176,6 +175,7 @@ func (c TokenKey) MarshalJSON() ([]byte, error)               { return marshalSt
 func (c Transfer) MarshalJSON() ([]byte, error)               { return marshalString(c) }
 func (c UpdateDynamicVariables) MarshalJSON() ([]byte, error) { return marshalString(c) }
 func (c Variable) MarshalJSON() ([]byte, error)               { return marshalString(c) }
+func (c Vision) MarshalJSON() ([]byte, error)                 { return marshalString(c) }
 
 type constant[T any] interface {
 	Constant[T]

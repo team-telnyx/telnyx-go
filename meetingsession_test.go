@@ -31,16 +31,12 @@ func TestMeetingSessionNewWithOptionalParams(t *testing.T) {
 		MeetingURL: "https://zoom.us/j/1234567890",
 		Assistant: telnyx.MeetingSessionNewParamsAssistant{
 			ID:        "asst_fake-uuid-1234",
-			AudioGate: "half_duplex",
+			AudioGate: "full_duplex",
+			Avatar:    telnyx.Bool(true),
 			DynamicVariables: map[string]string{
-				"candidate_name": "Ada Lovelace",
-				"role":           "Staff Engineer",
+				"foo": "string",
 			},
 			LeaveOnEnd: telnyx.Bool(true),
-		},
-		Avatar: telnyx.MeetingSessionNewParamsAvatar{
-			APIKey:   "fake_avatar_api_key_do_not_use",
-			AvatarID: "avatar_fake-001",
 		},
 		BargeIn: telnyx.Bool(true),
 		BotName: telnyx.String("Notetaker"),
@@ -214,29 +210,6 @@ func TestMeetingSessionGetEventsWithOptionalParams(t *testing.T) {
 			Limit: telnyx.Int(1),
 		},
 	)
-	if err != nil {
-		var apierr *telnyx.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestMeetingSessionGetRecordings(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := telnyx.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	_, err := client.MeetingSessions.GetRecordings(context.TODO(), "mtgsess_a1b2c3d4-e5f6-7890-abcd-ef1234567890")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {

@@ -45,6 +45,7 @@ func TestPhoneNumberCsvDownloadNewWithOptionalParams(t *testing.T) {
 			},
 			VoiceUsagePaymentMethod: "channel",
 		},
+		IncludeManagedAccounts: telnyx.Bool(true),
 	})
 	if err != nil {
 		var apierr *telnyx.Error

@@ -5231,6 +5231,15 @@ type CallActionHangupParams struct {
 	// Use this field to avoid duplicate commands. Telnyx will ignore any command with
 	// the same `command_id` for the same `call_control_id`.
 	CommandID param.Opt[string] `json:"command_id,omitzero"`
+	// Text for the SIP `Reason` header (RFC 3326) sent when cancelling an unanswered
+	// outbound leg. The SIP CANCEL carries `Reason: SIP;cause=200;text="<reason>"`;
+	// phones such as Poly and Yealink use it to suppress the missed-call entry for a
+	// call answered elsewhere. Has no effect on an answered leg or an inbound leg. A
+	// hangup sent before the leg's `call.initiated` webhook still hangs up the leg,
+	// but without the `Reason` header. Must not contain `"`, `\`, control characters,
+	// or characters outside the Basic Multilingual Plane (such as emoji); invalid
+	// values are rejected with a 422.
+	Reason param.Opt[string] `json:"reason,omitzero"`
 	// Custom headers to be added to the SIP BYE message.
 	CustomHeaders []CustomSipHeaderParam `json:"custom_headers,omitzero"`
 	paramObj
