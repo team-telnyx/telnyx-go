@@ -94,7 +94,10 @@ func (r *AIAssistantService) Get(ctx context.Context, assistantID string, query 
 
 // Updates the specified AI assistant's attributes and returns the updated
 // assistant. The request can also control how the change is promoted across
-// assistant versions.
+// assistant versions. Every update saves a new version, and an assistant keeps at
+// most 10 versions: once it has more, the oldest versions are permanently deleted,
+// except the main version and any version referenced by a traffic distribution
+// rule.
 func (r *AIAssistantService) Update(ctx context.Context, assistantID string, body AIAssistantUpdateParams, opts ...option.RequestOption) (res *InferenceEmbedding, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if assistantID == "" {
@@ -1390,6 +1393,11 @@ type AssistantToolTransferTransfer struct {
 	// variable string like `{{ targets }}` where `targets` is returned by the dynamic
 	// variables webhook and resolves to an array of target objects at runtime.
 	Targets AssistantToolTransferTransferTargetsUnion `json:"targets" api:"required"`
+	// Plays a short beep once the transfer completes and the calls are bridged, so the
+	// transfer destination knows the caller is now on the line. The warm transfer
+	// message plays before the bridge; this marks the moment the caller actually
+	// joins. Works with and without `warm_transfer_acceptance`.
+	BridgeBeep AssistantToolTransferTransferBridgeBeep `json:"bridge_beep"`
 	// Custom headers to be added to the SIP INVITE for the transfer command.
 	CustomHeaders []AssistantToolTransferTransferCustomHeader `json:"custom_headers"`
 	// A description of the transfer tool. By default, Telnyx generates this
@@ -1433,6 +1441,7 @@ type AssistantToolTransferTransfer struct {
 	JSON struct {
 		From                     respjson.Field
 		Targets                  respjson.Field
+		BridgeBeep               respjson.Field
 		CustomHeaders            respjson.Field
 		Description              respjson.Field
 		Diversion                respjson.Field
@@ -1525,6 +1534,33 @@ type AssistantToolTransferTransferTargetsTargetsListItem struct {
 // Returns the unmodified JSON received from the API
 func (r AssistantToolTransferTransferTargetsTargetsListItem) RawJSON() string { return r.JSON.raw }
 func (r *AssistantToolTransferTransferTargetsTargetsListItem) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Plays a short beep once the transfer completes and the calls are bridged, so the
+// transfer destination knows the caller is now on the line. The warm transfer
+// message plays before the bridge; this marks the moment the caller actually
+// joins. Works with and without `warm_transfer_acceptance`.
+type AssistantToolTransferTransferBridgeBeep struct {
+	// Whether to play the beep when the calls are bridged.
+	Enabled bool `json:"enabled"`
+	// Who hears the beep. `self` plays it to the transfer destination only; `both`
+	// plays it to the destination and the original caller.
+	//
+	// Any of "self", "both".
+	TargetLegs string `json:"target_legs"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Enabled     respjson.Field
+		TargetLegs  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AssistantToolTransferTransferBridgeBeep) RawJSON() string { return r.JSON.raw }
+func (r *AssistantToolTransferTransferBridgeBeep) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1720,11 +1756,21 @@ type AssistantToolTransferTransferWarmTransferAcceptance struct {
 	// Only consult-setup failures are affected; the destination must still explicitly
 	// accept on every consult that does run.
 	RequireAcceptance bool `json:"require_acceptance"`
+	// How long, in seconds, the destination has to accept the transfer, counted from
+	// when the private consult starts (right after the destination answers, or after
+	// `warm_message_delay_ms`). The caller keeps hearing ringback the whole time. If
+	// no acceptance arrives in time, the destination is hung up and the assistant
+	// returns to the caller (the transfer fails as a timeout). Raise it for
+	// destinations that answer before a human is on the line, such as a call-center
+	// queue/ACD or an IVR playing hold audio; keep it as short as practical, since the
+	// caller waits on ringback until it expires.
+	TimeoutSecs int64 `json:"timeout_secs"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled                  respjson.Field
 		EndUserTargetContextMode respjson.Field
 		RequireAcceptance        respjson.Field
+		TimeoutSecs              respjson.Field
 		ExtraFields              map[string]respjson.Field
 		raw                      string
 	} `json:"-"`
@@ -2818,6 +2864,11 @@ type AssistantToolTransferTransferParam struct {
 	// Natural language instructions for your agent for how to provide context for the
 	// transfer recipient.
 	WarmTransferInstructions param.Opt[string] `json:"warm_transfer_instructions,omitzero"`
+	// Plays a short beep once the transfer completes and the calls are bridged, so the
+	// transfer destination knows the caller is now on the line. The warm transfer
+	// message plays before the bridge; this marks the moment the caller actually
+	// joins. Works with and without `warm_transfer_acceptance`.
+	BridgeBeep AssistantToolTransferTransferBridgeBeepParam `json:"bridge_beep,omitzero"`
 	// Custom headers to be added to the SIP INVITE for the transfer command.
 	CustomHeaders []AssistantToolTransferTransferCustomHeaderParam `json:"custom_headers,omitzero"`
 	// Configuration for voicemail detection (AMD - Answering Machine Detection) on the
@@ -2903,6 +2954,35 @@ func (r AssistantToolTransferTransferTargetsTargetsListItemParam) MarshalJSON() 
 }
 func (r *AssistantToolTransferTransferTargetsTargetsListItemParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+// Plays a short beep once the transfer completes and the calls are bridged, so the
+// transfer destination knows the caller is now on the line. The warm transfer
+// message plays before the bridge; this marks the moment the caller actually
+// joins. Works with and without `warm_transfer_acceptance`.
+type AssistantToolTransferTransferBridgeBeepParam struct {
+	// Whether to play the beep when the calls are bridged.
+	Enabled param.Opt[bool] `json:"enabled,omitzero"`
+	// Who hears the beep. `self` plays it to the transfer destination only; `both`
+	// plays it to the destination and the original caller.
+	//
+	// Any of "self", "both".
+	TargetLegs string `json:"target_legs,omitzero"`
+	paramObj
+}
+
+func (r AssistantToolTransferTransferBridgeBeepParam) MarshalJSON() (data []byte, err error) {
+	type shadow AssistantToolTransferTransferBridgeBeepParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AssistantToolTransferTransferBridgeBeepParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[AssistantToolTransferTransferBridgeBeepParam](
+		"target_legs", "self", "both",
+	)
 }
 
 type AssistantToolTransferTransferCustomHeaderParam struct {
@@ -3071,6 +3151,15 @@ type AssistantToolTransferTransferWarmTransferAcceptanceParam struct {
 	// Only consult-setup failures are affected; the destination must still explicitly
 	// accept on every consult that does run.
 	RequireAcceptance param.Opt[bool] `json:"require_acceptance,omitzero"`
+	// How long, in seconds, the destination has to accept the transfer, counted from
+	// when the private consult starts (right after the destination answers, or after
+	// `warm_message_delay_ms`). The caller keeps hearing ringback the whole time. If
+	// no acceptance arrives in time, the destination is hung up and the assistant
+	// returns to the caller (the transfer fails as a timeout). Raise it for
+	// destinations that answer before a human is on the line, such as a call-center
+	// queue/ACD or an IVR playing hold audio; keep it as short as practical, since the
+	// caller waits on ringback until it expires.
+	TimeoutSecs param.Opt[int64] `json:"timeout_secs,omitzero"`
 	// Controls whether the private exchange between the assistant and the transfer
 	// destination is kept out of the conversation. With `private` (default) the
 	// exchange never reaches the conversation history, AI conversations, webhooks or
