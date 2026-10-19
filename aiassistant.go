@@ -3680,8 +3680,7 @@ const (
 // **Beta:** Configuration for the Telnyx open-source avatar provider. Use a stock
 // avatar or an organization-owned custom avatar returned by the Avatars API.
 // Discover the available stock catalog with GET /v2/ai/avatars and
-// filter[avatar_type]=stock; follow meta.total_pages to load every page. Supported
-// backgrounds are office, studio, and reception.
+// filter[avatar_type]=stock; follow meta.total_pages to load every page.
 //
 // The properties AvatarID, BackgroundID, Model, Provider are required.
 type AvatarSettingsRequestParam struct {
@@ -3689,7 +3688,7 @@ type AvatarSettingsRequestParam struct {
 	AvatarID AvatarIDParam `json:"avatar_id" api:"required"`
 	// The background to render.
 	//
-	// Any of "office", "studio", "reception".
+	// Any of "office", "studio", "reception", "illustrated_workspace".
 	BackgroundID AvatarSettingsRequestBackgroundID `json:"background_id,omitzero" api:"required"`
 	// Required avatar model identifier, separate from `avatar_id`. The supported value
 	// is `foxtrot-1`. Omission, null, and unsupported model identifiers are rejected.
@@ -3715,9 +3714,10 @@ func (r *AvatarSettingsRequestParam) UnmarshalJSON(data []byte) error {
 type AvatarSettingsRequestBackgroundID string
 
 const (
-	AvatarSettingsRequestBackgroundIDOffice    AvatarSettingsRequestBackgroundID = "office"
-	AvatarSettingsRequestBackgroundIDStudio    AvatarSettingsRequestBackgroundID = "studio"
-	AvatarSettingsRequestBackgroundIDReception AvatarSettingsRequestBackgroundID = "reception"
+	AvatarSettingsRequestBackgroundIDOffice               AvatarSettingsRequestBackgroundID = "office"
+	AvatarSettingsRequestBackgroundIDStudio               AvatarSettingsRequestBackgroundID = "studio"
+	AvatarSettingsRequestBackgroundIDReception            AvatarSettingsRequestBackgroundID = "reception"
+	AvatarSettingsRequestBackgroundIDIllustratedWorkspace AvatarSettingsRequestBackgroundID = "illustrated_workspace"
 )
 
 // Required avatar model identifier, separate from `avatar_id`. The supported value
@@ -5385,8 +5385,7 @@ type InferenceEmbedding struct {
 	// **Beta:** Configuration for the Telnyx open-source avatar provider. Use a stock
 	// avatar or an organization-owned custom avatar returned by the Avatars API.
 	// Discover the available stock catalog with GET /v2/ai/avatars and
-	// filter[avatar_type]=stock; follow meta.total_pages to load every page. Supported
-	// backgrounds are office, studio, and reception.
+	// filter[avatar_type]=stock; follow meta.total_pages to load every page.
 	AvatarSettings TelnyxAvatarSettings `json:"avatar_settings" api:"nullable"`
 	// Conversation flow as returned by the API.
 	ConversationFlow ConversationFlow `json:"conversation_flow"`
@@ -8161,14 +8160,13 @@ func init() {
 // **Beta:** Configuration for the Telnyx open-source avatar provider. Use a stock
 // avatar or an organization-owned custom avatar returned by the Avatars API.
 // Discover the available stock catalog with GET /v2/ai/avatars and
-// filter[avatar_type]=stock; follow meta.total_pages to load every page. Supported
-// backgrounds are office, studio, and reception.
+// filter[avatar_type]=stock; follow meta.total_pages to load every page.
 type TelnyxAvatarSettings struct {
 	// The Telnyx stock avatar or organization-owned custom avatar to render.
 	AvatarID AvatarID `json:"avatar_id" api:"required"`
 	// The background to render.
 	//
-	// Any of "office", "studio", "reception".
+	// Any of "office", "studio", "reception", "illustrated_workspace".
 	BackgroundID TelnyxAvatarSettingsBackgroundID `json:"background_id" api:"required"`
 	// Required avatar model identifier, separate from `avatar_id`. The supported value
 	// is `foxtrot-1`. Omission, null, and unsupported model identifiers are rejected.
@@ -8198,9 +8196,10 @@ func (r *TelnyxAvatarSettings) UnmarshalJSON(data []byte) error {
 type TelnyxAvatarSettingsBackgroundID string
 
 const (
-	TelnyxAvatarSettingsBackgroundIDOffice    TelnyxAvatarSettingsBackgroundID = "office"
-	TelnyxAvatarSettingsBackgroundIDStudio    TelnyxAvatarSettingsBackgroundID = "studio"
-	TelnyxAvatarSettingsBackgroundIDReception TelnyxAvatarSettingsBackgroundID = "reception"
+	TelnyxAvatarSettingsBackgroundIDOffice               TelnyxAvatarSettingsBackgroundID = "office"
+	TelnyxAvatarSettingsBackgroundIDStudio               TelnyxAvatarSettingsBackgroundID = "studio"
+	TelnyxAvatarSettingsBackgroundIDReception            TelnyxAvatarSettingsBackgroundID = "reception"
+	TelnyxAvatarSettingsBackgroundIDIllustratedWorkspace TelnyxAvatarSettingsBackgroundID = "illustrated_workspace"
 )
 
 // Required avatar model identifier, separate from `avatar_id`. The supported value
@@ -9866,8 +9865,7 @@ type AIAssistantNewParams struct {
 	// **Beta:** Configuration for the Telnyx open-source avatar provider. Use a stock
 	// avatar or an organization-owned custom avatar returned by the Avatars API.
 	// Discover the available stock catalog with GET /v2/ai/avatars and
-	// filter[avatar_type]=stock; follow meta.total_pages to load every page. Supported
-	// backgrounds are office, studio, and reception.
+	// filter[avatar_type]=stock; follow meta.total_pages to load every page.
 	AvatarSettings AvatarSettingsRequestParam `json:"avatar_settings,omitzero"`
 	// Conversation flow as supplied by API clients (create / update).
 	//
@@ -10024,8 +10022,7 @@ type AIAssistantUpdateParams struct {
 	// **Beta:** Configuration for the Telnyx open-source avatar provider. Use a stock
 	// avatar or an organization-owned custom avatar returned by the Avatars API.
 	// Discover the available stock catalog with GET /v2/ai/avatars and
-	// filter[avatar_type]=stock; follow meta.total_pages to load every page. Supported
-	// backgrounds are office, studio, and reception.
+	// filter[avatar_type]=stock; follow meta.total_pages to load every page.
 	AvatarSettings AvatarSettingsRequestParam `json:"avatar_settings,omitzero"`
 	// Conversation flow as supplied by API clients (create / update).
 	//

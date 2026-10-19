@@ -366,6 +366,14 @@ type IPConnection struct {
 	AnchorsiteOverride AnchorsiteOverride `json:"anchorsite_override"`
 	// The uuid of the push credential for Android
 	AndroidPushCredentialID string `json:"android_push_credential_id" api:"nullable"`
+	// Stores the connection preference for generating silent RTP toward the opposite
+	// call leg when comfort-noise packets (CN, payload type 13) are received during
+	// hold. Defaults to false and returns the saved value. Only JSON true and false
+	// are accepted; null and non-boolean values are rejected. This preference is
+	// independent of default_on_hold_comfort_noise_enabled and does not modify that
+	// setting. This API provisions the preference; call-processing behavior is
+	// implemented separately.
+	BridgeGenerateComfortNoiseOnCn bool `json:"bridge_generate_comfort_noise_on_cn"`
 	// Specifies if call cost webhooks should be sent for this connection.
 	CallCostInWebhooks bool   `json:"call_cost_in_webhooks"`
 	ConnectionName     string `json:"connection_name"`
@@ -448,6 +456,7 @@ type IPConnection struct {
 		Active                           respjson.Field
 		AnchorsiteOverride               respjson.Field
 		AndroidPushCredentialID          respjson.Field
+		BridgeGenerateComfortNoiseOnCn   respjson.Field
 		CallCostInWebhooks               respjson.Field
 		ConnectionName                   respjson.Field
 		ConversationPersistence          respjson.Field
@@ -738,6 +747,14 @@ type IPConnectionNewParams struct {
 	WebhookTimeoutSecs param.Opt[int64] `json:"webhook_timeout_secs,omitzero"`
 	// Defaults to true
 	Active param.Opt[bool] `json:"active,omitzero"`
+	// Stores the connection preference for generating silent RTP toward the opposite
+	// call leg when comfort-noise packets (CN, payload type 13) are received during
+	// hold. Optional; defaults to false when omitted on creation. Only JSON true and
+	// false are accepted; null and non-boolean values are rejected. This preference is
+	// independent of default_on_hold_comfort_noise_enabled and does not modify that
+	// setting. This API provisions the preference; call-processing behavior is
+	// implemented separately.
+	BridgeGenerateComfortNoiseOnCn param.Opt[bool] `json:"bridge_generate_comfort_noise_on_cn,omitzero"`
 	// Specifies if call cost webhooks should be sent for this connection.
 	CallCostInWebhooks param.Opt[bool]   `json:"call_cost_in_webhooks,omitzero"`
 	ConnectionName     param.Opt[string] `json:"connection_name,omitzero"`
@@ -932,6 +949,14 @@ type IPConnectionUpdateParams struct {
 	WebhookTimeoutSecs param.Opt[int64] `json:"webhook_timeout_secs,omitzero"`
 	// Defaults to true
 	Active param.Opt[bool] `json:"active,omitzero"`
+	// Stores the connection preference for generating silent RTP toward the opposite
+	// call leg when comfort-noise packets (CN, payload type 13) are received during
+	// hold. Optional; omitting this field preserves the saved value. Only JSON true
+	// and false are accepted; null and non-boolean values are rejected. This
+	// preference is independent of default_on_hold_comfort_noise_enabled and does not
+	// modify that setting. This API provisions the preference; call-processing
+	// behavior is implemented separately.
+	BridgeGenerateComfortNoiseOnCn param.Opt[bool] `json:"bridge_generate_comfort_noise_on_cn,omitzero"`
 	// Specifies if call cost webhooks should be sent for this connection.
 	CallCostInWebhooks param.Opt[bool]   `json:"call_cost_in_webhooks,omitzero"`
 	ConnectionName     param.Opt[string] `json:"connection_name,omitzero"`
