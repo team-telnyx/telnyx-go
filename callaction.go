@@ -1030,8 +1030,9 @@ type DeepgramNova2ConfigParam struct {
 	// to 5000 ms.
 	UtteranceEndMs param.Opt[int64] `json:"utterance_end_ms,omitzero"`
 	// Nova-2 keyword biasing without intensifiers. Up to 100 terms to bias recognition
-	// toward. For weighted biasing, use `keywords_boosting` instead. Nova-2-only; use
-	// `keyterms` on Nova-3.
+	// toward. For weighted biasing, use `keywords_boosting` instead. Supported on
+	// Nova-2 models only (`deepgram/nova-2`, `deepgram/nova-2-medical`,
+	// `deepgram/nova-2-phonecall`); use `keyterms` on Nova-3 and Flux.
 	Hints []string `json:"hints,omitzero"`
 	// Keywords and their respective intensifiers (boosting values) to improve
 	// transcription accuracy for specific words or phrases. The intensifier should be
@@ -1136,8 +1137,10 @@ type DeepgramNova3ConfigParam struct {
 	// Number of milliseconds of silence to consider an utterance ended. Ranges from 0
 	// to 5000 ms.
 	UtteranceEndMs param.Opt[int64] `json:"utterance_end_ms,omitzero"`
-	// Nova-3 keyterm prompting. Up to 100 domain-specific terms or brand names to bias
-	// recognition toward. Nova-3-only; use `hints` on Nova-2.
+	// Keyterm prompting. Up to 100 domain-specific terms or brand names to bias
+	// recognition toward. Supported on Nova-3 and Flux models (`deepgram/nova-3`,
+	// `deepgram/nova-3-medical`, `deepgram/flux`, `deepgram/flux-multi`); use `hints`
+	// on Nova-2.
 	Keyterms []string `json:"keyterms,omitzero"`
 	// Keywords and their respective intensifiers (boosting values) to improve
 	// transcription accuracy for specific words or phrases. The intensifier should be
