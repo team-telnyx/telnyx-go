@@ -565,8 +565,9 @@ func TestCallActionGatherUsingSpeakWithOptionalParams(t *testing.T) {
 			TimeoutMillis:           telnyx.Int(60000),
 			ValidDigits:             telnyx.String("123"),
 			VoiceSettings: telnyx.CallActionGatherUsingSpeakParamsVoiceSettingsUnion{
-				OfCommunityVoiceSettings: &telnyx.CommunityVoiceSettingsParam{
-					APIKeyRef: "acme-engine-key",
+				OfElevenlabs: &telnyx.ElevenLabsVoiceSettingsParam{
+					Type:      telnyx.ElevenLabsVoiceSettingsTypeElevenlabs,
+					APIKeyRef: telnyx.String("my_elevenlabs_api_key"),
 				},
 			},
 		},
@@ -1000,8 +1001,9 @@ func TestCallActionSpeakWithOptionalParams(t *testing.T) {
 			Stop:         telnyx.String("current"),
 			TargetLegs:   telnyx.CallActionSpeakParamsTargetLegsBoth,
 			VoiceSettings: telnyx.CallActionSpeakParamsVoiceSettingsUnion{
-				OfCommunityVoiceSettings: &telnyx.CommunityVoiceSettingsParam{
-					APIKeyRef: "acme-engine-key",
+				OfElevenlabs: &telnyx.ElevenLabsVoiceSettingsParam{
+					Type:      telnyx.ElevenLabsVoiceSettingsTypeElevenlabs,
+					APIKeyRef: telnyx.String("my_elevenlabs_api_key"),
 				},
 			},
 		},
@@ -1135,12 +1137,6 @@ func TestCallActionStartAIAssistantWithOptionalParams(t *testing.T) {
 			Transcription: telnyx.TranscriptionConfigParam{
 				Language: telnyx.String("language"),
 				Model:    telnyx.TranscriptionConfigModelDistilWhisperDistilLargeV2,
-			},
-			Voice: telnyx.String("acme.alpha"),
-			VoiceSettings: telnyx.CallActionStartAIAssistantParamsVoiceSettingsUnion{
-				OfCommunityVoiceSettings: &telnyx.CommunityVoiceSettingsParam{
-					APIKeyRef: "acme-engine-key",
-				},
 			},
 		},
 	)

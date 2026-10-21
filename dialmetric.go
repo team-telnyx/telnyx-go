@@ -222,8 +222,9 @@ type DialMetricListParams struct {
 	// Any of "second", "minute", "hour".
 	Granularity DialMetricListParamsGranularity `query:"granularity,omitzero" api:"required" json:"-"`
 	// Inclusive start of the range, ISO 8601 (for example `2026-09-29T12:00:00.000Z`).
-	// Buckets that start at or after this time are returned. Must not be older than
-	// the retention window of the chosen `granularity`.
+	// Buckets that start at or after this time are returned. A `start_time` older than
+	// the retention window of the chosen `granularity` is moved forward to the start
+	// of that window, and `meta.start_time` returns the start actually used.
 	StartTime time.Time `query:"start_time" api:"required" format:"date-time" json:"-"`
 	// Opaque cursor from `meta.cursors.after` of the previous page. Do not parse or
 	// construct it. A cursor that matches no records returns an empty page whose

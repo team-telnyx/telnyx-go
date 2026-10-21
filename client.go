@@ -419,11 +419,7 @@ type Client struct {
 	// UAC connection operations
 	SipRegistrationStatus SipRegistrationStatusService
 	// Call information
-	DialMetrics DialMetricService
-	// Register and manage text-to-speech (TTS) engines you publish, and find the
-	// public engines other organizations published, so an AI Assistant, TeXML or Call
-	// Control can speak with one of their voices, using your own key for it, instead
-	// of a Telnyx-integrated vendor.
+	DialMetrics     DialMetricService
 	TtsIntegrations TtsIntegrationService
 }
 
