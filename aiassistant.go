@@ -7037,9 +7037,19 @@ type InsightSettings struct {
 	// Reference to an Insight Group. Insights in this group will be run automatically
 	// for all the assistant's conversations.
 	InsightGroupID string `json:"insight_group_id"`
+	// The model that generates the assistant's insights when a conversation ends. It
+	// runs every insight in the group, Telnyx-managed insights included. Must be
+	// `zai-org/GLM-5.3-Flash` or `meta-llama/Llama-3.3-70B-Instruct`; any other model
+	// returns `422`. When omitted on create, it defaults to `zai-org/GLM-5.3-Flash`;
+	// when omitted on update, the current model is kept. `null` uses Telnyx's default
+	// insight models, which assistants created before this setting have. Insights of
+	// messaging conversations, and insights regenerated later, always use Telnyx's
+	// default insight models.
+	Model string `json:"model" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		InsightGroupID respjson.Field
+		Model          respjson.Field
 		ExtraFields    map[string]respjson.Field
 		raw            string
 	} `json:"-"`
@@ -7061,6 +7071,15 @@ func (r InsightSettings) ToParam() InsightSettingsParam {
 }
 
 type InsightSettingsParam struct {
+	// The model that generates the assistant's insights when a conversation ends. It
+	// runs every insight in the group, Telnyx-managed insights included. Must be
+	// `zai-org/GLM-5.3-Flash` or `meta-llama/Llama-3.3-70B-Instruct`; any other model
+	// returns `422`. When omitted on create, it defaults to `zai-org/GLM-5.3-Flash`;
+	// when omitted on update, the current model is kept. `null` uses Telnyx's default
+	// insight models, which assistants created before this setting have. Insights of
+	// messaging conversations, and insights regenerated later, always use Telnyx's
+	// default insight models.
+	Model param.Opt[string] `json:"model,omitzero"`
 	// Reference to an Insight Group. Insights in this group will be run automatically
 	// for all the assistant's conversations.
 	InsightGroupID param.Opt[string] `json:"insight_group_id,omitzero"`
@@ -8503,7 +8522,12 @@ type TranscriptionSettings struct {
 	// `nl`, `en`, `fr`, `fy`, `de`, `it`, `pl`, `pt`, `es`, and `sv` to fix the
 	// transcription language. For `cohere/ar-stt`, supported values are `ar` and `en`;
 	// unlike other models, this model does not auto-detect and defaults to `ar` when
-	// `language` is omitted.
+	// `language` is omitted. For `speechmatics/linden-1`, there is no auto-detect; set
+	// a code from Speechmatics' Realtime language list (67 language codes, including
+	// `es-bilingual-en` for Spanish and English bilingual, and the spelling and script
+	// variants `en-US`, `en-GB`, `en-AU`, `cmn-Hans`, and `cmn-Hant`; `en` alone uses
+	// the default spelling); unset defaults to `en`, while an explicit `auto`,
+	// `auto_beta`, or `multi` is rejected with a 400.
 	Language string `json:"language"`
 	// The speech to text model to be used by the voice assistant. All Deepgram models
 	// are run on-premise.
@@ -8511,6 +8535,12 @@ type TranscriptionSettings struct {
 	//   - `deepgram/flux` is optimized for turn-taking with multilingual language hints.
 	//   - `deepgram/nova-3` is multilingual with automatic language detection.
 	//   - `deepgram/nova-2` is Deepgram's previous-generation multilingual model.
+	//   - `speechmatics/standard` is a Speechmatics model self-hosted by Telnyx; it
+	//     supports a fixed set of language packs (including bilingual packs such as
+	//     `ar_en`) and defaults to `en`.
+	//   - `speechmatics/linden-1` (preview) is a vendor-hosted streaming model with no
+	//     auto-detect; set `language` from Speechmatics' Realtime language list
+	//     (defaults to `en`).
 	//   - `azure/fast` is a multilingual Azure transcription model.
 	//   - `assemblyai/universal-3-5-pro` is a multilingual streaming model with
 	//     configurable turn detection. The legacy alias `assemblyai/universal-streaming`
@@ -8530,7 +8560,8 @@ type TranscriptionSettings struct {
 	//   - `cohere/ar-stt` is a non-streaming Arabic and English transcription model.
 	//   - `telnyx/basira` is a non-streaming Arabic transcription model.
 	//
-	// Any of "deepgram/flux", "deepgram/nova-3", "deepgram/nova-2", "azure/fast",
+	// Any of "deepgram/flux", "deepgram/nova-3", "deepgram/nova-2",
+	// "speechmatics/standard", "speechmatics/linden-1", "azure/fast",
 	// "assemblyai/universal-3-5-pro", "assemblyai/universal-streaming",
 	// "xai/grok-stt", "soniox/stt-rt-v4", "soniox/stt-rt-v5", "nvidia/parakeet-v3",
 	// "omi-health/omi-med-stt-v1", "humain/realtime", "reson8/turns", "cohere/ar-stt",
@@ -8685,6 +8716,12 @@ func (r *TranscriptionSettingsFallbackModel) UnmarshalJSON(data []byte) error {
 //   - `deepgram/flux` is optimized for turn-taking with multilingual language hints.
 //   - `deepgram/nova-3` is multilingual with automatic language detection.
 //   - `deepgram/nova-2` is Deepgram's previous-generation multilingual model.
+//   - `speechmatics/standard` is a Speechmatics model self-hosted by Telnyx; it
+//     supports a fixed set of language packs (including bilingual packs such as
+//     `ar_en`) and defaults to `en`.
+//   - `speechmatics/linden-1` (preview) is a vendor-hosted streaming model with no
+//     auto-detect; set `language` from Speechmatics' Realtime language list
+//     (defaults to `en`).
 //   - `azure/fast` is a multilingual Azure transcription model.
 //   - `assemblyai/universal-3-5-pro` is a multilingual streaming model with
 //     configurable turn detection. The legacy alias `assemblyai/universal-streaming`
@@ -8709,6 +8746,8 @@ const (
 	TranscriptionSettingsModelDeepgramFlux                 TranscriptionSettingsModel = "deepgram/flux"
 	TranscriptionSettingsModelDeepgramNova3                TranscriptionSettingsModel = "deepgram/nova-3"
 	TranscriptionSettingsModelDeepgramNova2                TranscriptionSettingsModel = "deepgram/nova-2"
+	TranscriptionSettingsModelSpeechmaticsStandard         TranscriptionSettingsModel = "speechmatics/standard"
+	TranscriptionSettingsModelSpeechmaticsLinden1          TranscriptionSettingsModel = "speechmatics/linden-1"
 	TranscriptionSettingsModelAzureFast                    TranscriptionSettingsModel = "azure/fast"
 	TranscriptionSettingsModelAssemblyaiUniversal3_5Pro    TranscriptionSettingsModel = "assemblyai/universal-3-5-pro"
 	TranscriptionSettingsModelAssemblyaiUniversalStreaming TranscriptionSettingsModel = "assemblyai/universal-streaming"
@@ -8745,7 +8784,12 @@ type TranscriptionSettingsParam struct {
 	// `nl`, `en`, `fr`, `fy`, `de`, `it`, `pl`, `pt`, `es`, and `sv` to fix the
 	// transcription language. For `cohere/ar-stt`, supported values are `ar` and `en`;
 	// unlike other models, this model does not auto-detect and defaults to `ar` when
-	// `language` is omitted.
+	// `language` is omitted. For `speechmatics/linden-1`, there is no auto-detect; set
+	// a code from Speechmatics' Realtime language list (67 language codes, including
+	// `es-bilingual-en` for Spanish and English bilingual, and the spelling and script
+	// variants `en-US`, `en-GB`, `en-AU`, `cmn-Hans`, and `cmn-Hant`; `en` alone uses
+	// the default spelling); unset defaults to `en`, while an explicit `auto`,
+	// `auto_beta`, or `multi` is rejected with a 400.
 	Language param.Opt[string] `json:"language,omitzero"`
 	// Region on third party cloud providers (currently Azure) if using one of their
 	// models. Some regions require `api_key_ref`.
@@ -8768,6 +8812,12 @@ type TranscriptionSettingsParam struct {
 	//   - `deepgram/flux` is optimized for turn-taking with multilingual language hints.
 	//   - `deepgram/nova-3` is multilingual with automatic language detection.
 	//   - `deepgram/nova-2` is Deepgram's previous-generation multilingual model.
+	//   - `speechmatics/standard` is a Speechmatics model self-hosted by Telnyx; it
+	//     supports a fixed set of language packs (including bilingual packs such as
+	//     `ar_en`) and defaults to `en`.
+	//   - `speechmatics/linden-1` (preview) is a vendor-hosted streaming model with no
+	//     auto-detect; set `language` from Speechmatics' Realtime language list
+	//     (defaults to `en`).
 	//   - `azure/fast` is a multilingual Azure transcription model.
 	//   - `assemblyai/universal-3-5-pro` is a multilingual streaming model with
 	//     configurable turn detection. The legacy alias `assemblyai/universal-streaming`
@@ -8787,7 +8837,8 @@ type TranscriptionSettingsParam struct {
 	//   - `cohere/ar-stt` is a non-streaming Arabic and English transcription model.
 	//   - `telnyx/basira` is a non-streaming Arabic transcription model.
 	//
-	// Any of "deepgram/flux", "deepgram/nova-3", "deepgram/nova-2", "azure/fast",
+	// Any of "deepgram/flux", "deepgram/nova-3", "deepgram/nova-2",
+	// "speechmatics/standard", "speechmatics/linden-1", "azure/fast",
 	// "assemblyai/universal-3-5-pro", "assemblyai/universal-streaming",
 	// "xai/grok-stt", "soniox/stt-rt-v4", "soniox/stt-rt-v5", "nvidia/parakeet-v3",
 	// "omi-health/omi-med-stt-v1", "humain/realtime", "reson8/turns", "cohere/ar-stt",
@@ -8986,8 +9037,15 @@ type TranscriptionSettingsConfig struct {
 	// assemblyai/universal-streaming). Context about the conversation (domain, names,
 	// terms) to improve transcription; describe the content, do not give instructions.
 	// Leave empty unless needed. At most 1750 characters.
-	Prompt      string `json:"prompt"`
-	SmartFormat bool   `json:"smart_format"`
+	Prompt string `json:"prompt"`
+	// Available only for speechmatics/linden-1. When true, filler words such as "um"
+	// and "uh" are removed from the transcript. Disfluency removal is supported only
+	// for `ar`, `cmn`, `da`, `de`, `el`, `en`, `es`, `fr`, `he`, `hi`, `hu`, `it`,
+	// `ja`, `nl`, `pl`, `pt`, and `ru`, determined by the base language (so `en-US`,
+	// `en-GB`, `en-AU`, `cmn-Hans`, and `cmn-Hant` are supported); for other
+	// languages, filler words remain in the transcript.
+	RemoveDisfluencies bool `json:"remove_disfluencies"`
+	SmartFormat        bool `json:"smart_format"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Context                      respjson.Field
@@ -9004,6 +9062,7 @@ type TranscriptionSettingsConfig struct {
 		MinTurnSilence               respjson.Field
 		Numerals                     respjson.Field
 		Prompt                       respjson.Field
+		RemoveDisfluencies           respjson.Field
 		SmartFormat                  respjson.Field
 		ExtraFields                  map[string]respjson.Field
 		raw                          string
@@ -9085,8 +9144,15 @@ type TranscriptionSettingsConfigParam struct {
 	// assemblyai/universal-streaming). Context about the conversation (domain, names,
 	// terms) to improve transcription; describe the content, do not give instructions.
 	// Leave empty unless needed. At most 1750 characters.
-	Prompt      param.Opt[string] `json:"prompt,omitzero"`
-	SmartFormat param.Opt[bool]   `json:"smart_format,omitzero"`
+	Prompt param.Opt[string] `json:"prompt,omitzero"`
+	// Available only for speechmatics/linden-1. When true, filler words such as "um"
+	// and "uh" are removed from the transcript. Disfluency removal is supported only
+	// for `ar`, `cmn`, `da`, `de`, `el`, `en`, `es`, `fr`, `he`, `hi`, `hu`, `it`,
+	// `ja`, `nl`, `pl`, `pt`, and `ru`, determined by the base language (so `en-US`,
+	// `en-GB`, `en-AU`, `cmn-Hans`, and `cmn-Hant` are supported); for other
+	// languages, filler words remain in the transcript.
+	RemoveDisfluencies param.Opt[bool] `json:"remove_disfluencies,omitzero"`
+	SmartFormat        param.Opt[bool] `json:"smart_format,omitzero"`
 	// Available only for soniox/stt-rt-v4 and soniox/stt-rt-v5. A list of ISO 639-1
 	// language codes (e.g. `["nl", "fr"]`) to pin recognition to multiple languages at
 	// once, overriding the single hint derived from `language`.

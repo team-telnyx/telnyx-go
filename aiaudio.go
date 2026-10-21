@@ -48,7 +48,7 @@ func (r *AIAudioService) Transcribe(ctx context.Context, body AIAudioTranscribeP
 }
 
 // Word-level timing detail. Only present when using a `deepgram/*` model with
-// `model_config` options that enable word timestamps.
+// `model_config` options that enable word timestamps, or `reson8/prerecorded`.
 type AudioTranscriptionResponseWord struct {
 	// End time of the word in seconds.
 	End float64 `json:"end" api:"required"`
@@ -92,6 +92,9 @@ func (r *AudioTranscriptionResponseWord) UnmarshalJSON(data []byte) error {
 // return `text` and, depending on `model_config`, may include `words` with
 // per-word timestamps and speaker labels. The Parakeet models
 // (`nvidia/parakeet-v3`, `omi-health/omi-med-stt-v1`) return `text` only.
+// `reson8/prerecorded` returns `text` and, in `verbose_json` mode, `duration` and
+// `segments` with `words`; with `diarize`, one segment per speaker turn with
+// speaker labels.
 type AIAudioTranscribeResponse struct {
 	// The transcribed text for the audio file.
 	Text string `json:"text" api:"required"`
@@ -139,12 +142,14 @@ type AIAudioTranscribeResponseSegment struct {
 	// channel. Segments from all channels are merged in one list ordered by start
 	// time.
 	Channel int64 `json:"channel"`
-	// Speaker indices heard in this segment. Returned by the `deepgram/*` models when
-	// `diarize` is enabled via `model_config`. With `multichannel`, speakers are
-	// numbered per channel from 0, so identify a speaker by (`channel`, speaker).
+	// Speaker indices heard in this segment. Returned by the `deepgram/*` models and
+	// `reson8/prerecorded` when `diarize` is enabled via `model_config`. With
+	// `multichannel`, speakers are numbered per channel from 0, so identify a speaker
+	// by (`channel`, speaker).
 	Speakers []int64 `json:"speakers"`
 	// Word-level timing detail for this segment. Returned by the `deepgram/*` models
-	// when word-level output is enabled via `model_config`.
+	// when word-level output is enabled via `model_config`, and by
+	// `reson8/prerecorded`.
 	Words []AudioTranscriptionResponseWord `json:"words"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -175,10 +180,13 @@ type AIAudioTranscribeParams struct {
 	// English only (`en` and its regional variants, e.g. `en-US`, `en-GB`).
 	// `nvidia/parakeet-v3` is multilingual with automatic language detection;
 	// `omi-health/omi-med-stt-v1` is a medical model, English only.
+	// `reson8/prerecorded` covers 10 languages, returns word timestamps, and labels
+	// speakers via `model_config`.
 	//
 	// Any of "distil-whisper/distil-large-v2", "openai/whisper-large-v3-turbo",
 	// "deepgram/nova-2", "deepgram/nova-2-medical", "deepgram/nova-3",
-	// "deepgram/nova-3-medical", "nvidia/parakeet-v3", "omi-health/omi-med-stt-v1".
+	// "deepgram/nova-3-medical", "nvidia/parakeet-v3", "omi-health/omi-med-stt-v1",
+	// "reson8/prerecorded".
 	Model AIAudioTranscribeParamsModel `json:"model,omitzero" api:"required"`
 	// Link to audio file in one of these formats: flac, mp3, mp4, mpeg, mpga, m4a,
 	// ogg, wav, or webm. Support for hosted files is limited to 100MB. Cannot be used
@@ -194,7 +202,9 @@ type AIAudioTranscribeParams struct {
 	// `openai/whisper-large-v3-turbo`, supports multiple languages.
 	// `distil-whisper/distil-large-v2` does not support language parameter.
 	// `nvidia/parakeet-v3` detects the language automatically;
-	// `omi-health/omi-med-stt-v1` is English only.
+	// `omi-health/omi-med-stt-v1` is English only. `reson8/prerecorded` accepts `nl`,
+	// `en`, `fr`, `fy`, `de`, `it`, `pl`, `pt`, `es` and `sv` (regional variants are
+	// transcribed as the base language) and detects the language when it is omitted.
 	Language param.Opt[string] `json:"language,omitzero"`
 	// The audio file object to transcribe, in one of these formats: flac, mp3, mp4,
 	// mpeg, mpga, m4a, ogg, wav, or webm. File uploads are limited to 100 MB. Cannot
@@ -202,10 +212,12 @@ type AIAudioTranscribeParams struct {
 	// and wav formats.
 	File io.Reader `json:"file,omitzero" format:"binary"`
 	// Additional model-specific configuration parameters. Only allowed with the
-	// `deepgram/*` models. Sent as a JSON string in multipart requests and passed
-	// through to Deepgram as query parameters. Any other model with `model_config`
-	// returns 422. Can include Deepgram-specific options such as `smart_format`,
-	// `punctuate`, `diarize` (speaker labels), `multichannel` (transcribe each channel
+	// `deepgram/*` models and `reson8/prerecorded`. Sent as a JSON string in multipart
+	// requests; for the `deepgram/*` models it is passed through to Deepgram as query
+	// parameters, while `reson8/prerecorded` accepts only `diarize` (speaker labels)
+	// and `max_speakers` (1 to 8). Any other model with `model_config` returns 400.
+	// Can include Deepgram-specific options such as `smart_format`, `punctuate`,
+	// `diarize` (speaker labels), `multichannel` (transcribe each channel
 	// independently; billed duration is file duration multiplied by the number of
 	// channels), `utterances`, `numerals`, and `language`. If `language` is provided
 	// both as a top-level parameter and in `model_config`, the top-level parameter
@@ -251,6 +263,8 @@ func (r AIAudioTranscribeParams) MarshalMultipart() (data []byte, contentType st
 // English only (`en` and its regional variants, e.g. `en-US`, `en-GB`).
 // `nvidia/parakeet-v3` is multilingual with automatic language detection;
 // `omi-health/omi-med-stt-v1` is a medical model, English only.
+// `reson8/prerecorded` covers 10 languages, returns word timestamps, and labels
+// speakers via `model_config`.
 type AIAudioTranscribeParamsModel string
 
 const (
@@ -262,6 +276,7 @@ const (
 	AIAudioTranscribeParamsModelDeepgramNova3Medical       AIAudioTranscribeParamsModel = "deepgram/nova-3-medical"
 	AIAudioTranscribeParamsModelNvidiaParakeetV3           AIAudioTranscribeParamsModel = "nvidia/parakeet-v3"
 	AIAudioTranscribeParamsModelOmiHealthOmiMedSttV1       AIAudioTranscribeParamsModel = "omi-health/omi-med-stt-v1"
+	AIAudioTranscribeParamsModelReson8Prerecorded          AIAudioTranscribeParamsModel = "reson8/prerecorded"
 )
 
 // The format of the transcript output. Use `verbose_json` to take advantage of

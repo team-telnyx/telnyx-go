@@ -362,7 +362,8 @@ type Client struct {
 	WebSearch            WebSearchService
 	MeetingSessions      MeetingSessionService
 	ExternalRequirements ExternalRequirementService
-	Compute              ComputeService
+	// Inspect Stateful Actor types
+	Compute ComputeService
 	// Noise suppression engines that can be selected when configuring noise
 	// suppression on voice connections.
 	NoiseSuppressionEngines NoiseSuppressionEngineService
@@ -421,6 +422,8 @@ type Client struct {
 	// Call information
 	DialMetrics     DialMetricService
 	TtsIntegrations TtsIntegrationService
+	// Tailscale Subnet Router operations
+	TailscaleSubnetRouters TailscaleSubnetRouterService
 }
 
 // DefaultClientOptions read from the environment (TELNYX_API_KEY,
@@ -657,6 +660,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.SipRegistrationStatus = NewSipRegistrationStatusService(opts...)
 	r.DialMetrics = NewDialMetricService(opts...)
 	r.TtsIntegrations = NewTtsIntegrationService(opts...)
+	r.TailscaleSubnetRouters = NewTailscaleSubnetRouterService(opts...)
 
 	return
 }
