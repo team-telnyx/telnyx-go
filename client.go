@@ -418,6 +418,8 @@ type Client struct {
 	LlmTokenGateway LlmTokenGatewayService
 	// UAC connection operations
 	SipRegistrationStatus SipRegistrationStatusService
+	// Call information
+	DialMetrics DialMetricService
 }
 
 // DefaultClientOptions read from the environment (TELNYX_API_KEY,
@@ -652,6 +654,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.SpendLimits = NewSpendLimitService(opts...)
 	r.LlmTokenGateway = NewLlmTokenGatewayService(opts...)
 	r.SipRegistrationStatus = NewSipRegistrationStatusService(opts...)
+	r.DialMetrics = NewDialMetricService(opts...)
 
 	return
 }

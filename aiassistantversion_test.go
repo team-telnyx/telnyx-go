@@ -490,6 +490,7 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 				PrivacySettings: telnyx.PrivacySettingsParam{
 					DataRetention:         telnyx.Bool(true),
 					InTransitDataLocality: telnyx.Bool(true),
+					PiiRedaction:          telnyx.PrivacySettingsPiiRedactionDisabled,
 				},
 				Tags: []string{"string"},
 				TelephonySettings: telnyx.TelephonySettingsParam{

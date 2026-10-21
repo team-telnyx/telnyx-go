@@ -18,16 +18,19 @@ type paramUnion = param.APIUnion
 type paramObj = param.APIObject
 
 type APIError struct {
-	Code        string         `json:"code" api:"required"`
-	Title       string         `json:"title" api:"required"`
-	Description string         `json:"description"`
-	Meta        map[string]any `json:"meta"`
-	Source      APIErrorSource `json:"source"`
+	Code        string `json:"code" api:"required"`
+	Title       string `json:"title" api:"required"`
+	Description string `json:"description"`
+	// A human-readable explanation of the error.
+	Detail string         `json:"detail"`
+	Meta   map[string]any `json:"meta"`
+	Source APIErrorSource `json:"source"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Code        respjson.Field
 		Title       respjson.Field
 		Description respjson.Field
+		Detail      respjson.Field
 		Meta        respjson.Field
 		Source      respjson.Field
 		ExtraFields map[string]respjson.Field

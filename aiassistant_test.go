@@ -455,6 +455,7 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 		PrivacySettings: telnyx.PrivacySettingsParam{
 			DataRetention:         telnyx.Bool(true),
 			InTransitDataLocality: telnyx.Bool(true),
+			PiiRedaction:          telnyx.PrivacySettingsPiiRedactionDisabled,
 		},
 		Tags: []string{"string"},
 		TelephonySettings: telnyx.TelephonySettingsParam{
@@ -1125,6 +1126,7 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 			PrivacySettings: telnyx.PrivacySettingsParam{
 				DataRetention:         telnyx.Bool(true),
 				InTransitDataLocality: telnyx.Bool(true),
+				PiiRedaction:          telnyx.PrivacySettingsPiiRedactionDisabled,
 			},
 			PromoteToMain: telnyx.Bool(true),
 			Tags:          []string{"string"},

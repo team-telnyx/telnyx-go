@@ -6671,3 +6671,13 @@ Response Types:
 Methods:
 
 - <code title="get /sip_registration_status">client.SipRegistrationStatus.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SipRegistrationStatusService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SipRegistrationStatusListParams">SipRegistrationStatusListParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SipRegistrationStatusListResponse">SipRegistrationStatusListResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
+# DialMetrics
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#DialMetricListResponse">DialMetricListResponse</a>
+
+Methods:
+
+- <code title="get /dial_metrics">client.DialMetrics.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#DialMetricService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#DialMetricListParams">DialMetricListParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination#CloudfsCursorPagination">CloudfsCursorPagination</a>[<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#DialMetricListResponse">DialMetricListResponse</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>

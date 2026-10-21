@@ -254,8 +254,8 @@ type CredentialConnection struct {
 	// Encode the SIP contact header sent by Telnyx to avoid issues for NAT or ALG
 	// scenarios.
 	EncodeContactHeaderEnabled bool `json:"encode_contact_header_enabled"`
-	// Enable use of SRTP for encryption. Cannot be set if the transport_portocol is
-	// TLS.
+	// Enable use of SRTP for encryption. Can only be set when the SIP signaling
+	// transport protocol is TLS.
 	//
 	// Any of "SRTP".
 	EncryptedMedia EncryptedMedia    `json:"encrypted_media" api:"nullable"`
@@ -708,8 +708,8 @@ const (
 	DtmfTypeSipInfo DtmfType = "SIP INFO"
 )
 
-// Enable use of SRTP for encryption. Cannot be set if the transport_portocol is
-// TLS.
+// Enable use of SRTP for encryption. Can only be set when the SIP signaling
+// transport protocol is TLS.
 type EncryptedMedia string
 
 const (
@@ -824,8 +824,8 @@ type CredentialConnectionNewParams struct {
 	// The URL where webhooks related to this connection will be sent. Must include a
 	// scheme, such as 'https'.
 	WebhookEventURL param.Opt[string] `json:"webhook_event_url,omitzero" format:"uri"`
-	// Enable use of SRTP for encryption. Cannot be set if the transport_portocol is
-	// TLS.
+	// Enable use of SRTP for encryption. Can only be set when the SIP signaling
+	// transport protocol is TLS.
 	//
 	// Any of "SRTP".
 	EncryptedMedia EncryptedMedia `json:"encrypted_media,omitzero"`
@@ -962,8 +962,8 @@ type CredentialConnectionUpdateParams struct {
 	// The URL where webhooks related to this connection will be sent. Must include a
 	// scheme, such as 'https'.
 	WebhookEventURL param.Opt[string] `json:"webhook_event_url,omitzero" format:"uri"`
-	// Enable use of SRTP for encryption. Cannot be set if the transport_portocol is
-	// TLS.
+	// Enable use of SRTP for encryption. Can only be set when the SIP signaling
+	// transport protocol is TLS.
 	//
 	// Any of "SRTP".
 	EncryptedMedia EncryptedMedia `json:"encrypted_media,omitzero"`
