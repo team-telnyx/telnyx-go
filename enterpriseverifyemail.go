@@ -18,7 +18,7 @@ import (
 )
 
 // Verify ownership of a DIR's authorizer email. A short code is emailed and
-// confirmed; the email must be verified before references can be submitted.
+// confirmed.
 //
 // EnterpriseVerifyEmailService contains methods and other services that help with
 // interacting with the telnyx API.

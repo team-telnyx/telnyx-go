@@ -30,7 +30,7 @@ func TestTexmlAccountCallGet(t *testing.T) {
 		context.TODO(),
 		"call_sid",
 		telnyx.TexmlAccountCallGetParams{
-			AccountSid: "account_sid",
+			AccountSid: "f5586561-8ff0-4291-a51b-c7dfe4139ff9",
 		},
 	)
 	if err != nil {
@@ -59,7 +59,7 @@ func TestTexmlAccountCallUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"call_sid",
 		telnyx.TexmlAccountCallUpdateParams{
-			AccountSid: "account_sid",
+			AccountSid: "f5586561-8ff0-4291-a51b-c7dfe4139ff9",
 			UpdateCall: telnyx.UpdateCallParam{
 				FallbackMethod:       telnyx.UpdateCallFallbackMethodGet,
 				FallbackURL:          telnyx.String("https://www.example.com/intruction-c.xml"),
@@ -96,11 +96,11 @@ func TestTexmlAccountCallCallsWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Texml.Accounts.Calls.Calls(
 		context.TODO(),
-		"account_sid",
+		"f5586561-8ff0-4291-a51b-c7dfe4139ff9",
 		telnyx.TexmlAccountCallCallsParams{
 			OfWithURL: &telnyx.TexmlAccountCallCallsParamsBodyWithURL{
 				URL:                              "https://www.example.com/texml.xml",
-				ApplicationSid:                   telnyx.String("example-app-sid"),
+				ApplicationSid:                   telnyx.String("1293384261075731499"),
 				AsyncAmd:                         telnyx.Bool(true),
 				AsyncAmdStatusCallback:           telnyx.String("https://www.example.com/callback"),
 				AsyncAmdStatusCallbackMethod:     "GET",
@@ -182,7 +182,7 @@ func TestTexmlAccountCallGetCallsWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Texml.Accounts.Calls.GetCalls(
 		context.TODO(),
-		"account_sid",
+		"f5586561-8ff0-4291-a51b-c7dfe4139ff9",
 		telnyx.TexmlAccountCallGetCallsParams{
 			EndTime:     telnyx.String("EndTime"),
 			EndTimeLt:   telnyx.String("EndTime<"),
@@ -224,7 +224,7 @@ func TestTexmlAccountCallSiprecJsonWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"call_sid",
 		telnyx.TexmlAccountCallSiprecJsonParams{
-			AccountSid:                   "account_sid",
+			AccountSid:                   "f5586561-8ff0-4291-a51b-c7dfe4139ff9",
 			ConnectorName:                telnyx.String("my_connector"),
 			IncludeMetadataCustomHeaders: true,
 			Name:                         telnyx.String("my_siprec_session"),
@@ -262,7 +262,7 @@ func TestTexmlAccountCallStreamsJsonWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"call_sid",
 		telnyx.TexmlAccountCallStreamsJsonParams{
-			AccountSid:           "account_sid",
+			AccountSid:           "f5586561-8ff0-4291-a51b-c7dfe4139ff9",
 			BidirectionalCodec:   telnyx.TexmlAccountCallStreamsJsonParamsBidirectionalCodecG722,
 			BidirectionalMode:    telnyx.TexmlAccountCallStreamsJsonParamsBidirectionalModeRtp,
 			Name:                 telnyx.String("My stream"),

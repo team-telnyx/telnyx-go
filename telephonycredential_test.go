@@ -152,7 +152,7 @@ func TestTelephonyCredentialDelete(t *testing.T) {
 	}
 }
 
-func TestTelephonyCredentialNewToken(t *testing.T) {
+func TestTelephonyCredentialNewTokenWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -165,7 +165,13 @@ func TestTelephonyCredentialNewToken(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.TelephonyCredentials.NewToken(context.TODO(), "id")
+	_, err := client.TelephonyCredentials.NewToken(
+		context.TODO(),
+		"id",
+		telnyx.TelephonyCredentialNewTokenParams{
+			IdempotencyKey: telnyx.String("8e03978e-40d5-43e8-bc93-6894a57f9326"),
+		},
+	)
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {

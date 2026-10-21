@@ -30,7 +30,7 @@ func TestTexmlAccountCallSiprecSiprecSidJsonWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"siprec_sid",
 		telnyx.TexmlAccountCallSiprecSiprecSidJsonParams{
-			AccountSid: "account_sid",
+			AccountSid: "f5586561-8ff0-4291-a51b-c7dfe4139ff9",
 			CallSid:    "call_sid",
 			Status:     telnyx.TexmlAccountCallSiprecSiprecSidJsonParamsStatusStopped,
 		},

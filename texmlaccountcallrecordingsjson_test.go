@@ -30,7 +30,7 @@ func TestTexmlAccountCallRecordingsJsonRecordingsJsonWithOptionalParams(t *testi
 		context.TODO(),
 		"call_sid",
 		telnyx.TexmlAccountCallRecordingsJsonRecordingsJsonParams{
-			AccountSid:                    "account_sid",
+			AccountSid:                    "f5586561-8ff0-4291-a51b-c7dfe4139ff9",
 			PlayBeep:                      telnyx.Bool(false),
 			RecordingChannels:             telnyx.TexmlAccountCallRecordingsJsonRecordingsJsonParamsRecordingChannelsSingle,
 			RecordingStatusCallback:       telnyx.String("http://webhook.com/callback"),
@@ -66,7 +66,7 @@ func TestTexmlAccountCallRecordingsJsonGetRecordingsJson(t *testing.T) {
 		context.TODO(),
 		"call_sid",
 		telnyx.TexmlAccountCallRecordingsJsonGetRecordingsJsonParams{
-			AccountSid: "account_sid",
+			AccountSid: "f5586561-8ff0-4291-a51b-c7dfe4139ff9",
 		},
 	)
 	if err != nil {

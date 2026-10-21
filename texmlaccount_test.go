@@ -29,7 +29,7 @@ func TestTexmlAccountGetRecordingsJsonWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Texml.Accounts.GetRecordingsJson(
 		context.TODO(),
-		"account_sid",
+		"f5586561-8ff0-4291-a51b-c7dfe4139ff9",
 		telnyx.TexmlAccountGetRecordingsJsonParams{
 			DateCreated: telnyx.Time(time.Now()),
 			Page:        telnyx.Int(0),
@@ -60,7 +60,7 @@ func TestTexmlAccountGetTranscriptionsJsonWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Texml.Accounts.GetTranscriptionsJson(
 		context.TODO(),
-		"account_sid",
+		"f5586561-8ff0-4291-a51b-c7dfe4139ff9",
 		telnyx.TexmlAccountGetTranscriptionsJsonParams{
 			PageSize:  telnyx.Int(0),
 			PageToken: telnyx.String("PageToken"),

@@ -65,6 +65,7 @@ type AvailableService string
 const (
 	AvailableServiceCloudVpn               AvailableService = "cloud_vpn"
 	AvailableServicePrivateWirelessGateway AvailableService = "private_wireless_gateway"
+	AvailableServiceTailscaleSubnetRouter  AvailableService = "tailscale_subnet_router"
 	AvailableServiceVirtualCrossConnect    AvailableService = "virtual_cross_connect"
 )
 
@@ -209,7 +210,8 @@ func init() {
 type NetworkCoverageListParamsFiltersAvailableServicesContains struct {
 	// Filter by available services containing the specified service
 	//
-	// Any of "cloud_vpn", "private_wireless_gateway", "virtual_cross_connect".
+	// Any of "cloud_vpn", "private_wireless_gateway", "tailscale_subnet_router",
+	// "virtual_cross_connect".
 	Contains AvailableService `query:"contains,omitzero" json:"-"`
 	paramObj
 }

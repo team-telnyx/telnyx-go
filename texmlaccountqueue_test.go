@@ -28,7 +28,7 @@ func TestTexmlAccountQueueNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Texml.Accounts.Queues.New(
 		context.TODO(),
-		"account_sid",
+		"f5586561-8ff0-4291-a51b-c7dfe4139ff9",
 		telnyx.TexmlAccountQueueNewParams{
 			FriendlyName: telnyx.String("Support Queue"),
 			MaxSize:      telnyx.Int(10),
@@ -60,7 +60,7 @@ func TestTexmlAccountQueueGet(t *testing.T) {
 		context.TODO(),
 		"queue_sid",
 		telnyx.TexmlAccountQueueGetParams{
-			AccountSid: "account_sid",
+			AccountSid: "f5586561-8ff0-4291-a51b-c7dfe4139ff9",
 		},
 	)
 	if err != nil {
@@ -89,7 +89,7 @@ func TestTexmlAccountQueueUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"queue_sid",
 		telnyx.TexmlAccountQueueUpdateParams{
-			AccountSid: "account_sid",
+			AccountSid: "f5586561-8ff0-4291-a51b-c7dfe4139ff9",
 			MaxSize:    telnyx.Int(10),
 		},
 	)
@@ -117,7 +117,7 @@ func TestTexmlAccountQueueListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Texml.Accounts.Queues.List(
 		context.TODO(),
-		"account_sid",
+		"f5586561-8ff0-4291-a51b-c7dfe4139ff9",
 		telnyx.TexmlAccountQueueListParams{
 			DateCreated: telnyx.String("DateCreated"),
 			DateUpdated: telnyx.String("DateUpdated"),
@@ -152,7 +152,7 @@ func TestTexmlAccountQueueDelete(t *testing.T) {
 		context.TODO(),
 		"queue_sid",
 		telnyx.TexmlAccountQueueDeleteParams{
-			AccountSid: "account_sid",
+			AccountSid: "f5586561-8ff0-4291-a51b-c7dfe4139ff9",
 		},
 	)
 	if err != nil {

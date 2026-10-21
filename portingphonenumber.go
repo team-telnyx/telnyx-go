@@ -91,8 +91,8 @@ type PortingPhoneNumber struct {
 	PhoneNumber string `json:"phone_number"`
 	// The type of the phone number
 	//
-	// Any of "landline", "local", "mobile", "multipurpose", "national", "other",
-	// "shared_cost", "toll_free".
+	// Any of "landline", "local", "localcommercial", "mobile", "multipurpose",
+	// "national", "other", "shared_cost", "toll_free".
 	PhoneNumberType PortingPhoneNumberPhoneNumberType `json:"phone_number_type"`
 	// Specifies whether Telnyx is able to confirm portability this number in the
 	// United States & Canada. International phone numbers are provisional by default.
@@ -141,14 +141,15 @@ func (r *PortingPhoneNumber) UnmarshalJSON(data []byte) error {
 type PortingPhoneNumberPhoneNumberType string
 
 const (
-	PortingPhoneNumberPhoneNumberTypeLandline     PortingPhoneNumberPhoneNumberType = "landline"
-	PortingPhoneNumberPhoneNumberTypeLocal        PortingPhoneNumberPhoneNumberType = "local"
-	PortingPhoneNumberPhoneNumberTypeMobile       PortingPhoneNumberPhoneNumberType = "mobile"
-	PortingPhoneNumberPhoneNumberTypeMultipurpose PortingPhoneNumberPhoneNumberType = "multipurpose"
-	PortingPhoneNumberPhoneNumberTypeNational     PortingPhoneNumberPhoneNumberType = "national"
-	PortingPhoneNumberPhoneNumberTypeOther        PortingPhoneNumberPhoneNumberType = "other"
-	PortingPhoneNumberPhoneNumberTypeSharedCost   PortingPhoneNumberPhoneNumberType = "shared_cost"
-	PortingPhoneNumberPhoneNumberTypeTollFree     PortingPhoneNumberPhoneNumberType = "toll_free"
+	PortingPhoneNumberPhoneNumberTypeLandline        PortingPhoneNumberPhoneNumberType = "landline"
+	PortingPhoneNumberPhoneNumberTypeLocal           PortingPhoneNumberPhoneNumberType = "local"
+	PortingPhoneNumberPhoneNumberTypeLocalcommercial PortingPhoneNumberPhoneNumberType = "localcommercial"
+	PortingPhoneNumberPhoneNumberTypeMobile          PortingPhoneNumberPhoneNumberType = "mobile"
+	PortingPhoneNumberPhoneNumberTypeMultipurpose    PortingPhoneNumberPhoneNumberType = "multipurpose"
+	PortingPhoneNumberPhoneNumberTypeNational        PortingPhoneNumberPhoneNumberType = "national"
+	PortingPhoneNumberPhoneNumberTypeOther           PortingPhoneNumberPhoneNumberType = "other"
+	PortingPhoneNumberPhoneNumberTypeSharedCost      PortingPhoneNumberPhoneNumberType = "shared_cost"
+	PortingPhoneNumberPhoneNumberTypeTollFree        PortingPhoneNumberPhoneNumberType = "toll_free"
 )
 
 // Specifies whether Telnyx is able to confirm portability this number in the

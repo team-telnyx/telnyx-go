@@ -41,9 +41,16 @@ type DirService struct {
 	// Submit and manage the two business references and one financial reference that
 	// vouch for a DIR. References are contacted to confirm the business identity
 	// during vetting.
+	//
+	// References (two business references and one financial reference) are needed only
+	// if the documents uploaded with the DIR don't already prove the business is
+	// legitimate and financially stable. Any one of these is enough proof: audited or
+	// certified financial statements (uploaded as `other`, with a description), a
+	// commercial credit report (uploaded as `business_credit_report`), or references.
+	// Telnyx reviewers decide during vetting whether your documents are enough.
 	References DirReferenceService
 	// Verify ownership of a DIR's authorizer email. A short code is emailed and
-	// confirmed; the email must be verified before references can be submitted.
+	// confirmed.
 	VerifyEmail DirVerifyEmailService
 }
 
@@ -276,8 +283,7 @@ func (r *DirService) GetBpoAuthorizations(ctx context.Context, dirID string, que
 // existing registration stays live throughout the new vetting cycle.
 //
 // Returns `400` from `submitted`/`in_review`/`permanently_rejected`. Returns `400`
-// if the DIR's business and financial references have not been submitted. Returns
-// `400` if the DIR has an unresolved infringement claim.
+// if the DIR has an unresolved infringement claim.
 func (r *DirService) Submit(ctx context.Context, dirID string, opts ...option.RequestOption) (res *DirWrapped, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if dirID == "" {
@@ -514,10 +520,10 @@ type Document struct {
 	// short_name reference list is at `GET /v2/dir/document_types`.
 	//
 	// Any of "letter_of_authorization", "business_registration",
-	// "articles_of_incorporation", "tax_document", "ein_letter",
-	// "trademark_registration", "website_ownership", "business_license",
+	// "articles_of_incorporation", "certificate_of_good_standing", "tax_document",
+	// "ein_letter", "trademark_registration", "website_ownership", "business_license",
 	// "professional_license", "government_id", "utility_bill", "bank_statement",
-	// "other".
+	// "business_credit_report", "bank_reference_letter", "other".
 	DocumentType DocumentDocumentType `json:"document_type" api:"required"`
 	// An optional note describing this document, for example what it proves.
 	Description string `json:"description"`
@@ -552,19 +558,22 @@ func (r Document) ToParam() DocumentParam {
 type DocumentDocumentType string
 
 const (
-	DocumentDocumentTypeLetterOfAuthorization   DocumentDocumentType = "letter_of_authorization"
-	DocumentDocumentTypeBusinessRegistration    DocumentDocumentType = "business_registration"
-	DocumentDocumentTypeArticlesOfIncorporation DocumentDocumentType = "articles_of_incorporation"
-	DocumentDocumentTypeTaxDocument             DocumentDocumentType = "tax_document"
-	DocumentDocumentTypeEinLetter               DocumentDocumentType = "ein_letter"
-	DocumentDocumentTypeTrademarkRegistration   DocumentDocumentType = "trademark_registration"
-	DocumentDocumentTypeWebsiteOwnership        DocumentDocumentType = "website_ownership"
-	DocumentDocumentTypeBusinessLicense         DocumentDocumentType = "business_license"
-	DocumentDocumentTypeProfessionalLicense     DocumentDocumentType = "professional_license"
-	DocumentDocumentTypeGovernmentID            DocumentDocumentType = "government_id"
-	DocumentDocumentTypeUtilityBill             DocumentDocumentType = "utility_bill"
-	DocumentDocumentTypeBankStatement           DocumentDocumentType = "bank_statement"
-	DocumentDocumentTypeOther                   DocumentDocumentType = "other"
+	DocumentDocumentTypeLetterOfAuthorization     DocumentDocumentType = "letter_of_authorization"
+	DocumentDocumentTypeBusinessRegistration      DocumentDocumentType = "business_registration"
+	DocumentDocumentTypeArticlesOfIncorporation   DocumentDocumentType = "articles_of_incorporation"
+	DocumentDocumentTypeCertificateOfGoodStanding DocumentDocumentType = "certificate_of_good_standing"
+	DocumentDocumentTypeTaxDocument               DocumentDocumentType = "tax_document"
+	DocumentDocumentTypeEinLetter                 DocumentDocumentType = "ein_letter"
+	DocumentDocumentTypeTrademarkRegistration     DocumentDocumentType = "trademark_registration"
+	DocumentDocumentTypeWebsiteOwnership          DocumentDocumentType = "website_ownership"
+	DocumentDocumentTypeBusinessLicense           DocumentDocumentType = "business_license"
+	DocumentDocumentTypeProfessionalLicense       DocumentDocumentType = "professional_license"
+	DocumentDocumentTypeGovernmentID              DocumentDocumentType = "government_id"
+	DocumentDocumentTypeUtilityBill               DocumentDocumentType = "utility_bill"
+	DocumentDocumentTypeBankStatement             DocumentDocumentType = "bank_statement"
+	DocumentDocumentTypeBusinessCreditReport      DocumentDocumentType = "business_credit_report"
+	DocumentDocumentTypeBankReferenceLetter       DocumentDocumentType = "bank_reference_letter"
+	DocumentDocumentTypeOther                     DocumentDocumentType = "other"
 )
 
 // The properties DocumentID, DocumentType are required.
@@ -577,10 +586,10 @@ type DocumentParam struct {
 	// short_name reference list is at `GET /v2/dir/document_types`.
 	//
 	// Any of "letter_of_authorization", "business_registration",
-	// "articles_of_incorporation", "tax_document", "ein_letter",
-	// "trademark_registration", "website_ownership", "business_license",
+	// "articles_of_incorporation", "certificate_of_good_standing", "tax_document",
+	// "ein_letter", "trademark_registration", "website_ownership", "business_license",
 	// "professional_license", "government_id", "utility_bill", "bank_statement",
-	// "other".
+	// "business_credit_report", "bank_reference_letter", "other".
 	DocumentType DocumentDocumentType `json:"document_type,omitzero" api:"required"`
 	// An optional note describing this document, for example what it proves.
 	Description param.Opt[string] `json:"description,omitzero"`

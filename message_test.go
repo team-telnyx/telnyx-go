@@ -146,6 +146,7 @@ func TestMessageSendWithOptionalParams(t *testing.T) {
 		UseProfileWebhooks: telnyx.Bool(true),
 		WebhookFailoverURL: telnyx.String("https://backup.example.com/hooks"),
 		WebhookURL:         telnyx.String("http://example.com/webhooks"),
+		IdempotencyKey:     telnyx.String("8e03978e-40d5-43e8-bc93-6894a57f9326"),
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -178,6 +179,7 @@ func TestMessageSendGroupMmsWithOptionalParams(t *testing.T) {
 		UseProfileWebhooks: telnyx.Bool(true),
 		WebhookFailoverURL: telnyx.String("https://backup.example.com/hooks"),
 		WebhookURL:         telnyx.String("http://example.com/webhooks"),
+		IdempotencyKey:     telnyx.String("8e03978e-40d5-43e8-bc93-6894a57f9326"),
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -213,6 +215,7 @@ func TestMessageSendLongCodeWithOptionalParams(t *testing.T) {
 		UseProfileWebhooks: telnyx.Bool(true),
 		WebhookFailoverURL: telnyx.String("https://backup.example.com/hooks"),
 		WebhookURL:         telnyx.String("http://example.com/webhooks"),
+		IdempotencyKey:     telnyx.String("8e03978e-40d5-43e8-bc93-6894a57f9326"),
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -248,6 +251,7 @@ func TestMessageSendNumberPoolWithOptionalParams(t *testing.T) {
 		UseProfileWebhooks: telnyx.Bool(true),
 		WebhookFailoverURL: telnyx.String("https://backup.example.com/hooks"),
 		WebhookURL:         telnyx.String("http://example.com/webhooks"),
+		IdempotencyKey:     telnyx.String("8e03978e-40d5-43e8-bc93-6894a57f9326"),
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -283,6 +287,7 @@ func TestMessageSendShortCodeWithOptionalParams(t *testing.T) {
 		UseProfileWebhooks: telnyx.Bool(true),
 		WebhookFailoverURL: telnyx.String("https://backup.example.com/hooks"),
 		WebhookURL:         telnyx.String("http://example.com/webhooks"),
+		IdempotencyKey:     telnyx.String("8e03978e-40d5-43e8-bc93-6894a57f9326"),
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -314,6 +319,7 @@ func TestMessageSendWithAlphanumericSenderWithOptionalParams(t *testing.T) {
 		UseProfileWebhooks: telnyx.Bool(true),
 		WebhookFailoverURL: telnyx.String("webhook_failover_url"),
 		WebhookURL:         telnyx.String("webhook_url"),
+		IdempotencyKey:     telnyx.String("8e03978e-40d5-43e8-bc93-6894a57f9326"),
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -340,7 +346,7 @@ func TestMessageWhatsappWithOptionalParams(t *testing.T) {
 	_, err := client.Messages.Whatsapp(context.TODO(), telnyx.MessageWhatsappParams{
 		From: "+13125551234",
 		To:   "+13125551234",
-		WhatsappMessage: telnyx.WhatsappMessageContentParam{
+		WhatsappMessage: telnyx.MessageWhatsappParamsWhatsappMessage{
 			Audio: telnyx.WhatsappMediaParam{
 				Caption:  telnyx.String("caption"),
 				Filename: telnyx.String("filename"),
@@ -348,8 +354,8 @@ func TestMessageWhatsappWithOptionalParams(t *testing.T) {
 				Voice:    telnyx.Bool(true),
 			},
 			BizOpaqueCallbackData: telnyx.String("biz_opaque_callback_data"),
-			Contacts: []telnyx.WhatsappContactParam{{
-				Addresses: []telnyx.WhatsappContactAddressParam{{
+			Contacts: []telnyx.MessageWhatsappParamsWhatsappMessageContact{{
+				Addresses: []telnyx.MessageWhatsappParamsWhatsappMessageContactsAddress{{
 					City:        telnyx.String("city"),
 					Country:     telnyx.String("country"),
 					CountryCode: telnyx.String("country_code"),
@@ -359,22 +365,29 @@ func TestMessageWhatsappWithOptionalParams(t *testing.T) {
 					Zip:         telnyx.String("zip"),
 				}},
 				Birthday: telnyx.String("birthday"),
-				Emails: []telnyx.WhatsappContactEmailParam{{
+				Emails: []telnyx.MessageWhatsappParamsWhatsappMessageContactsEmail{{
 					Email: telnyx.String("email"),
 					Type:  telnyx.String("type"),
 				}},
-				Name: telnyx.String("name"),
-				Org: telnyx.WhatsappContactOrgParam{
+				Name: telnyx.MessageWhatsappParamsWhatsappMessageContactsName{
+					FormattedName: "formatted_name",
+					FirstName:     telnyx.String("first_name"),
+					LastName:      telnyx.String("last_name"),
+					MiddleName:    telnyx.String("middle_name"),
+					Prefix:        telnyx.String("prefix"),
+					Suffix:        telnyx.String("suffix"),
+				},
+				Org: telnyx.MessageWhatsappParamsWhatsappMessageContactsOrg{
 					Company:    telnyx.String("company"),
 					Department: telnyx.String("department"),
 					Title:      telnyx.String("title"),
 				},
-				Phones: []telnyx.WhatsappContactPhoneParam{{
+				Phones: []telnyx.MessageWhatsappParamsWhatsappMessageContactsPhone{{
 					Phone: telnyx.String("phone"),
 					Type:  telnyx.String("type"),
 					WaID:  telnyx.String("wa_id"),
 				}},
-				URLs: []telnyx.WhatsappContactURLParam{{
+				URLs: []telnyx.MessageWhatsappParamsWhatsappMessageContactsURL{{
 					Type: telnyx.String("type"),
 					URL:  telnyx.String("url"),
 				}},
@@ -391,26 +404,26 @@ func TestMessageWhatsappWithOptionalParams(t *testing.T) {
 				Link:     telnyx.String("http://example.com/media.jpg"),
 				Voice:    telnyx.Bool(true),
 			},
-			Interactive: telnyx.WhatsappInteractiveParam{
-				Action: telnyx.WhatsappInteractiveActionParam{
+			Interactive: telnyx.MessageWhatsappParamsWhatsappMessageInteractive{
+				Action: telnyx.MessageWhatsappParamsWhatsappMessageInteractiveAction{
 					Button: telnyx.String("button"),
-					Buttons: []telnyx.WhatsappInteractiveActionButtonParam{{
-						Reply: telnyx.WhatsappInteractiveActionButtonsReplyParam{
+					Buttons: []telnyx.MessageWhatsappParamsWhatsappMessageInteractiveActionButton{{
+						Reply: telnyx.MessageWhatsappParamsWhatsappMessageInteractiveActionButtonsReply{
 							ID:    telnyx.String("id"),
 							Title: telnyx.String("title"),
 						},
 						Type: "reply",
 					}},
-					Cards: []telnyx.WhatsappInteractiveActionCardParam{{
-						Action: telnyx.WhatsappInteractiveActionCardsActionParam{
+					Cards: []telnyx.MessageWhatsappParamsWhatsappMessageInteractiveActionCard{{
+						Action: telnyx.MessageWhatsappParamsWhatsappMessageInteractiveActionCardsAction{
 							CatalogID:         telnyx.String("catalog_id"),
 							ProductRetailerID: telnyx.String("product_retailer_id"),
 						},
-						Body: telnyx.WhatsappInteractiveActionCardsBodyParam{
+						Body: telnyx.MessageWhatsappParamsWhatsappMessageInteractiveActionCardsBody{
 							Text: telnyx.String("text"),
 						},
 						CardIndex: telnyx.Int(0),
-						Header: telnyx.WhatsappInteractiveActionCardsHeaderParam{
+						Header: telnyx.MessageWhatsappParamsWhatsappMessageInteractiveActionCardsHeader{
 							Image: telnyx.WhatsappMediaParam{
 								Caption:  telnyx.String("caption"),
 								Filename: telnyx.String("filename"),
@@ -430,16 +443,27 @@ func TestMessageWhatsappWithOptionalParams(t *testing.T) {
 					CatalogID: telnyx.String("catalog_id"),
 					Mode:      telnyx.String("mode"),
 					Name:      telnyx.String("name"),
-					Parameters: telnyx.WhatsappInteractiveActionParametersParam{
+					Parameters: telnyx.MessageWhatsappParamsWhatsappMessageInteractiveActionParameters{
 						DisplayText: telnyx.String("display_text"),
-						URL:         telnyx.String("url"),
+						FlowAction:  "navigate",
+						FlowActionPayload: telnyx.MessageWhatsappParamsWhatsappMessageInteractiveActionParametersFlowActionPayload{
+							Data:   map[string]any{},
+							Screen: telnyx.String("screen"),
+						},
+						FlowCta:            telnyx.String("flow_cta"),
+						FlowID:             telnyx.String("flow_id"),
+						FlowMessageVersion: telnyx.String("flow_message_version"),
+						FlowName:           telnyx.String("flow_name"),
+						FlowToken:          telnyx.String("flow_token"),
+						Mode:               "draft",
+						URL:                telnyx.String("url"),
 					},
 					ProductRetailerID: telnyx.String("product_retailer_id"),
-					Sections: []telnyx.WhatsappInteractiveActionSectionParam{{
-						ProductItems: []telnyx.WhatsappInteractiveActionSectionsProductItemParam{{
+					Sections: []telnyx.MessageWhatsappParamsWhatsappMessageInteractiveActionSection{{
+						ProductItems: []telnyx.MessageWhatsappParamsWhatsappMessageInteractiveActionSectionsProductItem{{
 							ProductRetailerID: telnyx.String("product_retailer_id"),
 						}},
-						Rows: []telnyx.WhatsappInteractiveActionSectionsRowParam{{
+						Rows: []telnyx.MessageWhatsappParamsWhatsappMessageInteractiveActionSectionsRow{{
 							ID:          telnyx.String("id"),
 							Description: telnyx.String("description"),
 							Title:       telnyx.String("title"),
@@ -447,13 +471,14 @@ func TestMessageWhatsappWithOptionalParams(t *testing.T) {
 						Title: telnyx.String("title"),
 					}},
 				},
-				Body: telnyx.WhatsappInteractiveBodyParam{
+				Body: telnyx.MessageWhatsappParamsWhatsappMessageInteractiveBody{
 					Text: telnyx.String("text"),
 				},
-				Footer: telnyx.WhatsappInteractiveFooterParam{
+				Footer: telnyx.MessageWhatsappParamsWhatsappMessageInteractiveFooter{
 					Text: telnyx.String("text"),
 				},
-				Header: telnyx.WhatsappInteractiveHeaderParam{
+				Header: telnyx.MessageWhatsappParamsWhatsappMessageInteractiveHeader{
+					Type: "document",
 					Document: telnyx.WhatsappMediaParam{
 						Caption:  telnyx.String("caption"),
 						Filename: telnyx.String("filename"),
@@ -475,7 +500,7 @@ func TestMessageWhatsappWithOptionalParams(t *testing.T) {
 						Voice:    telnyx.Bool(true),
 					},
 				},
-				Type: telnyx.WhatsappInteractiveTypeCtaURL,
+				Type: "cta_url",
 			},
 			Location: telnyx.WhatsappLocationParam{
 				Address:   telnyx.String("address"),
@@ -493,28 +518,32 @@ func TestMessageWhatsappWithOptionalParams(t *testing.T) {
 				Link:     telnyx.String("http://example.com/media.jpg"),
 				Voice:    telnyx.Bool(true),
 			},
-			Template: telnyx.WhatsappMessageContentTemplateParam{
-				Components: []telnyx.WhatsappMessageContentTemplateComponentParam{{
+			Template: telnyx.MessageWhatsappParamsWhatsappMessageTemplate{
+				Components: []telnyx.MessageWhatsappParamsWhatsappMessageTemplateComponent{{
 					Index: telnyx.Int(0),
-					Parameters: []telnyx.WhatsappMessageContentTemplateComponentsParameterParam{{
+					Parameters: []telnyx.MessageWhatsappParamsWhatsappMessageTemplateComponentsParameter{{
+						Action: telnyx.MessageWhatsappParamsWhatsappMessageTemplateComponentsParametersAction{
+							FlowActionData: map[string]any{},
+							FlowToken:      telnyx.String("flow_token"),
+						},
 						Text: telnyx.String("text"),
 						Type: "text",
 					}},
 					SubType: "quick_reply",
 					Type:    "header",
 				}},
-				Language: telnyx.WhatsappMessageContentTemplateLanguageParam{
+				Language: telnyx.MessageWhatsappParamsWhatsappMessageTemplateLanguage{
 					Code:   "en_US",
 					Policy: telnyx.String("deterministic"),
 				},
 				Name:       telnyx.String("order_confirmation"),
 				TemplateID: telnyx.String("019cd44b-3a1c-781b-956e-bd33e9fd2ac6"),
 			},
-			Text: telnyx.WhatsappMessageContentTextParam{
+			Text: telnyx.MessageWhatsappParamsWhatsappMessageText{
 				Body:       "Hello from Telnyx!",
 				PreviewURL: telnyx.Bool(true),
 			},
-			Type: telnyx.WhatsappMessageContentTypeAudio,
+			Type: "audio",
 			Video: telnyx.WhatsappMediaParam{
 				Caption:  telnyx.String("caption"),
 				Filename: telnyx.String("filename"),
@@ -525,6 +554,7 @@ func TestMessageWhatsappWithOptionalParams(t *testing.T) {
 		MessagingProfileID: telnyx.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 		Type:               telnyx.MessageWhatsappParamsTypeWhatsapp,
 		WebhookURL:         telnyx.String("webhook_url"),
+		IdempotencyKey:     telnyx.String("8e03978e-40d5-43e8-bc93-6894a57f9326"),
 	})
 	if err != nil {
 		var apierr *telnyx.Error
