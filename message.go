@@ -99,54 +99,72 @@ func (r *MessageService) Schedule(ctx context.Context, body MessageScheduleParam
 // This endpoint allows you to send a message with any messaging resource. Current
 // messaging resources include: long-code, short-code, number-pool, and
 // alphanumeric-sender-id.
-func (r *MessageService) Send(ctx context.Context, body MessageSendParams, opts ...option.RequestOption) (res *MessageSendResponse, err error) {
+func (r *MessageService) Send(ctx context.Context, params MessageSendParams, opts ...option.RequestOption) (res *MessageSendResponse, err error) {
+	if !param.IsOmitted(params.IdempotencyKey) {
+		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	path := "messages"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
 
 // Queues an MMS addressed to multiple recipients as a group conversation. Delivery
 // events are reported asynchronously through messaging webhooks.
-func (r *MessageService) SendGroupMms(ctx context.Context, body MessageSendGroupMmsParams, opts ...option.RequestOption) (res *MessageSendGroupMmsResponse, err error) {
+func (r *MessageService) SendGroupMms(ctx context.Context, params MessageSendGroupMmsParams, opts ...option.RequestOption) (res *MessageSendGroupMmsResponse, err error) {
+	if !param.IsOmitted(params.IdempotencyKey) {
+		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	path := "messages/group_mms"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
 
 // Queues an outbound SMS or MMS using a long-code sender. Delivery progress and
 // final disposition are reported asynchronously through messaging webhooks.
-func (r *MessageService) SendLongCode(ctx context.Context, body MessageSendLongCodeParams, opts ...option.RequestOption) (res *MessageSendLongCodeResponse, err error) {
+func (r *MessageService) SendLongCode(ctx context.Context, params MessageSendLongCodeParams, opts ...option.RequestOption) (res *MessageSendLongCodeResponse, err error) {
+	if !param.IsOmitted(params.IdempotencyKey) {
+		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	path := "messages/long_code"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
 
 // Queues an outbound message using a number pool. Telnyx selects an eligible
 // sender from the pool according to its messaging profile configuration.
-func (r *MessageService) SendNumberPool(ctx context.Context, body MessageSendNumberPoolParams, opts ...option.RequestOption) (res *MessageSendNumberPoolResponse, err error) {
+func (r *MessageService) SendNumberPool(ctx context.Context, params MessageSendNumberPoolParams, opts ...option.RequestOption) (res *MessageSendNumberPoolResponse, err error) {
+	if !param.IsOmitted(params.IdempotencyKey) {
+		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	path := "messages/number_pool"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
 
 // Queues an outbound SMS or MMS using a short-code sender. Delivery progress and
 // final disposition are reported asynchronously through messaging webhooks.
-func (r *MessageService) SendShortCode(ctx context.Context, body MessageSendShortCodeParams, opts ...option.RequestOption) (res *MessageSendShortCodeResponse, err error) {
+func (r *MessageService) SendShortCode(ctx context.Context, params MessageSendShortCodeParams, opts ...option.RequestOption) (res *MessageSendShortCodeResponse, err error) {
+	if !param.IsOmitted(params.IdempotencyKey) {
+		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	path := "messages/short_code"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
 
 // Send an SMS message using an alphanumeric sender ID. This is SMS only.
-func (r *MessageService) SendWithAlphanumericSender(ctx context.Context, body MessageSendWithAlphanumericSenderParams, opts ...option.RequestOption) (res *MessageSendWithAlphanumericSenderResponse, err error) {
+func (r *MessageService) SendWithAlphanumericSender(ctx context.Context, params MessageSendWithAlphanumericSenderParams, opts ...option.RequestOption) (res *MessageSendWithAlphanumericSenderResponse, err error) {
+	if !param.IsOmitted(params.IdempotencyKey) {
+		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	path := "messages/alphanumeric_sender_id"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
 
@@ -154,10 +172,13 @@ func (r *MessageService) SendWithAlphanumericSender(ctx context.Context, body Me
 // body, interactive elements, media, location, and reaction content are specified
 // in the `whatsapp_message` field. Delivery progress and final disposition are
 // reported asynchronously through messaging webhooks.
-func (r *MessageService) Whatsapp(ctx context.Context, body MessageWhatsappParams, opts ...option.RequestOption) (res *MessageWhatsappResponse, err error) {
+func (r *MessageService) Whatsapp(ctx context.Context, params MessageWhatsappParams, opts ...option.RequestOption) (res *MessageWhatsappResponse, err error) {
+	if !param.IsOmitted(params.IdempotencyKey) {
+		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	path := "messages/whatsapp"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
 
@@ -3905,7 +3926,8 @@ type MessageSendParams struct {
 	// to the primary URL fails.
 	WebhookFailoverURL param.Opt[string] `json:"webhook_failover_url,omitzero" format:"url"`
 	// The URL where webhooks related to this message will be sent.
-	WebhookURL param.Opt[string] `json:"webhook_url,omitzero" format:"url"`
+	WebhookURL     param.Opt[string] `json:"webhook_url,omitzero" format:"url"`
+	IdempotencyKey param.Opt[string] `header:"Idempotency-Key,omitzero" json:"-"`
 	// Encoding to use for the message. `auto` (default) uses smart encoding to
 	// automatically select the most efficient encoding. `gsm7` forces GSM-7 encoding
 	// (returns 400 if message contains characters that cannot be encoded). `ucs2`
@@ -3971,7 +3993,8 @@ type MessageSendGroupMmsParams struct {
 	// to the primary URL fails.
 	WebhookFailoverURL param.Opt[string] `json:"webhook_failover_url,omitzero" format:"url"`
 	// The URL where webhooks related to this message will be sent.
-	WebhookURL param.Opt[string] `json:"webhook_url,omitzero" format:"url"`
+	WebhookURL     param.Opt[string] `json:"webhook_url,omitzero" format:"url"`
+	IdempotencyKey param.Opt[string] `header:"Idempotency-Key,omitzero" json:"-"`
 	// A list of media URLs. The total media size must be less than 1 MB.
 	MediaURLs []string `json:"media_urls,omitzero" format:"url"`
 	paramObj
@@ -4007,7 +4030,8 @@ type MessageSendLongCodeParams struct {
 	// to the primary URL fails.
 	WebhookFailoverURL param.Opt[string] `json:"webhook_failover_url,omitzero" format:"url"`
 	// The URL where webhooks related to this message will be sent.
-	WebhookURL param.Opt[string] `json:"webhook_url,omitzero" format:"url"`
+	WebhookURL     param.Opt[string] `json:"webhook_url,omitzero" format:"url"`
+	IdempotencyKey param.Opt[string] `header:"Idempotency-Key,omitzero" json:"-"`
 	// Encoding to use for the message. `auto` (default) uses smart encoding to
 	// automatically select the most efficient encoding. `gsm7` forces GSM-7 encoding
 	// (returns 400 if message contains characters that cannot be encoded). `ucs2`
@@ -4078,7 +4102,8 @@ type MessageSendNumberPoolParams struct {
 	// to the primary URL fails.
 	WebhookFailoverURL param.Opt[string] `json:"webhook_failover_url,omitzero" format:"url"`
 	// The URL where webhooks related to this message will be sent.
-	WebhookURL param.Opt[string] `json:"webhook_url,omitzero" format:"url"`
+	WebhookURL     param.Opt[string] `json:"webhook_url,omitzero" format:"url"`
+	IdempotencyKey param.Opt[string] `header:"Idempotency-Key,omitzero" json:"-"`
 	// Encoding to use for the message. `auto` (default) uses smart encoding to
 	// automatically select the most efficient encoding. `gsm7` forces GSM-7 encoding
 	// (returns 400 if message contains characters that cannot be encoded). `ucs2`
@@ -4149,7 +4174,8 @@ type MessageSendShortCodeParams struct {
 	// to the primary URL fails.
 	WebhookFailoverURL param.Opt[string] `json:"webhook_failover_url,omitzero" format:"url"`
 	// The URL where webhooks related to this message will be sent.
-	WebhookURL param.Opt[string] `json:"webhook_url,omitzero" format:"url"`
+	WebhookURL     param.Opt[string] `json:"webhook_url,omitzero" format:"url"`
+	IdempotencyKey param.Opt[string] `header:"Idempotency-Key,omitzero" json:"-"`
 	// Encoding to use for the message. `auto` (default) uses smart encoding to
 	// automatically select the most efficient encoding. `gsm7` forces GSM-7 encoding
 	// (returns 400 if message contains characters that cannot be encoded). `ucs2`
@@ -4212,7 +4238,8 @@ type MessageSendWithAlphanumericSenderParams struct {
 	// Callback URL for delivery status updates.
 	WebhookURL param.Opt[string] `json:"webhook_url,omitzero" format:"url"`
 	// If true, use the messaging profile's webhook settings.
-	UseProfileWebhooks param.Opt[bool] `json:"use_profile_webhooks,omitzero"`
+	UseProfileWebhooks param.Opt[bool]   `json:"use_profile_webhooks,omitzero"`
+	IdempotencyKey     param.Opt[string] `header:"Idempotency-Key,omitzero" json:"-"`
 	paramObj
 }
 
@@ -4235,7 +4262,8 @@ type MessageWhatsappParams struct {
 	// Messaging profile ID - required if the 'from' number is not SMS-enabled
 	MessagingProfileID param.Opt[string] `json:"messaging_profile_id,omitzero" format:"uuid"`
 	// The URL where webhooks related to this message will be sent.
-	WebhookURL param.Opt[string] `json:"webhook_url,omitzero" format:"url"`
+	WebhookURL     param.Opt[string] `json:"webhook_url,omitzero" format:"url"`
+	IdempotencyKey param.Opt[string] `header:"Idempotency-Key,omitzero" json:"-"`
 	// Message type - must be set to "WHATSAPP"
 	//
 	// Any of "WHATSAPP".

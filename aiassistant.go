@@ -5624,6 +5624,10 @@ type InferenceEmbeddingVoiceSettings struct {
 	// for details. For Telnyx voices, use `Telnyx.<model_id>.<voice_id>` (e.g.
 	// Telnyx.KokoroTTS.af_heart). For Soniox voices, use `Soniox.tts-rt-v2.<voice_id>`
 	// (e.g. Soniox.tts-rt-v2.Emma); every Soniox voice speaks all supported languages.
+	// For a voice of a community text-to-speech engine, use `<engine_name>.<voice_id>`
+	// (e.g. `acme.alpha`) and reference your key for the engine under `api_key_ref`
+	// (see the
+	// [Community TTS engines guide](https://developers.telnyx.com/docs/voice/tts/community-engines)).
 	// The voice portion of the identifier supports
 	// [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables)
 	// using mustache syntax (e.g. `Telnyx.Ultra.{{voice_id}}`). The variable is
@@ -5633,7 +5637,8 @@ type InferenceEmbeddingVoiceSettings struct {
 	// The `identifier` for an integration secret
 	// [/v2/integration_secrets](https://developers.telnyx.com/api-reference/integration-secrets/create-a-secret)
 	// that refers to your ElevenLabs API key. Warning: Free plans are unlikely to work
-	// with this integration.
+	// with this integration. For a community text-to-speech engine voice, it refers to
+	// your key for that engine and is required.
 	APIKeyRef string `json:"api_key_ref"`
 	// Optional background audio to play on the call. Use a predefined media bed, or
 	// supply a looped MP3 URL. If a media URL is chosen in the portal, customers can
@@ -5986,6 +5991,10 @@ type InferenceEmbeddingVoiceSettingsParam struct {
 	// for details. For Telnyx voices, use `Telnyx.<model_id>.<voice_id>` (e.g.
 	// Telnyx.KokoroTTS.af_heart). For Soniox voices, use `Soniox.tts-rt-v2.<voice_id>`
 	// (e.g. Soniox.tts-rt-v2.Emma); every Soniox voice speaks all supported languages.
+	// For a voice of a community text-to-speech engine, use `<engine_name>.<voice_id>`
+	// (e.g. `acme.alpha`) and reference your key for the engine under `api_key_ref`
+	// (see the
+	// [Community TTS engines guide](https://developers.telnyx.com/docs/voice/tts/community-engines)).
 	// The voice portion of the identifier supports
 	// [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables)
 	// using mustache syntax (e.g. `Telnyx.Ultra.{{voice_id}}`). The variable is
@@ -5995,7 +6004,8 @@ type InferenceEmbeddingVoiceSettingsParam struct {
 	// The `identifier` for an integration secret
 	// [/v2/integration_secrets](https://developers.telnyx.com/api-reference/integration-secrets/create-a-secret)
 	// that refers to your ElevenLabs API key. Warning: Free plans are unlikely to work
-	// with this integration.
+	// with this integration. For a community text-to-speech engine voice, it refers to
+	// your key for that engine and is required.
 	APIKeyRef param.Opt[string] `json:"api_key_ref,omitzero"`
 	// Enables emotionally expressive speech using SSML emotion tags. When enabled, the
 	// assistant uses audio tags like angry, excited, content, and sad to add emotional

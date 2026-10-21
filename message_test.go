@@ -146,6 +146,7 @@ func TestMessageSendWithOptionalParams(t *testing.T) {
 		UseProfileWebhooks: telnyx.Bool(true),
 		WebhookFailoverURL: telnyx.String("https://backup.example.com/hooks"),
 		WebhookURL:         telnyx.String("http://example.com/webhooks"),
+		IdempotencyKey:     telnyx.String("8e03978e-40d5-43e8-bc93-6894a57f9326"),
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -178,6 +179,7 @@ func TestMessageSendGroupMmsWithOptionalParams(t *testing.T) {
 		UseProfileWebhooks: telnyx.Bool(true),
 		WebhookFailoverURL: telnyx.String("https://backup.example.com/hooks"),
 		WebhookURL:         telnyx.String("http://example.com/webhooks"),
+		IdempotencyKey:     telnyx.String("8e03978e-40d5-43e8-bc93-6894a57f9326"),
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -213,6 +215,7 @@ func TestMessageSendLongCodeWithOptionalParams(t *testing.T) {
 		UseProfileWebhooks: telnyx.Bool(true),
 		WebhookFailoverURL: telnyx.String("https://backup.example.com/hooks"),
 		WebhookURL:         telnyx.String("http://example.com/webhooks"),
+		IdempotencyKey:     telnyx.String("8e03978e-40d5-43e8-bc93-6894a57f9326"),
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -248,6 +251,7 @@ func TestMessageSendNumberPoolWithOptionalParams(t *testing.T) {
 		UseProfileWebhooks: telnyx.Bool(true),
 		WebhookFailoverURL: telnyx.String("https://backup.example.com/hooks"),
 		WebhookURL:         telnyx.String("http://example.com/webhooks"),
+		IdempotencyKey:     telnyx.String("8e03978e-40d5-43e8-bc93-6894a57f9326"),
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -283,6 +287,7 @@ func TestMessageSendShortCodeWithOptionalParams(t *testing.T) {
 		UseProfileWebhooks: telnyx.Bool(true),
 		WebhookFailoverURL: telnyx.String("https://backup.example.com/hooks"),
 		WebhookURL:         telnyx.String("http://example.com/webhooks"),
+		IdempotencyKey:     telnyx.String("8e03978e-40d5-43e8-bc93-6894a57f9326"),
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -314,6 +319,7 @@ func TestMessageSendWithAlphanumericSenderWithOptionalParams(t *testing.T) {
 		UseProfileWebhooks: telnyx.Bool(true),
 		WebhookFailoverURL: telnyx.String("webhook_failover_url"),
 		WebhookURL:         telnyx.String("webhook_url"),
+		IdempotencyKey:     telnyx.String("8e03978e-40d5-43e8-bc93-6894a57f9326"),
 	})
 	if err != nil {
 		var apierr *telnyx.Error
@@ -548,6 +554,7 @@ func TestMessageWhatsappWithOptionalParams(t *testing.T) {
 		MessagingProfileID: telnyx.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 		Type:               telnyx.MessageWhatsappParamsTypeWhatsapp,
 		WebhookURL:         telnyx.String("webhook_url"),
+		IdempotencyKey:     telnyx.String("8e03978e-40d5-43e8-bc93-6894a57f9326"),
 	})
 	if err != nil {
 		var apierr *telnyx.Error

@@ -230,8 +230,9 @@ func TestMessageRcSendWithOptionalParams(t *testing.T) {
 			From: telnyx.String("+13125551234"),
 			Text: telnyx.String("Hello world!"),
 		},
-		Type:       telnyx.MessageRcSendParamsTypeRcs,
-		WebhookURL: telnyx.String("webhook_url"),
+		Type:           telnyx.MessageRcSendParamsTypeRcs,
+		WebhookURL:     telnyx.String("webhook_url"),
+		IdempotencyKey: telnyx.String("8e03978e-40d5-43e8-bc93-6894a57f9326"),
 	})
 	if err != nil {
 		var apierr *telnyx.Error

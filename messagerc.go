@@ -55,10 +55,13 @@ func (r *MessageRcService) GenerateDeeplink(ctx context.Context, agentID string,
 
 // Queues an outbound RCS message through the selected RCS agent. Check recipient
 // capabilities before sending features that require RCS support.
-func (r *MessageRcService) Send(ctx context.Context, body MessageRcSendParams, opts ...option.RequestOption) (res *MessageRcSendResponse, err error) {
+func (r *MessageRcService) Send(ctx context.Context, params MessageRcSendParams, opts ...option.RequestOption) (res *MessageRcSendResponse, err error) {
+	if !param.IsOmitted(params.IdempotencyKey) {
+		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	path := "messages/rcs"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
 
@@ -200,9 +203,10 @@ type MessageRcSendParams struct {
 	// Phone number in +E.164 format
 	To string `json:"to" api:"required"`
 	// The URL where webhooks related to this message will be sent.
-	WebhookURL  param.Opt[string]              `json:"webhook_url,omitzero" format:"url"`
-	MmsFallback MessageRcSendParamsMmsFallback `json:"mms_fallback,omitzero"`
-	SMSFallback MessageRcSendParamsSMSFallback `json:"sms_fallback,omitzero"`
+	WebhookURL     param.Opt[string]              `json:"webhook_url,omitzero" format:"url"`
+	IdempotencyKey param.Opt[string]              `header:"Idempotency-Key,omitzero" json:"-"`
+	MmsFallback    MessageRcSendParamsMmsFallback `json:"mms_fallback,omitzero"`
+	SMSFallback    MessageRcSendParamsSMSFallback `json:"sms_fallback,omitzero"`
 	// Message type - must be set to "RCS"
 	//
 	// Any of "RCS".

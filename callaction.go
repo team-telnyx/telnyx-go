@@ -17,6 +17,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 	"github.com/team-telnyx/telnyx-go/v4/shared"
+	"github.com/tidwall/gjson"
 )
 
 // Call Control command operations
@@ -968,6 +969,30 @@ type CallControlCommandResultWithConversationID struct {
 // Returns the unmodified JSON received from the API
 func (r CallControlCommandResultWithConversationID) RawJSON() string { return r.JSON.raw }
 func (r *CallControlCommandResultWithConversationID) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Settings for a community text-to-speech engine voice (`<EngineName>.<VoiceId>`).
+// `api_key_ref` is required. Every other key is a setting the engine declares in
+// its `voice_settings_schema`, and is passed to the engine as sent. See the
+// [Community TTS engines guide](/docs/voice/tts/community-engines).
+//
+// The property APIKeyRef is required.
+type CommunityVoiceSettingsParam struct {
+	// The `identifier` of an integration secret that holds your key for the engine.
+	// See
+	// [integration secrets documentation](https://developers.telnyx.com/api/secrets-manager/integration-secrets/create-integration-secret)
+	// for details.
+	APIKeyRef   string         `json:"api_key_ref" api:"required"`
+	ExtraFields map[string]any `json:"-"`
+	paramObj
+}
+
+func (r CommunityVoiceSettingsParam) MarshalJSON() (data []byte, err error) {
+	type shadow CommunityVoiceSettingsParam
+	return param.MarshalWithExtras(r, (*shadow)(&r), r.ExtraFields)
+}
+func (r *CommunityVoiceSettingsParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -4884,6 +4909,13 @@ type CallActionGatherUsingSpeakParams struct {
 	//     `sara-en`, `abdulaziz-en`, `sara-ar`, `abdulaziz-ar`, `nourah-ar`,
 	//     `abdullah-ar`. Native Arabic (Saudi dialect) and English voices only — no
 	//     `ModelId` segment.
+	//   - **Community engines:** Use `<EngineName>.<VoiceId>` (e.g., `acme.alpha`),
+	//     where `EngineName` is the lowercase name of a community text-to-speech engine
+	//     and `VoiceId` is one of the voices it lists. You must provide your key for the
+	//     engine as an integration identifier secret in
+	//     `"voice_settings": {"api_key_ref": "<secret_identifier>"}`; any other key in
+	//     `voice_settings` is a setting of the engine. See the
+	//     [Community TTS engines guide](/docs/voice/tts/community-engines).
 	//
 	// For service_level basic, you may define the gender of the speaker (male or
 	// female).
@@ -4935,7 +4967,8 @@ type CallActionGatherUsingSpeakParams struct {
 	//
 	// Any of "basic", "premium".
 	ServiceLevel CallActionGatherUsingSpeakParamsServiceLevel `json:"service_level,omitzero"`
-	// The settings associated with the voice selected
+	// The settings associated with the voice selected. For a community engine voice,
+	// `api_key_ref` plus the engine's own settings.
 	VoiceSettings CallActionGatherUsingSpeakParamsVoiceSettingsUnion `json:"voice_settings,omitzero"`
 	paramObj
 }
@@ -5006,59 +5039,63 @@ const (
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type CallActionGatherUsingSpeakParamsVoiceSettingsUnion struct {
-	OfElevenlabs *ElevenLabsVoiceSettingsParam      `json:",omitzero,inline"`
-	OfTelnyx     *TelnyxVoiceSettingsParam          `json:",omitzero,inline"`
-	OfAws        *AwsVoiceSettingsParam             `json:",omitzero,inline"`
-	OfMinimax    *shared.MinimaxVoiceSettingsParam  `json:",omitzero,inline"`
-	OfAzure      *shared.AzureVoiceSettingsParam    `json:",omitzero,inline"`
-	OfResemble   *shared.ResembleVoiceSettingsParam `json:",omitzero,inline"`
-	OfInworld    *shared.InworldVoiceSettingsParam  `json:",omitzero,inline"`
-	OfXai        *shared.XaiVoiceSettingsParam      `json:",omitzero,inline"`
-	OfSoniox     *SonioxVoiceSettingsParam          `json:",omitzero,inline"`
+	OfElevenLabsVoiceSettings *ElevenLabsVoiceSettingsParam      `json:",omitzero,inline"`
+	OfTelnyxVoiceSettings     *TelnyxVoiceSettingsParam          `json:",omitzero,inline"`
+	OfAwsVoiceSettings        *AwsVoiceSettingsParam             `json:",omitzero,inline"`
+	OfMinimaxVoiceSettings    *shared.MinimaxVoiceSettingsParam  `json:",omitzero,inline"`
+	OfAzureVoiceSettings      *shared.AzureVoiceSettingsParam    `json:",omitzero,inline"`
+	OfResembleVoiceSettings   *shared.ResembleVoiceSettingsParam `json:",omitzero,inline"`
+	OfInworldVoiceSettings    *shared.InworldVoiceSettingsParam  `json:",omitzero,inline"`
+	OfXAIVoiceSettings        *shared.XaiVoiceSettingsParam      `json:",omitzero,inline"`
+	OfSonioxVoiceSettings     *SonioxVoiceSettingsParam          `json:",omitzero,inline"`
+	OfCommunityVoiceSettings  *CommunityVoiceSettingsParam       `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfElevenlabs,
-		u.OfTelnyx,
-		u.OfAws,
-		u.OfMinimax,
-		u.OfAzure,
-		u.OfResemble,
-		u.OfInworld,
-		u.OfXai,
-		u.OfSoniox)
+	return param.MarshalUnion(u, u.OfElevenLabsVoiceSettings,
+		u.OfTelnyxVoiceSettings,
+		u.OfAwsVoiceSettings,
+		u.OfMinimaxVoiceSettings,
+		u.OfAzureVoiceSettings,
+		u.OfResembleVoiceSettings,
+		u.OfInworldVoiceSettings,
+		u.OfXAIVoiceSettings,
+		u.OfSonioxVoiceSettings,
+		u.OfCommunityVoiceSettings)
 }
 func (u *CallActionGatherUsingSpeakParamsVoiceSettingsUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *CallActionGatherUsingSpeakParamsVoiceSettingsUnion) asAny() any {
-	if !param.IsOmitted(u.OfElevenlabs) {
-		return u.OfElevenlabs
-	} else if !param.IsOmitted(u.OfTelnyx) {
-		return u.OfTelnyx
-	} else if !param.IsOmitted(u.OfAws) {
-		return u.OfAws
-	} else if !param.IsOmitted(u.OfMinimax) {
-		return u.OfMinimax
-	} else if !param.IsOmitted(u.OfAzure) {
-		return u.OfAzure
-	} else if !param.IsOmitted(u.OfResemble) {
-		return u.OfResemble
-	} else if !param.IsOmitted(u.OfInworld) {
-		return u.OfInworld
-	} else if !param.IsOmitted(u.OfXai) {
-		return u.OfXai
-	} else if !param.IsOmitted(u.OfSoniox) {
-		return u.OfSoniox
+	if !param.IsOmitted(u.OfElevenLabsVoiceSettings) {
+		return u.OfElevenLabsVoiceSettings
+	} else if !param.IsOmitted(u.OfTelnyxVoiceSettings) {
+		return u.OfTelnyxVoiceSettings
+	} else if !param.IsOmitted(u.OfAwsVoiceSettings) {
+		return u.OfAwsVoiceSettings
+	} else if !param.IsOmitted(u.OfMinimaxVoiceSettings) {
+		return u.OfMinimaxVoiceSettings
+	} else if !param.IsOmitted(u.OfAzureVoiceSettings) {
+		return u.OfAzureVoiceSettings
+	} else if !param.IsOmitted(u.OfResembleVoiceSettings) {
+		return u.OfResembleVoiceSettings
+	} else if !param.IsOmitted(u.OfInworldVoiceSettings) {
+		return u.OfInworldVoiceSettings
+	} else if !param.IsOmitted(u.OfXAIVoiceSettings) {
+		return u.OfXAIVoiceSettings
+	} else if !param.IsOmitted(u.OfSonioxVoiceSettings) {
+		return u.OfSonioxVoiceSettings
+	} else if !param.IsOmitted(u.OfCommunityVoiceSettings) {
+		return u.OfCommunityVoiceSettings
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetVoiceSpeed() *float64 {
-	if vt := u.OfTelnyx; vt != nil && vt.VoiceSpeed.Valid() {
+	if vt := u.OfTelnyxVoiceSettings; vt != nil && vt.VoiceSpeed.Valid() {
 		return &vt.VoiceSpeed.Value
 	}
 	return nil
@@ -5066,7 +5103,7 @@ func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetVoiceSpeed() *flo
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetLanguageBoost() *string {
-	if vt := u.OfMinimax; vt != nil {
+	if vt := u.OfMinimaxVoiceSettings; vt != nil {
 		return (*string)(&vt.LanguageBoost)
 	}
 	return nil
@@ -5074,7 +5111,7 @@ func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetLanguageBoost() *
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetPitch() *int64 {
-	if vt := u.OfMinimax; vt != nil && vt.Pitch.Valid() {
+	if vt := u.OfMinimaxVoiceSettings; vt != nil && vt.Pitch.Valid() {
 		return &vt.Pitch.Value
 	}
 	return nil
@@ -5082,7 +5119,7 @@ func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetPitch() *int64 {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetVol() *float64 {
-	if vt := u.OfMinimax; vt != nil && vt.Vol.Valid() {
+	if vt := u.OfMinimaxVoiceSettings; vt != nil && vt.Vol.Valid() {
 		return &vt.Vol.Value
 	}
 	return nil
@@ -5090,7 +5127,7 @@ func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetVol() *float64 {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetDeploymentID() *string {
-	if vt := u.OfAzure; vt != nil && vt.DeploymentID.Valid() {
+	if vt := u.OfAzureVoiceSettings; vt != nil && vt.DeploymentID.Valid() {
 		return &vt.DeploymentID.Value
 	}
 	return nil
@@ -5098,7 +5135,7 @@ func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetDeploymentID() *s
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetEffect() *string {
-	if vt := u.OfAzure; vt != nil {
+	if vt := u.OfAzureVoiceSettings; vt != nil {
 		return (*string)(&vt.Effect)
 	}
 	return nil
@@ -5106,7 +5143,7 @@ func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetEffect() *string 
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetGender() *string {
-	if vt := u.OfAzure; vt != nil {
+	if vt := u.OfAzureVoiceSettings; vt != nil {
 		return (*string)(&vt.Gender)
 	}
 	return nil
@@ -5114,7 +5151,7 @@ func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetGender() *string 
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetRegion() *string {
-	if vt := u.OfAzure; vt != nil && vt.Region.Valid() {
+	if vt := u.OfAzureVoiceSettings; vt != nil && vt.Region.Valid() {
 		return &vt.Region.Value
 	}
 	return nil
@@ -5122,7 +5159,7 @@ func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetRegion() *string 
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetFormat() *string {
-	if vt := u.OfResemble; vt != nil {
+	if vt := u.OfResembleVoiceSettings; vt != nil {
 		return (*string)(&vt.Format)
 	}
 	return nil
@@ -5130,7 +5167,7 @@ func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetFormat() *string 
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetPrecision() *string {
-	if vt := u.OfResemble; vt != nil {
+	if vt := u.OfResembleVoiceSettings; vt != nil {
 		return (*string)(&vt.Precision)
 	}
 	return nil
@@ -5138,7 +5175,7 @@ func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetPrecision() *stri
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetSampleRate() *string {
-	if vt := u.OfResemble; vt != nil {
+	if vt := u.OfResembleVoiceSettings; vt != nil {
 		return (*string)(&vt.SampleRate)
 	}
 	return nil
@@ -5146,7 +5183,7 @@ func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetSampleRate() *str
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetDeliveryMode() *string {
-	if vt := u.OfInworld; vt != nil {
+	if vt := u.OfInworldVoiceSettings; vt != nil {
 		return (*string)(&vt.DeliveryMode)
 	}
 	return nil
@@ -5154,7 +5191,7 @@ func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetDeliveryMode() *s
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetLanguage() *string {
-	if vt := u.OfXai; vt != nil && vt.Language.Valid() {
+	if vt := u.OfXAIVoiceSettings; vt != nil && vt.Language.Valid() {
 		return &vt.Language.Value
 	}
 	return nil
@@ -5162,7 +5199,7 @@ func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetLanguage() *strin
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetReduceSilence() *bool {
-	if vt := u.OfSoniox; vt != nil && vt.ReduceSilence.Valid() {
+	if vt := u.OfSonioxVoiceSettings; vt != nil && vt.ReduceSilence.Valid() {
 		return &vt.ReduceSilence.Value
 	}
 	return nil
@@ -5170,23 +5207,23 @@ func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetReduceSilence() *
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetType() *string {
-	if vt := u.OfElevenlabs; vt != nil {
+	if vt := u.OfElevenLabsVoiceSettings; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfTelnyx; vt != nil {
+	} else if vt := u.OfTelnyxVoiceSettings; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfAws; vt != nil {
+	} else if vt := u.OfAwsVoiceSettings; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfMinimax; vt != nil {
+	} else if vt := u.OfMinimaxVoiceSettings; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfAzure; vt != nil {
+	} else if vt := u.OfAzureVoiceSettings; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfResemble; vt != nil {
+	} else if vt := u.OfResembleVoiceSettings; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfInworld; vt != nil {
+	} else if vt := u.OfInworldVoiceSettings; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfXai; vt != nil {
+	} else if vt := u.OfXAIVoiceSettings; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfSoniox; vt != nil {
+	} else if vt := u.OfSonioxVoiceSettings; vt != nil {
 		return (*string)(&vt.Type)
 	}
 	return nil
@@ -5194,19 +5231,21 @@ func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetType() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetAPIKeyRef() *string {
-	if vt := u.OfElevenlabs; vt != nil && vt.APIKeyRef.Valid() {
+	if vt := u.OfElevenLabsVoiceSettings; vt != nil && vt.APIKeyRef.Valid() {
 		return &vt.APIKeyRef.Value
-	} else if vt := u.OfAzure; vt != nil && vt.APIKeyRef.Valid() {
+	} else if vt := u.OfAzureVoiceSettings; vt != nil && vt.APIKeyRef.Valid() {
 		return &vt.APIKeyRef.Value
+	} else if vt := u.OfCommunityVoiceSettings; vt != nil {
+		return (*string)(&vt.APIKeyRef)
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetSpeed() *float64 {
-	if vt := u.OfMinimax; vt != nil && vt.Speed.Valid() {
+	if vt := u.OfMinimaxVoiceSettings; vt != nil && vt.Speed.Valid() {
 		return &vt.Speed.Value
-	} else if vt := u.OfSoniox; vt != nil && vt.Speed.Valid() {
+	} else if vt := u.OfSonioxVoiceSettings; vt != nil && vt.Speed.Valid() {
 		return &vt.Speed.Value
 	}
 	return nil
@@ -5214,16 +5253,17 @@ func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetSpeed() *float64 
 
 func init() {
 	apijson.RegisterUnion[CallActionGatherUsingSpeakParamsVoiceSettingsUnion](
-		"type",
-		apijson.Discriminator[ElevenLabsVoiceSettingsParam]("elevenlabs"),
-		apijson.Discriminator[TelnyxVoiceSettingsParam]("telnyx"),
-		apijson.Discriminator[AwsVoiceSettingsParam]("aws"),
-		apijson.Discriminator[shared.MinimaxVoiceSettingsParam]("minimax"),
-		apijson.Discriminator[shared.AzureVoiceSettingsParam]("azure"),
-		apijson.Discriminator[shared.ResembleVoiceSettingsParam]("resemble"),
-		apijson.Discriminator[shared.InworldVoiceSettingsParam]("inworld"),
-		apijson.Discriminator[shared.XaiVoiceSettingsParam]("xai"),
-		apijson.Discriminator[SonioxVoiceSettingsParam]("soniox"),
+		"",
+		apijson.Variant[ElevenLabsVoiceSettingsParam](gjson.JSON),
+		apijson.Variant[TelnyxVoiceSettingsParam](gjson.JSON),
+		apijson.Variant[AwsVoiceSettingsParam](gjson.JSON),
+		apijson.Variant[shared.MinimaxVoiceSettingsParam](gjson.JSON),
+		apijson.Variant[shared.AzureVoiceSettingsParam](gjson.JSON),
+		apijson.Variant[shared.ResembleVoiceSettingsParam](gjson.JSON),
+		apijson.Variant[shared.InworldVoiceSettingsParam](gjson.JSON),
+		apijson.Variant[shared.XaiVoiceSettingsParam](gjson.JSON),
+		apijson.Variant[SonioxVoiceSettingsParam](gjson.JSON),
+		apijson.Variant[CommunityVoiceSettingsParam](gjson.JSON),
 	)
 }
 
@@ -5666,6 +5706,13 @@ type CallActionSpeakParams struct {
 	//     `sara-en`, `abdulaziz-en`, `sara-ar`, `abdulaziz-ar`, `nourah-ar`,
 	//     `abdullah-ar`. Native Arabic (Saudi dialect) and English voices only — no
 	//     `ModelId` segment.
+	//   - **Community engines:** Use `<EngineName>.<VoiceId>` (e.g., `acme.alpha`),
+	//     where `EngineName` is the lowercase name of a community text-to-speech engine
+	//     and `VoiceId` is one of the voices it lists. You must provide your key for the
+	//     engine as an integration identifier secret in
+	//     `"voice_settings": {"api_key_ref": "<secret_identifier>"}`; any other key in
+	//     `voice_settings` is a setting of the engine. See the
+	//     [Community TTS engines guide](/docs/voice/tts/community-engines).
 	//
 	// For service_level basic, you may define the gender of the speaker (male or
 	// female).
@@ -5706,7 +5753,8 @@ type CallActionSpeakParams struct {
 	//
 	// Any of "self", "opposite", "both".
 	TargetLegs CallActionSpeakParamsTargetLegs `json:"target_legs,omitzero"`
-	// The settings associated with the voice selected
+	// The settings associated with the voice selected. For a community engine voice,
+	// `api_key_ref` plus the engine's own settings.
 	VoiceSettings CallActionSpeakParamsVoiceSettingsUnion `json:"voice_settings,omitzero"`
 	paramObj
 }
@@ -5786,59 +5834,63 @@ const (
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type CallActionSpeakParamsVoiceSettingsUnion struct {
-	OfElevenlabs *ElevenLabsVoiceSettingsParam      `json:",omitzero,inline"`
-	OfTelnyx     *TelnyxVoiceSettingsParam          `json:",omitzero,inline"`
-	OfAws        *AwsVoiceSettingsParam             `json:",omitzero,inline"`
-	OfMinimax    *shared.MinimaxVoiceSettingsParam  `json:",omitzero,inline"`
-	OfAzure      *shared.AzureVoiceSettingsParam    `json:",omitzero,inline"`
-	OfResemble   *shared.ResembleVoiceSettingsParam `json:",omitzero,inline"`
-	OfInworld    *shared.InworldVoiceSettingsParam  `json:",omitzero,inline"`
-	OfXai        *shared.XaiVoiceSettingsParam      `json:",omitzero,inline"`
-	OfSoniox     *SonioxVoiceSettingsParam          `json:",omitzero,inline"`
+	OfElevenLabsVoiceSettings *ElevenLabsVoiceSettingsParam      `json:",omitzero,inline"`
+	OfTelnyxVoiceSettings     *TelnyxVoiceSettingsParam          `json:",omitzero,inline"`
+	OfAwsVoiceSettings        *AwsVoiceSettingsParam             `json:",omitzero,inline"`
+	OfMinimaxVoiceSettings    *shared.MinimaxVoiceSettingsParam  `json:",omitzero,inline"`
+	OfAzureVoiceSettings      *shared.AzureVoiceSettingsParam    `json:",omitzero,inline"`
+	OfResembleVoiceSettings   *shared.ResembleVoiceSettingsParam `json:",omitzero,inline"`
+	OfInworldVoiceSettings    *shared.InworldVoiceSettingsParam  `json:",omitzero,inline"`
+	OfXAIVoiceSettings        *shared.XaiVoiceSettingsParam      `json:",omitzero,inline"`
+	OfSonioxVoiceSettings     *SonioxVoiceSettingsParam          `json:",omitzero,inline"`
+	OfCommunityVoiceSettings  *CommunityVoiceSettingsParam       `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u CallActionSpeakParamsVoiceSettingsUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfElevenlabs,
-		u.OfTelnyx,
-		u.OfAws,
-		u.OfMinimax,
-		u.OfAzure,
-		u.OfResemble,
-		u.OfInworld,
-		u.OfXai,
-		u.OfSoniox)
+	return param.MarshalUnion(u, u.OfElevenLabsVoiceSettings,
+		u.OfTelnyxVoiceSettings,
+		u.OfAwsVoiceSettings,
+		u.OfMinimaxVoiceSettings,
+		u.OfAzureVoiceSettings,
+		u.OfResembleVoiceSettings,
+		u.OfInworldVoiceSettings,
+		u.OfXAIVoiceSettings,
+		u.OfSonioxVoiceSettings,
+		u.OfCommunityVoiceSettings)
 }
 func (u *CallActionSpeakParamsVoiceSettingsUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *CallActionSpeakParamsVoiceSettingsUnion) asAny() any {
-	if !param.IsOmitted(u.OfElevenlabs) {
-		return u.OfElevenlabs
-	} else if !param.IsOmitted(u.OfTelnyx) {
-		return u.OfTelnyx
-	} else if !param.IsOmitted(u.OfAws) {
-		return u.OfAws
-	} else if !param.IsOmitted(u.OfMinimax) {
-		return u.OfMinimax
-	} else if !param.IsOmitted(u.OfAzure) {
-		return u.OfAzure
-	} else if !param.IsOmitted(u.OfResemble) {
-		return u.OfResemble
-	} else if !param.IsOmitted(u.OfInworld) {
-		return u.OfInworld
-	} else if !param.IsOmitted(u.OfXai) {
-		return u.OfXai
-	} else if !param.IsOmitted(u.OfSoniox) {
-		return u.OfSoniox
+	if !param.IsOmitted(u.OfElevenLabsVoiceSettings) {
+		return u.OfElevenLabsVoiceSettings
+	} else if !param.IsOmitted(u.OfTelnyxVoiceSettings) {
+		return u.OfTelnyxVoiceSettings
+	} else if !param.IsOmitted(u.OfAwsVoiceSettings) {
+		return u.OfAwsVoiceSettings
+	} else if !param.IsOmitted(u.OfMinimaxVoiceSettings) {
+		return u.OfMinimaxVoiceSettings
+	} else if !param.IsOmitted(u.OfAzureVoiceSettings) {
+		return u.OfAzureVoiceSettings
+	} else if !param.IsOmitted(u.OfResembleVoiceSettings) {
+		return u.OfResembleVoiceSettings
+	} else if !param.IsOmitted(u.OfInworldVoiceSettings) {
+		return u.OfInworldVoiceSettings
+	} else if !param.IsOmitted(u.OfXAIVoiceSettings) {
+		return u.OfXAIVoiceSettings
+	} else if !param.IsOmitted(u.OfSonioxVoiceSettings) {
+		return u.OfSonioxVoiceSettings
+	} else if !param.IsOmitted(u.OfCommunityVoiceSettings) {
+		return u.OfCommunityVoiceSettings
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u CallActionSpeakParamsVoiceSettingsUnion) GetVoiceSpeed() *float64 {
-	if vt := u.OfTelnyx; vt != nil && vt.VoiceSpeed.Valid() {
+	if vt := u.OfTelnyxVoiceSettings; vt != nil && vt.VoiceSpeed.Valid() {
 		return &vt.VoiceSpeed.Value
 	}
 	return nil
@@ -5846,7 +5898,7 @@ func (u CallActionSpeakParamsVoiceSettingsUnion) GetVoiceSpeed() *float64 {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u CallActionSpeakParamsVoiceSettingsUnion) GetLanguageBoost() *string {
-	if vt := u.OfMinimax; vt != nil {
+	if vt := u.OfMinimaxVoiceSettings; vt != nil {
 		return (*string)(&vt.LanguageBoost)
 	}
 	return nil
@@ -5854,7 +5906,7 @@ func (u CallActionSpeakParamsVoiceSettingsUnion) GetLanguageBoost() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u CallActionSpeakParamsVoiceSettingsUnion) GetPitch() *int64 {
-	if vt := u.OfMinimax; vt != nil && vt.Pitch.Valid() {
+	if vt := u.OfMinimaxVoiceSettings; vt != nil && vt.Pitch.Valid() {
 		return &vt.Pitch.Value
 	}
 	return nil
@@ -5862,7 +5914,7 @@ func (u CallActionSpeakParamsVoiceSettingsUnion) GetPitch() *int64 {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u CallActionSpeakParamsVoiceSettingsUnion) GetVol() *float64 {
-	if vt := u.OfMinimax; vt != nil && vt.Vol.Valid() {
+	if vt := u.OfMinimaxVoiceSettings; vt != nil && vt.Vol.Valid() {
 		return &vt.Vol.Value
 	}
 	return nil
@@ -5870,7 +5922,7 @@ func (u CallActionSpeakParamsVoiceSettingsUnion) GetVol() *float64 {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u CallActionSpeakParamsVoiceSettingsUnion) GetDeploymentID() *string {
-	if vt := u.OfAzure; vt != nil && vt.DeploymentID.Valid() {
+	if vt := u.OfAzureVoiceSettings; vt != nil && vt.DeploymentID.Valid() {
 		return &vt.DeploymentID.Value
 	}
 	return nil
@@ -5878,7 +5930,7 @@ func (u CallActionSpeakParamsVoiceSettingsUnion) GetDeploymentID() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u CallActionSpeakParamsVoiceSettingsUnion) GetEffect() *string {
-	if vt := u.OfAzure; vt != nil {
+	if vt := u.OfAzureVoiceSettings; vt != nil {
 		return (*string)(&vt.Effect)
 	}
 	return nil
@@ -5886,7 +5938,7 @@ func (u CallActionSpeakParamsVoiceSettingsUnion) GetEffect() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u CallActionSpeakParamsVoiceSettingsUnion) GetGender() *string {
-	if vt := u.OfAzure; vt != nil {
+	if vt := u.OfAzureVoiceSettings; vt != nil {
 		return (*string)(&vt.Gender)
 	}
 	return nil
@@ -5894,7 +5946,7 @@ func (u CallActionSpeakParamsVoiceSettingsUnion) GetGender() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u CallActionSpeakParamsVoiceSettingsUnion) GetRegion() *string {
-	if vt := u.OfAzure; vt != nil && vt.Region.Valid() {
+	if vt := u.OfAzureVoiceSettings; vt != nil && vt.Region.Valid() {
 		return &vt.Region.Value
 	}
 	return nil
@@ -5902,7 +5954,7 @@ func (u CallActionSpeakParamsVoiceSettingsUnion) GetRegion() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u CallActionSpeakParamsVoiceSettingsUnion) GetFormat() *string {
-	if vt := u.OfResemble; vt != nil {
+	if vt := u.OfResembleVoiceSettings; vt != nil {
 		return (*string)(&vt.Format)
 	}
 	return nil
@@ -5910,7 +5962,7 @@ func (u CallActionSpeakParamsVoiceSettingsUnion) GetFormat() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u CallActionSpeakParamsVoiceSettingsUnion) GetPrecision() *string {
-	if vt := u.OfResemble; vt != nil {
+	if vt := u.OfResembleVoiceSettings; vt != nil {
 		return (*string)(&vt.Precision)
 	}
 	return nil
@@ -5918,7 +5970,7 @@ func (u CallActionSpeakParamsVoiceSettingsUnion) GetPrecision() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u CallActionSpeakParamsVoiceSettingsUnion) GetSampleRate() *string {
-	if vt := u.OfResemble; vt != nil {
+	if vt := u.OfResembleVoiceSettings; vt != nil {
 		return (*string)(&vt.SampleRate)
 	}
 	return nil
@@ -5926,7 +5978,7 @@ func (u CallActionSpeakParamsVoiceSettingsUnion) GetSampleRate() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u CallActionSpeakParamsVoiceSettingsUnion) GetDeliveryMode() *string {
-	if vt := u.OfInworld; vt != nil {
+	if vt := u.OfInworldVoiceSettings; vt != nil {
 		return (*string)(&vt.DeliveryMode)
 	}
 	return nil
@@ -5934,7 +5986,7 @@ func (u CallActionSpeakParamsVoiceSettingsUnion) GetDeliveryMode() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u CallActionSpeakParamsVoiceSettingsUnion) GetLanguage() *string {
-	if vt := u.OfXai; vt != nil && vt.Language.Valid() {
+	if vt := u.OfXAIVoiceSettings; vt != nil && vt.Language.Valid() {
 		return &vt.Language.Value
 	}
 	return nil
@@ -5942,7 +5994,7 @@ func (u CallActionSpeakParamsVoiceSettingsUnion) GetLanguage() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u CallActionSpeakParamsVoiceSettingsUnion) GetReduceSilence() *bool {
-	if vt := u.OfSoniox; vt != nil && vt.ReduceSilence.Valid() {
+	if vt := u.OfSonioxVoiceSettings; vt != nil && vt.ReduceSilence.Valid() {
 		return &vt.ReduceSilence.Value
 	}
 	return nil
@@ -5950,23 +6002,23 @@ func (u CallActionSpeakParamsVoiceSettingsUnion) GetReduceSilence() *bool {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u CallActionSpeakParamsVoiceSettingsUnion) GetType() *string {
-	if vt := u.OfElevenlabs; vt != nil {
+	if vt := u.OfElevenLabsVoiceSettings; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfTelnyx; vt != nil {
+	} else if vt := u.OfTelnyxVoiceSettings; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfAws; vt != nil {
+	} else if vt := u.OfAwsVoiceSettings; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfMinimax; vt != nil {
+	} else if vt := u.OfMinimaxVoiceSettings; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfAzure; vt != nil {
+	} else if vt := u.OfAzureVoiceSettings; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfResemble; vt != nil {
+	} else if vt := u.OfResembleVoiceSettings; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfInworld; vt != nil {
+	} else if vt := u.OfInworldVoiceSettings; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfXai; vt != nil {
+	} else if vt := u.OfXAIVoiceSettings; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfSoniox; vt != nil {
+	} else if vt := u.OfSonioxVoiceSettings; vt != nil {
 		return (*string)(&vt.Type)
 	}
 	return nil
@@ -5974,19 +6026,21 @@ func (u CallActionSpeakParamsVoiceSettingsUnion) GetType() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u CallActionSpeakParamsVoiceSettingsUnion) GetAPIKeyRef() *string {
-	if vt := u.OfElevenlabs; vt != nil && vt.APIKeyRef.Valid() {
+	if vt := u.OfElevenLabsVoiceSettings; vt != nil && vt.APIKeyRef.Valid() {
 		return &vt.APIKeyRef.Value
-	} else if vt := u.OfAzure; vt != nil && vt.APIKeyRef.Valid() {
+	} else if vt := u.OfAzureVoiceSettings; vt != nil && vt.APIKeyRef.Valid() {
 		return &vt.APIKeyRef.Value
+	} else if vt := u.OfCommunityVoiceSettings; vt != nil {
+		return (*string)(&vt.APIKeyRef)
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u CallActionSpeakParamsVoiceSettingsUnion) GetSpeed() *float64 {
-	if vt := u.OfMinimax; vt != nil && vt.Speed.Valid() {
+	if vt := u.OfMinimaxVoiceSettings; vt != nil && vt.Speed.Valid() {
 		return &vt.Speed.Value
-	} else if vt := u.OfSoniox; vt != nil && vt.Speed.Valid() {
+	} else if vt := u.OfSonioxVoiceSettings; vt != nil && vt.Speed.Valid() {
 		return &vt.Speed.Value
 	}
 	return nil
@@ -5994,16 +6048,17 @@ func (u CallActionSpeakParamsVoiceSettingsUnion) GetSpeed() *float64 {
 
 func init() {
 	apijson.RegisterUnion[CallActionSpeakParamsVoiceSettingsUnion](
-		"type",
-		apijson.Discriminator[ElevenLabsVoiceSettingsParam]("elevenlabs"),
-		apijson.Discriminator[TelnyxVoiceSettingsParam]("telnyx"),
-		apijson.Discriminator[AwsVoiceSettingsParam]("aws"),
-		apijson.Discriminator[shared.MinimaxVoiceSettingsParam]("minimax"),
-		apijson.Discriminator[shared.AzureVoiceSettingsParam]("azure"),
-		apijson.Discriminator[shared.ResembleVoiceSettingsParam]("resemble"),
-		apijson.Discriminator[shared.InworldVoiceSettingsParam]("inworld"),
-		apijson.Discriminator[shared.XaiVoiceSettingsParam]("xai"),
-		apijson.Discriminator[SonioxVoiceSettingsParam]("soniox"),
+		"",
+		apijson.Variant[ElevenLabsVoiceSettingsParam](gjson.JSON),
+		apijson.Variant[TelnyxVoiceSettingsParam](gjson.JSON),
+		apijson.Variant[AwsVoiceSettingsParam](gjson.JSON),
+		apijson.Variant[shared.MinimaxVoiceSettingsParam](gjson.JSON),
+		apijson.Variant[shared.AzureVoiceSettingsParam](gjson.JSON),
+		apijson.Variant[shared.ResembleVoiceSettingsParam](gjson.JSON),
+		apijson.Variant[shared.InworldVoiceSettingsParam](gjson.JSON),
+		apijson.Variant[shared.XaiVoiceSettingsParam](gjson.JSON),
+		apijson.Variant[SonioxVoiceSettingsParam](gjson.JSON),
+		apijson.Variant[CommunityVoiceSettingsParam](gjson.JSON),
 	)
 }
 
@@ -6023,6 +6078,14 @@ type CallActionStartAIAssistantParams struct {
 	// updated. The assistant's own `telephony_settings.send_message_history_updates`
 	// overrides this value when it is set.
 	SendMessageHistoryUpdates param.Opt[bool] `json:"send_message_history_updates,omitzero"`
+	// The voice the assistant speaks with on this call, in place of the assistant's
+	// own voice. Use the same formats as the `voice` of the
+	// [speak](/api-reference/call-commands/speak-text) command. A community engine
+	// voice is `<EngineName>.<VoiceId>` (e.g., `acme.alpha`) and needs
+	// `voice_settings.api_key_ref`; see the
+	// [Community TTS engines guide](/docs/voice/tts/community-engines). Without
+	// `voice`, the assistant's own voice is used.
+	Voice param.Opt[string] `json:"voice,omitzero"`
 	// AI Assistant configuration and per-call overrides. All fields except `id` are
 	// optional. Omitted assistant fields use the stored configuration. Supplied
 	// `voice_settings` and `transcription` objects replace their stored objects rather
@@ -6041,6 +6104,9 @@ type CallActionStartAIAssistantParams struct {
 	// using a model with native audio support (e.g. `fixie-ai/ultravox-v0_4`) will
 	// ignore this field.
 	Transcription TranscriptionConfigParam `json:"transcription,omitzero"`
+	// The settings of `voice`. A community engine voice requires `api_key_ref`; the
+	// other keys are the engine's own settings.
+	VoiceSettings CallActionStartAIAssistantParamsVoiceSettingsUnion `json:"voice_settings,omitzero"`
 	paramObj
 }
 
@@ -6162,6 +6228,238 @@ func init() {
 		apijson.Discriminator[ToolMessageParam]("tool"),
 		apijson.Discriminator[SystemMessageParam]("system"),
 		apijson.Discriminator[DeveloperMessageParam]("developer"),
+	)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type CallActionStartAIAssistantParamsVoiceSettingsUnion struct {
+	OfElevenLabsVoiceSettings *ElevenLabsVoiceSettingsParam      `json:",omitzero,inline"`
+	OfTelnyxVoiceSettings     *TelnyxVoiceSettingsParam          `json:",omitzero,inline"`
+	OfAwsVoiceSettings        *AwsVoiceSettingsParam             `json:",omitzero,inline"`
+	OfMinimaxVoiceSettings    *shared.MinimaxVoiceSettingsParam  `json:",omitzero,inline"`
+	OfAzureVoiceSettings      *shared.AzureVoiceSettingsParam    `json:",omitzero,inline"`
+	OfResembleVoiceSettings   *shared.ResembleVoiceSettingsParam `json:",omitzero,inline"`
+	OfInworldVoiceSettings    *shared.InworldVoiceSettingsParam  `json:",omitzero,inline"`
+	OfXAIVoiceSettings        *shared.XaiVoiceSettingsParam      `json:",omitzero,inline"`
+	OfSonioxVoiceSettings     *SonioxVoiceSettingsParam          `json:",omitzero,inline"`
+	OfCommunityVoiceSettings  *CommunityVoiceSettingsParam       `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u CallActionStartAIAssistantParamsVoiceSettingsUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfElevenLabsVoiceSettings,
+		u.OfTelnyxVoiceSettings,
+		u.OfAwsVoiceSettings,
+		u.OfMinimaxVoiceSettings,
+		u.OfAzureVoiceSettings,
+		u.OfResembleVoiceSettings,
+		u.OfInworldVoiceSettings,
+		u.OfXAIVoiceSettings,
+		u.OfSonioxVoiceSettings,
+		u.OfCommunityVoiceSettings)
+}
+func (u *CallActionStartAIAssistantParamsVoiceSettingsUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *CallActionStartAIAssistantParamsVoiceSettingsUnion) asAny() any {
+	if !param.IsOmitted(u.OfElevenLabsVoiceSettings) {
+		return u.OfElevenLabsVoiceSettings
+	} else if !param.IsOmitted(u.OfTelnyxVoiceSettings) {
+		return u.OfTelnyxVoiceSettings
+	} else if !param.IsOmitted(u.OfAwsVoiceSettings) {
+		return u.OfAwsVoiceSettings
+	} else if !param.IsOmitted(u.OfMinimaxVoiceSettings) {
+		return u.OfMinimaxVoiceSettings
+	} else if !param.IsOmitted(u.OfAzureVoiceSettings) {
+		return u.OfAzureVoiceSettings
+	} else if !param.IsOmitted(u.OfResembleVoiceSettings) {
+		return u.OfResembleVoiceSettings
+	} else if !param.IsOmitted(u.OfInworldVoiceSettings) {
+		return u.OfInworldVoiceSettings
+	} else if !param.IsOmitted(u.OfXAIVoiceSettings) {
+		return u.OfXAIVoiceSettings
+	} else if !param.IsOmitted(u.OfSonioxVoiceSettings) {
+		return u.OfSonioxVoiceSettings
+	} else if !param.IsOmitted(u.OfCommunityVoiceSettings) {
+		return u.OfCommunityVoiceSettings
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionStartAIAssistantParamsVoiceSettingsUnion) GetVoiceSpeed() *float64 {
+	if vt := u.OfTelnyxVoiceSettings; vt != nil && vt.VoiceSpeed.Valid() {
+		return &vt.VoiceSpeed.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionStartAIAssistantParamsVoiceSettingsUnion) GetLanguageBoost() *string {
+	if vt := u.OfMinimaxVoiceSettings; vt != nil {
+		return (*string)(&vt.LanguageBoost)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionStartAIAssistantParamsVoiceSettingsUnion) GetPitch() *int64 {
+	if vt := u.OfMinimaxVoiceSettings; vt != nil && vt.Pitch.Valid() {
+		return &vt.Pitch.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionStartAIAssistantParamsVoiceSettingsUnion) GetVol() *float64 {
+	if vt := u.OfMinimaxVoiceSettings; vt != nil && vt.Vol.Valid() {
+		return &vt.Vol.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionStartAIAssistantParamsVoiceSettingsUnion) GetDeploymentID() *string {
+	if vt := u.OfAzureVoiceSettings; vt != nil && vt.DeploymentID.Valid() {
+		return &vt.DeploymentID.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionStartAIAssistantParamsVoiceSettingsUnion) GetEffect() *string {
+	if vt := u.OfAzureVoiceSettings; vt != nil {
+		return (*string)(&vt.Effect)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionStartAIAssistantParamsVoiceSettingsUnion) GetGender() *string {
+	if vt := u.OfAzureVoiceSettings; vt != nil {
+		return (*string)(&vt.Gender)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionStartAIAssistantParamsVoiceSettingsUnion) GetRegion() *string {
+	if vt := u.OfAzureVoiceSettings; vt != nil && vt.Region.Valid() {
+		return &vt.Region.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionStartAIAssistantParamsVoiceSettingsUnion) GetFormat() *string {
+	if vt := u.OfResembleVoiceSettings; vt != nil {
+		return (*string)(&vt.Format)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionStartAIAssistantParamsVoiceSettingsUnion) GetPrecision() *string {
+	if vt := u.OfResembleVoiceSettings; vt != nil {
+		return (*string)(&vt.Precision)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionStartAIAssistantParamsVoiceSettingsUnion) GetSampleRate() *string {
+	if vt := u.OfResembleVoiceSettings; vt != nil {
+		return (*string)(&vt.SampleRate)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionStartAIAssistantParamsVoiceSettingsUnion) GetDeliveryMode() *string {
+	if vt := u.OfInworldVoiceSettings; vt != nil {
+		return (*string)(&vt.DeliveryMode)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionStartAIAssistantParamsVoiceSettingsUnion) GetLanguage() *string {
+	if vt := u.OfXAIVoiceSettings; vt != nil && vt.Language.Valid() {
+		return &vt.Language.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionStartAIAssistantParamsVoiceSettingsUnion) GetReduceSilence() *bool {
+	if vt := u.OfSonioxVoiceSettings; vt != nil && vt.ReduceSilence.Valid() {
+		return &vt.ReduceSilence.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionStartAIAssistantParamsVoiceSettingsUnion) GetType() *string {
+	if vt := u.OfElevenLabsVoiceSettings; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfTelnyxVoiceSettings; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfAwsVoiceSettings; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfMinimaxVoiceSettings; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfAzureVoiceSettings; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfResembleVoiceSettings; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfInworldVoiceSettings; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfXAIVoiceSettings; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfSonioxVoiceSettings; vt != nil {
+		return (*string)(&vt.Type)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionStartAIAssistantParamsVoiceSettingsUnion) GetAPIKeyRef() *string {
+	if vt := u.OfElevenLabsVoiceSettings; vt != nil && vt.APIKeyRef.Valid() {
+		return &vt.APIKeyRef.Value
+	} else if vt := u.OfAzureVoiceSettings; vt != nil && vt.APIKeyRef.Valid() {
+		return &vt.APIKeyRef.Value
+	} else if vt := u.OfCommunityVoiceSettings; vt != nil {
+		return (*string)(&vt.APIKeyRef)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u CallActionStartAIAssistantParamsVoiceSettingsUnion) GetSpeed() *float64 {
+	if vt := u.OfMinimaxVoiceSettings; vt != nil && vt.Speed.Valid() {
+		return &vt.Speed.Value
+	} else if vt := u.OfSonioxVoiceSettings; vt != nil && vt.Speed.Valid() {
+		return &vt.Speed.Value
+	}
+	return nil
+}
+
+func init() {
+	apijson.RegisterUnion[CallActionStartAIAssistantParamsVoiceSettingsUnion](
+		"",
+		apijson.Variant[ElevenLabsVoiceSettingsParam](gjson.JSON),
+		apijson.Variant[TelnyxVoiceSettingsParam](gjson.JSON),
+		apijson.Variant[AwsVoiceSettingsParam](gjson.JSON),
+		apijson.Variant[shared.MinimaxVoiceSettingsParam](gjson.JSON),
+		apijson.Variant[shared.AzureVoiceSettingsParam](gjson.JSON),
+		apijson.Variant[shared.ResembleVoiceSettingsParam](gjson.JSON),
+		apijson.Variant[shared.InworldVoiceSettingsParam](gjson.JSON),
+		apijson.Variant[shared.XaiVoiceSettingsParam](gjson.JSON),
+		apijson.Variant[SonioxVoiceSettingsParam](gjson.JSON),
+		apijson.Variant[CommunityVoiceSettingsParam](gjson.JSON),
 	)
 }
 

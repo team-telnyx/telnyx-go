@@ -30,7 +30,7 @@ func TestTexmlAccountRecordingJsonDeleteRecordingSidJson(t *testing.T) {
 		context.TODO(),
 		"6a09cdc3-8948-47f0-aa62-74ac943d6c58",
 		telnyx.TexmlAccountRecordingJsonDeleteRecordingSidJsonParams{
-			AccountSid: "account_sid",
+			AccountSid: "f5586561-8ff0-4291-a51b-c7dfe4139ff9",
 		},
 	)
 	if err != nil {
@@ -59,7 +59,7 @@ func TestTexmlAccountRecordingJsonGetRecordingSidJson(t *testing.T) {
 		context.TODO(),
 		"6a09cdc3-8948-47f0-aa62-74ac943d6c58",
 		telnyx.TexmlAccountRecordingJsonGetRecordingSidJsonParams{
-			AccountSid: "account_sid",
+			AccountSid: "f5586561-8ff0-4291-a51b-c7dfe4139ff9",
 		},
 	)
 	if err != nil {
