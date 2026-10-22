@@ -99,54 +99,72 @@ func (r *MessageService) Schedule(ctx context.Context, body MessageScheduleParam
 // This endpoint allows you to send a message with any messaging resource. Current
 // messaging resources include: long-code, short-code, number-pool, and
 // alphanumeric-sender-id.
-func (r *MessageService) Send(ctx context.Context, body MessageSendParams, opts ...option.RequestOption) (res *MessageSendResponse, err error) {
+func (r *MessageService) Send(ctx context.Context, params MessageSendParams, opts ...option.RequestOption) (res *MessageSendResponse, err error) {
+	if !param.IsOmitted(params.IdempotencyKey) {
+		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	path := "messages"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
 
 // Queues an MMS addressed to multiple recipients as a group conversation. Delivery
 // events are reported asynchronously through messaging webhooks.
-func (r *MessageService) SendGroupMms(ctx context.Context, body MessageSendGroupMmsParams, opts ...option.RequestOption) (res *MessageSendGroupMmsResponse, err error) {
+func (r *MessageService) SendGroupMms(ctx context.Context, params MessageSendGroupMmsParams, opts ...option.RequestOption) (res *MessageSendGroupMmsResponse, err error) {
+	if !param.IsOmitted(params.IdempotencyKey) {
+		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	path := "messages/group_mms"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
 
 // Queues an outbound SMS or MMS using a long-code sender. Delivery progress and
 // final disposition are reported asynchronously through messaging webhooks.
-func (r *MessageService) SendLongCode(ctx context.Context, body MessageSendLongCodeParams, opts ...option.RequestOption) (res *MessageSendLongCodeResponse, err error) {
+func (r *MessageService) SendLongCode(ctx context.Context, params MessageSendLongCodeParams, opts ...option.RequestOption) (res *MessageSendLongCodeResponse, err error) {
+	if !param.IsOmitted(params.IdempotencyKey) {
+		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	path := "messages/long_code"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
 
 // Queues an outbound message using a number pool. Telnyx selects an eligible
 // sender from the pool according to its messaging profile configuration.
-func (r *MessageService) SendNumberPool(ctx context.Context, body MessageSendNumberPoolParams, opts ...option.RequestOption) (res *MessageSendNumberPoolResponse, err error) {
+func (r *MessageService) SendNumberPool(ctx context.Context, params MessageSendNumberPoolParams, opts ...option.RequestOption) (res *MessageSendNumberPoolResponse, err error) {
+	if !param.IsOmitted(params.IdempotencyKey) {
+		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	path := "messages/number_pool"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
 
 // Queues an outbound SMS or MMS using a short-code sender. Delivery progress and
 // final disposition are reported asynchronously through messaging webhooks.
-func (r *MessageService) SendShortCode(ctx context.Context, body MessageSendShortCodeParams, opts ...option.RequestOption) (res *MessageSendShortCodeResponse, err error) {
+func (r *MessageService) SendShortCode(ctx context.Context, params MessageSendShortCodeParams, opts ...option.RequestOption) (res *MessageSendShortCodeResponse, err error) {
+	if !param.IsOmitted(params.IdempotencyKey) {
+		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	path := "messages/short_code"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
 
 // Send an SMS message using an alphanumeric sender ID. This is SMS only.
-func (r *MessageService) SendWithAlphanumericSender(ctx context.Context, body MessageSendWithAlphanumericSenderParams, opts ...option.RequestOption) (res *MessageSendWithAlphanumericSenderResponse, err error) {
+func (r *MessageService) SendWithAlphanumericSender(ctx context.Context, params MessageSendWithAlphanumericSenderParams, opts ...option.RequestOption) (res *MessageSendWithAlphanumericSenderResponse, err error) {
+	if !param.IsOmitted(params.IdempotencyKey) {
+		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	path := "messages/alphanumeric_sender_id"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
 
@@ -154,10 +172,13 @@ func (r *MessageService) SendWithAlphanumericSender(ctx context.Context, body Me
 // body, interactive elements, media, location, and reaction content are specified
 // in the `whatsapp_message` field. Delivery progress and final disposition are
 // reported asynchronously through messaging webhooks.
-func (r *MessageService) Whatsapp(ctx context.Context, body MessageWhatsappParams, opts ...option.RequestOption) (res *MessageWhatsappResponse, err error) {
+func (r *MessageService) Whatsapp(ctx context.Context, params MessageWhatsappParams, opts ...option.RequestOption) (res *MessageWhatsappResponse, err error) {
+	if !param.IsOmitted(params.IdempotencyKey) {
+		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	path := "messages/whatsapp"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
 
@@ -331,8 +352,13 @@ type MessagingInboundMessagePayloadBody struct {
 	Edit MessagingInboundMessagePayloadBodyEdit `json:"edit"`
 	// Meta WhatsApp message identifier for this webhook event.
 	ForeignID string `json:"foreign_id"`
-	// WhatsApp sender in E.164 format.
+	// WhatsApp sender in E.164 format. Empty when the user hides their phone number;
+	// `from_user_id` then identifies the sender.
 	From string `json:"from"`
+	// Business-scoped user ID (BSUID) of the WhatsApp sender when Meta provides one,
+	// for example `US.13491208655302741918`. When `from` is empty, pass this value as
+	// `to` to reply.
+	FromUserID string `json:"from_user_id"`
 	// Location shared in an RCS message.
 	Location MessagingInboundMessagePayloadBodyLocation `json:"location"`
 	// Details for a revoked WhatsApp message.
@@ -355,6 +381,7 @@ type MessagingInboundMessagePayloadBody struct {
 		Edit               respjson.Field
 		ForeignID          respjson.Field
 		From               respjson.Field
+		FromUserID         respjson.Field
 		Location           respjson.Field
 		Revoke             respjson.Field
 		SuggestionResponse respjson.Field
@@ -832,7 +859,8 @@ const (
 type OutboundMessagePayload struct {
 	// Identifies the type of resource.
 	ID string `json:"id" format:"uuid"`
-	// RCS webhook message body. Text messages use the text property.
+	// Message body for RCS and WhatsApp. RCS text messages use the text property.
+	// WhatsApp messages contain the `whatsapp_message` object from the send request.
 	Body OutboundMessagePayloadBody `json:"body"`
 	Cc   []OutboundMessagePayloadCc `json:"cc"`
 	// ISO 8601 formatted date indicating when the message was finalized.
@@ -883,6 +911,11 @@ type OutboundMessagePayload struct {
 	TcrCampaignID string `json:"tcr_campaign_id" api:"nullable"`
 	// The registration status of the TCR campaign.
 	TcrCampaignRegistered string `json:"tcr_campaign_registered" api:"nullable"`
+	// Telnyx ID of the WhatsApp template used by the message, when known.
+	TemplateID string `json:"template_id"`
+	// Name of the WhatsApp template used by the message. Present for WhatsApp template
+	// messages.
+	TemplateName string `json:"template_name"`
 	// Message body (i.e., content) as a non-empty string.
 	//
 	// **Required for SMS**
@@ -890,7 +923,7 @@ type OutboundMessagePayload struct {
 	To   []OutboundMessagePayloadTo `json:"to"`
 	// The type of message.
 	//
-	// Any of "SMS", "MMS", "RCS".
+	// Any of "SMS", "MMS", "RCS", "WHATSAPP".
 	Type OutboundMessagePayloadType `json:"type"`
 	// Message must be out of the queue by this time or else it will be discarded and
 	// marked as 'sending_failed'. Once the message moves out of the queue, this field
@@ -931,6 +964,8 @@ type OutboundMessagePayload struct {
 		TcrCampaignBillable   respjson.Field
 		TcrCampaignID         respjson.Field
 		TcrCampaignRegistered respjson.Field
+		TemplateID            respjson.Field
+		TemplateName          respjson.Field
 		Text                  respjson.Field
 		To                    respjson.Field
 		Type                  respjson.Field
@@ -949,10 +984,12 @@ func (r *OutboundMessagePayload) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// RCS webhook message body. Text messages use the text property.
+// Message body for RCS and WhatsApp. RCS text messages use the text property.
+// WhatsApp messages contain the `whatsapp_message` object from the send request.
 type OutboundMessagePayloadBody struct {
 	// RCS text message.
-	Text string `json:"text"`
+	Text        string         `json:"text"`
+	ExtraFields map[string]any `json:"" api:"extrafields"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Text        respjson.Field
@@ -1183,9 +1220,10 @@ func (r *OutboundMessagePayloadTo) UnmarshalJSON(data []byte) error {
 type OutboundMessagePayloadType string
 
 const (
-	OutboundMessagePayloadTypeSMS OutboundMessagePayloadType = "SMS"
-	OutboundMessagePayloadTypeMms OutboundMessagePayloadType = "MMS"
-	OutboundMessagePayloadTypeRcs OutboundMessagePayloadType = "RCS"
+	OutboundMessagePayloadTypeSMS      OutboundMessagePayloadType = "SMS"
+	OutboundMessagePayloadTypeMms      OutboundMessagePayloadType = "MMS"
+	OutboundMessagePayloadTypeRcs      OutboundMessagePayloadType = "RCS"
+	OutboundMessagePayloadTypeWhatsapp OutboundMessagePayloadType = "WHATSAPP"
 )
 
 type RcsAgentMessage struct {
@@ -2058,15 +2096,6 @@ func (r *WhatsappContact) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// ToParam converts this WhatsappContact to a WhatsappContactParam.
-//
-// Warning: the fields of the param type will not be present. ToParam should only
-// be used at the last possible moment before sending a request. Test for this with
-// WhatsappContactParam.Overrides()
-func (r WhatsappContact) ToParam() WhatsappContactParam {
-	return param.Override[WhatsappContactParam](json.RawMessage(r.RawJSON()))
-}
-
 type WhatsappContactAddress struct {
 	City        string `json:"city"`
 	Country     string `json:"country"`
@@ -2171,102 +2200,6 @@ func (r *WhatsappContactURL) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type WhatsappContactParam struct {
-	Birthday  param.Opt[string]             `json:"birthday,omitzero"`
-	Name      param.Opt[string]             `json:"name,omitzero"`
-	Addresses []WhatsappContactAddressParam `json:"addresses,omitzero"`
-	Emails    []WhatsappContactEmailParam   `json:"emails,omitzero"`
-	Org       WhatsappContactOrgParam       `json:"org,omitzero"`
-	Phones    []WhatsappContactPhoneParam   `json:"phones,omitzero"`
-	URLs      []WhatsappContactURLParam     `json:"urls,omitzero"`
-	paramObj
-}
-
-func (r WhatsappContactParam) MarshalJSON() (data []byte, err error) {
-	type shadow WhatsappContactParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *WhatsappContactParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type WhatsappContactAddressParam struct {
-	City        param.Opt[string] `json:"city,omitzero"`
-	Country     param.Opt[string] `json:"country,omitzero"`
-	CountryCode param.Opt[string] `json:"country_code,omitzero"`
-	State       param.Opt[string] `json:"state,omitzero"`
-	Street      param.Opt[string] `json:"street,omitzero"`
-	Type        param.Opt[string] `json:"type,omitzero"`
-	Zip         param.Opt[string] `json:"zip,omitzero"`
-	paramObj
-}
-
-func (r WhatsappContactAddressParam) MarshalJSON() (data []byte, err error) {
-	type shadow WhatsappContactAddressParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *WhatsappContactAddressParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type WhatsappContactEmailParam struct {
-	Email param.Opt[string] `json:"email,omitzero"`
-	Type  param.Opt[string] `json:"type,omitzero"`
-	paramObj
-}
-
-func (r WhatsappContactEmailParam) MarshalJSON() (data []byte, err error) {
-	type shadow WhatsappContactEmailParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *WhatsappContactEmailParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type WhatsappContactOrgParam struct {
-	Company    param.Opt[string] `json:"company,omitzero"`
-	Department param.Opt[string] `json:"department,omitzero"`
-	Title      param.Opt[string] `json:"title,omitzero"`
-	paramObj
-}
-
-func (r WhatsappContactOrgParam) MarshalJSON() (data []byte, err error) {
-	type shadow WhatsappContactOrgParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *WhatsappContactOrgParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type WhatsappContactPhoneParam struct {
-	Phone param.Opt[string] `json:"phone,omitzero"`
-	Type  param.Opt[string] `json:"type,omitzero"`
-	WaID  param.Opt[string] `json:"wa_id,omitzero"`
-	paramObj
-}
-
-func (r WhatsappContactPhoneParam) MarshalJSON() (data []byte, err error) {
-	type shadow WhatsappContactPhoneParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *WhatsappContactPhoneParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type WhatsappContactURLParam struct {
-	Type param.Opt[string] `json:"type,omitzero"`
-	URL  param.Opt[string] `json:"url,omitzero" format:"url"`
-	paramObj
-}
-
-func (r WhatsappContactURLParam) MarshalJSON() (data []byte, err error) {
-	type shadow WhatsappContactURLParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *WhatsappContactURLParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type WhatsappInteractive struct {
 	Action WhatsappInteractiveAction `json:"action"`
 	Body   WhatsappInteractiveBody   `json:"body"`
@@ -2290,15 +2223,6 @@ type WhatsappInteractive struct {
 func (r WhatsappInteractive) RawJSON() string { return r.JSON.raw }
 func (r *WhatsappInteractive) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-// ToParam converts this WhatsappInteractive to a WhatsappInteractiveParam.
-//
-// Warning: the fields of the param type will not be present. ToParam should only
-// be used at the last possible moment before sending a request. Test for this with
-// WhatsappInteractiveParam.Overrides()
-func (r WhatsappInteractive) ToParam() WhatsappInteractiveParam {
-	return param.Override[WhatsappInteractiveParam](json.RawMessage(r.RawJSON()))
 }
 
 type WhatsappInteractiveAction struct {
@@ -2605,268 +2529,6 @@ const (
 	WhatsappInteractiveTypeLocationRequestMessage WhatsappInteractiveType = "location_request_message"
 )
 
-type WhatsappInteractiveParam struct {
-	Action WhatsappInteractiveActionParam `json:"action,omitzero"`
-	Body   WhatsappInteractiveBodyParam   `json:"body,omitzero"`
-	Footer WhatsappInteractiveFooterParam `json:"footer,omitzero"`
-	Header WhatsappInteractiveHeaderParam `json:"header,omitzero"`
-	// Any of "cta_url", "list", "carousel", "button", "location_request_message".
-	Type WhatsappInteractiveType `json:"type,omitzero"`
-	paramObj
-}
-
-func (r WhatsappInteractiveParam) MarshalJSON() (data []byte, err error) {
-	type shadow WhatsappInteractiveParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *WhatsappInteractiveParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type WhatsappInteractiveActionParam struct {
-	Button            param.Opt[string]                        `json:"button,omitzero"`
-	CatalogID         param.Opt[string]                        `json:"catalog_id,omitzero"`
-	Mode              param.Opt[string]                        `json:"mode,omitzero"`
-	Name              param.Opt[string]                        `json:"name,omitzero"`
-	ProductRetailerID param.Opt[string]                        `json:"product_retailer_id,omitzero"`
-	Buttons           []WhatsappInteractiveActionButtonParam   `json:"buttons,omitzero"`
-	Cards             []WhatsappInteractiveActionCardParam     `json:"cards,omitzero"`
-	Parameters        WhatsappInteractiveActionParametersParam `json:"parameters,omitzero"`
-	Sections          []WhatsappInteractiveActionSectionParam  `json:"sections,omitzero"`
-	paramObj
-}
-
-func (r WhatsappInteractiveActionParam) MarshalJSON() (data []byte, err error) {
-	type shadow WhatsappInteractiveActionParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *WhatsappInteractiveActionParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type WhatsappInteractiveActionButtonParam struct {
-	Reply WhatsappInteractiveActionButtonsReplyParam `json:"reply,omitzero"`
-	// Any of "reply".
-	Type string `json:"type,omitzero"`
-	paramObj
-}
-
-func (r WhatsappInteractiveActionButtonParam) MarshalJSON() (data []byte, err error) {
-	type shadow WhatsappInteractiveActionButtonParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *WhatsappInteractiveActionButtonParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[WhatsappInteractiveActionButtonParam](
-		"type", "reply",
-	)
-}
-
-type WhatsappInteractiveActionButtonsReplyParam struct {
-	// unique identifier for each button, 256 character maximum
-	ID param.Opt[string] `json:"id,omitzero"`
-	// button label, 20 character maximum
-	Title param.Opt[string] `json:"title,omitzero"`
-	paramObj
-}
-
-func (r WhatsappInteractiveActionButtonsReplyParam) MarshalJSON() (data []byte, err error) {
-	type shadow WhatsappInteractiveActionButtonsReplyParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *WhatsappInteractiveActionButtonsReplyParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type WhatsappInteractiveActionCardParam struct {
-	// unique index for each card (0-9)
-	CardIndex param.Opt[int64]                          `json:"card_index,omitzero"`
-	Action    WhatsappInteractiveActionCardsActionParam `json:"action,omitzero"`
-	Body      WhatsappInteractiveActionCardsBodyParam   `json:"body,omitzero"`
-	Header    WhatsappInteractiveActionCardsHeaderParam `json:"header,omitzero"`
-	// Any of "cta_url".
-	Type string `json:"type,omitzero"`
-	paramObj
-}
-
-func (r WhatsappInteractiveActionCardParam) MarshalJSON() (data []byte, err error) {
-	type shadow WhatsappInteractiveActionCardParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *WhatsappInteractiveActionCardParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[WhatsappInteractiveActionCardParam](
-		"type", "cta_url",
-	)
-}
-
-type WhatsappInteractiveActionCardsActionParam struct {
-	// the unique ID of the catalog
-	CatalogID param.Opt[string] `json:"catalog_id,omitzero"`
-	// the unique retailer ID of the product
-	ProductRetailerID param.Opt[string] `json:"product_retailer_id,omitzero"`
-	paramObj
-}
-
-func (r WhatsappInteractiveActionCardsActionParam) MarshalJSON() (data []byte, err error) {
-	type shadow WhatsappInteractiveActionCardsActionParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *WhatsappInteractiveActionCardsActionParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type WhatsappInteractiveActionCardsBodyParam struct {
-	// 160 character maximum, up to 2 line breaks
-	Text param.Opt[string] `json:"text,omitzero"`
-	paramObj
-}
-
-func (r WhatsappInteractiveActionCardsBodyParam) MarshalJSON() (data []byte, err error) {
-	type shadow WhatsappInteractiveActionCardsBodyParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *WhatsappInteractiveActionCardsBodyParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type WhatsappInteractiveActionCardsHeaderParam struct {
-	Image WhatsappMediaParam `json:"image,omitzero"`
-	// Any of "image", "video".
-	Type  string             `json:"type,omitzero"`
-	Video WhatsappMediaParam `json:"video,omitzero"`
-	paramObj
-}
-
-func (r WhatsappInteractiveActionCardsHeaderParam) MarshalJSON() (data []byte, err error) {
-	type shadow WhatsappInteractiveActionCardsHeaderParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *WhatsappInteractiveActionCardsHeaderParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[WhatsappInteractiveActionCardsHeaderParam](
-		"type", "image", "video",
-	)
-}
-
-type WhatsappInteractiveActionParametersParam struct {
-	// button label text, 20 character maximum
-	DisplayText param.Opt[string] `json:"display_text,omitzero"`
-	// button URL to load when tapped by the user
-	URL param.Opt[string] `json:"url,omitzero" format:"url"`
-	paramObj
-}
-
-func (r WhatsappInteractiveActionParametersParam) MarshalJSON() (data []byte, err error) {
-	type shadow WhatsappInteractiveActionParametersParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *WhatsappInteractiveActionParametersParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type WhatsappInteractiveActionSectionParam struct {
-	// section title, 24 character maximum
-	Title        param.Opt[string]                                   `json:"title,omitzero"`
-	ProductItems []WhatsappInteractiveActionSectionsProductItemParam `json:"product_items,omitzero"`
-	Rows         []WhatsappInteractiveActionSectionsRowParam         `json:"rows,omitzero"`
-	paramObj
-}
-
-func (r WhatsappInteractiveActionSectionParam) MarshalJSON() (data []byte, err error) {
-	type shadow WhatsappInteractiveActionSectionParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *WhatsappInteractiveActionSectionParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type WhatsappInteractiveActionSectionsProductItemParam struct {
-	ProductRetailerID param.Opt[string] `json:"product_retailer_id,omitzero"`
-	paramObj
-}
-
-func (r WhatsappInteractiveActionSectionsProductItemParam) MarshalJSON() (data []byte, err error) {
-	type shadow WhatsappInteractiveActionSectionsProductItemParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *WhatsappInteractiveActionSectionsProductItemParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type WhatsappInteractiveActionSectionsRowParam struct {
-	// arbitrary string identifying the row, 200 character maximum
-	ID param.Opt[string] `json:"id,omitzero"`
-	// row description, 72 character maximum
-	Description param.Opt[string] `json:"description,omitzero"`
-	// row title, 24 character maximum
-	Title param.Opt[string] `json:"title,omitzero"`
-	paramObj
-}
-
-func (r WhatsappInteractiveActionSectionsRowParam) MarshalJSON() (data []byte, err error) {
-	type shadow WhatsappInteractiveActionSectionsRowParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *WhatsappInteractiveActionSectionsRowParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type WhatsappInteractiveBodyParam struct {
-	// body text, 1024 character maximum
-	Text param.Opt[string] `json:"text,omitzero"`
-	paramObj
-}
-
-func (r WhatsappInteractiveBodyParam) MarshalJSON() (data []byte, err error) {
-	type shadow WhatsappInteractiveBodyParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *WhatsappInteractiveBodyParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type WhatsappInteractiveFooterParam struct {
-	// footer text, 60 character maximum
-	Text param.Opt[string] `json:"text,omitzero"`
-	paramObj
-}
-
-func (r WhatsappInteractiveFooterParam) MarshalJSON() (data []byte, err error) {
-	type shadow WhatsappInteractiveFooterParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *WhatsappInteractiveFooterParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type WhatsappInteractiveHeaderParam struct {
-	SubText param.Opt[string] `json:"sub_text,omitzero"`
-	// header text, 60 character maximum
-	Text     param.Opt[string]  `json:"text,omitzero"`
-	Document WhatsappMediaParam `json:"document,omitzero"`
-	Image    WhatsappMediaParam `json:"image,omitzero"`
-	Video    WhatsappMediaParam `json:"video,omitzero"`
-	paramObj
-}
-
-func (r WhatsappInteractiveHeaderParam) MarshalJSON() (data []byte, err error) {
-	type shadow WhatsappInteractiveHeaderParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *WhatsappInteractiveHeaderParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type WhatsappLocation struct {
 	Address   string `json:"address"`
 	Latitude  string `json:"latitude"`
@@ -3015,15 +2677,6 @@ func (r *WhatsappMessageContent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// ToParam converts this WhatsappMessageContent to a WhatsappMessageContentParam.
-//
-// Warning: the fields of the param type will not be present. ToParam should only
-// be used at the last possible moment before sending a request. Test for this with
-// WhatsappMessageContentParam.Overrides()
-func (r WhatsappMessageContent) ToParam() WhatsappMessageContentParam {
-	return param.Override[WhatsappMessageContentParam](json.RawMessage(r.RawJSON()))
-}
-
 // Template message object. Provide either template_id or name + language to
 // identify the template.
 type WhatsappMessageContentTemplate struct {
@@ -3154,146 +2807,6 @@ const (
 	WhatsappMessageContentTypeText        WhatsappMessageContentType = "text"
 )
 
-type WhatsappMessageContentParam struct {
-	// custom data to return with status update
-	BizOpaqueCallbackData param.Opt[string]        `json:"biz_opaque_callback_data,omitzero"`
-	Audio                 WhatsappMediaParam       `json:"audio,omitzero"`
-	Contacts              []WhatsappContactParam   `json:"contacts,omitzero"`
-	Document              WhatsappMediaParam       `json:"document,omitzero"`
-	Image                 WhatsappMediaParam       `json:"image,omitzero"`
-	Interactive           WhatsappInteractiveParam `json:"interactive,omitzero"`
-	Location              WhatsappLocationParam    `json:"location,omitzero"`
-	Reaction              WhatsappReactionParam    `json:"reaction,omitzero"`
-	Sticker               WhatsappMediaParam       `json:"sticker,omitzero"`
-	// Template message object. Provide either template_id or name + language to
-	// identify the template.
-	Template WhatsappMessageContentTemplateParam `json:"template,omitzero"`
-	// Text message content. Can only be sent within a 24-hour customer service window.
-	Text WhatsappMessageContentTextParam `json:"text,omitzero"`
-	// Any of "audio", "document", "image", "sticker", "video", "interactive",
-	// "location", "template", "reaction", "contacts", "text".
-	Type  WhatsappMessageContentType `json:"type,omitzero"`
-	Video WhatsappMediaParam         `json:"video,omitzero"`
-	paramObj
-}
-
-func (r WhatsappMessageContentParam) MarshalJSON() (data []byte, err error) {
-	type shadow WhatsappMessageContentParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *WhatsappMessageContentParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Template message object. Provide either template_id or name + language to
-// identify the template.
-type WhatsappMessageContentTemplateParam struct {
-	// Template name as registered with Meta. Required unless template_id is provided.
-	Name param.Opt[string] `json:"name,omitzero"`
-	// Telnyx template ID (the id field from template list/get responses). When
-	// provided, name and language are resolved automatically.
-	TemplateID param.Opt[string] `json:"template_id,omitzero"`
-	// Template parameter values for header, body, and button components.
-	Components []WhatsappMessageContentTemplateComponentParam `json:"components,omitzero"`
-	// Template language. Required unless template_id is provided.
-	Language WhatsappMessageContentTemplateLanguageParam `json:"language,omitzero"`
-	paramObj
-}
-
-func (r WhatsappMessageContentTemplateParam) MarshalJSON() (data []byte, err error) {
-	type shadow WhatsappMessageContentTemplateParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *WhatsappMessageContentTemplateParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type WhatsappMessageContentTemplateComponentParam struct {
-	// Button index (required for button components)
-	Index      param.Opt[int64]                                         `json:"index,omitzero"`
-	Parameters []WhatsappMessageContentTemplateComponentsParameterParam `json:"parameters,omitzero"`
-	// Any of "quick_reply", "url".
-	SubType string `json:"sub_type,omitzero"`
-	// Any of "header", "body", "button".
-	Type string `json:"type,omitzero"`
-	paramObj
-}
-
-func (r WhatsappMessageContentTemplateComponentParam) MarshalJSON() (data []byte, err error) {
-	type shadow WhatsappMessageContentTemplateComponentParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *WhatsappMessageContentTemplateComponentParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[WhatsappMessageContentTemplateComponentParam](
-		"sub_type", "quick_reply", "url",
-	)
-	apijson.RegisterFieldValidator[WhatsappMessageContentTemplateComponentParam](
-		"type", "header", "body", "button",
-	)
-}
-
-type WhatsappMessageContentTemplateComponentsParameterParam struct {
-	Text param.Opt[string] `json:"text,omitzero"`
-	// Any of "text", "image", "video", "document", "currency", "date_time".
-	Type string `json:"type,omitzero"`
-	paramObj
-}
-
-func (r WhatsappMessageContentTemplateComponentsParameterParam) MarshalJSON() (data []byte, err error) {
-	type shadow WhatsappMessageContentTemplateComponentsParameterParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *WhatsappMessageContentTemplateComponentsParameterParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[WhatsappMessageContentTemplateComponentsParameterParam](
-		"type", "text", "image", "video", "document", "currency", "date_time",
-	)
-}
-
-// Template language. Required unless template_id is provided.
-//
-// The property Code is required.
-type WhatsappMessageContentTemplateLanguageParam struct {
-	// Language code (e.g. en_US)
-	Code   string            `json:"code" api:"required"`
-	Policy param.Opt[string] `json:"policy,omitzero"`
-	paramObj
-}
-
-func (r WhatsappMessageContentTemplateLanguageParam) MarshalJSON() (data []byte, err error) {
-	type shadow WhatsappMessageContentTemplateLanguageParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *WhatsappMessageContentTemplateLanguageParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Text message content. Can only be sent within a 24-hour customer service window.
-//
-// The property Body is required.
-type WhatsappMessageContentTextParam struct {
-	// The text message body.
-	Body string `json:"body" api:"required"`
-	// Whether to show a URL preview in the message.
-	PreviewURL param.Opt[bool] `json:"preview_url,omitzero"`
-	paramObj
-}
-
-func (r WhatsappMessageContentTextParam) MarshalJSON() (data []byte, err error) {
-	type shadow WhatsappMessageContentTextParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *WhatsappMessageContentTextParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type WhatsappReaction struct {
 	Emoji     string `json:"emoji"`
 	MessageID string `json:"message_id"`
@@ -3396,7 +2909,11 @@ type MessageGetResponseDataUnion struct {
 	TcrCampaignBillable   bool     `json:"tcr_campaign_billable"`
 	TcrCampaignID         string   `json:"tcr_campaign_id"`
 	TcrCampaignRegistered string   `json:"tcr_campaign_registered"`
-	Text                  string   `json:"text"`
+	// This field is from variant [OutboundMessagePayload].
+	TemplateID string `json:"template_id"`
+	// This field is from variant [OutboundMessagePayload].
+	TemplateName string `json:"template_name"`
+	Text         string `json:"text"`
 	// This field is a union of [[]OutboundMessagePayloadTo],
 	// [MessagingInboundMessagePayloadToUnion]
 	To         MessageGetResponseDataUnionTo `json:"to"`
@@ -3433,6 +2950,8 @@ type MessageGetResponseDataUnion struct {
 		TcrCampaignBillable   respjson.Field
 		TcrCampaignID         respjson.Field
 		TcrCampaignRegistered respjson.Field
+		TemplateID            respjson.Field
+		TemplateName          respjson.Field
 		Text                  respjson.Field
 		To                    respjson.Field
 		Type                  respjson.Field
@@ -3508,6 +3027,8 @@ type MessageGetResponseDataUnionBody struct {
 	// This field is from variant [MessagingInboundMessagePayloadBody].
 	From string `json:"from"`
 	// This field is from variant [MessagingInboundMessagePayloadBody].
+	FromUserID string `json:"from_user_id"`
+	// This field is from variant [MessagingInboundMessagePayloadBody].
 	Location MessagingInboundMessagePayloadBodyLocation `json:"location"`
 	// This field is from variant [MessagingInboundMessagePayloadBody].
 	Revoke MessagingInboundMessagePayloadBodyRevoke `json:"revoke"`
@@ -3525,6 +3046,7 @@ type MessageGetResponseDataUnionBody struct {
 		Edit               respjson.Field
 		ForeignID          respjson.Field
 		From               respjson.Field
+		FromUserID         respjson.Field
 		Location           respjson.Field
 		Revoke             respjson.Field
 		SuggestionResponse respjson.Field
@@ -4404,7 +3926,8 @@ type MessageSendParams struct {
 	// to the primary URL fails.
 	WebhookFailoverURL param.Opt[string] `json:"webhook_failover_url,omitzero" format:"url"`
 	// The URL where webhooks related to this message will be sent.
-	WebhookURL param.Opt[string] `json:"webhook_url,omitzero" format:"url"`
+	WebhookURL     param.Opt[string] `json:"webhook_url,omitzero" format:"url"`
+	IdempotencyKey param.Opt[string] `header:"Idempotency-Key,omitzero" json:"-"`
 	// Encoding to use for the message. `auto` (default) uses smart encoding to
 	// automatically select the most efficient encoding. `gsm7` forces GSM-7 encoding
 	// (returns 400 if message contains characters that cannot be encoded). `ucs2`
@@ -4470,7 +3993,8 @@ type MessageSendGroupMmsParams struct {
 	// to the primary URL fails.
 	WebhookFailoverURL param.Opt[string] `json:"webhook_failover_url,omitzero" format:"url"`
 	// The URL where webhooks related to this message will be sent.
-	WebhookURL param.Opt[string] `json:"webhook_url,omitzero" format:"url"`
+	WebhookURL     param.Opt[string] `json:"webhook_url,omitzero" format:"url"`
+	IdempotencyKey param.Opt[string] `header:"Idempotency-Key,omitzero" json:"-"`
 	// A list of media URLs. The total media size must be less than 1 MB.
 	MediaURLs []string `json:"media_urls,omitzero" format:"url"`
 	paramObj
@@ -4506,7 +4030,8 @@ type MessageSendLongCodeParams struct {
 	// to the primary URL fails.
 	WebhookFailoverURL param.Opt[string] `json:"webhook_failover_url,omitzero" format:"url"`
 	// The URL where webhooks related to this message will be sent.
-	WebhookURL param.Opt[string] `json:"webhook_url,omitzero" format:"url"`
+	WebhookURL     param.Opt[string] `json:"webhook_url,omitzero" format:"url"`
+	IdempotencyKey param.Opt[string] `header:"Idempotency-Key,omitzero" json:"-"`
 	// Encoding to use for the message. `auto` (default) uses smart encoding to
 	// automatically select the most efficient encoding. `gsm7` forces GSM-7 encoding
 	// (returns 400 if message contains characters that cannot be encoded). `ucs2`
@@ -4577,7 +4102,8 @@ type MessageSendNumberPoolParams struct {
 	// to the primary URL fails.
 	WebhookFailoverURL param.Opt[string] `json:"webhook_failover_url,omitzero" format:"url"`
 	// The URL where webhooks related to this message will be sent.
-	WebhookURL param.Opt[string] `json:"webhook_url,omitzero" format:"url"`
+	WebhookURL     param.Opt[string] `json:"webhook_url,omitzero" format:"url"`
+	IdempotencyKey param.Opt[string] `header:"Idempotency-Key,omitzero" json:"-"`
 	// Encoding to use for the message. `auto` (default) uses smart encoding to
 	// automatically select the most efficient encoding. `gsm7` forces GSM-7 encoding
 	// (returns 400 if message contains characters that cannot be encoded). `ucs2`
@@ -4648,7 +4174,8 @@ type MessageSendShortCodeParams struct {
 	// to the primary URL fails.
 	WebhookFailoverURL param.Opt[string] `json:"webhook_failover_url,omitzero" format:"url"`
 	// The URL where webhooks related to this message will be sent.
-	WebhookURL param.Opt[string] `json:"webhook_url,omitzero" format:"url"`
+	WebhookURL     param.Opt[string] `json:"webhook_url,omitzero" format:"url"`
+	IdempotencyKey param.Opt[string] `header:"Idempotency-Key,omitzero" json:"-"`
 	// Encoding to use for the message. `auto` (default) uses smart encoding to
 	// automatically select the most efficient encoding. `gsm7` forces GSM-7 encoding
 	// (returns 400 if message contains characters that cannot be encoded). `ucs2`
@@ -4711,7 +4238,8 @@ type MessageSendWithAlphanumericSenderParams struct {
 	// Callback URL for delivery status updates.
 	WebhookURL param.Opt[string] `json:"webhook_url,omitzero" format:"url"`
 	// If true, use the messaging profile's webhook settings.
-	UseProfileWebhooks param.Opt[bool] `json:"use_profile_webhooks,omitzero"`
+	UseProfileWebhooks param.Opt[bool]   `json:"use_profile_webhooks,omitzero"`
+	IdempotencyKey     param.Opt[string] `header:"Idempotency-Key,omitzero" json:"-"`
 	paramObj
 }
 
@@ -4726,13 +4254,16 @@ func (r *MessageSendWithAlphanumericSenderParams) UnmarshalJSON(data []byte) err
 type MessageWhatsappParams struct {
 	// Phone number in +E.164 format associated with Whatsapp account
 	From string `json:"from" api:"required"`
-	// Phone number in +E.164 format
-	To              string                      `json:"to" api:"required"`
-	WhatsappMessage WhatsappMessageContentParam `json:"whatsapp_message,omitzero" api:"required"`
+	// Recipient phone number in +E.164 format, or the business-scoped user ID (BSUID)
+	// of a WhatsApp user who hides their phone number, for example
+	// `US.13491208655302741918`. Authentication templates cannot be sent to a BSUID.
+	To              string                               `json:"to" api:"required"`
+	WhatsappMessage MessageWhatsappParamsWhatsappMessage `json:"whatsapp_message,omitzero" api:"required"`
 	// Messaging profile ID - required if the 'from' number is not SMS-enabled
 	MessagingProfileID param.Opt[string] `json:"messaging_profile_id,omitzero" format:"uuid"`
 	// The URL where webhooks related to this message will be sent.
-	WebhookURL param.Opt[string] `json:"webhook_url,omitzero" format:"url"`
+	WebhookURL     param.Opt[string] `json:"webhook_url,omitzero" format:"url"`
+	IdempotencyKey param.Opt[string] `header:"Idempotency-Key,omitzero" json:"-"`
 	// Message type - must be set to "WHATSAPP"
 	//
 	// Any of "WHATSAPP".
@@ -4745,6 +4276,621 @@ func (r MessageWhatsappParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *MessageWhatsappParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageWhatsappParamsWhatsappMessage struct {
+	// custom data to return with status update
+	BizOpaqueCallbackData param.Opt[string]                               `json:"biz_opaque_callback_data,omitzero"`
+	Audio                 WhatsappMediaParam                              `json:"audio,omitzero"`
+	Contacts              []MessageWhatsappParamsWhatsappMessageContact   `json:"contacts,omitzero"`
+	Document              WhatsappMediaParam                              `json:"document,omitzero"`
+	Image                 WhatsappMediaParam                              `json:"image,omitzero"`
+	Interactive           MessageWhatsappParamsWhatsappMessageInteractive `json:"interactive,omitzero"`
+	Location              WhatsappLocationParam                           `json:"location,omitzero"`
+	Reaction              WhatsappReactionParam                           `json:"reaction,omitzero"`
+	Sticker               WhatsappMediaParam                              `json:"sticker,omitzero"`
+	// Template message object. Provide either template_id or name + language to
+	// identify the template.
+	Template MessageWhatsappParamsWhatsappMessageTemplate `json:"template,omitzero"`
+	// Text message content. Can only be sent within a 24-hour customer service window.
+	Text MessageWhatsappParamsWhatsappMessageText `json:"text,omitzero"`
+	// Any of "audio", "document", "image", "sticker", "video", "interactive",
+	// "location", "template", "reaction", "contacts", "text".
+	Type  string             `json:"type,omitzero"`
+	Video WhatsappMediaParam `json:"video,omitzero"`
+	paramObj
+}
+
+func (r MessageWhatsappParamsWhatsappMessage) MarshalJSON() (data []byte, err error) {
+	type shadow MessageWhatsappParamsWhatsappMessage
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageWhatsappParamsWhatsappMessage) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[MessageWhatsappParamsWhatsappMessage](
+		"type", "audio", "document", "image", "sticker", "video", "interactive", "location", "template", "reaction", "contacts", "text",
+	)
+}
+
+type MessageWhatsappParamsWhatsappMessageContact struct {
+	Birthday  param.Opt[string]                                     `json:"birthday,omitzero"`
+	Addresses []MessageWhatsappParamsWhatsappMessageContactsAddress `json:"addresses,omitzero"`
+	Emails    []MessageWhatsappParamsWhatsappMessageContactsEmail   `json:"emails,omitzero"`
+	Name      MessageWhatsappParamsWhatsappMessageContactsName      `json:"name,omitzero"`
+	Org       MessageWhatsappParamsWhatsappMessageContactsOrg       `json:"org,omitzero"`
+	Phones    []MessageWhatsappParamsWhatsappMessageContactsPhone   `json:"phones,omitzero"`
+	URLs      []MessageWhatsappParamsWhatsappMessageContactsURL     `json:"urls,omitzero"`
+	paramObj
+}
+
+func (r MessageWhatsappParamsWhatsappMessageContact) MarshalJSON() (data []byte, err error) {
+	type shadow MessageWhatsappParamsWhatsappMessageContact
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageWhatsappParamsWhatsappMessageContact) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageWhatsappParamsWhatsappMessageContactsAddress struct {
+	City        param.Opt[string] `json:"city,omitzero"`
+	Country     param.Opt[string] `json:"country,omitzero"`
+	CountryCode param.Opt[string] `json:"country_code,omitzero"`
+	State       param.Opt[string] `json:"state,omitzero"`
+	Street      param.Opt[string] `json:"street,omitzero"`
+	Type        param.Opt[string] `json:"type,omitzero"`
+	Zip         param.Opt[string] `json:"zip,omitzero"`
+	paramObj
+}
+
+func (r MessageWhatsappParamsWhatsappMessageContactsAddress) MarshalJSON() (data []byte, err error) {
+	type shadow MessageWhatsappParamsWhatsappMessageContactsAddress
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageWhatsappParamsWhatsappMessageContactsAddress) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageWhatsappParamsWhatsappMessageContactsEmail struct {
+	Email param.Opt[string] `json:"email,omitzero"`
+	Type  param.Opt[string] `json:"type,omitzero"`
+	paramObj
+}
+
+func (r MessageWhatsappParamsWhatsappMessageContactsEmail) MarshalJSON() (data []byte, err error) {
+	type shadow MessageWhatsappParamsWhatsappMessageContactsEmail
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageWhatsappParamsWhatsappMessageContactsEmail) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The property FormattedName is required.
+type MessageWhatsappParamsWhatsappMessageContactsName struct {
+	// contact's full name as displayed in the message
+	FormattedName string            `json:"formatted_name" api:"required"`
+	FirstName     param.Opt[string] `json:"first_name,omitzero"`
+	LastName      param.Opt[string] `json:"last_name,omitzero"`
+	MiddleName    param.Opt[string] `json:"middle_name,omitzero"`
+	Prefix        param.Opt[string] `json:"prefix,omitzero"`
+	Suffix        param.Opt[string] `json:"suffix,omitzero"`
+	paramObj
+}
+
+func (r MessageWhatsappParamsWhatsappMessageContactsName) MarshalJSON() (data []byte, err error) {
+	type shadow MessageWhatsappParamsWhatsappMessageContactsName
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageWhatsappParamsWhatsappMessageContactsName) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageWhatsappParamsWhatsappMessageContactsOrg struct {
+	Company    param.Opt[string] `json:"company,omitzero"`
+	Department param.Opt[string] `json:"department,omitzero"`
+	Title      param.Opt[string] `json:"title,omitzero"`
+	paramObj
+}
+
+func (r MessageWhatsappParamsWhatsappMessageContactsOrg) MarshalJSON() (data []byte, err error) {
+	type shadow MessageWhatsappParamsWhatsappMessageContactsOrg
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageWhatsappParamsWhatsappMessageContactsOrg) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageWhatsappParamsWhatsappMessageContactsPhone struct {
+	Phone param.Opt[string] `json:"phone,omitzero"`
+	Type  param.Opt[string] `json:"type,omitzero"`
+	WaID  param.Opt[string] `json:"wa_id,omitzero"`
+	paramObj
+}
+
+func (r MessageWhatsappParamsWhatsappMessageContactsPhone) MarshalJSON() (data []byte, err error) {
+	type shadow MessageWhatsappParamsWhatsappMessageContactsPhone
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageWhatsappParamsWhatsappMessageContactsPhone) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageWhatsappParamsWhatsappMessageContactsURL struct {
+	Type param.Opt[string] `json:"type,omitzero"`
+	URL  param.Opt[string] `json:"url,omitzero" format:"url"`
+	paramObj
+}
+
+func (r MessageWhatsappParamsWhatsappMessageContactsURL) MarshalJSON() (data []byte, err error) {
+	type shadow MessageWhatsappParamsWhatsappMessageContactsURL
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageWhatsappParamsWhatsappMessageContactsURL) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageWhatsappParamsWhatsappMessageInteractive struct {
+	Action MessageWhatsappParamsWhatsappMessageInteractiveAction `json:"action,omitzero"`
+	Body   MessageWhatsappParamsWhatsappMessageInteractiveBody   `json:"body,omitzero"`
+	Footer MessageWhatsappParamsWhatsappMessageInteractiveFooter `json:"footer,omitzero"`
+	Header MessageWhatsappParamsWhatsappMessageInteractiveHeader `json:"header,omitzero"`
+	// Any of "cta_url", "list", "carousel", "button", "location_request_message",
+	// "flow".
+	Type string `json:"type,omitzero"`
+	paramObj
+}
+
+func (r MessageWhatsappParamsWhatsappMessageInteractive) MarshalJSON() (data []byte, err error) {
+	type shadow MessageWhatsappParamsWhatsappMessageInteractive
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageWhatsappParamsWhatsappMessageInteractive) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[MessageWhatsappParamsWhatsappMessageInteractive](
+		"type", "cta_url", "list", "carousel", "button", "location_request_message", "flow",
+	)
+}
+
+type MessageWhatsappParamsWhatsappMessageInteractiveAction struct {
+	Button            param.Opt[string]                                               `json:"button,omitzero"`
+	CatalogID         param.Opt[string]                                               `json:"catalog_id,omitzero"`
+	Mode              param.Opt[string]                                               `json:"mode,omitzero"`
+	Name              param.Opt[string]                                               `json:"name,omitzero"`
+	ProductRetailerID param.Opt[string]                                               `json:"product_retailer_id,omitzero"`
+	Buttons           []MessageWhatsappParamsWhatsappMessageInteractiveActionButton   `json:"buttons,omitzero"`
+	Cards             []MessageWhatsappParamsWhatsappMessageInteractiveActionCard     `json:"cards,omitzero"`
+	Parameters        MessageWhatsappParamsWhatsappMessageInteractiveActionParameters `json:"parameters,omitzero"`
+	Sections          []MessageWhatsappParamsWhatsappMessageInteractiveActionSection  `json:"sections,omitzero"`
+	paramObj
+}
+
+func (r MessageWhatsappParamsWhatsappMessageInteractiveAction) MarshalJSON() (data []byte, err error) {
+	type shadow MessageWhatsappParamsWhatsappMessageInteractiveAction
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageWhatsappParamsWhatsappMessageInteractiveAction) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageWhatsappParamsWhatsappMessageInteractiveActionButton struct {
+	Reply MessageWhatsappParamsWhatsappMessageInteractiveActionButtonsReply `json:"reply,omitzero"`
+	// Any of "reply".
+	Type string `json:"type,omitzero"`
+	paramObj
+}
+
+func (r MessageWhatsappParamsWhatsappMessageInteractiveActionButton) MarshalJSON() (data []byte, err error) {
+	type shadow MessageWhatsappParamsWhatsappMessageInteractiveActionButton
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageWhatsappParamsWhatsappMessageInteractiveActionButton) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[MessageWhatsappParamsWhatsappMessageInteractiveActionButton](
+		"type", "reply",
+	)
+}
+
+type MessageWhatsappParamsWhatsappMessageInteractiveActionButtonsReply struct {
+	// unique identifier for each button, 256 character maximum
+	ID param.Opt[string] `json:"id,omitzero"`
+	// button label, 20 character maximum
+	Title param.Opt[string] `json:"title,omitzero"`
+	paramObj
+}
+
+func (r MessageWhatsappParamsWhatsappMessageInteractiveActionButtonsReply) MarshalJSON() (data []byte, err error) {
+	type shadow MessageWhatsappParamsWhatsappMessageInteractiveActionButtonsReply
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageWhatsappParamsWhatsappMessageInteractiveActionButtonsReply) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageWhatsappParamsWhatsappMessageInteractiveActionCard struct {
+	// unique index for each card (0-9)
+	CardIndex param.Opt[int64]                                                 `json:"card_index,omitzero"`
+	Action    MessageWhatsappParamsWhatsappMessageInteractiveActionCardsAction `json:"action,omitzero"`
+	Body      MessageWhatsappParamsWhatsappMessageInteractiveActionCardsBody   `json:"body,omitzero"`
+	Header    MessageWhatsappParamsWhatsappMessageInteractiveActionCardsHeader `json:"header,omitzero"`
+	// Any of "cta_url".
+	Type string `json:"type,omitzero"`
+	paramObj
+}
+
+func (r MessageWhatsappParamsWhatsappMessageInteractiveActionCard) MarshalJSON() (data []byte, err error) {
+	type shadow MessageWhatsappParamsWhatsappMessageInteractiveActionCard
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageWhatsappParamsWhatsappMessageInteractiveActionCard) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[MessageWhatsappParamsWhatsappMessageInteractiveActionCard](
+		"type", "cta_url",
+	)
+}
+
+type MessageWhatsappParamsWhatsappMessageInteractiveActionCardsAction struct {
+	// the unique ID of the catalog
+	CatalogID param.Opt[string] `json:"catalog_id,omitzero"`
+	// the unique retailer ID of the product
+	ProductRetailerID param.Opt[string] `json:"product_retailer_id,omitzero"`
+	paramObj
+}
+
+func (r MessageWhatsappParamsWhatsappMessageInteractiveActionCardsAction) MarshalJSON() (data []byte, err error) {
+	type shadow MessageWhatsappParamsWhatsappMessageInteractiveActionCardsAction
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageWhatsappParamsWhatsappMessageInteractiveActionCardsAction) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageWhatsappParamsWhatsappMessageInteractiveActionCardsBody struct {
+	// 160 character maximum, up to 2 line breaks
+	Text param.Opt[string] `json:"text,omitzero"`
+	paramObj
+}
+
+func (r MessageWhatsappParamsWhatsappMessageInteractiveActionCardsBody) MarshalJSON() (data []byte, err error) {
+	type shadow MessageWhatsappParamsWhatsappMessageInteractiveActionCardsBody
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageWhatsappParamsWhatsappMessageInteractiveActionCardsBody) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageWhatsappParamsWhatsappMessageInteractiveActionCardsHeader struct {
+	Image WhatsappMediaParam `json:"image,omitzero"`
+	// Any of "image", "video".
+	Type  string             `json:"type,omitzero"`
+	Video WhatsappMediaParam `json:"video,omitzero"`
+	paramObj
+}
+
+func (r MessageWhatsappParamsWhatsappMessageInteractiveActionCardsHeader) MarshalJSON() (data []byte, err error) {
+	type shadow MessageWhatsappParamsWhatsappMessageInteractiveActionCardsHeader
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageWhatsappParamsWhatsappMessageInteractiveActionCardsHeader) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[MessageWhatsappParamsWhatsappMessageInteractiveActionCardsHeader](
+		"type", "image", "video",
+	)
+}
+
+type MessageWhatsappParamsWhatsappMessageInteractiveActionParameters struct {
+	// button label text, 20 character maximum
+	DisplayText param.Opt[string] `json:"display_text,omitzero"`
+	// text of the button that opens the flow, 1-20 characters, no emoji. Required for
+	// flow messages
+	FlowCta param.Opt[string] `json:"flow_cta,omitzero"`
+	// ID of the flow to open. Provide exactly one of flow_id or flow_name
+	FlowID param.Opt[string] `json:"flow_id,omitzero"`
+	// flow message version, must be 3. Required for flow messages
+	FlowMessageVersion param.Opt[string] `json:"flow_message_version,omitzero"`
+	// name of the flow to open. Provide exactly one of flow_id or flow_name
+	FlowName param.Opt[string] `json:"flow_name,omitzero"`
+	// business-generated identifier for the flow session. Returned in the flow
+	// response for correlation
+	FlowToken param.Opt[string] `json:"flow_token,omitzero"`
+	// button URL to load when tapped by the user
+	URL param.Opt[string] `json:"url,omitzero" format:"url"`
+	// how the flow starts. navigate opens the screen in flow_action_payload;
+	// data_exchange requests the first screen from the business's flow endpoint.
+	// Defaults to navigate
+	//
+	// Any of "navigate", "data_exchange".
+	FlowAction string `json:"flow_action,omitzero"`
+	// optional initial screen and data. When omitted, the flow opens on its first
+	// entry screen. Must be omitted when flow_action is data_exchange
+	FlowActionPayload MessageWhatsappParamsWhatsappMessageInteractiveActionParametersFlowActionPayload `json:"flow_action_payload,omitzero"`
+	// use draft to test an unpublished flow. Defaults to published
+	//
+	// Any of "draft", "published".
+	Mode string `json:"mode,omitzero"`
+	paramObj
+}
+
+func (r MessageWhatsappParamsWhatsappMessageInteractiveActionParameters) MarshalJSON() (data []byte, err error) {
+	type shadow MessageWhatsappParamsWhatsappMessageInteractiveActionParameters
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageWhatsappParamsWhatsappMessageInteractiveActionParameters) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[MessageWhatsappParamsWhatsappMessageInteractiveActionParameters](
+		"flow_action", "navigate", "data_exchange",
+	)
+	apijson.RegisterFieldValidator[MessageWhatsappParamsWhatsappMessageInteractiveActionParameters](
+		"mode", "draft", "published",
+	)
+}
+
+// optional initial screen and data. When omitted, the flow opens on its first
+// entry screen. Must be omitted when flow_action is data_exchange
+type MessageWhatsappParamsWhatsappMessageInteractiveActionParametersFlowActionPayload struct {
+	// ID of the first screen to show
+	Screen param.Opt[string] `json:"screen,omitzero"`
+	// input data for the first screen. Must be a non-empty object when provided
+	Data any `json:"data,omitzero"`
+	paramObj
+}
+
+func (r MessageWhatsappParamsWhatsappMessageInteractiveActionParametersFlowActionPayload) MarshalJSON() (data []byte, err error) {
+	type shadow MessageWhatsappParamsWhatsappMessageInteractiveActionParametersFlowActionPayload
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageWhatsappParamsWhatsappMessageInteractiveActionParametersFlowActionPayload) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageWhatsappParamsWhatsappMessageInteractiveActionSection struct {
+	// section title, 24 character maximum
+	Title        param.Opt[string]                                                          `json:"title,omitzero"`
+	ProductItems []MessageWhatsappParamsWhatsappMessageInteractiveActionSectionsProductItem `json:"product_items,omitzero"`
+	Rows         []MessageWhatsappParamsWhatsappMessageInteractiveActionSectionsRow         `json:"rows,omitzero"`
+	paramObj
+}
+
+func (r MessageWhatsappParamsWhatsappMessageInteractiveActionSection) MarshalJSON() (data []byte, err error) {
+	type shadow MessageWhatsappParamsWhatsappMessageInteractiveActionSection
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageWhatsappParamsWhatsappMessageInteractiveActionSection) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageWhatsappParamsWhatsappMessageInteractiveActionSectionsProductItem struct {
+	ProductRetailerID param.Opt[string] `json:"product_retailer_id,omitzero"`
+	paramObj
+}
+
+func (r MessageWhatsappParamsWhatsappMessageInteractiveActionSectionsProductItem) MarshalJSON() (data []byte, err error) {
+	type shadow MessageWhatsappParamsWhatsappMessageInteractiveActionSectionsProductItem
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageWhatsappParamsWhatsappMessageInteractiveActionSectionsProductItem) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageWhatsappParamsWhatsappMessageInteractiveActionSectionsRow struct {
+	// arbitrary string identifying the row, 200 character maximum
+	ID param.Opt[string] `json:"id,omitzero"`
+	// row description, 72 character maximum
+	Description param.Opt[string] `json:"description,omitzero"`
+	// row title, 24 character maximum
+	Title param.Opt[string] `json:"title,omitzero"`
+	paramObj
+}
+
+func (r MessageWhatsappParamsWhatsappMessageInteractiveActionSectionsRow) MarshalJSON() (data []byte, err error) {
+	type shadow MessageWhatsappParamsWhatsappMessageInteractiveActionSectionsRow
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageWhatsappParamsWhatsappMessageInteractiveActionSectionsRow) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageWhatsappParamsWhatsappMessageInteractiveBody struct {
+	// body text, 1024 character maximum
+	Text param.Opt[string] `json:"text,omitzero"`
+	paramObj
+}
+
+func (r MessageWhatsappParamsWhatsappMessageInteractiveBody) MarshalJSON() (data []byte, err error) {
+	type shadow MessageWhatsappParamsWhatsappMessageInteractiveBody
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageWhatsappParamsWhatsappMessageInteractiveBody) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageWhatsappParamsWhatsappMessageInteractiveFooter struct {
+	// footer text, 60 character maximum
+	Text param.Opt[string] `json:"text,omitzero"`
+	paramObj
+}
+
+func (r MessageWhatsappParamsWhatsappMessageInteractiveFooter) MarshalJSON() (data []byte, err error) {
+	type shadow MessageWhatsappParamsWhatsappMessageInteractiveFooter
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageWhatsappParamsWhatsappMessageInteractiveFooter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The property Type is required.
+type MessageWhatsappParamsWhatsappMessageInteractiveHeader struct {
+	// header type. Required when a header is provided; the matching document, image,
+	// text, or video field must be set
+	//
+	// Any of "document", "image", "text", "video".
+	Type    string            `json:"type,omitzero" api:"required"`
+	SubText param.Opt[string] `json:"sub_text,omitzero"`
+	// header text, 60 character maximum
+	Text     param.Opt[string]  `json:"text,omitzero"`
+	Document WhatsappMediaParam `json:"document,omitzero"`
+	Image    WhatsappMediaParam `json:"image,omitzero"`
+	Video    WhatsappMediaParam `json:"video,omitzero"`
+	paramObj
+}
+
+func (r MessageWhatsappParamsWhatsappMessageInteractiveHeader) MarshalJSON() (data []byte, err error) {
+	type shadow MessageWhatsappParamsWhatsappMessageInteractiveHeader
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageWhatsappParamsWhatsappMessageInteractiveHeader) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[MessageWhatsappParamsWhatsappMessageInteractiveHeader](
+		"type", "document", "image", "text", "video",
+	)
+}
+
+// Template message object. Provide either template_id or name + language to
+// identify the template.
+type MessageWhatsappParamsWhatsappMessageTemplate struct {
+	// Template name as registered with Meta. Required unless template_id is provided.
+	Name param.Opt[string] `json:"name,omitzero"`
+	// Telnyx template ID (the id field from template list/get responses). When
+	// provided, name and language are resolved automatically.
+	TemplateID param.Opt[string] `json:"template_id,omitzero"`
+	// Template parameter values for header, body, and button components.
+	Components []MessageWhatsappParamsWhatsappMessageTemplateComponent `json:"components,omitzero"`
+	// Template language. Required unless template_id is provided.
+	Language MessageWhatsappParamsWhatsappMessageTemplateLanguage `json:"language,omitzero"`
+	paramObj
+}
+
+func (r MessageWhatsappParamsWhatsappMessageTemplate) MarshalJSON() (data []byte, err error) {
+	type shadow MessageWhatsappParamsWhatsappMessageTemplate
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageWhatsappParamsWhatsappMessageTemplate) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageWhatsappParamsWhatsappMessageTemplateComponent struct {
+	// Button index (required for button components)
+	Index      param.Opt[int64]                                                  `json:"index,omitzero"`
+	Parameters []MessageWhatsappParamsWhatsappMessageTemplateComponentsParameter `json:"parameters,omitzero"`
+	// Any of "quick_reply", "url", "flow".
+	SubType string `json:"sub_type,omitzero"`
+	// Any of "header", "body", "button".
+	Type string `json:"type,omitzero"`
+	paramObj
+}
+
+func (r MessageWhatsappParamsWhatsappMessageTemplateComponent) MarshalJSON() (data []byte, err error) {
+	type shadow MessageWhatsappParamsWhatsappMessageTemplateComponent
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageWhatsappParamsWhatsappMessageTemplateComponent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[MessageWhatsappParamsWhatsappMessageTemplateComponent](
+		"sub_type", "quick_reply", "url", "flow",
+	)
+	apijson.RegisterFieldValidator[MessageWhatsappParamsWhatsappMessageTemplateComponent](
+		"type", "header", "body", "button",
+	)
+}
+
+type MessageWhatsappParamsWhatsappMessageTemplateComponentsParameter struct {
+	Text param.Opt[string] `json:"text,omitzero"`
+	// Flow button parameters. Used with type action on a flow button component
+	Action MessageWhatsappParamsWhatsappMessageTemplateComponentsParametersAction `json:"action,omitzero"`
+	// Any of "text", "image", "video", "document", "currency", "date_time", "action".
+	Type string `json:"type,omitzero"`
+	paramObj
+}
+
+func (r MessageWhatsappParamsWhatsappMessageTemplateComponentsParameter) MarshalJSON() (data []byte, err error) {
+	type shadow MessageWhatsappParamsWhatsappMessageTemplateComponentsParameter
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageWhatsappParamsWhatsappMessageTemplateComponentsParameter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[MessageWhatsappParamsWhatsappMessageTemplateComponentsParameter](
+		"type", "text", "image", "video", "document", "currency", "date_time", "action",
+	)
+}
+
+// Flow button parameters. Used with type action on a flow button component
+type MessageWhatsappParamsWhatsappMessageTemplateComponentsParametersAction struct {
+	// business-generated identifier for the flow session. Returned in the flow
+	// response for correlation
+	FlowToken param.Opt[string] `json:"flow_token,omitzero"`
+	// input data for the first screen of the flow
+	FlowActionData any `json:"flow_action_data,omitzero"`
+	paramObj
+}
+
+func (r MessageWhatsappParamsWhatsappMessageTemplateComponentsParametersAction) MarshalJSON() (data []byte, err error) {
+	type shadow MessageWhatsappParamsWhatsappMessageTemplateComponentsParametersAction
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageWhatsappParamsWhatsappMessageTemplateComponentsParametersAction) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Template language. Required unless template_id is provided.
+//
+// The property Code is required.
+type MessageWhatsappParamsWhatsappMessageTemplateLanguage struct {
+	// Language code (e.g. en_US)
+	Code   string            `json:"code" api:"required"`
+	Policy param.Opt[string] `json:"policy,omitzero"`
+	paramObj
+}
+
+func (r MessageWhatsappParamsWhatsappMessageTemplateLanguage) MarshalJSON() (data []byte, err error) {
+	type shadow MessageWhatsappParamsWhatsappMessageTemplateLanguage
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageWhatsappParamsWhatsappMessageTemplateLanguage) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Text message content. Can only be sent within a 24-hour customer service window.
+//
+// The property Body is required.
+type MessageWhatsappParamsWhatsappMessageText struct {
+	// The text message body.
+	Body string `json:"body" api:"required"`
+	// Whether to show a URL preview in the message.
+	PreviewURL param.Opt[bool] `json:"preview_url,omitzero"`
+	paramObj
+}
+
+func (r MessageWhatsappParamsWhatsappMessageText) MarshalJSON() (data []byte, err error) {
+	type shadow MessageWhatsappParamsWhatsappMessageText
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageWhatsappParamsWhatsappMessageText) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

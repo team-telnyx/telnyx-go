@@ -16,10 +16,13 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
 
+// Manage Edge Compute functions
+//
 // ComputeFuncService contains methods and other services that help with
 // interacting with the telnyx API.
 //
@@ -28,7 +31,8 @@ import (
 // the [NewComputeFuncService] method instead.
 type ComputeFuncService struct {
 	Options []option.RequestOption
-	Export  ComputeFuncExportService
+	// Manage Edge Compute functions
+	Export ComputeFuncExportService
 }
 
 // NewComputeFuncService generates a new service that applies the given options to
@@ -39,6 +43,35 @@ func NewComputeFuncService(opts ...option.RequestOption) (r ComputeFuncService) 
 	r.Options = opts
 	r.Export = NewComputeFuncExportService(opts...)
 	return
+}
+
+// List functions for the authenticated organization. Each function includes its
+// persisted function-scoped bindings. Actor bindings expose actor_type and
+// env_name, allowing clients to identify every function attached to a Stateful
+// Actor type.
+func (r *ComputeFuncService) List(ctx context.Context, query ComputeFuncListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[ComputeFuncListResponse], err error) {
+	var raw *http.Response
+	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	path := "compute/funcs"
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// List functions for the authenticated organization. Each function includes its
+// persisted function-scoped bindings. Actor bindings expose actor_type and
+// env_name, allowing clients to identify every function attached to a Stateful
+// Actor type.
+func (r *ComputeFuncService) ListAutoPaging(ctx context.Context, query ComputeFuncListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[ComputeFuncListResponse] {
+	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Returns logs oldest first. `type=runtime` (default) returns function
@@ -133,6 +166,84 @@ type LogsMeta struct {
 // Returns the unmodified JSON received from the API
 func (r LogsMeta) RawJSON() string { return r.JSON.raw }
 func (r *LogsMeta) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ComputeFuncListResponse struct {
+	ID string `json:"id"`
+	// Always present; empty when the function has no bindings.
+	Bindings     []ComputeFuncListResponseBinding `json:"bindings"`
+	CreatedAt    string                           `json:"created_at"`
+	InvokeURL    string                           `json:"invoke_url"`
+	Message      string                           `json:"message"`
+	Name         string                           `json:"name"`
+	RecordType   string                           `json:"record_type"`
+	Status       string                           `json:"status"`
+	StatusDetail string                           `json:"status_detail"`
+	UpdatedAt    string                           `json:"updated_at"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Bindings     respjson.Field
+		CreatedAt    respjson.Field
+		InvokeURL    respjson.Field
+		Message      respjson.Field
+		Name         respjson.Field
+		RecordType   respjson.Field
+		Status       respjson.Field
+		StatusDetail respjson.Field
+		UpdatedAt    respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ComputeFuncListResponse) RawJSON() string { return r.JSON.raw }
+func (r *ComputeFuncListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A function-scoped binding persisted at ship time. For binding_type=actor,
+// actor_type is the referenced Stateful Actor type and env_name is the binding
+// name exposed to the function.
+type ComputeFuncListResponseBinding struct {
+	ActorType   string `json:"actor_type"`
+	BindingID   string `json:"binding_id"`
+	BindingType string `json:"binding_type"`
+	BucketID    string `json:"bucket_id"`
+	CreatedAt   string `json:"created_at"`
+	EnvName     string `json:"env_name"`
+	FuncID      string `json:"func_id"`
+	KvID        string `json:"kv_id"`
+	RecordType  string `json:"record_type"`
+	SecretName  string `json:"secret_name"`
+	SqldbID     string `json:"sqldb_id"`
+	Status      string `json:"status"`
+	UpdatedAt   string `json:"updated_at"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ActorType   respjson.Field
+		BindingID   respjson.Field
+		BindingType respjson.Field
+		BucketID    respjson.Field
+		CreatedAt   respjson.Field
+		EnvName     respjson.Field
+		FuncID      respjson.Field
+		KvID        respjson.Field
+		RecordType  respjson.Field
+		SecretName  respjson.Field
+		SqldbID     respjson.Field
+		Status      respjson.Field
+		UpdatedAt   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ComputeFuncListResponseBinding) RawJSON() string { return r.JSON.raw }
+func (r *ComputeFuncListResponseBinding) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -462,6 +573,22 @@ type ComputeFuncGetShipInspectionResponseData struct {
 func (r ComputeFuncGetShipInspectionResponseData) RawJSON() string { return r.JSON.raw }
 func (r *ComputeFuncGetShipInspectionResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+type ComputeFuncListParams struct {
+	// Page number
+	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
+	// Page size (maximum 250)
+	PageSize param.Opt[int64] `query:"page[size],omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [ComputeFuncListParams]'s query parameters as `url.Values`.
+func (r ComputeFuncListParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
 }
 
 type ComputeFuncGetLogsParams struct {

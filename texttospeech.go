@@ -217,7 +217,10 @@ type TextToSpeechGenerateSpeechParams struct {
 	Soniox TextToSpeechGenerateSpeechParamsSoniox `json:"soniox,omitzero"`
 	// Telnyx provider-specific parameters. For the `Ultra` model, use `voice_speed`,
 	// `volume`, and `emotion`. `Bayan` and `Sukhan` don't use `temperature`, `volume`,
-	// or `emotion`, and don't support `voice_speed`. `Sukhan`'s `response_format` is
+	// or `emotion`. `Bayan` accepts `voice_speed` from 0.5 to 2.0; `Sukhan` doesn't
+	// support it. `Bayan` synthesizes at a native 16 kHz: `sampling_rate` `8000`,
+	// `22050`, or `24000` is resampled, needs `response_format: pcm`, and isn't
+	// available with `output_type: audio_id`. `Sukhan`'s `response_format` is
 	// restricted to `mp3` or `pcm` (no `wav`).
 	Telnyx TextToSpeechGenerateSpeechParamsTelnyx `json:"telnyx,omitzero"`
 	// Text type. Use `ssml` for SSML-formatted input (supported by AWS and Azure).
@@ -478,17 +481,23 @@ func init() {
 
 // Telnyx provider-specific parameters. For the `Ultra` model, use `voice_speed`,
 // `volume`, and `emotion`. `Bayan` and `Sukhan` don't use `temperature`, `volume`,
-// or `emotion`, and don't support `voice_speed`. `Sukhan`'s `response_format` is
+// or `emotion`. `Bayan` accepts `voice_speed` from 0.5 to 2.0; `Sukhan` doesn't
+// support it. `Bayan` synthesizes at a native 16 kHz: `sampling_rate` `8000`,
+// `22050`, or `24000` is resampled, needs `response_format: pcm`, and isn't
+// available with `output_type: audio_id`. `Sukhan`'s `response_format` is
 // restricted to `mp3` or `pcm` (no `wav`).
 type TextToSpeechGenerateSpeechParamsTelnyx struct {
 	// Audio response format.
 	ResponseFormat param.Opt[string] `json:"response_format,omitzero"`
-	// Audio sampling rate in Hz.
+	// Audio sampling rate in Hz. `Bayan` ignores the default and synthesizes at its
+	// native 16 kHz unless `8000`, `22050`, or `24000` is set explicitly with
+	// `response_format: pcm`. Resampled rates aren't available with
+	// `output_type: audio_id`.
 	SamplingRate param.Opt[int64] `json:"sampling_rate,omitzero"`
 	// Voice speed multiplier. Telnyx `Ultra` voices accept values from 0.6 to 1.5 —
-	// requests outside that range are rejected by the synthesis engine. `KokoroTTS`
-	// and `Qwen3TTS` accept the field but do not apply it. `Bayan` and `Sukhan` don't
-	// support it.
+	// requests outside that range are rejected by the synthesis engine. `Bayan`
+	// accepts values from 0.5 to 2.0. `KokoroTTS` and `Qwen3TTS` accept the field but
+	// do not apply it. `Sukhan` doesn't support it.
 	VoiceSpeed param.Opt[float64] `json:"voice_speed,omitzero"`
 	// Volume level for the Ultra model. Telnyx `Ultra` voices accept values from 0.5
 	// to 2.0 — requests outside that range are rejected by the synthesis engine.

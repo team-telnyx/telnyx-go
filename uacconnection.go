@@ -144,6 +144,14 @@ type UacConnection struct {
 	//
 	// Any of "uac-authentication".
 	Authentication UacConnectionAuthentication `json:"authentication"`
+	// Stores the connection preference for generating silent RTP toward the opposite
+	// call leg when comfort-noise packets (CN, payload type 13) are received during
+	// hold. Defaults to false and returns the saved value. Only JSON true and false
+	// are accepted; null and non-boolean values are rejected. This preference is
+	// independent of default_on_hold_comfort_noise_enabled and does not modify that
+	// setting. This API provisions the preference; call-processing behavior is
+	// implemented separately.
+	BridgeGenerateComfortNoiseOnCn bool `json:"bridge_generate_comfort_noise_on_cn"`
 	// Specifies if call cost webhooks should be sent for this connection.
 	CallCostInWebhooks bool   `json:"call_cost_in_webhooks"`
 	ConnectionName     string `json:"connection_name"`
@@ -161,8 +169,8 @@ type UacConnection struct {
 	// Encode the SIP contact header sent by Telnyx to avoid issues for NAT or ALG
 	// scenarios.
 	EncodeContactHeaderEnabled bool `json:"encode_contact_header_enabled"`
-	// Enable use of SRTP for encryption. Cannot be set if the transport_portocol is
-	// TLS.
+	// Enable use of SRTP for encryption. Can only be set when the SIP signaling
+	// transport protocol is TLS.
 	//
 	// Any of "SRTP".
 	EncryptedMedia EncryptedMedia `json:"encrypted_media" api:"nullable"`
@@ -254,6 +262,7 @@ type UacConnection struct {
 		AnchorsiteOverride               respjson.Field
 		AndroidPushCredentialID          respjson.Field
 		Authentication                   respjson.Field
+		BridgeGenerateComfortNoiseOnCn   respjson.Field
 		CallCostInWebhooks               respjson.Field
 		ConnectionName                   respjson.Field
 		CreatedAt                        respjson.Field
@@ -990,6 +999,14 @@ type UacConnectionNewParams struct {
 	WebhookTimeoutSecs param.Opt[int64] `json:"webhook_timeout_secs,omitzero"`
 	// Defaults to true
 	Active param.Opt[bool] `json:"active,omitzero"`
+	// Stores the connection preference for generating silent RTP toward the opposite
+	// call leg when comfort-noise packets (CN, payload type 13) are received during
+	// hold. Optional; defaults to false when omitted on creation. Only JSON true and
+	// false are accepted; null and non-boolean values are rejected. This preference is
+	// independent of default_on_hold_comfort_noise_enabled and does not modify that
+	// setting. This API provisions the preference; call-processing behavior is
+	// implemented separately.
+	BridgeGenerateComfortNoiseOnCn param.Opt[bool] `json:"bridge_generate_comfort_noise_on_cn,omitzero"`
 	// Specifies if call cost webhooks should be sent for this connection.
 	CallCostInWebhooks param.Opt[bool] `json:"call_cost_in_webhooks,omitzero"`
 	// When enabled, Telnyx will generate comfort noise when you place the call on
@@ -1012,8 +1029,8 @@ type UacConnectionNewParams struct {
 	// The URL where webhooks related to this connection will be sent. Must include a
 	// scheme, such as 'https'.
 	WebhookEventURL param.Opt[string] `json:"webhook_event_url,omitzero" format:"uri"`
-	// Enable use of SRTP for encryption. Cannot be set if the transport_portocol is
-	// TLS.
+	// Enable use of SRTP for encryption. Can only be set when the SIP signaling
+	// transport protocol is TLS.
 	//
 	// Any of "SRTP".
 	EncryptedMedia EncryptedMedia `json:"encrypted_media,omitzero"`
@@ -1122,6 +1139,14 @@ type UacConnectionUpdateParams struct {
 	WebhookTimeoutSecs param.Opt[int64] `json:"webhook_timeout_secs,omitzero"`
 	// Defaults to true
 	Active param.Opt[bool] `json:"active,omitzero"`
+	// Stores the connection preference for generating silent RTP toward the opposite
+	// call leg when comfort-noise packets (CN, payload type 13) are received during
+	// hold. Optional; omitting this field preserves the saved value. Only JSON true
+	// and false are accepted; null and non-boolean values are rejected. This
+	// preference is independent of default_on_hold_comfort_noise_enabled and does not
+	// modify that setting. This API provisions the preference; call-processing
+	// behavior is implemented separately.
+	BridgeGenerateComfortNoiseOnCn param.Opt[bool] `json:"bridge_generate_comfort_noise_on_cn,omitzero"`
 	// Specifies if call cost webhooks should be sent for this connection.
 	CallCostInWebhooks param.Opt[bool] `json:"call_cost_in_webhooks,omitzero"`
 	// A user-assigned name to help manage the connection.
@@ -1146,8 +1171,8 @@ type UacConnectionUpdateParams struct {
 	// The URL where webhooks related to this connection will be sent. Must include a
 	// scheme, such as 'https'.
 	WebhookEventURL param.Opt[string] `json:"webhook_event_url,omitzero" format:"uri"`
-	// Enable use of SRTP for encryption. Cannot be set if the transport_portocol is
-	// TLS.
+	// Enable use of SRTP for encryption. Can only be set when the SIP signaling
+	// transport protocol is TLS.
 	//
 	// Any of "SRTP".
 	EncryptedMedia EncryptedMedia `json:"encrypted_media,omitzero"`

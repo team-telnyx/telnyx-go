@@ -30,7 +30,7 @@ func TestTexmlAccountConferenceGet(t *testing.T) {
 		context.TODO(),
 		"conference_sid",
 		telnyx.TexmlAccountConferenceGetParams{
-			AccountSid: "account_sid",
+			AccountSid: "f5586561-8ff0-4291-a51b-c7dfe4139ff9",
 		},
 	)
 	if err != nil {
@@ -59,7 +59,7 @@ func TestTexmlAccountConferenceUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"conference_sid",
 		telnyx.TexmlAccountConferenceUpdateParams{
-			AccountSid:     "account_sid",
+			AccountSid:     "f5586561-8ff0-4291-a51b-c7dfe4139ff9",
 			AnnounceMethod: telnyx.TexmlAccountConferenceUpdateParamsAnnounceMethodGet,
 			AnnounceURL:    telnyx.String("https://www.example.com/announce.xml"),
 			Status:         telnyx.String("completed"),
@@ -89,7 +89,7 @@ func TestTexmlAccountConferenceGetConferencesWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Texml.Accounts.Conferences.GetConferences(
 		context.TODO(),
-		"account_sid",
+		"f5586561-8ff0-4291-a51b-c7dfe4139ff9",
 		telnyx.TexmlAccountConferenceGetConferencesParams{
 			DateCreated:  telnyx.String("DateCreated"),
 			DateUpdated:  telnyx.String("DateUpdated"),
@@ -126,7 +126,7 @@ func TestTexmlAccountConferenceGetRecordings(t *testing.T) {
 		context.TODO(),
 		"conference_sid",
 		telnyx.TexmlAccountConferenceGetRecordingsParams{
-			AccountSid: "account_sid",
+			AccountSid: "f5586561-8ff0-4291-a51b-c7dfe4139ff9",
 		},
 	)
 	if err != nil {
@@ -155,7 +155,7 @@ func TestTexmlAccountConferenceGetRecordingsJson(t *testing.T) {
 		context.TODO(),
 		"conference_sid",
 		telnyx.TexmlAccountConferenceGetRecordingsJsonParams{
-			AccountSid: "account_sid",
+			AccountSid: "f5586561-8ff0-4291-a51b-c7dfe4139ff9",
 		},
 	)
 	if err != nil {

@@ -110,7 +110,10 @@ func (r *TelephonyCredentialService) Delete(ctx context.Context, id string, opts
 }
 
 // Create an Access Token (JWT) for the credential.
-func (r *TelephonyCredentialService) NewToken(ctx context.Context, id string, opts ...option.RequestOption) (res *string, err error) {
+func (r *TelephonyCredentialService) NewToken(ctx context.Context, id string, body TelephonyCredentialNewTokenParams, opts ...option.RequestOption) (res *string, err error) {
+	if !param.IsOmitted(body.IdempotencyKey) {
+		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", body.IdempotencyKey.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "text/plain")}, opts...)
 	if id == "" {
@@ -311,4 +314,9 @@ func (r TelephonyCredentialListParamsFilter) URLQuery() (v url.Values, err error
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
+}
+
+type TelephonyCredentialNewTokenParams struct {
+	IdempotencyKey param.Opt[string] `header:"Idempotency-Key,omitzero" json:"-"`
+	paramObj
 }

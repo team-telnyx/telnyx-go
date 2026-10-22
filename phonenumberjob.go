@@ -4,6 +4,7 @@ package telnyx
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -60,7 +61,7 @@ func (r *PhoneNumberJobService) Get(ctx context.Context, id string, opts ...opti
 // by creation time. Multiple phone-number or status values use OR semantics within
 // that filter; different filter categories use AND semantics. Results include
 // pagination metadata.
-func (r *PhoneNumberJobService) List(ctx context.Context, query PhoneNumberJobListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[PhoneNumbersJob], err error) {
+func (r *PhoneNumberJobService) List(ctx context.Context, query PhoneNumberJobListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[NumbersPhoneNumbersJob], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -82,7 +83,7 @@ func (r *PhoneNumberJobService) List(ctx context.Context, query PhoneNumberJobLi
 // by creation time. Multiple phone-number or status values use OR semantics within
 // that filter; different filter categories use AND semantics. Results include
 // pagination metadata.
-func (r *PhoneNumberJobService) ListAutoPaging(ctx context.Context, query PhoneNumberJobListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[PhoneNumbersJob] {
+func (r *PhoneNumberJobService) ListAutoPaging(ctx context.Context, query PhoneNumberJobListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[NumbersPhoneNumbersJob] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
@@ -120,29 +121,37 @@ func (r *PhoneNumberJobService) UpdateEmergencySettingsBatch(ctx context.Context
 	return res, err
 }
 
-type PhoneNumbersJob struct {
+type NumbersPhoneNumbersJob struct {
 	// Identifies the resource.
 	ID string `json:"id" format:"uuid"`
 	// ISO 8601 formatted date indicating when the resource was created.
 	CreatedAt string `json:"created_at"`
 	// ISO 8601 formatted date indicating when the estimated time of completion of the
 	// background job.
-	Etc               time.Time                           `json:"etc" format:"date-time"`
-	FailedOperations  []PhoneNumbersJobFailedOperation    `json:"failed_operations"`
-	PendingOperations []PhoneNumbersJobPendingOperation   `json:"pending_operations"`
-	PhoneNumbers      []shared.PhoneNumbersJobPhoneNumber `json:"phone_numbers"`
+	Etc              time.Time                               `json:"etc" format:"date-time"`
+	FailedOperations []NumbersPhoneNumbersJobFailedOperation `json:"failed_operations"`
+	// Effective parameters saved when the job was created, not a snapshot of the
+	// original HTTP request or current phone-number settings. Update jobs include the
+	// saved update fields; emergency-settings jobs include the saved emergency fields;
+	// delete jobs include only targets. Absent fields are omitted, and saved false,
+	// null and empty values are preserved. Tags may be normalized to arrays;
+	// filter-created jobs contain resolved target identifiers rather than the original
+	// filters. Historical jobs with no saved arguments return an empty object.
+	Parameters        NumbersPhoneNumbersJobParameters         `json:"parameters"`
+	PendingOperations []NumbersPhoneNumbersJobPendingOperation `json:"pending_operations"`
+	PhoneNumbers      []shared.PhoneNumbersJobPhoneNumber      `json:"phone_numbers"`
 	// Identifies the type of the resource.
 	RecordType string `json:"record_type"`
 	// Indicates the completion status of the background update.
 	//
 	// Any of "pending", "in_progress", "completed", "failed", "expired".
-	Status               PhoneNumbersJobStatus                `json:"status"`
-	SuccessfulOperations []PhoneNumbersJobSuccessfulOperation `json:"successful_operations"`
+	Status               NumbersPhoneNumbersJobStatus                `json:"status"`
+	SuccessfulOperations []NumbersPhoneNumbersJobSuccessfulOperation `json:"successful_operations"`
 	// Identifies the type of the background job.
 	//
 	// Any of "update_emergency_settings", "delete_phone_numbers",
 	// "update_phone_numbers".
-	Type PhoneNumbersJobType `json:"type"`
+	Type NumbersPhoneNumbersJobType `json:"type"`
 	// ISO 8601 formatted date indicating when the resource was updated.
 	UpdatedAt string `json:"updated_at"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -151,6 +160,7 @@ type PhoneNumbersJob struct {
 		CreatedAt            respjson.Field
 		Etc                  respjson.Field
 		FailedOperations     respjson.Field
+		Parameters           respjson.Field
 		PendingOperations    respjson.Field
 		PhoneNumbers         respjson.Field
 		RecordType           respjson.Field
@@ -164,15 +174,15 @@ type PhoneNumbersJob struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r PhoneNumbersJob) RawJSON() string { return r.JSON.raw }
-func (r *PhoneNumbersJob) UnmarshalJSON(data []byte) error {
+func (r NumbersPhoneNumbersJob) RawJSON() string { return r.JSON.raw }
+func (r *NumbersPhoneNumbersJob) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type PhoneNumbersJobFailedOperation struct {
+type NumbersPhoneNumbersJobFailedOperation struct {
 	// The phone number's ID
-	ID     string     `json:"id"`
-	Errors []JobError `json:"errors"`
+	ID     string                   `json:"id"`
+	Errors []NumbersError73c9788e53 `json:"errors"`
 	// The phone number in e164 format.
 	PhoneNumber string `json:"phone_number"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -186,15 +196,246 @@ type PhoneNumbersJobFailedOperation struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r PhoneNumbersJobFailedOperation) RawJSON() string { return r.JSON.raw }
-func (r *PhoneNumbersJobFailedOperation) UnmarshalJSON(data []byte) error {
+func (r NumbersPhoneNumbersJobFailedOperation) RawJSON() string { return r.JSON.raw }
+func (r *NumbersPhoneNumbersJobFailedOperation) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Effective parameters saved when the job was created, not a snapshot of the
+// original HTTP request or current phone-number settings. Update jobs include the
+// saved update fields; emergency-settings jobs include the saved emergency fields;
+// delete jobs include only targets. Absent fields are omitted, and saved false,
+// null and empty values are preserved. Tags may be normalized to arrays;
+// filter-created jobs contain resolved target identifiers rather than the original
+// filters. Historical jobs with no saved arguments return an empty object.
+type NumbersPhoneNumbersJobParameters struct {
+	// Saved add_tags for an update_phone_numbers job. Values reflect creation-time
+	// normalization.
+	AddTags []string `json:"add_tags" api:"nullable"`
+	// Saved billing_group_id supplied for an update_phone_numbers job.
+	BillingGroupID string `json:"billing_group_id" api:"nullable"`
+	// Saved connection_id supplied for an update_phone_numbers job.
+	ConnectionID string `json:"connection_id" api:"nullable"`
+	// Saved customer_reference supplied for an update_phone_numbers job.
+	CustomerReference string `json:"customer_reference" api:"nullable"`
+	// Saved deletion_lock_enabled supplied for an update_phone_numbers job.
+	DeletionLockEnabled bool `json:"deletion_lock_enabled" api:"nullable"`
+	// Saved emergency address identifier for an update_emergency_settings job. An
+	// explicitly supplied null is preserved.
+	EmergencyAddressID string `json:"emergency_address_id" api:"nullable"`
+	// Saved emergency-services setting for an update_emergency_settings job.
+	EmergencyEnabled bool `json:"emergency_enabled" api:"nullable"`
+	// Saved external_pin supplied for an update_phone_numbers job.
+	ExternalPin string `json:"external_pin" api:"nullable"`
+	// Saved hd_voice_enabled supplied for an update_phone_numbers job.
+	HDVoiceEnabled bool `json:"hd_voice_enabled" api:"nullable"`
+	// Saved target phone numbers in E.164 format and/or identifiers. Jobs created
+	// using filters contain the resolved identifiers, not the original filter
+	// expression. Stored identifier types are preserved.
+	PhoneNumbers []NumbersPhoneNumbersJobParametersPhoneNumbersUnion `json:"phone_numbers"`
+	// Saved remove_tags for an update_phone_numbers job. Values reflect creation-time
+	// normalization.
+	RemoveTags []string `json:"remove_tags" api:"nullable"`
+	// Saved tags for an update_phone_numbers job. Values reflect creation-time
+	// normalization.
+	Tags []string `json:"tags" api:"nullable"`
+	// Saved voice settings for an update_phone_numbers job, using the public field
+	// names and nesting. Only settings present at creation are returned.
+	Voice NumbersPhoneNumbersJobParametersVoice `json:"voice"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AddTags             respjson.Field
+		BillingGroupID      respjson.Field
+		ConnectionID        respjson.Field
+		CustomerReference   respjson.Field
+		DeletionLockEnabled respjson.Field
+		EmergencyAddressID  respjson.Field
+		EmergencyEnabled    respjson.Field
+		ExternalPin         respjson.Field
+		HDVoiceEnabled      respjson.Field
+		PhoneNumbers        respjson.Field
+		RemoveTags          respjson.Field
+		Tags                respjson.Field
+		Voice               respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r NumbersPhoneNumbersJobParameters) RawJSON() string { return r.JSON.raw }
+func (r *NumbersPhoneNumbersJobParameters) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// NumbersPhoneNumbersJobParametersPhoneNumbersUnion contains all possible
+// properties and values from [string], [int64].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfInt]
+type NumbersPhoneNumbersJobParametersPhoneNumbersUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [int64] instead of an object.
+	OfInt int64 `json:",inline"`
+	JSON  struct {
+		OfString respjson.Field
+		OfInt    respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u NumbersPhoneNumbersJobParametersPhoneNumbersUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u NumbersPhoneNumbersJobParametersPhoneNumbersUnion) AsInt() (v int64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u NumbersPhoneNumbersJobParametersPhoneNumbersUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *NumbersPhoneNumbersJobParametersPhoneNumbersUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Saved voice settings for an update_phone_numbers job, using the public field
+// names and nesting. Only settings present at creation are returned.
+type NumbersPhoneNumbersJobParametersVoice struct {
+	CallForwarding NumbersPhoneNumbersJobParametersVoiceCallForwarding `json:"call_forwarding"`
+	CallRecording  NumbersPhoneNumbersJobParametersVoiceCallRecording  `json:"call_recording"`
+	// Saved caller_id_name_enabled setting.
+	CallerIDNameEnabled bool                                             `json:"caller_id_name_enabled" api:"nullable"`
+	CnamListing         NumbersPhoneNumbersJobParametersVoiceCnamListing `json:"cnam_listing"`
+	// Saved inbound_call_screening setting.
+	InboundCallScreening string                                             `json:"inbound_call_screening" api:"nullable"`
+	MediaFeatures        NumbersPhoneNumbersJobParametersVoiceMediaFeatures `json:"media_features"`
+	// Saved tech_prefix_enabled setting.
+	TechPrefixEnabled bool `json:"tech_prefix_enabled" api:"nullable"`
+	// Saved usage_payment_method setting.
+	UsagePaymentMethod string `json:"usage_payment_method" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CallForwarding       respjson.Field
+		CallRecording        respjson.Field
+		CallerIDNameEnabled  respjson.Field
+		CnamListing          respjson.Field
+		InboundCallScreening respjson.Field
+		MediaFeatures        respjson.Field
+		TechPrefixEnabled    respjson.Field
+		UsagePaymentMethod   respjson.Field
+		ExtraFields          map[string]respjson.Field
+		raw                  string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r NumbersPhoneNumbersJobParametersVoice) RawJSON() string { return r.JSON.raw }
+func (r *NumbersPhoneNumbersJobParametersVoice) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type NumbersPhoneNumbersJobParametersVoiceCallForwarding struct {
+	// Saved call_forwarding_enabled setting.
+	CallForwardingEnabled bool `json:"call_forwarding_enabled" api:"nullable"`
+	// Saved forwarding_type setting.
+	ForwardingType string `json:"forwarding_type" api:"nullable"`
+	// Saved forwards_to setting.
+	ForwardsTo string `json:"forwards_to" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CallForwardingEnabled respjson.Field
+		ForwardingType        respjson.Field
+		ForwardsTo            respjson.Field
+		ExtraFields           map[string]respjson.Field
+		raw                   string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r NumbersPhoneNumbersJobParametersVoiceCallForwarding) RawJSON() string { return r.JSON.raw }
+func (r *NumbersPhoneNumbersJobParametersVoiceCallForwarding) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type NumbersPhoneNumbersJobParametersVoiceCallRecording struct {
+	// Saved inbound_call_recording_channels setting.
+	InboundCallRecordingChannels string `json:"inbound_call_recording_channels" api:"nullable"`
+	// Saved inbound_call_recording_enabled setting.
+	InboundCallRecordingEnabled bool `json:"inbound_call_recording_enabled" api:"nullable"`
+	// Saved inbound_call_recording_format setting.
+	InboundCallRecordingFormat string `json:"inbound_call_recording_format" api:"nullable"`
+	// Saved record_continue_on_hold setting.
+	RecordContinueOnHold bool `json:"record_continue_on_hold" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		InboundCallRecordingChannels respjson.Field
+		InboundCallRecordingEnabled  respjson.Field
+		InboundCallRecordingFormat   respjson.Field
+		RecordContinueOnHold         respjson.Field
+		ExtraFields                  map[string]respjson.Field
+		raw                          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r NumbersPhoneNumbersJobParametersVoiceCallRecording) RawJSON() string { return r.JSON.raw }
+func (r *NumbersPhoneNumbersJobParametersVoiceCallRecording) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type NumbersPhoneNumbersJobParametersVoiceCnamListing struct {
+	// Saved cnam_listing_details setting.
+	CnamListingDetails string `json:"cnam_listing_details" api:"nullable"`
+	// Saved cnam_listing_enabled setting.
+	CnamListingEnabled bool `json:"cnam_listing_enabled" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CnamListingDetails respjson.Field
+		CnamListingEnabled respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r NumbersPhoneNumbersJobParametersVoiceCnamListing) RawJSON() string { return r.JSON.raw }
+func (r *NumbersPhoneNumbersJobParametersVoiceCnamListing) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type NumbersPhoneNumbersJobParametersVoiceMediaFeatures struct {
+	// Saved accept_any_rtp_packets_enabled setting.
+	AcceptAnyRtpPacketsEnabled bool `json:"accept_any_rtp_packets_enabled" api:"nullable"`
+	// Saved rtp_auto_adjust_enabled setting.
+	RtpAutoAdjustEnabled bool `json:"rtp_auto_adjust_enabled" api:"nullable"`
+	// Saved t38_fax_gateway_enabled setting.
+	T38FaxGatewayEnabled bool `json:"t38_fax_gateway_enabled" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AcceptAnyRtpPacketsEnabled respjson.Field
+		RtpAutoAdjustEnabled       respjson.Field
+		T38FaxGatewayEnabled       respjson.Field
+		ExtraFields                map[string]respjson.Field
+		raw                        string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r NumbersPhoneNumbersJobParametersVoiceMediaFeatures) RawJSON() string { return r.JSON.raw }
+func (r *NumbersPhoneNumbersJobParametersVoiceMediaFeatures) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The phone numbers pending confirmation on update results. Entries in this list
 // are transient, and will be moved to either successful_operations or
 // failed_operations once the processing is done.
-type PhoneNumbersJobPendingOperation struct {
+type NumbersPhoneNumbersJobPendingOperation struct {
 	// The phone number's ID
 	ID string `json:"id"`
 	// The phone number in e164 format.
@@ -209,24 +450,24 @@ type PhoneNumbersJobPendingOperation struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r PhoneNumbersJobPendingOperation) RawJSON() string { return r.JSON.raw }
-func (r *PhoneNumbersJobPendingOperation) UnmarshalJSON(data []byte) error {
+func (r NumbersPhoneNumbersJobPendingOperation) RawJSON() string { return r.JSON.raw }
+func (r *NumbersPhoneNumbersJobPendingOperation) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Indicates the completion status of the background update.
-type PhoneNumbersJobStatus string
+type NumbersPhoneNumbersJobStatus string
 
 const (
-	PhoneNumbersJobStatusPending    PhoneNumbersJobStatus = "pending"
-	PhoneNumbersJobStatusInProgress PhoneNumbersJobStatus = "in_progress"
-	PhoneNumbersJobStatusCompleted  PhoneNumbersJobStatus = "completed"
-	PhoneNumbersJobStatusFailed     PhoneNumbersJobStatus = "failed"
-	PhoneNumbersJobStatusExpired    PhoneNumbersJobStatus = "expired"
+	NumbersPhoneNumbersJobStatusPending    NumbersPhoneNumbersJobStatus = "pending"
+	NumbersPhoneNumbersJobStatusInProgress NumbersPhoneNumbersJobStatus = "in_progress"
+	NumbersPhoneNumbersJobStatusCompleted  NumbersPhoneNumbersJobStatus = "completed"
+	NumbersPhoneNumbersJobStatusFailed     NumbersPhoneNumbersJobStatus = "failed"
+	NumbersPhoneNumbersJobStatusExpired    NumbersPhoneNumbersJobStatus = "expired"
 )
 
 // The phone numbers successfully updated.
-type PhoneNumbersJobSuccessfulOperation struct {
+type NumbersPhoneNumbersJobSuccessfulOperation struct {
 	// The phone number's ID
 	ID string `json:"id"`
 	// The phone number in e164 format.
@@ -241,22 +482,22 @@ type PhoneNumbersJobSuccessfulOperation struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r PhoneNumbersJobSuccessfulOperation) RawJSON() string { return r.JSON.raw }
-func (r *PhoneNumbersJobSuccessfulOperation) UnmarshalJSON(data []byte) error {
+func (r NumbersPhoneNumbersJobSuccessfulOperation) RawJSON() string { return r.JSON.raw }
+func (r *NumbersPhoneNumbersJobSuccessfulOperation) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Identifies the type of the background job.
-type PhoneNumbersJobType string
+type NumbersPhoneNumbersJobType string
 
 const (
-	PhoneNumbersJobTypeUpdateEmergencySettings PhoneNumbersJobType = "update_emergency_settings"
-	PhoneNumbersJobTypeDeletePhoneNumbers      PhoneNumbersJobType = "delete_phone_numbers"
-	PhoneNumbersJobTypeUpdatePhoneNumbers      PhoneNumbersJobType = "update_phone_numbers"
+	NumbersPhoneNumbersJobTypeUpdateEmergencySettings NumbersPhoneNumbersJobType = "update_emergency_settings"
+	NumbersPhoneNumbersJobTypeDeletePhoneNumbers      NumbersPhoneNumbersJobType = "delete_phone_numbers"
+	NumbersPhoneNumbersJobTypeUpdatePhoneNumbers      NumbersPhoneNumbersJobType = "update_phone_numbers"
 )
 
 type PhoneNumberJobGetResponse struct {
-	Data PhoneNumbersJob `json:"data"`
+	Data NumbersPhoneNumbersJob `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -272,7 +513,7 @@ func (r *PhoneNumberJobGetResponse) UnmarshalJSON(data []byte) error {
 }
 
 type PhoneNumberJobDeleteBatchResponse struct {
-	Data PhoneNumbersJob `json:"data"`
+	Data NumbersPhoneNumbersJob `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -288,7 +529,7 @@ func (r *PhoneNumberJobDeleteBatchResponse) UnmarshalJSON(data []byte) error {
 }
 
 type PhoneNumberJobUpdateBatchResponse struct {
-	Data PhoneNumbersJob `json:"data"`
+	Data NumbersPhoneNumbersJob `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -304,7 +545,7 @@ func (r *PhoneNumberJobUpdateBatchResponse) UnmarshalJSON(data []byte) error {
 }
 
 type PhoneNumberJobUpdateEmergencySettingsBatchResponse struct {
-	Data PhoneNumbersJob `json:"data"`
+	Data NumbersPhoneNumbersJob `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -347,12 +588,15 @@ func (r PhoneNumberJobListParams) URLQuery() (v url.Values, err error) {
 // filter[phone_number], filter[phone_number][], filter[status][],
 // filter[customer_reference]
 type PhoneNumberJobListParamsFilter struct {
-	// Returns jobs whose creation-time customer reference exactly matches the supplied
-	// value, not the current reference on a phone number. Only jobs within the lookup
-	// window (90 days by default) are returned. Supply a single non-blank string of up
-	// to 250 characters, without null characters, using
-	// `filter[customer_reference]=yourcustomerrefhere`. An invalid filter value
-	// returns HTTP 422.
+	// Exact, case-sensitive match for the customer reference supplied when the job was
+	// created. Only jobs created within the last 90 days are returned, including for
+	// accounts otherwise exempt from job retention limits. Searches the stored job
+	// reference, not the current reference on a phone number. Multiple jobs may share
+	// a reference. Combines with the other filters and account ownership. Supply a
+	// single non-blank string of up to 250 characters, without null characters, using
+	// `filter[customer_reference]=yourcustomerrefhere`. Whitespace is preserved; blank
+	// strings, arrays, and objects return HTTP 422. An invalid filter value returns
+	// HTTP 422. The literal string `null` is matched as text.
 	CustomerReference param.Opt[string] `query:"customer_reference,omitzero" json:"-"`
 	// Returns jobs that targeted any of the supplied account-owned phone numbers.
 	// Values beginning with `+` must contain 1 to 20 digits after the plus sign. The
@@ -432,7 +676,12 @@ type PhoneNumberJobUpdateBatchParams struct {
 	BillingGroupID param.Opt[string] `json:"billing_group_id,omitzero"`
 	// Identifies the connection associated with the phone number.
 	ConnectionID param.Opt[string] `json:"connection_id,omitzero"`
-	// A customer reference string for customer look ups.
+	// Sets the customer reference on the selected phone numbers and retains the
+	// supplied value on the job. Recover the job without its ID using GET
+	// /phone_numbers/jobs with filter[customer_reference] within 90 days of job
+	// creation. This body field updates the numbers; the separate
+	// filter[customer_reference] query parameter selects numbers by their current
+	// reference.
 	CustomerReference param.Opt[string] `json:"customer_reference,omitzero"`
 	// Indicates whether to enable or disable the deletion lock on each phone number.
 	// When enabled, this prevents the phone number from being deleted via the API or

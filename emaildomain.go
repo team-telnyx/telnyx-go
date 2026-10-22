@@ -889,7 +889,8 @@ type EmailDomainListParams struct {
 	FilterType EmailDomainType `query:"filter[type],omitzero" json:"-"`
 	// Field to sort by. Prefix with `-` for descending order.
 	//
-	// Any of "created_at", "-created_at", "domain", "-domain".
+	// Any of "created_at", "-created_at", "domain", "-domain", "updated_at",
+	// "-updated_at".
 	Sort EmailDomainListParamsSort `query:"sort,omitzero" json:"-"`
 	paramObj
 }
@@ -910,6 +911,8 @@ const (
 	EmailDomainListParamsSortCreatedAtDesc EmailDomainListParamsSort = "-created_at"
 	EmailDomainListParamsSortDomain        EmailDomainListParamsSort = "domain"
 	EmailDomainListParamsSortMinusDomain   EmailDomainListParamsSort = "-domain"
+	EmailDomainListParamsSortUpdatedAt     EmailDomainListParamsSort = "updated_at"
+	EmailDomainListParamsSortUpdatedAtDesc EmailDomainListParamsSort = "-updated_at"
 )
 
 type EmailDomainDeleteParams struct {

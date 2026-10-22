@@ -67,38 +67,122 @@ func (r *NumberLookupGetResponse) UnmarshalJSON(data []byte) error {
 }
 
 type NumberLookupGetResponseData struct {
-	CallerName NumberLookupGetResponseDataCallerName `json:"caller_name"`
-	Carrier    NumberLookupGetResponseDataCarrier    `json:"carrier"`
+	// Identity information for the phone number's owner, including name and postal
+	// address. Populated when `type=caller-identity` is requested.
+	CallerIdentity NumberLookupGetResponseDataCallerIdentity `json:"caller_identity"`
+	CallerName     NumberLookupGetResponseDataCallerName     `json:"caller_name"`
+	Carrier        NumberLookupGetResponseDataCarrier        `json:"carrier"`
 	// Region code that matches the specific country calling code
 	CountryCode string `json:"country_code"`
+	// Enhanced caller name for the phone number's owner. Populated when
+	// `type=enhanced-caller-name` is requested.
+	EnhancedCallerName NumberLookupGetResponseDataEnhancedCallerName `json:"enhanced_caller_name"`
 	// Unused
 	Fraud string `json:"fraud" api:"nullable"`
 	// Hyphen-separated national number, preceded by the national destination code
 	// (NDC), with a 0 prefix, if an NDC is found
 	NationalFormat string `json:"national_format"`
+	// Network number ID (NNID) override for the phone number, when one applies
+	// (available only to accounts enabled for NNID); otherwise null.
+	NnidOverride NumberLookupGetResponseDataNnidOverride `json:"nnid_override" api:"nullable"`
 	// E164-formatted phone number
 	PhoneNumber string                                 `json:"phone_number"`
 	Portability NumberLookupGetResponseDataPortability `json:"portability"`
 	// Identifies the type of record
 	RecordType string `json:"record_type"`
+	// Indicates whether the phone number is valid.
+	ValidNumber bool `json:"valid_number"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		CallerName     respjson.Field
-		Carrier        respjson.Field
-		CountryCode    respjson.Field
-		Fraud          respjson.Field
-		NationalFormat respjson.Field
-		PhoneNumber    respjson.Field
-		Portability    respjson.Field
-		RecordType     respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
+		CallerIdentity     respjson.Field
+		CallerName         respjson.Field
+		Carrier            respjson.Field
+		CountryCode        respjson.Field
+		EnhancedCallerName respjson.Field
+		Fraud              respjson.Field
+		NationalFormat     respjson.Field
+		NnidOverride       respjson.Field
+		PhoneNumber        respjson.Field
+		Portability        respjson.Field
+		RecordType         respjson.Field
+		ValidNumber        respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
 func (r NumberLookupGetResponseData) RawJSON() string { return r.JSON.raw }
 func (r *NumberLookupGetResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Identity information for the phone number's owner, including name and postal
+// address. Populated when `type=caller-identity` is requested.
+type NumberLookupGetResponseDataCallerIdentity struct {
+	// Postal address associated with the phone number's owner.
+	Address NumberLookupGetResponseDataCallerIdentityAddress `json:"address"`
+	// How strongly the phone number is linked to the returned name, on a scale of 50
+	// to 90 (higher means more supporting signals). Reflects signal strength, not
+	// probability: 70 indicates stronger, more consistent evidence than 60, not a 70%
+	// chance of being correct. As a guide, 70+ is high confidence, 60 moderate, and 50
+	// limited. Below 50 no name is returned, so scores under 50 are never present.
+	ConfidenceScore float64 `json:"confidence_score" api:"nullable"`
+	// A lookup-specific error code if the identity could not be resolved; otherwise
+	// null.
+	ErrorCode string `json:"error_code" api:"nullable"`
+	// The name associated with the phone number.
+	Name string `json:"name" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Address         respjson.Field
+		ConfidenceScore respjson.Field
+		ErrorCode       respjson.Field
+		Name            respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r NumberLookupGetResponseDataCallerIdentity) RawJSON() string { return r.JSON.raw }
+func (r *NumberLookupGetResponseDataCallerIdentity) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Postal address associated with the phone number's owner.
+type NumberLookupGetResponseDataCallerIdentityAddress struct {
+	// City.
+	City string `json:"city" api:"nullable"`
+	// Two-letter ISO 3166-1 country code.
+	CountryCode string `json:"country_code" api:"nullable"`
+	// Postal or ZIP code.
+	PostalCode string `json:"postal_code" api:"nullable"`
+	// Two-letter state or province code.
+	StateCode string `json:"state_code" api:"nullable"`
+	// First line of the street address.
+	StreetLine1 string `json:"street_line_1" api:"nullable"`
+	// Second line of the street address, if any.
+	StreetLine2 string `json:"street_line_2" api:"nullable"`
+	// ZIP+4 extension, if available.
+	Zip4 string `json:"zip4" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		City        respjson.Field
+		CountryCode respjson.Field
+		PostalCode  respjson.Field
+		StateCode   respjson.Field
+		StreetLine1 respjson.Field
+		StreetLine2 respjson.Field
+		Zip4        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r NumberLookupGetResponseDataCallerIdentityAddress) RawJSON() string { return r.JSON.raw }
+func (r *NumberLookupGetResponseDataCallerIdentityAddress) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -163,6 +247,54 @@ func (r *NumberLookupGetResponseDataCarrier) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Enhanced caller name for the phone number's owner. Populated when
+// `type=enhanced-caller-name` is requested.
+type NumberLookupGetResponseDataEnhancedCallerName struct {
+	// The name associated with the phone number.
+	CallerName string `json:"caller_name" api:"nullable"`
+	// A lookup-specific error code if the enhanced caller name could not be resolved;
+	// otherwise null.
+	ErrorCode string `json:"error_code" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CallerName  respjson.Field
+		ErrorCode   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r NumberLookupGetResponseDataEnhancedCallerName) RawJSON() string { return r.JSON.raw }
+func (r *NumberLookupGetResponseDataEnhancedCallerName) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Network number ID (NNID) override for the phone number, when one applies
+// (available only to accounts enabled for NNID); otherwise null.
+type NumberLookupGetResponseDataNnidOverride struct {
+	// Name associated with the NNID.
+	Name string `json:"name"`
+	// The network number ID.
+	Nnid string `json:"nnid"`
+	// The NNID type.
+	Type string `json:"type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Name        respjson.Field
+		Nnid        respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r NumberLookupGetResponseDataNnidOverride) RawJSON() string { return r.JSON.raw }
+func (r *NumberLookupGetResponseDataNnidOverride) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type NumberLookupGetResponseDataPortability struct {
 	// Alternative SPID (Service Provider ID). Often used when a carrier is using a
 	// number from another carrier
@@ -174,7 +306,12 @@ type NumberLookupGetResponseDataPortability struct {
 	// City name extracted from the locality in the Local Exchange Routing Guide (LERG)
 	// database
 	City string `json:"city"`
-	// Type of number
+	// The line type of the phone number. Uses the same value set as carrier.type; see
+	// the API reference for the full list.
+	//
+	// Any of "fixed line", "mobile", "voip", "fixed line or mobile", "toll free",
+	// "premium rate", "shared cost", "personal number", "pager", "uan", "voicemail",
+	// "unknown".
 	LineType string `json:"line_type"`
 	// Local Routing Number, if assigned to the requested phone number
 	Lrn string `json:"lrn"`
@@ -221,9 +358,12 @@ func (r *NumberLookupGetResponseDataPortability) UnmarshalJSON(data []byte) erro
 }
 
 type NumberLookupGetParams struct {
-	// Specifies the type of number lookup to be performed
+	// Specifies the type of number lookup to be performed. May be supplied more than
+	// once to request several data sources in a single call (for example,
+	// `?type=carrier&type=enhanced-caller-name`). Each requested type populates the
+	// corresponding object in the response.
 	//
-	// Any of "carrier", "caller-name".
+	// Any of "carrier", "caller-name", "caller-identity", "enhanced-caller-name".
 	Type NumberLookupGetParamsType `query:"type,omitzero" json:"-"`
 	paramObj
 }
@@ -236,10 +376,15 @@ func (r NumberLookupGetParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// Specifies the type of number lookup to be performed
+// Specifies the type of number lookup to be performed. May be supplied more than
+// once to request several data sources in a single call (for example,
+// `?type=carrier&type=enhanced-caller-name`). Each requested type populates the
+// corresponding object in the response.
 type NumberLookupGetParamsType string
 
 const (
-	NumberLookupGetParamsTypeCarrier    NumberLookupGetParamsType = "carrier"
-	NumberLookupGetParamsTypeCallerName NumberLookupGetParamsType = "caller-name"
+	NumberLookupGetParamsTypeCarrier            NumberLookupGetParamsType = "carrier"
+	NumberLookupGetParamsTypeCallerName         NumberLookupGetParamsType = "caller-name"
+	NumberLookupGetParamsTypeCallerIdentity     NumberLookupGetParamsType = "caller-identity"
+	NumberLookupGetParamsTypeEnhancedCallerName NumberLookupGetParamsType = "enhanced-caller-name"
 )

@@ -18,7 +18,6 @@ func ValueOf[T Constant[T]]() T {
 	return t.Default()
 }
 
-type Anam string                   // Always "anam"
 type Android string                // Always "android"
 type Arithmetic string             // Always "arithmetic"
 type Assistant string              // Always "assistant"
@@ -29,6 +28,9 @@ type ClientSideTool string         // Always "client_side_tool"
 type Comparative string            // Always "comparative"
 type Comparison string             // Always "comparison"
 type Custom string                 // Always "custom"
+type DeepgramFlux string           // Always "deepgram/flux"
+type DeepgramFluxMulti string      // Always "deepgram/flux-multi"
+type DeepgramNova3Medical string   // Always "deepgram/nova-3-medical"
 type Default string                // Always "default"
 type Ein string                    // Always "EIN"
 type Expression string             // Always "expression"
@@ -70,8 +72,8 @@ type TokenKey string               // Always "token_key"
 type Transfer string               // Always "transfer"
 type UpdateDynamicVariables string // Always "update_dynamic_variables"
 type Variable string               // Always "variable"
+type Vision string                 // Always "vision"
 
-func (c Anam) Default() Anam                                     { return "anam" }
 func (c Android) Default() Android                               { return "android" }
 func (c Arithmetic) Default() Arithmetic                         { return "arithmetic" }
 func (c Assistant) Default() Assistant                           { return "assistant" }
@@ -82,6 +84,9 @@ func (c ClientSideTool) Default() ClientSideTool                 { return "clien
 func (c Comparative) Default() Comparative                       { return "comparative" }
 func (c Comparison) Default() Comparison                         { return "comparison" }
 func (c Custom) Default() Custom                                 { return "custom" }
+func (c DeepgramFlux) Default() DeepgramFlux                     { return "deepgram/flux" }
+func (c DeepgramFluxMulti) Default() DeepgramFluxMulti           { return "deepgram/flux-multi" }
+func (c DeepgramNova3Medical) Default() DeepgramNova3Medical     { return "deepgram/nova-3-medical" }
 func (c Default) Default() Default                               { return "default" }
 func (c Ein) Default() Ein                                       { return "EIN" }
 func (c Expression) Default() Expression                         { return "expression" }
@@ -123,8 +128,8 @@ func (c TokenKey) Default() TokenKey                             { return "token
 func (c Transfer) Default() Transfer                             { return "transfer" }
 func (c UpdateDynamicVariables) Default() UpdateDynamicVariables { return "update_dynamic_variables" }
 func (c Variable) Default() Variable                             { return "variable" }
+func (c Vision) Default() Vision                                 { return "vision" }
 
-func (c Anam) MarshalJSON() ([]byte, error)                   { return marshalString(c) }
 func (c Android) MarshalJSON() ([]byte, error)                { return marshalString(c) }
 func (c Arithmetic) MarshalJSON() ([]byte, error)             { return marshalString(c) }
 func (c Assistant) MarshalJSON() ([]byte, error)              { return marshalString(c) }
@@ -135,6 +140,9 @@ func (c ClientSideTool) MarshalJSON() ([]byte, error)         { return marshalSt
 func (c Comparative) MarshalJSON() ([]byte, error)            { return marshalString(c) }
 func (c Comparison) MarshalJSON() ([]byte, error)             { return marshalString(c) }
 func (c Custom) MarshalJSON() ([]byte, error)                 { return marshalString(c) }
+func (c DeepgramFlux) MarshalJSON() ([]byte, error)           { return marshalString(c) }
+func (c DeepgramFluxMulti) MarshalJSON() ([]byte, error)      { return marshalString(c) }
+func (c DeepgramNova3Medical) MarshalJSON() ([]byte, error)   { return marshalString(c) }
 func (c Default) MarshalJSON() ([]byte, error)                { return marshalString(c) }
 func (c Ein) MarshalJSON() ([]byte, error)                    { return marshalString(c) }
 func (c Expression) MarshalJSON() ([]byte, error)             { return marshalString(c) }
@@ -176,6 +184,7 @@ func (c TokenKey) MarshalJSON() ([]byte, error)               { return marshalSt
 func (c Transfer) MarshalJSON() ([]byte, error)               { return marshalString(c) }
 func (c UpdateDynamicVariables) MarshalJSON() ([]byte, error) { return marshalString(c) }
 func (c Variable) MarshalJSON() ([]byte, error)               { return marshalString(c) }
+func (c Vision) MarshalJSON() ([]byte, error)                 { return marshalString(c) }
 
 type constant[T any] interface {
 	Constant[T]

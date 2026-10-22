@@ -1030,8 +1030,9 @@ type DeepgramNova2ConfigParam struct {
 	// to 5000 ms.
 	UtteranceEndMs param.Opt[int64] `json:"utterance_end_ms,omitzero"`
 	// Nova-2 keyword biasing without intensifiers. Up to 100 terms to bias recognition
-	// toward. For weighted biasing, use `keywords_boosting` instead. Nova-2-only; use
-	// `keyterms` on Nova-3.
+	// toward. For weighted biasing, use `keywords_boosting` instead. Supported on
+	// Nova-2 models only (`deepgram/nova-2`, `deepgram/nova-2-medical`,
+	// `deepgram/nova-2-phonecall`); use `keyterms` on Nova-3 and Flux.
 	Hints []string `json:"hints,omitzero"`
 	// Keywords and their respective intensifiers (boosting values) to improve
 	// transcription accuracy for specific words or phrases. The intensifier should be
@@ -1136,8 +1137,10 @@ type DeepgramNova3ConfigParam struct {
 	// Number of milliseconds of silence to consider an utterance ended. Ranges from 0
 	// to 5000 ms.
 	UtteranceEndMs param.Opt[int64] `json:"utterance_end_ms,omitzero"`
-	// Nova-3 keyterm prompting. Up to 100 domain-specific terms or brand names to bias
-	// recognition toward. Nova-3-only; use `hints` on Nova-2.
+	// Keyterm prompting. Up to 100 domain-specific terms or brand names to bias
+	// recognition toward. Supported on Nova-3 and Flux models (`deepgram/nova-3`,
+	// `deepgram/nova-3-medical`, `deepgram/flux`, `deepgram/flux-multi`); use `hints`
+	// on Nova-2.
 	Keyterms []string `json:"keyterms,omitzero"`
 	// Keywords and their respective intensifiers (boosting values) to improve
 	// transcription accuracy for specific words or phrases. The intensifier should be
@@ -1712,7 +1715,11 @@ type TranscriptionConfigParam struct {
 	// detection, and the language codes `nl`, `en`, `fr`, `fy`, `de`, `it`, `pl`,
 	// `pt`, `es`, and `sv` to fix the transcription language. For `cohere/ar-stt`,
 	// supported values are `ar` and `en`; unlike other models, this model does not
-	// auto-detect and defaults to `ar` when `language` is omitted.
+	// auto-detect and defaults to `ar` when `language` is omitted. For
+	// `speechmatics/linden-1`, there is no auto-detect; set a code from Speechmatics'
+	// Realtime language list (see `SpeechmaticsTranscriptionLanguage`); unset defaults
+	// to `en`, while an explicit `auto`, `auto_beta`, or `multi` is rejected (unlike
+	// `speechmatics/standard`, which defaults to `en`).
 	Language param.Opt[string] `json:"language,omitzero"`
 	// The speech to text model to be used by the voice assistant. Supported models
 	// include:
@@ -1721,6 +1728,9 @@ type TranscriptionConfigParam struct {
 	//   - `deepgram/nova-3` and `deepgram/nova-2` for live streaming transcription.
 	//   - `speechmatics/standard` and `speechmatics/enhanced` for live streaming
 	//     transcription.
+	//   - `speechmatics/linden-1` (preview, vendor-hosted) for live streaming
+	//     transcription; no auto-detect, so set `language` from Speechmatics' Realtime
+	//     language list (defaults to `en`).
 	//   - `assemblyai/universal-3-5-pro` for live streaming transcription. The legacy
 	//     alias `assemblyai/universal-streaming` is still accepted and resolves to the
 	//     same model.
@@ -1745,7 +1755,7 @@ type TranscriptionConfigParam struct {
 	//     with automatic language detection.
 	//
 	// Any of "deepgram/flux", "flux", "deepgram/nova-3", "deepgram/nova-2",
-	// "speechmatics/standard", "speechmatics/enhanced",
+	// "speechmatics/standard", "speechmatics/enhanced", "speechmatics/linden-1",
 	// "assemblyai/universal-3-5-pro", "assemblyai/universal-streaming",
 	// "xai/grok-stt", "soniox/stt-rt-v4", "nvidia/parakeet-v3",
 	// "omi-health/omi-med-stt-v1", "humain/realtime", "reson8/turns", "cohere/ar-stt",
@@ -1770,6 +1780,9 @@ func (r *TranscriptionConfigParam) UnmarshalJSON(data []byte) error {
 //   - `deepgram/nova-3` and `deepgram/nova-2` for live streaming transcription.
 //   - `speechmatics/standard` and `speechmatics/enhanced` for live streaming
 //     transcription.
+//   - `speechmatics/linden-1` (preview, vendor-hosted) for live streaming
+//     transcription; no auto-detect, so set `language` from Speechmatics' Realtime
+//     language list (defaults to `en`).
 //   - `assemblyai/universal-3-5-pro` for live streaming transcription. The legacy
 //     alias `assemblyai/universal-streaming` is still accepted and resolves to the
 //     same model.
@@ -1801,6 +1814,7 @@ const (
 	TranscriptionConfigModelDeepgramNova2                TranscriptionConfigModel = "deepgram/nova-2"
 	TranscriptionConfigModelSpeechmaticsStandard         TranscriptionConfigModel = "speechmatics/standard"
 	TranscriptionConfigModelSpeechmaticsEnhanced         TranscriptionConfigModel = "speechmatics/enhanced"
+	TranscriptionConfigModelSpeechmaticsLinden1          TranscriptionConfigModel = "speechmatics/linden-1"
 	TranscriptionConfigModelAssemblyaiUniversal3_5Pro    TranscriptionConfigModel = "assemblyai/universal-3-5-pro"
 	TranscriptionConfigModelAssemblyaiUniversalStreaming TranscriptionConfigModel = "assemblyai/universal-streaming"
 	TranscriptionConfigModelXaiGrokStt                   TranscriptionConfigModel = "xai/grok-stt"
@@ -2451,18 +2465,37 @@ type TranscriptionEngineSpeechmaticsConfigParam struct {
 	// Whether to send also interim results. If set to false, only final results will
 	// be sent.
 	InterimResults param.Opt[bool] `json:"interim_results,omitzero"`
-	// Language to use for speech recognition
+	// Language to use for speech recognition. Accepted values depend on the selected
+	// `transcription_model`. `speechmatics/standard` supports: `en`, `ba`, `eu`, `gl`,
+	// `ga`, `mt`, `mn`, `sw`, `ug`, `cy`, `ar_en`, `cmn_en`, `en_ms`, `en_ta`, `tl`,
+	// `es-bilingual-en`, `cmn_en_ms_ta`. `speechmatics/linden-1` (preview) supports
+	// the same languages as Speechmatics Realtime: `ar`, `ar_en`, `ba`, `be`, `bg`,
+	// `bn`, `ca`, `cmn`, `cmn_en`, `cmn_en_ms_ta`, `cs`, `cy`, `da`, `de`, `el`, `en`,
+	// `en_ms`, `en_ta`, `eo`, `es`, `es-bilingual-en`, `et`, `eu`, `fa`, `fi`, `fr`,
+	// `ga`, `gl`, `he`, `hi`, `hr`, `hu`, `ia`, `id`, `it`, `ja`, `ko`, `lt`, `lv`,
+	// `mn`, `mr`, `ms`, `mt`, `nl`, `no`, `pl`, `pt`, `ro`, `ru`, `sk`, `sl`, `sv`,
+	// `sw`, `ta`, `th`, `tl`, `tr`, `ug`, `uk`, `ur`, `vi`, `yue`, plus the spelling
+	// and script variants `en-US`, `en-GB`, `en-AU`, `cmn-Hans`, and `cmn-Hant` (`en`
+	// alone uses the default spelling). A value outside the selected model's list is
+	// rejected. For `speechmatics/standard`, unset, blank, `auto`, `auto_beta`, or
+	// `multi` defaults to `en`; for `speechmatics/linden-1`, only an unset language
+	// defaults to `en`, and `auto`, `auto_beta`, or `multi` is rejected.
 	//
 	// Any of "en", "ba", "eu", "gl", "ga", "mt", "mn", "sw", "ug", "cy", "ar_en",
-	// "cmn_en", "en_ms", "en_ta", "tl", "es-bilingual-en", "cmn_en_ms_ta".
+	// "cmn_en", "en_ms", "en_ta", "tl", "es-bilingual-en", "cmn_en_ms_ta", "ar", "be",
+	// "bg", "bn", "ca", "cmn", "cs", "da", "de", "el", "eo", "es", "et", "fa", "fi",
+	// "fr", "he", "hi", "hr", "hu", "ia", "id", "it", "ja", "ko", "lt", "lv", "mr",
+	// "ms", "nl", "no", "pl", "pt", "ro", "ru", "sk", "sl", "sv", "ta", "th", "tr",
+	// "uk", "ur", "vi", "yue", "en-US", "en-GB", "en-AU", "cmn-Hans", "cmn-Hant".
 	Language TranscriptionEngineSpeechmaticsConfigLanguage `json:"language,omitzero"`
 	// Engine identifier for Speechmatics transcription service
 	//
 	// Any of "Speechmatics".
 	TranscriptionEngine TranscriptionEngineSpeechmaticsConfigTranscriptionEngine `json:"transcription_engine,omitzero"`
-	// The model to use for transcription.
+	// The model to use for transcription. `speechmatics/linden-1` is a preview,
+	// vendor-hosted model with its own language support (see `language`).
 	//
-	// Any of "speechmatics/standard".
+	// Any of "speechmatics/standard", "speechmatics/linden-1".
 	TranscriptionModel TranscriptionEngineSpeechmaticsConfigTranscriptionModel `json:"transcription_model,omitzero"`
 	paramObj
 }
@@ -2475,7 +2508,21 @@ func (r *TranscriptionEngineSpeechmaticsConfigParam) UnmarshalJSON(data []byte) 
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Language to use for speech recognition
+// Language to use for speech recognition. Accepted values depend on the selected
+// `transcription_model`. `speechmatics/standard` supports: `en`, `ba`, `eu`, `gl`,
+// `ga`, `mt`, `mn`, `sw`, `ug`, `cy`, `ar_en`, `cmn_en`, `en_ms`, `en_ta`, `tl`,
+// `es-bilingual-en`, `cmn_en_ms_ta`. `speechmatics/linden-1` (preview) supports
+// the same languages as Speechmatics Realtime: `ar`, `ar_en`, `ba`, `be`, `bg`,
+// `bn`, `ca`, `cmn`, `cmn_en`, `cmn_en_ms_ta`, `cs`, `cy`, `da`, `de`, `el`, `en`,
+// `en_ms`, `en_ta`, `eo`, `es`, `es-bilingual-en`, `et`, `eu`, `fa`, `fi`, `fr`,
+// `ga`, `gl`, `he`, `hi`, `hr`, `hu`, `ia`, `id`, `it`, `ja`, `ko`, `lt`, `lv`,
+// `mn`, `mr`, `ms`, `mt`, `nl`, `no`, `pl`, `pt`, `ro`, `ru`, `sk`, `sl`, `sv`,
+// `sw`, `ta`, `th`, `tl`, `tr`, `ug`, `uk`, `ur`, `vi`, `yue`, plus the spelling
+// and script variants `en-US`, `en-GB`, `en-AU`, `cmn-Hans`, and `cmn-Hant` (`en`
+// alone uses the default spelling). A value outside the selected model's list is
+// rejected. For `speechmatics/standard`, unset, blank, `auto`, `auto_beta`, or
+// `multi` defaults to `en`; for `speechmatics/linden-1`, only an unset language
+// defaults to `en`, and `auto`, `auto_beta`, or `multi` is rejected.
 type TranscriptionEngineSpeechmaticsConfigLanguage string
 
 const (
@@ -2496,6 +2543,56 @@ const (
 	TranscriptionEngineSpeechmaticsConfigLanguageTl            TranscriptionEngineSpeechmaticsConfigLanguage = "tl"
 	TranscriptionEngineSpeechmaticsConfigLanguageEsBilingualEn TranscriptionEngineSpeechmaticsConfigLanguage = "es-bilingual-en"
 	TranscriptionEngineSpeechmaticsConfigLanguageCmnEnMsTa     TranscriptionEngineSpeechmaticsConfigLanguage = "cmn_en_ms_ta"
+	TranscriptionEngineSpeechmaticsConfigLanguageAr            TranscriptionEngineSpeechmaticsConfigLanguage = "ar"
+	TranscriptionEngineSpeechmaticsConfigLanguageBe            TranscriptionEngineSpeechmaticsConfigLanguage = "be"
+	TranscriptionEngineSpeechmaticsConfigLanguageBg            TranscriptionEngineSpeechmaticsConfigLanguage = "bg"
+	TranscriptionEngineSpeechmaticsConfigLanguageBn            TranscriptionEngineSpeechmaticsConfigLanguage = "bn"
+	TranscriptionEngineSpeechmaticsConfigLanguageCa            TranscriptionEngineSpeechmaticsConfigLanguage = "ca"
+	TranscriptionEngineSpeechmaticsConfigLanguageCmn           TranscriptionEngineSpeechmaticsConfigLanguage = "cmn"
+	TranscriptionEngineSpeechmaticsConfigLanguageCs            TranscriptionEngineSpeechmaticsConfigLanguage = "cs"
+	TranscriptionEngineSpeechmaticsConfigLanguageDa            TranscriptionEngineSpeechmaticsConfigLanguage = "da"
+	TranscriptionEngineSpeechmaticsConfigLanguageDe            TranscriptionEngineSpeechmaticsConfigLanguage = "de"
+	TranscriptionEngineSpeechmaticsConfigLanguageEl            TranscriptionEngineSpeechmaticsConfigLanguage = "el"
+	TranscriptionEngineSpeechmaticsConfigLanguageEo            TranscriptionEngineSpeechmaticsConfigLanguage = "eo"
+	TranscriptionEngineSpeechmaticsConfigLanguageEs            TranscriptionEngineSpeechmaticsConfigLanguage = "es"
+	TranscriptionEngineSpeechmaticsConfigLanguageEt            TranscriptionEngineSpeechmaticsConfigLanguage = "et"
+	TranscriptionEngineSpeechmaticsConfigLanguageFa            TranscriptionEngineSpeechmaticsConfigLanguage = "fa"
+	TranscriptionEngineSpeechmaticsConfigLanguageFi            TranscriptionEngineSpeechmaticsConfigLanguage = "fi"
+	TranscriptionEngineSpeechmaticsConfigLanguageFr            TranscriptionEngineSpeechmaticsConfigLanguage = "fr"
+	TranscriptionEngineSpeechmaticsConfigLanguageHe            TranscriptionEngineSpeechmaticsConfigLanguage = "he"
+	TranscriptionEngineSpeechmaticsConfigLanguageHi            TranscriptionEngineSpeechmaticsConfigLanguage = "hi"
+	TranscriptionEngineSpeechmaticsConfigLanguageHr            TranscriptionEngineSpeechmaticsConfigLanguage = "hr"
+	TranscriptionEngineSpeechmaticsConfigLanguageHu            TranscriptionEngineSpeechmaticsConfigLanguage = "hu"
+	TranscriptionEngineSpeechmaticsConfigLanguageIa            TranscriptionEngineSpeechmaticsConfigLanguage = "ia"
+	TranscriptionEngineSpeechmaticsConfigLanguageID            TranscriptionEngineSpeechmaticsConfigLanguage = "id"
+	TranscriptionEngineSpeechmaticsConfigLanguageIt            TranscriptionEngineSpeechmaticsConfigLanguage = "it"
+	TranscriptionEngineSpeechmaticsConfigLanguageJa            TranscriptionEngineSpeechmaticsConfigLanguage = "ja"
+	TranscriptionEngineSpeechmaticsConfigLanguageKo            TranscriptionEngineSpeechmaticsConfigLanguage = "ko"
+	TranscriptionEngineSpeechmaticsConfigLanguageLt            TranscriptionEngineSpeechmaticsConfigLanguage = "lt"
+	TranscriptionEngineSpeechmaticsConfigLanguageLv            TranscriptionEngineSpeechmaticsConfigLanguage = "lv"
+	TranscriptionEngineSpeechmaticsConfigLanguageMr            TranscriptionEngineSpeechmaticsConfigLanguage = "mr"
+	TranscriptionEngineSpeechmaticsConfigLanguageMs            TranscriptionEngineSpeechmaticsConfigLanguage = "ms"
+	TranscriptionEngineSpeechmaticsConfigLanguageNl            TranscriptionEngineSpeechmaticsConfigLanguage = "nl"
+	TranscriptionEngineSpeechmaticsConfigLanguageNo            TranscriptionEngineSpeechmaticsConfigLanguage = "no"
+	TranscriptionEngineSpeechmaticsConfigLanguagePl            TranscriptionEngineSpeechmaticsConfigLanguage = "pl"
+	TranscriptionEngineSpeechmaticsConfigLanguagePt            TranscriptionEngineSpeechmaticsConfigLanguage = "pt"
+	TranscriptionEngineSpeechmaticsConfigLanguageRo            TranscriptionEngineSpeechmaticsConfigLanguage = "ro"
+	TranscriptionEngineSpeechmaticsConfigLanguageRu            TranscriptionEngineSpeechmaticsConfigLanguage = "ru"
+	TranscriptionEngineSpeechmaticsConfigLanguageSk            TranscriptionEngineSpeechmaticsConfigLanguage = "sk"
+	TranscriptionEngineSpeechmaticsConfigLanguageSl            TranscriptionEngineSpeechmaticsConfigLanguage = "sl"
+	TranscriptionEngineSpeechmaticsConfigLanguageSv            TranscriptionEngineSpeechmaticsConfigLanguage = "sv"
+	TranscriptionEngineSpeechmaticsConfigLanguageTa            TranscriptionEngineSpeechmaticsConfigLanguage = "ta"
+	TranscriptionEngineSpeechmaticsConfigLanguageTh            TranscriptionEngineSpeechmaticsConfigLanguage = "th"
+	TranscriptionEngineSpeechmaticsConfigLanguageTr            TranscriptionEngineSpeechmaticsConfigLanguage = "tr"
+	TranscriptionEngineSpeechmaticsConfigLanguageUk            TranscriptionEngineSpeechmaticsConfigLanguage = "uk"
+	TranscriptionEngineSpeechmaticsConfigLanguageUr            TranscriptionEngineSpeechmaticsConfigLanguage = "ur"
+	TranscriptionEngineSpeechmaticsConfigLanguageVi            TranscriptionEngineSpeechmaticsConfigLanguage = "vi"
+	TranscriptionEngineSpeechmaticsConfigLanguageYue           TranscriptionEngineSpeechmaticsConfigLanguage = "yue"
+	TranscriptionEngineSpeechmaticsConfigLanguageEnUs          TranscriptionEngineSpeechmaticsConfigLanguage = "en-US"
+	TranscriptionEngineSpeechmaticsConfigLanguageEnGB          TranscriptionEngineSpeechmaticsConfigLanguage = "en-GB"
+	TranscriptionEngineSpeechmaticsConfigLanguageEnAu          TranscriptionEngineSpeechmaticsConfigLanguage = "en-AU"
+	TranscriptionEngineSpeechmaticsConfigLanguageCmnHans       TranscriptionEngineSpeechmaticsConfigLanguage = "cmn-Hans"
+	TranscriptionEngineSpeechmaticsConfigLanguageCmnHant       TranscriptionEngineSpeechmaticsConfigLanguage = "cmn-Hant"
 )
 
 // Engine identifier for Speechmatics transcription service
@@ -2505,11 +2602,13 @@ const (
 	TranscriptionEngineSpeechmaticsConfigTranscriptionEngineSpeechmatics TranscriptionEngineSpeechmaticsConfigTranscriptionEngine = "Speechmatics"
 )
 
-// The model to use for transcription.
+// The model to use for transcription. `speechmatics/linden-1` is a preview,
+// vendor-hosted model with its own language support (see `language`).
 type TranscriptionEngineSpeechmaticsConfigTranscriptionModel string
 
 const (
 	TranscriptionEngineSpeechmaticsConfigTranscriptionModelSpeechmaticsStandard TranscriptionEngineSpeechmaticsConfigTranscriptionModel = "speechmatics/standard"
+	TranscriptionEngineSpeechmaticsConfigTranscriptionModelSpeechmaticsLinden1  TranscriptionEngineSpeechmaticsConfigTranscriptionModel = "speechmatics/linden-1"
 )
 
 type TranscriptionEngineTelnyxConfigParam struct {
@@ -5231,6 +5330,15 @@ type CallActionHangupParams struct {
 	// Use this field to avoid duplicate commands. Telnyx will ignore any command with
 	// the same `command_id` for the same `call_control_id`.
 	CommandID param.Opt[string] `json:"command_id,omitzero"`
+	// Text for the SIP `Reason` header (RFC 3326) sent when cancelling an unanswered
+	// outbound leg. The SIP CANCEL carries `Reason: SIP;cause=200;text="<reason>"`;
+	// phones such as Poly and Yealink use it to suppress the missed-call entry for a
+	// call answered elsewhere. Has no effect on an answered leg or an inbound leg. A
+	// hangup sent before the leg's `call.initiated` webhook still hangs up the leg,
+	// but without the `Reason` header. Must not contain `"`, `\`, control characters,
+	// or characters outside the Basic Multilingual Plane (such as emoji); invalid
+	// values are rejected with a 422.
+	Reason param.Opt[string] `json:"reason,omitzero"`
 	// Custom headers to be added to the SIP BYE message.
 	CustomHeaders []CustomSipHeaderParam `json:"custom_headers,omitzero"`
 	paramObj

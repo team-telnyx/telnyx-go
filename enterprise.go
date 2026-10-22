@@ -37,7 +37,7 @@ type EnterpriseService struct {
 	// logo, call reasons) shown to recipients on outbound calls.
 	Dir EnterpriseDirService
 	// Verify ownership of a DIR's authorizer email. A short code is emailed and
-	// confirmed; the email must be verified before references can be submitted.
+	// confirmed.
 	VerifyEmail EnterpriseVerifyEmailService
 }
 

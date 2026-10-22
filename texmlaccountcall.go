@@ -88,7 +88,7 @@ func (r *TexmlAccountCallService) Update(ctx context.Context, callSid string, pa
 }
 
 // Initiate an outbound TeXML call. Telnyx will request TeXML from the XML Request
-// URL configured for the connection in the Mission Control Portal.
+// URL configured for the TeXML Application in the Mission Control Portal.
 func (r *TexmlAccountCallService) Calls(ctx context.Context, accountSid string, body TexmlAccountCallCallsParams, opts ...option.RequestOption) (res *TexmlAccountCallCallsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if accountSid == "" {
@@ -524,7 +524,12 @@ type TexmlAccountCallCallsParamsBodyWithURL struct {
 	// The URL from which Telnyx will retrieve the TeXML call instructions.
 	URL   string            `json:"Url" api:"required"`
 	Texml param.Opt[string] `json:"Texml,omitzero"`
-	// The ID of the TeXML Application.
+	// The ID of the TeXML Application that will handle the call, for example
+	// `1293384261075731499`. The `ApplicationSid` name is kept for Twilio API
+	// compatibility, but the value is the numeric ID of one of your TeXML Applications
+	// (see the TeXML Applications API or the Mission Control Portal), not a Twilio
+	// `AP...` SID. If `Url` and `Texml` are omitted, Telnyx fetches instructions from
+	// the XML Request URL configured on this application.
 	ApplicationSid param.Opt[string] `json:"ApplicationSid,omitzero"`
 	// Select whether to perform answering machine detection in the background. By
 	// default execution is blocked until Answering Machine Detection is completed.
@@ -789,7 +794,12 @@ type TexmlAccountCallCallsParamsBodyWithTeXml struct {
 	// execute these instructions instead of fetching from the Url.
 	Texml string            `json:"Texml" api:"required"`
 	URL   param.Opt[string] `json:"Url,omitzero"`
-	// The ID of the TeXML Application.
+	// The ID of the TeXML Application that will handle the call, for example
+	// `1293384261075731499`. The `ApplicationSid` name is kept for Twilio API
+	// compatibility, but the value is the numeric ID of one of your TeXML Applications
+	// (see the TeXML Applications API or the Mission Control Portal), not a Twilio
+	// `AP...` SID. If `Url` and `Texml` are omitted, Telnyx fetches instructions from
+	// the XML Request URL configured on this application.
 	ApplicationSid param.Opt[string] `json:"ApplicationSid,omitzero"`
 	// Select whether to perform answering machine detection in the background. By
 	// default execution is blocked until Answering Machine Detection is completed.
@@ -1051,7 +1061,12 @@ func (r *TexmlAccountCallCallsParamsBodyWithTeXmlCustomHeader) UnmarshalJSON(dat
 type TexmlAccountCallCallsParamsBodyApplicationDefault struct {
 	Texml param.Opt[string] `json:"Texml,omitzero"`
 	URL   param.Opt[string] `json:"Url,omitzero"`
-	// The ID of the TeXML Application.
+	// The ID of the TeXML Application that will handle the call, for example
+	// `1293384261075731499`. The `ApplicationSid` name is kept for Twilio API
+	// compatibility, but the value is the numeric ID of one of your TeXML Applications
+	// (see the TeXML Applications API or the Mission Control Portal), not a Twilio
+	// `AP...` SID. If `Url` and `Texml` are omitted, Telnyx fetches instructions from
+	// the XML Request URL configured on this application.
 	ApplicationSid param.Opt[string] `json:"ApplicationSid,omitzero"`
 	// Select whether to perform answering machine detection in the background. By
 	// default execution is blocked until Answering Machine Detection is completed.

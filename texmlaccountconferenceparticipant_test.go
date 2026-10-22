@@ -30,7 +30,7 @@ func TestTexmlAccountConferenceParticipantGet(t *testing.T) {
 		context.TODO(),
 		"call_sid_or_participant_label",
 		telnyx.TexmlAccountConferenceParticipantGetParams{
-			AccountSid:    "account_sid",
+			AccountSid:    "f5586561-8ff0-4291-a51b-c7dfe4139ff9",
 			ConferenceSid: "conference_sid",
 		},
 	)
@@ -60,7 +60,7 @@ func TestTexmlAccountConferenceParticipantUpdateWithOptionalParams(t *testing.T)
 		context.TODO(),
 		"call_sid_or_participant_label",
 		telnyx.TexmlAccountConferenceParticipantUpdateParams{
-			AccountSid:          "account_sid",
+			AccountSid:          "f5586561-8ff0-4291-a51b-c7dfe4139ff9",
 			ConferenceSid:       "conference_sid",
 			AnnounceMethod:      telnyx.TexmlAccountConferenceParticipantUpdateParamsAnnounceMethodGet,
 			AnnounceURL:         telnyx.String("https://www.example.com/announce.xml"),
@@ -101,7 +101,7 @@ func TestTexmlAccountConferenceParticipantDelete(t *testing.T) {
 		context.TODO(),
 		"call_sid_or_participant_label",
 		telnyx.TexmlAccountConferenceParticipantDeleteParams{
-			AccountSid:    "account_sid",
+			AccountSid:    "f5586561-8ff0-4291-a51b-c7dfe4139ff9",
 			ConferenceSid: "conference_sid",
 		},
 	)
@@ -131,7 +131,7 @@ func TestTexmlAccountConferenceParticipantParticipantsWithOptionalParams(t *test
 		context.TODO(),
 		"conference_sid",
 		telnyx.TexmlAccountConferenceParticipantParticipantsParams{
-			AccountSid:                              "account_sid",
+			AccountSid:                              "f5586561-8ff0-4291-a51b-c7dfe4139ff9",
 			AmdStatusCallback:                       telnyx.String("https://www.example.com/amd_result"),
 			AmdStatusCallbackMethod:                 telnyx.TexmlAccountConferenceParticipantParticipantsParamsAmdStatusCallbackMethodGet,
 			ApplicationSid:                          telnyx.String("1846572522338780702"),
@@ -219,7 +219,7 @@ func TestTexmlAccountConferenceParticipantGetParticipants(t *testing.T) {
 		context.TODO(),
 		"conference_sid",
 		telnyx.TexmlAccountConferenceParticipantGetParticipantsParams{
-			AccountSid: "account_sid",
+			AccountSid: "f5586561-8ff0-4291-a51b-c7dfe4139ff9",
 		},
 	)
 	if err != nil {

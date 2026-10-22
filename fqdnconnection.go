@@ -132,6 +132,14 @@ type FqdnConnection struct {
 	AnchorsiteOverride AnchorsiteOverride `json:"anchorsite_override"`
 	// The uuid of the push credential for Android
 	AndroidPushCredentialID string `json:"android_push_credential_id" api:"nullable"`
+	// Stores the connection preference for generating silent RTP toward the opposite
+	// call leg when comfort-noise packets (CN, payload type 13) are received during
+	// hold. Defaults to false and returns the saved value. Only JSON true and false
+	// are accepted; null and non-boolean values are rejected. This preference is
+	// independent of default_on_hold_comfort_noise_enabled and does not modify that
+	// setting. This API provisions the preference; call-processing behavior is
+	// implemented separately.
+	BridgeGenerateComfortNoiseOnCn bool `json:"bridge_generate_comfort_noise_on_cn"`
 	// Indicates whether call cost calculation is enabled.
 	CallCostEnabled bool `json:"call_cost_enabled"`
 	// Specifies if call cost webhooks should be sent for this connection.
@@ -154,8 +162,8 @@ type FqdnConnection struct {
 	// Encode the SIP contact header sent by Telnyx to avoid issues for NAT or ALG
 	// scenarios.
 	EncodeContactHeaderEnabled bool `json:"encode_contact_header_enabled"`
-	// Enable use of SRTP for encryption. Cannot be set if the transport_portocol is
-	// TLS.
+	// Enable use of SRTP for encryption. Can only be set when the SIP signaling
+	// transport protocol is TLS.
 	//
 	// Any of "SRTP".
 	EncryptedMedia EncryptedMedia `json:"encrypted_media" api:"nullable"`
@@ -242,6 +250,7 @@ type FqdnConnection struct {
 		AdjustDtmfTimestamp              respjson.Field
 		AnchorsiteOverride               respjson.Field
 		AndroidPushCredentialID          respjson.Field
+		BridgeGenerateComfortNoiseOnCn   respjson.Field
 		CallCostEnabled                  respjson.Field
 		CallCostInWebhooks               respjson.Field
 		ConversationPersistence          respjson.Field
@@ -540,8 +549,8 @@ type OutboundFqdn struct {
 	// When set, this will limit the total number of inbound calls to phone numbers
 	// associated with this connection.
 	ChannelLimit int64 `json:"channel_limit"`
-	// Enable use of SRTP for encryption. Cannot be set if the transport_portocol is
-	// TLS.
+	// Enable use of SRTP for encryption. Can only be set when the SIP signaling
+	// transport protocol is TLS.
 	//
 	// Any of "SRTP".
 	EncryptedMedia EncryptedMedia `json:"encrypted_media" api:"nullable"`
@@ -674,8 +683,8 @@ type OutboundFqdnParam struct {
 	Timeout1xxSecs param.Opt[int64] `json:"timeout_1xx_secs,omitzero"`
 	// Time(sec) before aborting if call is unanswered (min: 1, max: 600).
 	Timeout2xxSecs param.Opt[int64] `json:"timeout_2xx_secs,omitzero"`
-	// Enable use of SRTP for encryption. Cannot be set if the transport_portocol is
-	// TLS.
+	// Enable use of SRTP for encryption. Can only be set when the SIP signaling
+	// transport protocol is TLS.
 	//
 	// Any of "SRTP".
 	EncryptedMedia EncryptedMedia `json:"encrypted_media,omitzero"`
@@ -801,6 +810,14 @@ type FqdnConnectionNewParams struct {
 	WebhookTimeoutSecs param.Opt[int64] `json:"webhook_timeout_secs,omitzero"`
 	// Defaults to true
 	Active param.Opt[bool] `json:"active,omitzero"`
+	// Stores the connection preference for generating silent RTP toward the opposite
+	// call leg when comfort-noise packets (CN, payload type 13) are received during
+	// hold. Optional; defaults to false when omitted on creation. Only JSON true and
+	// false are accepted; null and non-boolean values are rejected. This preference is
+	// independent of default_on_hold_comfort_noise_enabled and does not modify that
+	// setting. This API provisions the preference; call-processing behavior is
+	// implemented separately.
+	BridgeGenerateComfortNoiseOnCn param.Opt[bool] `json:"bridge_generate_comfort_noise_on_cn,omitzero"`
 	// Specifies if call cost webhooks should be sent for this connection.
 	CallCostInWebhooks param.Opt[bool] `json:"call_cost_in_webhooks,omitzero"`
 	// When enabled, Telnyx will generate comfort noise when you place the call on
@@ -820,8 +837,8 @@ type FqdnConnectionNewParams struct {
 	// The URL where webhooks related to this connection will be sent. Must include a
 	// scheme, such as 'https'.
 	WebhookEventURL param.Opt[string] `json:"webhook_event_url,omitzero" format:"uri"`
-	// Enable use of SRTP for encryption. Cannot be set if the transport_portocol is
-	// TLS.
+	// Enable use of SRTP for encryption. Can only be set when the SIP signaling
+	// transport protocol is TLS.
 	//
 	// Any of "SRTP".
 	EncryptedMedia EncryptedMedia `json:"encrypted_media,omitzero"`
@@ -893,6 +910,14 @@ type FqdnConnectionUpdateParams struct {
 	WebhookTimeoutSecs param.Opt[int64] `json:"webhook_timeout_secs,omitzero"`
 	// Defaults to true
 	Active param.Opt[bool] `json:"active,omitzero"`
+	// Stores the connection preference for generating silent RTP toward the opposite
+	// call leg when comfort-noise packets (CN, payload type 13) are received during
+	// hold. Optional; omitting this field preserves the saved value. Only JSON true
+	// and false are accepted; null and non-boolean values are rejected. This
+	// preference is independent of default_on_hold_comfort_noise_enabled and does not
+	// modify that setting. This API provisions the preference; call-processing
+	// behavior is implemented separately.
+	BridgeGenerateComfortNoiseOnCn param.Opt[bool] `json:"bridge_generate_comfort_noise_on_cn,omitzero"`
 	// Specifies if call cost webhooks should be sent for this connection.
 	CallCostInWebhooks param.Opt[bool] `json:"call_cost_in_webhooks,omitzero"`
 	// A user-assigned name to help manage the connection.
@@ -915,8 +940,8 @@ type FqdnConnectionUpdateParams struct {
 	// The URL where webhooks related to this connection will be sent. Must include a
 	// scheme, such as 'https'.
 	WebhookEventURL param.Opt[string] `json:"webhook_event_url,omitzero" format:"uri"`
-	// Enable use of SRTP for encryption. Cannot be set if the transport_portocol is
-	// TLS.
+	// Enable use of SRTP for encryption. Can only be set when the SIP signaling
+	// transport protocol is TLS.
 	//
 	// Any of "SRTP".
 	EncryptedMedia EncryptedMedia `json:"encrypted_media,omitzero"`
