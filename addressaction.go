@@ -126,8 +126,6 @@ func (r *AddressActionValidateResponse) UnmarshalJSON(data []byte) error {
 }
 
 type AddressActionValidateResponseData struct {
-	// Indicates whether an address is valid or invalid.
-	//
 	// Any of "valid", "invalid".
 	Result string `json:"result" api:"required"`
 	// Provides normalized address when available.
@@ -157,14 +155,24 @@ type AddressActionValidateResponseDataSuggested struct {
 	// The locality of the address. For US addresses, this corresponds to the state of
 	// the address.
 	AdministrativeArea string `json:"administrative_area"`
+	// The borough of the address. This field is not used for addresses in the US but
+	// is used for some international addresses.
+	Borough string `json:"borough"`
 	// The two-character (ISO 3166-1 alpha-2) country code of the address.
 	CountryCode string `json:"country_code"`
 	// Additional street address information about the address such as, but not limited
 	// to, unit number or apartment number.
 	ExtendedAddress string `json:"extended_address"`
+	// Latitude of the suggested address, when available.
+	Latitude float64 `json:"latitude" api:"nullable"`
 	// The locality of the address. For US addresses, this corresponds to the city of
 	// the address.
 	Locality string `json:"locality"`
+	// Longitude of the suggested address, when available.
+	Longitude float64 `json:"longitude" api:"nullable"`
+	// The neighborhood of the address. This field is not used for addresses in the US
+	// but is used for some international addresses.
+	Neighborhood string `json:"neighborhood"`
 	// The postal code of the address.
 	PostalCode string `json:"postal_code"`
 	// The primary street address information about the address.
@@ -173,9 +181,13 @@ type AddressActionValidateResponseDataSuggested struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AdministrativeArea respjson.Field
+		Borough            respjson.Field
 		CountryCode        respjson.Field
 		ExtendedAddress    respjson.Field
+		Latitude           respjson.Field
 		Locality           respjson.Field
+		Longitude          respjson.Field
+		Neighborhood       respjson.Field
 		PostalCode         respjson.Field
 		StreetAddress      respjson.Field
 		ExtraFields        map[string]respjson.Field
