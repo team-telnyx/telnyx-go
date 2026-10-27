@@ -59,7 +59,7 @@ func (r *WhatsappPhoneNumberService) List(ctx context.Context, query WhatsappPho
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	path := "v2/whatsapp/phone_numbers"
+	path := "whatsapp/phone_numbers"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
 		return nil, err
@@ -85,7 +85,7 @@ func (r *WhatsappPhoneNumberService) Delete(ctx context.Context, phoneNumber str
 		err = errors.New("missing required phone_number parameter")
 		return err
 	}
-	path := fmt.Sprintf("v2/whatsapp/phone_numbers/%s", url.PathEscape(phoneNumber))
+	path := fmt.Sprintf("whatsapp/phone_numbers/%s", url.PathEscape(phoneNumber))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return err
 }
@@ -106,7 +106,7 @@ func (r *WhatsappPhoneNumberService) ResendVerification(ctx context.Context, pho
 		err = errors.New("missing required phone_number parameter")
 		return err
 	}
-	path := fmt.Sprintf("v2/whatsapp/phone_numbers/%s/resend_verification", url.PathEscape(phoneNumber))
+	path := fmt.Sprintf("whatsapp/phone_numbers/%s/resend_verification", url.PathEscape(phoneNumber))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
 	return err
 }
@@ -120,7 +120,7 @@ func (r *WhatsappPhoneNumberService) GetConversationWindow(ctx context.Context, 
 		err = errors.New("missing required phone_number parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("v2/whatsapp/phone_numbers/%s/conversation_window", url.PathEscape(phoneNumber))
+	path := fmt.Sprintf("whatsapp/phone_numbers/%s/conversation_window", url.PathEscape(phoneNumber))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
@@ -147,7 +147,7 @@ func (r *WhatsappPhoneNumberService) Verify(ctx context.Context, phoneNumber str
 		err = errors.New("missing required phone_number parameter")
 		return err
 	}
-	path := fmt.Sprintf("v2/whatsapp/phone_numbers/%s/verify", url.PathEscape(phoneNumber))
+	path := fmt.Sprintf("whatsapp/phone_numbers/%s/verify", url.PathEscape(phoneNumber))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
 	return err
 }

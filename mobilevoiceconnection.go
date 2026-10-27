@@ -45,7 +45,7 @@ func NewMobileVoiceConnectionService(opts ...option.RequestOption) (r MobileVoic
 // returns the created connection.
 func (r *MobileVoiceConnectionService) New(ctx context.Context, body MobileVoiceConnectionNewParams, opts ...option.RequestOption) (res *MobileVoiceConnectionNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := "v2/mobile_voice_connections"
+	path := "mobile_voice_connections"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -57,7 +57,7 @@ func (r *MobileVoiceConnectionService) Get(ctx context.Context, id string, opts 
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("v2/mobile_voice_connections/%s", url.PathEscape(id))
+	path := fmt.Sprintf("mobile_voice_connections/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -69,7 +69,7 @@ func (r *MobileVoiceConnectionService) Update(ctx context.Context, id string, bo
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("v2/mobile_voice_connections/%s", url.PathEscape(id))
+	path := fmt.Sprintf("mobile_voice_connections/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }
@@ -79,7 +79,7 @@ func (r *MobileVoiceConnectionService) List(ctx context.Context, query MobileVoi
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	path := "v2/mobile_voice_connections"
+	path := "mobile_voice_connections"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
 		return nil, err
@@ -104,7 +104,7 @@ func (r *MobileVoiceConnectionService) Delete(ctx context.Context, id string, op
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("v2/mobile_voice_connections/%s", url.PathEscape(id))
+	path := fmt.Sprintf("mobile_voice_connections/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
 }

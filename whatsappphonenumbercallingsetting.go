@@ -46,7 +46,7 @@ func (r *WhatsappPhoneNumberCallingSettingService) Get(ctx context.Context, phon
 		err = errors.New("missing required phone_number parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("v2/whatsapp/phone_numbers/%s/calling_settings", url.PathEscape(phoneNumber))
+	path := fmt.Sprintf("whatsapp/phone_numbers/%s/calling_settings", url.PathEscape(phoneNumber))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -58,7 +58,7 @@ func (r *WhatsappPhoneNumberCallingSettingService) Update(ctx context.Context, p
 		err = errors.New("missing required phone_number parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("v2/whatsapp/phone_numbers/%s/calling_settings", url.PathEscape(phoneNumber))
+	path := fmt.Sprintf("whatsapp/phone_numbers/%s/calling_settings", url.PathEscape(phoneNumber))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }

@@ -50,7 +50,7 @@ func NewBotChallengeService(opts ...option.RequestOption) (r BotChallengeService
 // unauthenticated.
 func (r *BotChallengeService) New(ctx context.Context, body BotChallengeNewParams, opts ...option.RequestOption) (res *BotChallengeNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := "v2/bot_challenge"
+	path := "bot_challenge"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
