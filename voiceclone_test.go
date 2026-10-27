@@ -93,6 +93,7 @@ func TestVoiceCloneListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.VoiceClones.List(context.TODO(), telnyx.VoiceCloneListParams{
+		FilterModelID:  telnyx.VoiceCloneListParamsFilterModelIDQwen3Tts,
 		FilterName:     telnyx.String("filter[name]"),
 		FilterProvider: telnyx.VoiceCloneListParamsFilterProviderTelnyx,
 		PageNumber:     telnyx.Int(1),

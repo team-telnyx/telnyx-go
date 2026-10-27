@@ -240,7 +240,8 @@ const (
 )
 
 type WhatsappHostedSignupNewParams struct {
-	// Meta App ID linked to the Telnyx account. The app must be enabled.
+	// Meta App ID linked to the Telnyx account or its manager account. The app must be
+	// enabled.
 	AppID string `json:"app_id" api:"required"`
 	// When the onboarding URL expires, in RFC 3339 format. Must be in the future and
 	// at most 3 days ahead. Defaults to 24 hours after creation.

@@ -53,7 +53,7 @@ func NewBotSessionService(opts ...option.RequestOption) (r BotSessionService) {
 // the magic link token in the query string is the credential.
 func (r *BotSessionService) List(ctx context.Context, query BotSessionListParams, opts ...option.RequestOption) (res *BotSessionListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := "v2/bot_sessions"
+	path := "bot_sessions"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }

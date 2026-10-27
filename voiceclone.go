@@ -105,11 +105,12 @@ func (r *VoiceCloneService) Delete(ctx context.Context, id string, opts ...optio
 
 // Creates a new voice clone by uploading an audio file directly. Supported
 // formats: WAV, MP3, FLAC, OGG, M4A. Maximum file size: 20MB. Reference audio is
-// trimmed per model: Qwen3TTS and Bayan use the first 10 seconds, Ultra uses up to
-// 60 seconds, and Minimax accepts 10 seconds to 5 minutes. Ultra clones return
-// `202` with status `pending`; all other models return `201` with status `active`.
-// Bayan clones require `ref_text` (the exact transcript of the reference audio)
-// and support `ar` (default) and `en` only.
+// trimmed per model: Qwen3TTS, Bayan, and Resemble use the first 10 seconds, Ultra
+// uses up to 60 seconds, and Minimax accepts 10 seconds to 5 minutes. Ultra clones
+// return `202` with status `pending`; all other models return `201` with status
+// `active`. Bayan clones require `ref_text` (the exact transcript of the reference
+// audio) and support `ar` (default) and `en` only. Resemble clones
+// (`provider: resemble`) take `model_id` `Pro`, `Turbo`, or `Urdu`.
 func (r *VoiceCloneService) NewFromUpload(ctx context.Context, body VoiceCloneNewFromUploadParams, opts ...option.RequestOption) (res *VoiceCloneResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "voice_clones/from_upload"
@@ -143,11 +144,12 @@ type VoiceCloneData struct {
 	// Voice style description. If not explicitly set on upload, falls back to the
 	// source design's prompt text.
 	Label string `json:"label" api:"nullable"`
-	// ISO 639-1 language code of the voice clone.
+	// Language code of the voice clone (ISO 639-1, or the Resemble catalogue code such
+	// as `en-US`).
 	Language string `json:"language" api:"nullable"`
 	// TTS model identifier for the voice clone.
 	//
-	// Any of "Qwen3TTS", "Ultra", "Bayan", "speech-2.8-turbo".
+	// Any of "Qwen3TTS", "Ultra", "Bayan", "speech-2.8-turbo", "Pro", "Turbo", "Urdu".
 	ModelID VoiceCloneDataModelID `json:"model_id"`
 	// Name of the voice clone.
 	Name string `json:"name"`
@@ -220,6 +222,9 @@ const (
 	VoiceCloneDataModelIDUltra          VoiceCloneDataModelID = "Ultra"
 	VoiceCloneDataModelIDBayan          VoiceCloneDataModelID = "Bayan"
 	VoiceCloneDataModelIDSpeech2_8Turbo VoiceCloneDataModelID = "speech-2.8-turbo"
+	VoiceCloneDataModelIDPro            VoiceCloneDataModelID = "Pro"
+	VoiceCloneDataModelIDTurbo          VoiceCloneDataModelID = "Turbo"
+	VoiceCloneDataModelIDUrdu           VoiceCloneDataModelID = "Urdu"
 )
 
 // Voice synthesis provider used for this clone.
@@ -429,6 +434,10 @@ type VoiceCloneListParams struct {
 	PageNumber param.Opt[int64] `query:"page[number],omitzero" json:"-"`
 	// Number of results per page.
 	PageSize param.Opt[int64] `query:"page[size],omitzero" json:"-"`
+	// Filter by TTS model. Case-insensitive.
+	//
+	// Any of "Qwen3TTS", "Ultra", "Bayan", "speech-2.8-turbo", "Pro", "Turbo", "Urdu".
+	FilterModelID VoiceCloneListParamsFilterModelID `query:"filter[model_id],omitzero" json:"-"`
 	// Filter by voice synthesis provider. Case-insensitive.
 	//
 	// Any of "telnyx", "minimax".
@@ -447,6 +456,19 @@ func (r VoiceCloneListParams) URLQuery() (v url.Values, err error) {
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
+
+// Filter by TTS model. Case-insensitive.
+type VoiceCloneListParamsFilterModelID string
+
+const (
+	VoiceCloneListParamsFilterModelIDQwen3Tts       VoiceCloneListParamsFilterModelID = "Qwen3TTS"
+	VoiceCloneListParamsFilterModelIDUltra          VoiceCloneListParamsFilterModelID = "Ultra"
+	VoiceCloneListParamsFilterModelIDBayan          VoiceCloneListParamsFilterModelID = "Bayan"
+	VoiceCloneListParamsFilterModelIDSpeech2_8Turbo VoiceCloneListParamsFilterModelID = "speech-2.8-turbo"
+	VoiceCloneListParamsFilterModelIDPro            VoiceCloneListParamsFilterModelID = "Pro"
+	VoiceCloneListParamsFilterModelIDTurbo          VoiceCloneListParamsFilterModelID = "Turbo"
+	VoiceCloneListParamsFilterModelIDUrdu           VoiceCloneListParamsFilterModelID = "Urdu"
+)
 
 // Filter by voice synthesis provider. Case-insensitive.
 type VoiceCloneListParamsFilterProvider string
@@ -485,6 +507,10 @@ type VoiceCloneNewFromUploadParams struct {
 	// This field is a request body variant, only one variant field can be set.
 	// Upload-based voice clone using the Minimax provider.
 	OfMinimaxClone *VoiceCloneNewFromUploadParamsVoiceCloneUploadRequestMinimaxClone `json:",inline"`
+	// This field is a request body variant, only one variant field can be set.
+	// Upload-based voice clone using the Resemble provider. The clone is `active` on
+	// creation. Use it as voice `Resemble.<model_id>.<clone_id>`.
+	OfResembleClone *VoiceCloneNewFromUploadParamsVoiceCloneUploadRequestResembleClone `json:",inline"`
 
 	paramObj
 }
@@ -720,5 +746,66 @@ func init() {
 	)
 	apijson.RegisterFieldValidator[VoiceCloneNewFromUploadParamsVoiceCloneUploadRequestMinimaxClone](
 		"model_id", "speech-2.8-turbo",
+	)
+}
+
+// Upload-based voice clone using the Resemble provider. The clone is `active` on
+// creation. Use it as voice `Resemble.<model_id>.<clone_id>`.
+//
+// The properties AudioFile, Gender, ModelID, Name, Provider are required.
+type VoiceCloneNewFromUploadParamsVoiceCloneUploadRequestResembleClone struct {
+	// Audio file to clone the voice from. Supported formats: WAV, MP3, FLAC, OGG, M4A.
+	// Converted to WAV and trimmed to the first 10 seconds. For best quality, provide
+	// about 10 seconds of clean, single-speaker speech. Maximum size: 20MB.
+	AudioFile io.Reader `json:"audio_file,omitzero" api:"required" format:"binary"`
+	// Gender of the voice clone.
+	//
+	// Any of "male", "female", "neutral".
+	Gender string `json:"gender,omitzero" api:"required"`
+	// Resemble model: `Pro`, `Turbo` (English only), or `Urdu`. A clone works only
+	// with this model.
+	//
+	// Any of "Pro", "Turbo", "Urdu".
+	ModelID string `json:"model_id,omitzero" api:"required"`
+	// Name for the voice clone.
+	Name string `json:"name" api:"required"`
+	// Voice synthesis provider. Must be `resemble`.
+	//
+	// Any of "resemble", "Resemble".
+	Provider string `json:"provider,omitzero" api:"required"`
+	// Optional custom label describing the voice style.
+	Label param.Opt[string] `json:"label,omitzero"`
+	// Language of the reference audio, matched case-insensitively. Pro: required, one
+	// of `ar`, `da`, `de`, `el`, `en-US`, `es`, `fi`, `fr-fr`, `he`, `hi`, `it`, `ja`,
+	// `ko`, `ms`, `nl`, `no`, `pl`, `pt`, `ru`, `sv`, `sw`, `tr`, `zh`. Turbo: `en` or
+	// `en-US` (default `en-US`). Urdu: `ur` (default). Other values return `422`.
+	//
+	// Any of "ar", "da", "de", "el", "en", "en-US", "es", "fi", "fr-fr", "he", "hi",
+	// "it", "ja", "ko", "ms", "nl", "no", "pl", "pt", "ru", "sv", "sw", "tr", "ur",
+	// "zh".
+	Language string `json:"language,omitzero"`
+	paramObj
+}
+
+func (r VoiceCloneNewFromUploadParamsVoiceCloneUploadRequestResembleClone) MarshalJSON() (data []byte, err error) {
+	type shadow VoiceCloneNewFromUploadParamsVoiceCloneUploadRequestResembleClone
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *VoiceCloneNewFromUploadParamsVoiceCloneUploadRequestResembleClone) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[VoiceCloneNewFromUploadParamsVoiceCloneUploadRequestResembleClone](
+		"gender", "male", "female", "neutral",
+	)
+	apijson.RegisterFieldValidator[VoiceCloneNewFromUploadParamsVoiceCloneUploadRequestResembleClone](
+		"model_id", "Pro", "Turbo", "Urdu",
+	)
+	apijson.RegisterFieldValidator[VoiceCloneNewFromUploadParamsVoiceCloneUploadRequestResembleClone](
+		"provider", "resemble", "Resemble",
+	)
+	apijson.RegisterFieldValidator[VoiceCloneNewFromUploadParamsVoiceCloneUploadRequestResembleClone](
+		"language", "ar", "da", "de", "el", "en", "en-US", "es", "fi", "fr-fr", "he", "hi", "it", "ja", "ko", "ms", "nl", "no", "pl", "pt", "ru", "sv", "sw", "tr", "ur", "zh",
 	)
 }

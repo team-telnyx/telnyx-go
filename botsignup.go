@@ -53,7 +53,7 @@ func NewBotSignupService(opts ...option.RequestOption) (r BotSignupService) {
 // availability, and subject to per-IP and per-domain registration limits.
 func (r *BotSignupService) New(ctx context.Context, body BotSignupNewParams, opts ...option.RequestOption) (res *SuccessResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := "v2/bot_signup"
+	path := "bot_signup"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -67,7 +67,7 @@ func (r *BotSignupService) New(ctx context.Context, body BotSignupNewParams, opt
 // availability.
 func (r *BotSignupService) ResendMagicLink(ctx context.Context, body BotSignupResendMagicLinkParams, opts ...option.RequestOption) (res *SuccessResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := "v2/bot_signup/resend_magic_link"
+	path := "bot_signup/resend_magic_link"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
