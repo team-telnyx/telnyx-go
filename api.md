@@ -45,6 +45,8 @@
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared">shared</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared#SubNumberOrderRegulatoryRequirementWithValue">SubNumberOrderRegulatoryRequirementWithValue</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared">shared</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/shared#WhatsappTemplateData">WhatsappTemplateData</a>
 
+# BrowserSessions
+
 # Legacy
 
 ## Reporting

@@ -17,12 +17,13 @@ import (
 // interacting with the telnyx API. You should not instantiate this client
 // directly, and instead use the [NewClient] method instead.
 type Client struct {
-	Options      []option.RequestOption
-	Legacy       LegacyService
-	OAuth        OAuthService
-	OAuthClients OAuthClientService
-	OAuthGrants  OAuthGrantService
-	Webhooks     WebhookService
+	Options         []option.RequestOption
+	BrowserSessions BrowserSessionService
+	Legacy          LegacyService
+	OAuth           OAuthService
+	OAuthClients    OAuthClientService
+	OAuthGrants     OAuthGrantService
+	Webhooks        WebhookService
 	// IP Address Operations
 	AccessIPAddress AccessIPAddressService
 	// IP Range Operations
@@ -467,6 +468,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 
 	r = Client{Options: opts}
 
+	r.BrowserSessions = NewBrowserSessionService(opts...)
 	r.Legacy = NewLegacyService(opts...)
 	r.OAuth = NewOAuthService(opts...)
 	r.OAuthClients = NewOAuthClientService(opts...)
