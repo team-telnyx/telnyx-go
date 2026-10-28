@@ -428,8 +428,7 @@ type Client struct {
 	// UAC connection operations
 	SipRegistrationStatus SipRegistrationStatusService
 	// Call information
-	DialMetrics     DialMetricService
-	TtsIntegrations TtsIntegrationService
+	DialMetrics DialMetricService
 	// Tailscale Subnet Router operations
 	TailscaleSubnetRouters TailscaleSubnetRouterService
 	// Download screenshots and other artifacts.
@@ -678,7 +677,6 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.LlmTokenGateway = NewLlmTokenGatewayService(opts...)
 	r.SipRegistrationStatus = NewSipRegistrationStatusService(opts...)
 	r.DialMetrics = NewDialMetricService(opts...)
-	r.TtsIntegrations = NewTtsIntegrationService(opts...)
 	r.TailscaleSubnetRouters = NewTailscaleSubnetRouterService(opts...)
 	r.ArtifactDownloads = NewArtifactDownloadService(opts...)
 	r.Email = NewEmailService(opts...)

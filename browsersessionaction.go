@@ -480,27 +480,27 @@ func (r *WaitForActionParam) UnmarshalJSON(data []byte) error {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type WaitForActionConditionUnionParam struct {
-	OfWaitForActionConditionUnionMember0 *WaitForActionConditionUnionMember0Param `json:",omitzero,inline"`
-	OfWaitForActionConditionUnionMember1 *WaitForActionConditionUnionMember1Param `json:",omitzero,inline"`
-	OfWaitForActionConditionUnionMember2 *WaitForActionConditionUnionMember2Param `json:",omitzero,inline"`
-	OfWaitForActionConditionKind         *WaitForActionConditionKindParam         `json:",omitzero,inline"`
+	OfUnionMember0               *WaitForActionConditionUnionMember0Param `json:",omitzero,inline"`
+	OfUnionMember1               *WaitForActionConditionUnionMember1Param `json:",omitzero,inline"`
+	OfUnionMember2               *WaitForActionConditionUnionMember2Param `json:",omitzero,inline"`
+	OfWaitForActionConditionKind *WaitForActionConditionKindParam         `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u WaitForActionConditionUnionParam) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfWaitForActionConditionUnionMember0, u.OfWaitForActionConditionUnionMember1, u.OfWaitForActionConditionUnionMember2, u.OfWaitForActionConditionKind)
+	return param.MarshalUnion(u, u.OfUnionMember0, u.OfUnionMember1, u.OfUnionMember2, u.OfWaitForActionConditionKind)
 }
 func (u *WaitForActionConditionUnionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *WaitForActionConditionUnionParam) asAny() any {
-	if !param.IsOmitted(u.OfWaitForActionConditionUnionMember0) {
-		return u.OfWaitForActionConditionUnionMember0
-	} else if !param.IsOmitted(u.OfWaitForActionConditionUnionMember1) {
-		return u.OfWaitForActionConditionUnionMember1
-	} else if !param.IsOmitted(u.OfWaitForActionConditionUnionMember2) {
-		return u.OfWaitForActionConditionUnionMember2
+	if !param.IsOmitted(u.OfUnionMember0) {
+		return u.OfUnionMember0
+	} else if !param.IsOmitted(u.OfUnionMember1) {
+		return u.OfUnionMember1
+	} else if !param.IsOmitted(u.OfUnionMember2) {
+		return u.OfUnionMember2
 	} else if !param.IsOmitted(u.OfWaitForActionConditionKind) {
 		return u.OfWaitForActionConditionKind
 	}
@@ -509,7 +509,7 @@ func (u *WaitForActionConditionUnionParam) asAny() any {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u WaitForActionConditionUnionParam) GetPattern() *string {
-	if vt := u.OfWaitForActionConditionUnionMember0; vt != nil {
+	if vt := u.OfUnionMember0; vt != nil {
 		return &vt.Pattern
 	}
 	return nil
@@ -517,7 +517,7 @@ func (u WaitForActionConditionUnionParam) GetPattern() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u WaitForActionConditionUnionParam) GetObservationID() *string {
-	if vt := u.OfWaitForActionConditionUnionMember1; vt != nil {
+	if vt := u.OfUnionMember1; vt != nil {
 		return &vt.ObservationID
 	}
 	return nil
@@ -525,7 +525,7 @@ func (u WaitForActionConditionUnionParam) GetObservationID() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u WaitForActionConditionUnionParam) GetRef() *string {
-	if vt := u.OfWaitForActionConditionUnionMember1; vt != nil {
+	if vt := u.OfUnionMember1; vt != nil {
 		return &vt.Ref
 	}
 	return nil
@@ -533,7 +533,7 @@ func (u WaitForActionConditionUnionParam) GetRef() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u WaitForActionConditionUnionParam) GetText() *string {
-	if vt := u.OfWaitForActionConditionUnionMember2; vt != nil {
+	if vt := u.OfUnionMember2; vt != nil {
 		return &vt.Text
 	}
 	return nil
@@ -541,11 +541,11 @@ func (u WaitForActionConditionUnionParam) GetText() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u WaitForActionConditionUnionParam) GetKind() *string {
-	if vt := u.OfWaitForActionConditionUnionMember0; vt != nil {
+	if vt := u.OfUnionMember0; vt != nil {
 		return (*string)(&vt.Kind)
-	} else if vt := u.OfWaitForActionConditionUnionMember1; vt != nil {
+	} else if vt := u.OfUnionMember1; vt != nil {
 		return (*string)(&vt.Kind)
-	} else if vt := u.OfWaitForActionConditionUnionMember2; vt != nil {
+	} else if vt := u.OfUnionMember2; vt != nil {
 		return (*string)(&vt.Kind)
 	} else if vt := u.OfWaitForActionConditionKind; vt != nil {
 		return (*string)(&vt.Kind)

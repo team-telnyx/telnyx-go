@@ -5738,17 +5738,17 @@ type InferenceEmbeddingVoiceSettingsBackgroundAudioUnion struct {
 	} `json:"-"`
 }
 
-func (u InferenceEmbeddingVoiceSettingsBackgroundAudioUnion) AsInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0() (v InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0) {
+func (u InferenceEmbeddingVoiceSettingsBackgroundAudioUnion) AsUnionMember0() (v InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u InferenceEmbeddingVoiceSettingsBackgroundAudioUnion) AsInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember1() (v InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember1) {
+func (u InferenceEmbeddingVoiceSettingsBackgroundAudioUnion) AsUnionMember1() (v InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember1) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u InferenceEmbeddingVoiceSettingsBackgroundAudioUnion) AsInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember2() (v InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember2) {
+func (u InferenceEmbeddingVoiceSettingsBackgroundAudioUnion) AsUnionMember2() (v InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember2) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -5909,12 +5909,12 @@ type InferenceEmbeddingVoiceSettingsToolCallAudioUnion struct {
 	} `json:"-"`
 }
 
-func (u InferenceEmbeddingVoiceSettingsToolCallAudioUnion) AsInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0() (v InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0) {
+func (u InferenceEmbeddingVoiceSettingsToolCallAudioUnion) AsUnionMember0() (v InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u InferenceEmbeddingVoiceSettingsToolCallAudioUnion) AsInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1() (v InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1) {
+func (u InferenceEmbeddingVoiceSettingsToolCallAudioUnion) AsUnionMember1() (v InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -6059,33 +6059,33 @@ func (r *InferenceEmbeddingVoiceSettingsParam) UnmarshalJSON(data []byte) error 
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type InferenceEmbeddingVoiceSettingsBackgroundAudioUnionParam struct {
-	OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0 *InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0Param `json:",omitzero,inline"`
-	OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember1 *InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember1Param `json:",omitzero,inline"`
-	OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember2 *InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember2Param `json:",omitzero,inline"`
+	OfUnionMember0 *InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0Param `json:",omitzero,inline"`
+	OfUnionMember1 *InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember1Param `json:",omitzero,inline"`
+	OfUnionMember2 *InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember2Param `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u InferenceEmbeddingVoiceSettingsBackgroundAudioUnionParam) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0, u.OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember1, u.OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember2)
+	return param.MarshalUnion(u, u.OfUnionMember0, u.OfUnionMember1, u.OfUnionMember2)
 }
 func (u *InferenceEmbeddingVoiceSettingsBackgroundAudioUnionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *InferenceEmbeddingVoiceSettingsBackgroundAudioUnionParam) asAny() any {
-	if !param.IsOmitted(u.OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0) {
-		return u.OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0
-	} else if !param.IsOmitted(u.OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember1) {
-		return u.OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember1
-	} else if !param.IsOmitted(u.OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember2) {
-		return u.OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember2
+	if !param.IsOmitted(u.OfUnionMember0) {
+		return u.OfUnionMember0
+	} else if !param.IsOmitted(u.OfUnionMember1) {
+		return u.OfUnionMember1
+	} else if !param.IsOmitted(u.OfUnionMember2) {
+		return u.OfUnionMember2
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u InferenceEmbeddingVoiceSettingsBackgroundAudioUnionParam) GetVolume() *float64 {
-	if vt := u.OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0; vt != nil && vt.Volume.Valid() {
+	if vt := u.OfUnionMember0; vt != nil && vt.Volume.Valid() {
 		return &vt.Volume.Value
 	}
 	return nil
@@ -6093,11 +6093,11 @@ func (u InferenceEmbeddingVoiceSettingsBackgroundAudioUnionParam) GetVolume() *f
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u InferenceEmbeddingVoiceSettingsBackgroundAudioUnionParam) GetType() *string {
-	if vt := u.OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0; vt != nil {
+	if vt := u.OfUnionMember0; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember1; vt != nil {
+	} else if vt := u.OfUnionMember1; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember2; vt != nil {
+	} else if vt := u.OfUnionMember2; vt != nil {
 		return (*string)(&vt.Type)
 	}
 	return nil
@@ -6105,11 +6105,11 @@ func (u InferenceEmbeddingVoiceSettingsBackgroundAudioUnionParam) GetType() *str
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u InferenceEmbeddingVoiceSettingsBackgroundAudioUnionParam) GetValue() *string {
-	if vt := u.OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0; vt != nil {
+	if vt := u.OfUnionMember0; vt != nil {
 		return (*string)(&vt.Value)
-	} else if vt := u.OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember1; vt != nil {
+	} else if vt := u.OfUnionMember1; vt != nil {
 		return (*string)(&vt.Value)
-	} else if vt := u.OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember2; vt != nil {
+	} else if vt := u.OfUnionMember2; vt != nil {
 		return (*string)(&vt.Value)
 	}
 	return nil
@@ -6213,30 +6213,30 @@ func init() {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type InferenceEmbeddingVoiceSettingsToolCallAudioUnionParam struct {
-	OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0 *InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0Param `json:",omitzero,inline"`
-	OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1 *InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1Param `json:",omitzero,inline"`
+	OfUnionMember0 *InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0Param `json:",omitzero,inline"`
+	OfUnionMember1 *InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1Param `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u InferenceEmbeddingVoiceSettingsToolCallAudioUnionParam) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0, u.OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1)
+	return param.MarshalUnion(u, u.OfUnionMember0, u.OfUnionMember1)
 }
 func (u *InferenceEmbeddingVoiceSettingsToolCallAudioUnionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *InferenceEmbeddingVoiceSettingsToolCallAudioUnionParam) asAny() any {
-	if !param.IsOmitted(u.OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0) {
-		return u.OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0
-	} else if !param.IsOmitted(u.OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1) {
-		return u.OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1
+	if !param.IsOmitted(u.OfUnionMember0) {
+		return u.OfUnionMember0
+	} else if !param.IsOmitted(u.OfUnionMember1) {
+		return u.OfUnionMember1
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u InferenceEmbeddingVoiceSettingsToolCallAudioUnionParam) GetVolume() *float64 {
-	if vt := u.OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0; vt != nil && vt.Volume.Valid() {
+	if vt := u.OfUnionMember0; vt != nil && vt.Volume.Valid() {
 		return &vt.Volume.Value
 	}
 	return nil
@@ -6244,9 +6244,9 @@ func (u InferenceEmbeddingVoiceSettingsToolCallAudioUnionParam) GetVolume() *flo
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u InferenceEmbeddingVoiceSettingsToolCallAudioUnionParam) GetType() *string {
-	if vt := u.OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0; vt != nil {
+	if vt := u.OfUnionMember0; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1; vt != nil {
+	} else if vt := u.OfUnionMember1; vt != nil {
 		return (*string)(&vt.Type)
 	}
 	return nil
@@ -6254,9 +6254,9 @@ func (u InferenceEmbeddingVoiceSettingsToolCallAudioUnionParam) GetType() *strin
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u InferenceEmbeddingVoiceSettingsToolCallAudioUnionParam) GetValue() *string {
-	if vt := u.OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0; vt != nil {
+	if vt := u.OfUnionMember0; vt != nil {
 		return (*string)(&vt.Value)
-	} else if vt := u.OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1; vt != nil {
+	} else if vt := u.OfUnionMember1; vt != nil {
 		return (*string)(&vt.Value)
 	}
 	return nil

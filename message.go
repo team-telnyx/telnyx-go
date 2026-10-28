@@ -775,26 +775,26 @@ const (
 )
 
 // MessagingInboundMessagePayloadToUnion contains all possible properties and
-// values from [[]MessagingInboundMessagePayloadToArrayItem], [string].
+// values from [[]MessagingInboundMessagePayloadToUnionMember0Item], [string].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 //
 // If the underlying value is not a json object, one of the following properties
-// will be valid: OfMessagingInboundMessagePayloadToArray OfString]
+// will be valid: OfUnionMember0 OfString]
 type MessagingInboundMessagePayloadToUnion struct {
 	// This field will be present if the value is a
-	// [[]MessagingInboundMessagePayloadToArrayItem] instead of an object.
-	OfMessagingInboundMessagePayloadToArray []MessagingInboundMessagePayloadToArrayItem `json:",inline"`
+	// [[]MessagingInboundMessagePayloadToUnionMember0Item] instead of an object.
+	OfUnionMember0 []MessagingInboundMessagePayloadToUnionMember0Item `json:",inline"`
 	// This field will be present if the value is a [string] instead of an object.
 	OfString string `json:",inline"`
 	JSON     struct {
-		OfMessagingInboundMessagePayloadToArray respjson.Field
-		OfString                                respjson.Field
-		raw                                     string
+		OfUnionMember0 respjson.Field
+		OfString       respjson.Field
+		raw            string
 	} `json:"-"`
 }
 
-func (u MessagingInboundMessagePayloadToUnion) AsMessagingInboundMessagePayloadToArray() (v []MessagingInboundMessagePayloadToArrayItem) {
+func (u MessagingInboundMessagePayloadToUnion) AsUnionMember0() (v []MessagingInboundMessagePayloadToUnionMember0Item) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -811,7 +811,7 @@ func (r *MessagingInboundMessagePayloadToUnion) UnmarshalJSON(data []byte) error
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type MessagingInboundMessagePayloadToArrayItem struct {
+type MessagingInboundMessagePayloadToUnionMember0Item struct {
 	// RCS agent identifier.
 	AgentID string `json:"agent_id"`
 	// RCS agent name.
@@ -841,8 +841,8 @@ type MessagingInboundMessagePayloadToArrayItem struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r MessagingInboundMessagePayloadToArrayItem) RawJSON() string { return r.JSON.raw }
-func (r *MessagingInboundMessagePayloadToArrayItem) UnmarshalJSON(data []byte) error {
+func (r MessagingInboundMessagePayloadToUnionMember0Item) RawJSON() string { return r.JSON.raw }
+func (r *MessagingInboundMessagePayloadToUnionMember0Item) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -3266,22 +3266,21 @@ func (r *MessageGetResponseDataUnionMedia) UnmarshalJSON(data []byte) error {
 // [MessageGetResponseDataUnion].
 //
 // If the underlying value is not a json object, one of the following properties
-// will be valid: OfOutboundMessagePayloadToArray
-// OfMessagingInboundMessagePayloadToArray OfString]
+// will be valid: OfOutboundMessagePayloadToArray OfUnionMember0 OfString]
 type MessageGetResponseDataUnionTo struct {
 	// This field will be present if the value is a [[]OutboundMessagePayloadTo]
 	// instead of an object.
 	OfOutboundMessagePayloadToArray []OutboundMessagePayloadTo `json:",inline"`
 	// This field will be present if the value is a
-	// [[]MessagingInboundMessagePayloadToArrayItem] instead of an object.
-	OfMessagingInboundMessagePayloadToArray []MessagingInboundMessagePayloadToArrayItem `json:",inline"`
+	// [[]MessagingInboundMessagePayloadToUnionMember0Item] instead of an object.
+	OfUnionMember0 []MessagingInboundMessagePayloadToUnionMember0Item `json:",inline"`
 	// This field will be present if the value is a [string] instead of an object.
 	OfString string `json:",inline"`
 	JSON     struct {
-		OfOutboundMessagePayloadToArray         respjson.Field
-		OfMessagingInboundMessagePayloadToArray respjson.Field
-		OfString                                respjson.Field
-		raw                                     string
+		OfOutboundMessagePayloadToArray respjson.Field
+		OfUnionMember0                  respjson.Field
+		OfString                        respjson.Field
+		raw                             string
 	} `json:"-"`
 }
 

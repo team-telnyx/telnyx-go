@@ -203,7 +203,7 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 								Voice:     "voice",
 								APIKeyRef: telnyx.String("api_key_ref"),
 								BackgroundAudio: telnyx.InferenceEmbeddingVoiceSettingsBackgroundAudioUnionParam{
-									OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0: &telnyx.InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0Param{
+									OfUnionMember0: &telnyx.InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0Param{
 										Type:   "predefined_media",
 										Value:  "silence",
 										Volume: telnyx.Float(0.1),
@@ -216,7 +216,7 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 								Style:           telnyx.Float(0),
 								Temperature:     telnyx.Float(0),
 								ToolCallAudio: telnyx.InferenceEmbeddingVoiceSettingsToolCallAudioUnionParam{
-									OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0: &telnyx.InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0Param{
+									OfUnionMember0: &telnyx.InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0Param{
 										Type:   "predefined_media",
 										Value:  "typing",
 										Volume: telnyx.Float(0.5),
@@ -344,7 +344,7 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 								Voice:     "voice",
 								APIKeyRef: telnyx.String("api_key_ref"),
 								BackgroundAudio: telnyx.InferenceEmbeddingVoiceSettingsBackgroundAudioUnionParam{
-									OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0: &telnyx.InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0Param{
+									OfUnionMember0: &telnyx.InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0Param{
 										Type:   "predefined_media",
 										Value:  "silence",
 										Volume: telnyx.Float(0.1),
@@ -357,7 +357,7 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 								Style:           telnyx.Float(0),
 								Temperature:     telnyx.Float(0),
 								ToolCallAudio: telnyx.InferenceEmbeddingVoiceSettingsToolCallAudioUnionParam{
-									OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0: &telnyx.InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0Param{
+									OfUnionMember0: &telnyx.InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0Param{
 										Type:   "predefined_media",
 										Value:  "typing",
 										Volume: telnyx.Float(0.5),
@@ -644,7 +644,7 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 					Voice:     "voice",
 					APIKeyRef: telnyx.String("api_key_ref"),
 					BackgroundAudio: telnyx.InferenceEmbeddingVoiceSettingsBackgroundAudioUnionParam{
-						OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0: &telnyx.InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0Param{
+						OfUnionMember0: &telnyx.InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0Param{
 							Type:   "predefined_media",
 							Value:  "silence",
 							Volume: telnyx.Float(0.1),
@@ -657,7 +657,7 @@ func TestAIAssistantVersionUpdateWithOptionalParams(t *testing.T) {
 					Style:           telnyx.Float(0),
 					Temperature:     telnyx.Float(0),
 					ToolCallAudio: telnyx.InferenceEmbeddingVoiceSettingsToolCallAudioUnionParam{
-						OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0: &telnyx.InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0Param{
+						OfUnionMember0: &telnyx.InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0Param{
 							Type:   "predefined_media",
 							Value:  "typing",
 							Volume: telnyx.Float(0.5),

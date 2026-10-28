@@ -6349,10 +6349,10 @@ func (r *CallAnalyzedWebhookEventDataPayloadConversationInsightsConversationInsi
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 //
 // If the underlying value is not a json object, one of the following properties
-// will be valid: OfString]
+// will be valid: OfCallAnalyzedWebhookEventDataPayloadCostUnionMember0]
 type CallAnalyzedWebhookEventDataPayloadCostUnion struct {
 	// This field will be present if the value is a [string] instead of an object.
-	OfString string `json:",inline"`
+	OfCallAnalyzedWebhookEventDataPayloadCostUnionMember0 string `json:",inline"`
 	// This field is from variant
 	// [CallAnalyzedWebhookEventDataPayloadCostUnionMember0].
 	Breakdown []CallAnalyzedWebhookEventDataPayloadCostUnionMember0Breakdown `json:"breakdown"`
@@ -6363,20 +6363,20 @@ type CallAnalyzedWebhookEventDataPayloadCostUnion struct {
 	// [CallAnalyzedWebhookEventDataPayloadCostUnionMember0].
 	Total string `json:"total"`
 	JSON  struct {
-		OfString  respjson.Field
-		Breakdown respjson.Field
-		Currency  respjson.Field
-		Total     respjson.Field
-		raw       string
+		OfCallAnalyzedWebhookEventDataPayloadCostUnionMember0 respjson.Field
+		Breakdown                                             respjson.Field
+		Currency                                              respjson.Field
+		Total                                                 respjson.Field
+		raw                                                   string
 	} `json:"-"`
 }
 
-func (u CallAnalyzedWebhookEventDataPayloadCostUnion) AsCallAnalyzedWebhookEventDataPayloadCostUnionMember0() (v CallAnalyzedWebhookEventDataPayloadCostUnionMember0) {
+func (u CallAnalyzedWebhookEventDataPayloadCostUnion) AsUnionMember0() (v CallAnalyzedWebhookEventDataPayloadCostUnionMember0) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u CallAnalyzedWebhookEventDataPayloadCostUnion) AsString() (v string) {
+func (u CallAnalyzedWebhookEventDataPayloadCostUnion) AsCallAnalyzedWebhookEventDataPayloadCostUnionMember0() (v string) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -10596,8 +10596,7 @@ func (r *UnsafeUnwrapWebhookEventUnionDataPayloadResult) UnmarshalJSON(data []by
 // [UnsafeUnwrapWebhookEventUnion].
 //
 // If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfOutboundMessagePayloadToArray
-// OfMessagingInboundMessagePayloadToArray]
+// will be valid: OfString OfOutboundMessagePayloadToArray OfUnionMember0]
 type UnsafeUnwrapWebhookEventUnionDataPayloadTo struct {
 	// This field will be present if the value is a [string] instead of an object.
 	OfString string `json:",inline"`
@@ -10605,13 +10604,13 @@ type UnsafeUnwrapWebhookEventUnionDataPayloadTo struct {
 	// instead of an object.
 	OfOutboundMessagePayloadToArray []OutboundMessagePayloadTo `json:",inline"`
 	// This field will be present if the value is a
-	// [[]MessagingInboundMessagePayloadToArrayItem] instead of an object.
-	OfMessagingInboundMessagePayloadToArray []MessagingInboundMessagePayloadToArrayItem `json:",inline"`
-	JSON                                    struct {
-		OfString                                respjson.Field
-		OfOutboundMessagePayloadToArray         respjson.Field
-		OfMessagingInboundMessagePayloadToArray respjson.Field
-		raw                                     string
+	// [[]MessagingInboundMessagePayloadToUnionMember0Item] instead of an object.
+	OfUnionMember0 []MessagingInboundMessagePayloadToUnionMember0Item `json:",inline"`
+	JSON           struct {
+		OfString                        respjson.Field
+		OfOutboundMessagePayloadToArray respjson.Field
+		OfUnionMember0                  respjson.Field
+		raw                             string
 	} `json:"-"`
 }
 
@@ -10627,10 +10626,10 @@ func (r *UnsafeUnwrapWebhookEventUnionDataPayloadTo) UnmarshalJSON(data []byte) 
 // [UnsafeUnwrapWebhookEventUnion].
 //
 // If the underlying value is not a json object, one of the following properties
-// will be valid: OfString]
+// will be valid: OfCallAnalyzedWebhookEventDataPayloadCostUnionMember0]
 type UnsafeUnwrapWebhookEventUnionDataPayloadCost struct {
 	// This field will be present if the value is a [string] instead of an object.
-	OfString string `json:",inline"`
+	OfCallAnalyzedWebhookEventDataPayloadCostUnionMember0 string `json:",inline"`
 	// This field is from variant [CallAnalyzedWebhookEventDataPayloadCostUnion].
 	Breakdown []CallAnalyzedWebhookEventDataPayloadCostUnionMember0Breakdown `json:"breakdown"`
 	Currency  string                                                         `json:"currency"`
@@ -10638,12 +10637,12 @@ type UnsafeUnwrapWebhookEventUnionDataPayloadCost struct {
 	Total  string `json:"total"`
 	Amount string `json:"amount"`
 	JSON   struct {
-		OfString  respjson.Field
-		Breakdown respjson.Field
-		Currency  respjson.Field
-		Total     respjson.Field
-		Amount    respjson.Field
-		raw       string
+		OfCallAnalyzedWebhookEventDataPayloadCostUnionMember0 respjson.Field
+		Breakdown                                             respjson.Field
+		Currency                                              respjson.Field
+		Total                                                 respjson.Field
+		Amount                                                respjson.Field
+		raw                                                   string
 	} `json:"-"`
 }
 
@@ -12213,8 +12212,7 @@ func (r *UnwrapWebhookEventUnionDataPayloadResult) UnmarshalJSON(data []byte) er
 // [UnwrapWebhookEventUnion].
 //
 // If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfOutboundMessagePayloadToArray
-// OfMessagingInboundMessagePayloadToArray]
+// will be valid: OfString OfOutboundMessagePayloadToArray OfUnionMember0]
 type UnwrapWebhookEventUnionDataPayloadTo struct {
 	// This field will be present if the value is a [string] instead of an object.
 	OfString string `json:",inline"`
@@ -12222,13 +12220,13 @@ type UnwrapWebhookEventUnionDataPayloadTo struct {
 	// instead of an object.
 	OfOutboundMessagePayloadToArray []OutboundMessagePayloadTo `json:",inline"`
 	// This field will be present if the value is a
-	// [[]MessagingInboundMessagePayloadToArrayItem] instead of an object.
-	OfMessagingInboundMessagePayloadToArray []MessagingInboundMessagePayloadToArrayItem `json:",inline"`
-	JSON                                    struct {
-		OfString                                respjson.Field
-		OfOutboundMessagePayloadToArray         respjson.Field
-		OfMessagingInboundMessagePayloadToArray respjson.Field
-		raw                                     string
+	// [[]MessagingInboundMessagePayloadToUnionMember0Item] instead of an object.
+	OfUnionMember0 []MessagingInboundMessagePayloadToUnionMember0Item `json:",inline"`
+	JSON           struct {
+		OfString                        respjson.Field
+		OfOutboundMessagePayloadToArray respjson.Field
+		OfUnionMember0                  respjson.Field
+		raw                             string
 	} `json:"-"`
 }
 
@@ -12244,10 +12242,10 @@ func (r *UnwrapWebhookEventUnionDataPayloadTo) UnmarshalJSON(data []byte) error 
 // [UnwrapWebhookEventUnion].
 //
 // If the underlying value is not a json object, one of the following properties
-// will be valid: OfString]
+// will be valid: OfCallAnalyzedWebhookEventDataPayloadCostUnionMember0]
 type UnwrapWebhookEventUnionDataPayloadCost struct {
 	// This field will be present if the value is a [string] instead of an object.
-	OfString string `json:",inline"`
+	OfCallAnalyzedWebhookEventDataPayloadCostUnionMember0 string `json:",inline"`
 	// This field is from variant [CallAnalyzedWebhookEventDataPayloadCostUnion].
 	Breakdown []CallAnalyzedWebhookEventDataPayloadCostUnionMember0Breakdown `json:"breakdown"`
 	Currency  string                                                         `json:"currency"`
@@ -12255,12 +12253,12 @@ type UnwrapWebhookEventUnionDataPayloadCost struct {
 	Total  string `json:"total"`
 	Amount string `json:"amount"`
 	JSON   struct {
-		OfString  respjson.Field
-		Breakdown respjson.Field
-		Currency  respjson.Field
-		Total     respjson.Field
-		Amount    respjson.Field
-		raw       string
+		OfCallAnalyzedWebhookEventDataPayloadCostUnionMember0 respjson.Field
+		Breakdown                                             respjson.Field
+		Currency                                              respjson.Field
+		Total                                                 respjson.Field
+		Amount                                                respjson.Field
+		raw                                                   string
 	} `json:"-"`
 }
 
