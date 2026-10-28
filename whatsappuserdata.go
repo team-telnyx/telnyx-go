@@ -40,7 +40,7 @@ func NewWhatsappUserDataService(opts ...option.RequestOption) (r WhatsappUserDat
 // account.
 func (r *WhatsappUserDataService) Get(ctx context.Context, opts ...option.RequestOption) (res *WhatsappUserDataGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := "v2/whatsapp/user_data"
+	path := "whatsapp/user_data"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -49,7 +49,7 @@ func (r *WhatsappUserDataService) Get(ctx context.Context, opts ...option.Reques
 // account.
 func (r *WhatsappUserDataService) Update(ctx context.Context, body WhatsappUserDataUpdateParams, opts ...option.RequestOption) (res *WhatsappUserDataUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := "v2/whatsapp/user_data"
+	path := "whatsapp/user_data"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }
