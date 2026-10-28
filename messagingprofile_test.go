@@ -36,6 +36,7 @@ func TestMessagingProfileNewWithOptionalParams(t *testing.T) {
 		Enabled:                 telnyx.Bool(true),
 		Features: telnyx.MessagingProfileFeaturesParam{
 			AIOptOutDetectionEnabled: telnyx.Bool(true),
+			AutoChunkLongMessages:    telnyx.Bool(true),
 		},
 		HealthWebhookURL: telnyx.String("health_webhook_url"),
 		Mm7Metadata: telnyx.Mm7MetadataParam{
@@ -120,6 +121,7 @@ func TestMessagingProfileUpdateWithOptionalParams(t *testing.T) {
 			Enabled:                telnyx.Bool(true),
 			Features: telnyx.MessagingProfileFeaturesParam{
 				AIOptOutDetectionEnabled: telnyx.Bool(true),
+				AutoChunkLongMessages:    telnyx.Bool(true),
 			},
 			Mm7Metadata: telnyx.Mm7MetadataParam{
 				Mm7FailoverWebhookURL: telnyx.String("https://backup.example.com/hooks"),
