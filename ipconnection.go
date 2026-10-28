@@ -168,8 +168,8 @@ type InboundIP struct {
 	// in the same way a phone number is used, from a SIP endpoint. Example: the
 	// subdomain "example.sip.telnyx.com" can be called from any SIP endpoint by using
 	// the SIP URI "sip:@example.sip.telnyx.com" where the user part can be any
-	// alphanumeric value. Please note TLS encrypted calls are not allowed for
-	// subdomain calls.
+	// alphanumeric value. TLS signaling is supported. SRTP media encryption requires
+	// TLS transport.
 	SipSubdomain string `json:"sip_subdomain"`
 	// This option can be enabled to receive calls from: "Anyone" (any SIP endpoint in
 	// the public Internet) or "Only my connections" (any connection assigned to the
@@ -304,8 +304,8 @@ type InboundIPParam struct {
 	// in the same way a phone number is used, from a SIP endpoint. Example: the
 	// subdomain "example.sip.telnyx.com" can be called from any SIP endpoint by using
 	// the SIP URI "sip:@example.sip.telnyx.com" where the user part can be any
-	// alphanumeric value. Please note TLS encrypted calls are not allowed for
-	// subdomain calls.
+	// alphanumeric value. TLS signaling is supported. SRTP media encryption requires
+	// TLS transport.
 	SipSubdomain param.Opt[string] `json:"sip_subdomain,omitzero"`
 	// Time(sec) before aborting if connection is not made.
 	Timeout1xxSecs param.Opt[int64] `json:"timeout_1xx_secs,omitzero"`
@@ -854,8 +854,8 @@ type IPConnectionNewParamsInbound struct {
 	// in the same way a phone number is used, from a SIP endpoint. Example: the
 	// subdomain "example.sip.telnyx.com" can be called from any SIP endpoint by using
 	// the SIP URI "sip:@example.sip.telnyx.com" where the user part can be any
-	// alphanumeric value. Please note TLS encrypted calls are not allowed for
-	// subdomain calls.
+	// alphanumeric value. TLS signaling is supported. SRTP media encryption requires
+	// TLS transport.
 	SipSubdomain param.Opt[string] `json:"sip_subdomain,omitzero"`
 	// Time(sec) before aborting if connection is not made.
 	Timeout1xxSecs param.Opt[int64] `json:"timeout_1xx_secs,omitzero"`

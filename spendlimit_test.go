@@ -28,11 +28,12 @@ func TestSpendLimitNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.SpendLimits.New(context.TODO(), telnyx.SpendLimitNewParams{
 		OfAmount: &telnyx.SpendLimitNewParamsBodyCreateSpendLimitWithAmount{
-			Amount:    100,
-			Product:   "inference",
-			Period:    telnyx.SpendLimitPeriodDaily,
-			Reason:    telnyx.String("Team budget"),
-			Unlimited: false,
+			Amount:       100,
+			Product:      "inference",
+			CredentialID: telnyx.String("KEY0192F3A1B2C3D4E5F6A7B8C9D0E1F2"),
+			Period:       telnyx.SpendLimitPeriodDaily,
+			Reason:       telnyx.String("Team budget"),
+			Unlimited:    false,
 		},
 	})
 	if err != nil {
@@ -66,7 +67,8 @@ func TestSpendLimitUpdateWithOptionalParams(t *testing.T) {
 				Reason:    telnyx.String("Raised for the product launch"),
 				Unlimited: false,
 			},
-			Period: telnyx.SpendLimitPeriodDaily,
+			CredentialID: telnyx.String("KEY0192F3A1B2C3D4E5F6A7B8C9D0E1F2"),
+			Period:       telnyx.SpendLimitPeriodDaily,
 		},
 	)
 	if err != nil {
@@ -118,8 +120,9 @@ func TestSpendLimitDeleteWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"inference",
 		telnyx.SpendLimitDeleteParams{
-			Period: telnyx.SpendLimitPeriodDaily,
-			Reason: telnyx.String("reason"),
+			CredentialID: telnyx.String("KEY0192F3A1B2C3D4E5F6A7B8C9D0E1F2"),
+			Period:       telnyx.SpendLimitPeriodDaily,
+			Reason:       telnyx.String("reason"),
 		},
 	)
 	if err != nil {

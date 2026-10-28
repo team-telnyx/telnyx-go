@@ -66,7 +66,7 @@ func (r *TextToSpeechService) GenerateSpeech(ctx context.Context, body TextToSpe
 // `provider` is specified, returns voices for that provider only. Otherwise,
 // returns voices from all providers.
 //
-// Some providers (ElevenLabs, Resemble) require an API key to list voices.
+// Some providers (ElevenLabs) require an API key to list voices.
 func (r *TextToSpeechService) ListVoices(ctx context.Context, query TextToSpeechListVoicesParams, opts ...option.RequestOption) (res *TextToSpeechListVoicesResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "text-to-speech/voices"
@@ -409,8 +409,6 @@ const (
 
 // Resemble AI provider-specific parameters.
 type TextToSpeechGenerateSpeechParamsResemble struct {
-	// Custom Resemble API key.
-	APIKey param.Opt[string] `json:"api_key,omitzero"`
 	// Audio output format.
 	Format param.Opt[string] `json:"format,omitzero"`
 	// Synthesis precision.
