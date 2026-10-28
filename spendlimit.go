@@ -42,6 +42,13 @@ import (
 //     completions, Responses, Anthropic Messages and classification requests;
 //     requests already running finish normally. Take the list of products from the
 //     list operation.
+//   - **API key limits.** For `inference`, a limit can also apply to one API key,
+//     named by `credential_id`: the key's identifier as recorded on usage, never its
+//     secret. When the key's spend goes above its own limit, only that key is
+//     blocked, with the error title `API key spend limit reached` (code `10039`);
+//     the account's other keys keep working. The API key limits of a period cannot
+//     add up to more than the total limit when the total has an amount. Only
+//     language-model requests authenticated with an API key count toward its limit.
 //   - **Limits set by Telnyx.** Telnyx support can also set a limit on your account.
 //     It is listed with `origin: operator` and you can update or delete it like your
 //     own.
@@ -69,7 +76,9 @@ func NewSpendLimitService(opts ...option.RequestOption) (r SpendLimitService) {
 // `amount` and `unlimited: true`. The period's spend is checked at once: if it is
 // already above the new limit, the product is blocked immediately
 // (`evaluation.blocked_now`). Returns 409 when a limit already exists for the
-// product and period; update it instead.
+// product and period; update it instead. With `credential_id`, the limit applies
+// to that API key only: it needs an `amount`, and the period's API key limits
+// cannot add up to more than the total limit when the total has an amount.
 func (r *SpendLimitService) New(ctx context.Context, body SpendLimitNewParams, opts ...option.RequestOption) (res *SpendLimitResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "spend_limits"
@@ -82,6 +91,9 @@ func (r *SpendLimitService) New(ctx context.Context, body SpendLimitNewParams, o
 // once: raising the limit above the spend lifts the period's block
 // (`evaluation.released`), and lowering it below the spend blocks the product
 // (`evaluation.blocked_now`). Returns 404 when no limit is set; create it instead.
+// With the `credential_id` query parameter, the request changes that API key's
+// limit; it needs an `amount`, and it can be at most the period's total limit.
+// Lowering the total limit below the period's highest API key limit is refused.
 func (r *SpendLimitService) Update(ctx context.Context, product string, params SpendLimitUpdateParams, opts ...option.RequestOption) (res *SpendLimitResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if product == "" {
@@ -97,7 +109,9 @@ func (r *SpendLimitService) Update(ctx context.Context, product string, params S
 // the spend so far in the period and whether the product is blocked. An entry
 // without a limit is still listed (`limit: null`). When the spend cannot be read,
 // the entry is returned with `spend_usd: null` and `spend_error` set. The list is
-// not paginated.
+// not paginated. Each entry also lists the API key limits of its product and
+// period in `credential_limits`, with each key's spend and block. Each API key
+// limit can be at most the total limit; together they may add up to more than it.
 func (r *SpendLimitService) List(ctx context.Context, opts ...option.RequestOption) (res *SpendLimitListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "spend_limits"
@@ -109,7 +123,11 @@ func (r *SpendLimitService) List(ctx context.Context, opts ...option.RequestOpti
 // default limit, the product becomes unlimited for the period and the period's
 // block is lifted (`evaluation.released`). The response carries `limit: null` and
 // the `effective_limit_usd` that applies after the removal. Returns 404 when no
-// limit is set.
+// limit is set. With the `credential_id` query parameter, the request removes that
+// API key's limit for the period and lifts the key's block in that period at once.
+// A block under the key's limit in the other period stays
+// (`evaluation.still_blocked_other_period`). Removing the total limit leaves the
+// API key limits in place.
 func (r *SpendLimitService) Delete(ctx context.Context, product string, body SpendLimitDeleteParams, opts ...option.RequestOption) (res *SpendLimitResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if product == "" {
@@ -121,12 +139,15 @@ func (r *SpendLimitService) Delete(ctx context.Context, product string, body Spe
 	return res, err
 }
 
-// The spend limit, spend and block state of one product and period.
+// The spend limit, spend and block state of one product and period. The top-level
+// fields describe the total limit of the account; API key limits are nested in
+// `credential_limits`.
 type SpendLimit struct {
 	// The active block of the period. `null` when the period is not blocked.
 	Block SpendLimitBlock `json:"block" api:"required"`
-	// The product is blocked for this period. Always `false` in write responses; list
-	// the limits to read the block state.
+	// The product is blocked for the whole account in this period (total limit). An
+	// API key's own block appears only in `credential_limits`. Always `false` in write
+	// responses; list the limits to read the block state.
 	Blocked bool `json:"blocked" api:"required"`
 	// The limit in USD that is enforced, as a decimal string. `null` means unlimited.
 	EffectiveLimitUsd string `json:"effective_limit_usd" api:"required"`
@@ -152,6 +173,13 @@ type SpendLimit struct {
 	// Spend in USD so far in the period, as a decimal string. It can lag actual usage
 	// by about a minute. `null` when it could not be read.
 	SpendUsd string `json:"spend_usd" api:"required"`
+	// In write responses, the API key the write was about; `null` for the total limit.
+	// Always `null` in list entries, which describe the total limit.
+	CredentialID string `json:"credential_id" api:"nullable"`
+	// List responses only. One item per API key limit of the product and period,
+	// sorted by `credential_id`, plus every API key that is still blocked. `[]` when
+	// there are none.
+	CredentialLimits []SpendLimitCredentialLimit `json:"credential_limits"`
 	// What a create, update or delete did to the period at once. Only present in write
 	// responses.
 	Evaluation SpendLimitEvaluation `json:"evaluation"`
@@ -169,6 +197,8 @@ type SpendLimit struct {
 		RecordType        respjson.Field
 		SpendError        respjson.Field
 		SpendUsd          respjson.Field
+		CredentialID      respjson.Field
+		CredentialLimits  respjson.Field
 		Evaluation        respjson.Field
 		ExtraFields       map[string]respjson.Field
 		raw               string
@@ -178,34 +208,6 @@ type SpendLimit struct {
 // Returns the unmodified JSON received from the API
 func (r SpendLimit) RawJSON() string { return r.JSON.raw }
 func (r *SpendLimit) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The active block of the period. `null` when the period is not blocked.
-type SpendLimitBlock struct {
-	// Exclusive end of the block: it is lifted at 00:00 UTC on this date at the
-	// latest.
-	BlockedUntil time.Time `json:"blocked_until" api:"required" format:"date"`
-	// When the block started.
-	DetectedAt time.Time `json:"detected_at" api:"required" format:"date-time"`
-	// The limit in USD that the spend went above, as a decimal string.
-	LimitUsd string `json:"limit_usd" api:"required"`
-	// Spend in USD when the block started, as a decimal string.
-	SpendUsd string `json:"spend_usd" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		BlockedUntil respjson.Field
-		DetectedAt   respjson.Field
-		LimitUsd     respjson.Field
-		SpendUsd     respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r SpendLimitBlock) RawJSON() string { return r.JSON.raw }
-func (r *SpendLimitBlock) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -240,6 +242,75 @@ func (r *SpendLimitLimit) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// The limit, spend and block state of one API key in the product and period.
+type SpendLimitCredentialLimit struct {
+	// The active block of the period. `null` when the period is not blocked.
+	Block SpendLimitBlock `json:"block" api:"required"`
+	// This API key is blocked for the period.
+	Blocked bool `json:"blocked" api:"required"`
+	// Identifier of the API key as recorded on usage. Never the key's secret.
+	CredentialID string `json:"credential_id" api:"required"`
+	// The limit of one API key. It always has an amount. `null` for an API key that is
+	// still blocked after its limit was removed.
+	Limit SpendLimitCredentialLimitsLimit `json:"limit" api:"required"`
+	// Set when `spend_usd` is `null`.
+	SpendError string `json:"spend_error" api:"required"`
+	// Spend in USD in the period made with exactly this API key, as a decimal string.
+	// Usage without an API key identifier, or with another one, counts only toward the
+	// total. `null` when it could not be read.
+	SpendUsd string `json:"spend_usd" api:"required"`
+	// The API key's limit is above the period's total limit. Only a change by Telnyx
+	// support can cause it; the total limit still applies to the whole account. Lower
+	// the API key limit or raise the total.
+	ExceedsTotal bool `json:"exceeds_total"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Block        respjson.Field
+		Blocked      respjson.Field
+		CredentialID respjson.Field
+		Limit        respjson.Field
+		SpendError   respjson.Field
+		SpendUsd     respjson.Field
+		ExceedsTotal respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SpendLimitCredentialLimit) RawJSON() string { return r.JSON.raw }
+func (r *SpendLimitCredentialLimit) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The limit of one API key. It always has an amount. `null` for an API key that is
+// still blocked after its limit was removed.
+type SpendLimitCredentialLimitsLimit struct {
+	// Limit in USD, as a decimal string.
+	Amount string `json:"amount" api:"required"`
+	// `self_service` when a user of the account set it, `operator` when Telnyx support
+	// did.
+	//
+	// Any of "self_service", "operator".
+	Origin string `json:"origin" api:"required"`
+	// When the limit was last set or changed.
+	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Amount      respjson.Field
+		Origin      respjson.Field
+		UpdatedAt   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SpendLimitCredentialLimitsLimit) RawJSON() string { return r.JSON.raw }
+func (r *SpendLimitCredentialLimitsLimit) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // What a create, update or delete did to the period at once. Only present in write
 // responses.
 type SpendLimitEvaluation struct {
@@ -254,10 +325,13 @@ type SpendLimitEvaluation struct {
 	// not checked.
 	SpendUsd string `json:"spend_usd" api:"required"`
 	// The other period has an active block, so the product stays blocked whatever this
-	// period's result.
+	// period's result. For an API key write, the API key's limit in the other period.
 	StillBlockedOtherPeriod bool `json:"still_blocked_other_period" api:"required"`
 	// A block of this period remains because the spend is still above the new limit.
 	StillOverLimit bool `json:"still_over_limit" api:"required"`
+	// API key writes only: the account itself remains blocked for the product under a
+	// total limit. Absent for total limit writes.
+	AccountBlocked bool `json:"account_blocked"`
 	// Additional information about the result, when there is any.
 	Note string `json:"note"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -268,6 +342,7 @@ type SpendLimitEvaluation struct {
 		SpendUsd                respjson.Field
 		StillBlockedOtherPeriod respjson.Field
 		StillOverLimit          respjson.Field
+		AccountBlocked          respjson.Field
 		Note                    respjson.Field
 		ExtraFields             map[string]respjson.Field
 		raw                     string
@@ -280,6 +355,34 @@ func (r *SpendLimitEvaluation) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// The active block of the period. `null` when the period is not blocked.
+type SpendLimitBlock struct {
+	// Exclusive end of the block: it is lifted at 00:00 UTC on this date at the
+	// latest.
+	BlockedUntil time.Time `json:"blocked_until" api:"required" format:"date"`
+	// When the block started.
+	DetectedAt time.Time `json:"detected_at" api:"required" format:"date-time"`
+	// The limit in USD that the spend went above, as a decimal string.
+	LimitUsd string `json:"limit_usd" api:"required"`
+	// Spend in USD when the block started, as a decimal string.
+	SpendUsd string `json:"spend_usd" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		BlockedUntil respjson.Field
+		DetectedAt   respjson.Field
+		LimitUsd     respjson.Field
+		SpendUsd     respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SpendLimitBlock) RawJSON() string { return r.JSON.raw }
+func (r *SpendLimitBlock) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // `daily` is the current UTC day; `monthly` is the current UTC calendar month.
 type SpendLimitPeriod string
 
@@ -289,7 +392,9 @@ const (
 )
 
 type SpendLimitResponse struct {
-	// The spend limit, spend and block state of one product and period.
+	// The spend limit, spend and block state of one product and period. The top-level
+	// fields describe the total limit of the account; API key limits are nested in
+	// `credential_limits`.
 	Data SpendLimit `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -355,7 +460,7 @@ type SpendLimitNewParams struct {
 	// in USD.
 	OfAmount *SpendLimitNewParamsBodyCreateSpendLimitWithAmount `json:",inline"`
 	// This field is a request body variant, only one variant field can be set.
-	// Explicitly no cap.
+	// Explicitly no cap. Not available for API key limits.
 	OfUnlimited *SpendLimitNewParamsBodyCreateSpendLimitUnlimited `json:",inline"`
 
 	paramObj
@@ -376,6 +481,11 @@ type SpendLimitNewParamsBodyCreateSpendLimitWithAmount struct {
 	Amount float64 `json:"amount" api:"required"`
 	// Product to limit, as returned in `product` by the list operation.
 	Product string `json:"product" api:"required"`
+	// Optional. Identifier of one API key as recorded on usage, never the key's
+	// secret: the limit then applies to that key only. Absent or `null` sets the total
+	// limit. A blank value, or one with control characters, is refused; it never means
+	// the total limit. An API key limit always has an `amount`.
+	CredentialID param.Opt[string] `json:"credential_id,omitzero"`
 	// Why the limit is set or changed, kept for audit.
 	Reason param.Opt[string] `json:"reason,omitzero"`
 	// `daily` is the current UTC day; `monthly` is the current UTC calendar month.
@@ -403,7 +513,7 @@ func init() {
 	)
 }
 
-// Explicitly no cap.
+// Explicitly no cap. Not available for API key limits.
 //
 // The properties Product, Unlimited are required.
 type SpendLimitNewParamsBodyCreateSpendLimitUnlimited struct {
@@ -449,6 +559,10 @@ type SpendLimitUpdateParams struct {
 	// Explicitly no cap.
 	OfUnlimited *SpendLimitUpdateParamsBodyUpdateSpendLimitUnlimited `json:",inline"`
 
+	// Identifier of one API key as recorded on usage, never the key's secret,
+	// percent-encoded: the request is then about that key's limit. Absent means the
+	// total limit; present but blank is refused.
+	CredentialID param.Opt[string] `query:"credential_id,omitzero" json:"-"`
 	// Limit period. Defaults to `daily`; send it explicitly.
 	//
 	// Any of "daily", "monthly".
@@ -528,6 +642,10 @@ func init() {
 }
 
 type SpendLimitDeleteParams struct {
+	// Identifier of one API key as recorded on usage, never the key's secret,
+	// percent-encoded: the request is then about that key's limit. Absent means the
+	// total limit; present but blank is refused.
+	CredentialID param.Opt[string] `query:"credential_id,omitzero" json:"-"`
 	// Why the limit is removed, kept for audit. At most 500 characters.
 	Reason param.Opt[string] `query:"reason,omitzero" json:"-"`
 	// Limit period. Defaults to `daily`; send it explicitly.

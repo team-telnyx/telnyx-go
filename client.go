@@ -17,12 +17,13 @@ import (
 // interacting with the telnyx API. You should not instantiate this client
 // directly, and instead use the [NewClient] method instead.
 type Client struct {
-	Options      []option.RequestOption
-	Legacy       LegacyService
-	OAuth        OAuthService
-	OAuthClients OAuthClientService
-	OAuthGrants  OAuthGrantService
-	Webhooks     WebhookService
+	Options         []option.RequestOption
+	BrowserSessions BrowserSessionService
+	Legacy          LegacyService
+	OAuth           OAuthService
+	OAuthClients    OAuthClientService
+	OAuthGrants     OAuthGrantService
+	Webhooks        WebhookService
 	// IP Address Operations
 	AccessIPAddress AccessIPAddressService
 	// IP Range Operations
@@ -412,6 +413,13 @@ type Client struct {
 	//     completions, Responses, Anthropic Messages and classification requests;
 	//     requests already running finish normally. Take the list of products from the
 	//     list operation.
+	//   - **API key limits.** For `inference`, a limit can also apply to one API key,
+	//     named by `credential_id`: the key's identifier as recorded on usage, never its
+	//     secret. When the key's spend goes above its own limit, only that key is
+	//     blocked, with the error title `API key spend limit reached` (code `10039`);
+	//     the account's other keys keep working. The API key limits of a period cannot
+	//     add up to more than the total limit when the total has an amount. Only
+	//     language-model requests authenticated with an API key count toward its limit.
 	//   - **Limits set by Telnyx.** Telnyx support can also set a limit on your account.
 	//     It is listed with `origin: operator` and you can update or delete it like your
 	//     own.
@@ -424,6 +432,16 @@ type Client struct {
 	TtsIntegrations TtsIntegrationService
 	// Tailscale Subnet Router operations
 	TailscaleSubnetRouters TailscaleSubnetRouterService
+	// Download screenshots and other artifacts.
+	ArtifactDownloads ArtifactDownloadService
+	Email             EmailService
+	// Routes on a Network that send a CIDR to a next hop, such as a tunnel.
+	NetworkRoutes NetworkRouteService
+	// Generic payment connector configuration.
+	PayConnectors PayConnectorService
+	// Tunnels connect a Network to hosts behind a tunnel process within the user's
+	// network.
+	Tunnels TunnelService
 }
 
 // DefaultClientOptions read from the environment (TELNYX_API_KEY,
@@ -467,6 +485,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 
 	r = Client{Options: opts}
 
+	r.BrowserSessions = NewBrowserSessionService(opts...)
 	r.Legacy = NewLegacyService(opts...)
 	r.OAuth = NewOAuthService(opts...)
 	r.OAuthClients = NewOAuthClientService(opts...)
@@ -661,6 +680,11 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.DialMetrics = NewDialMetricService(opts...)
 	r.TtsIntegrations = NewTtsIntegrationService(opts...)
 	r.TailscaleSubnetRouters = NewTailscaleSubnetRouterService(opts...)
+	r.ArtifactDownloads = NewArtifactDownloadService(opts...)
+	r.Email = NewEmailService(opts...)
+	r.NetworkRoutes = NewNetworkRouteService(opts...)
+	r.PayConnectors = NewPayConnectorService(opts...)
+	r.Tunnels = NewTunnelService(opts...)
 
 	return
 }

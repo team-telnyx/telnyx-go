@@ -21,9 +21,12 @@ func ValueOf[T Constant[T]]() T {
 type Android string                // Always "android"
 type Arithmetic string             // Always "arithmetic"
 type Assistant string              // Always "assistant"
+type Batch string                  // Always "batch"
+type Bearer string                 // Always "bearer"
 type BoolLiteral string            // Always "bool_literal"
 type BoolOp string                 // Always "bool_op"
 type Choice string                 // Always "choice"
+type Click string                  // Always "click"
 type ClientSideTool string         // Always "client_side_tool"
 type Comparative string            // Always "comparative"
 type Comparison string             // Always "comparison"
@@ -32,8 +35,10 @@ type DeepgramFlux string           // Always "deepgram/flux"
 type DeepgramFluxMulti string      // Always "deepgram/flux-multi"
 type DeepgramNova3Medical string   // Always "deepgram/nova-3-medical"
 type Default string                // Always "default"
+type DomStable string              // Always "dom_stable"
 type Ein string                    // Always "EIN"
 type Expression string             // Always "expression"
+type Fill string                   // Always "fill"
 type Function string               // Always "function"
 type GuardrailEvent string         // Always "guardrail_event"
 type GuardrailEvaluation string    // Always "guardrail.evaluation"
@@ -48,17 +53,25 @@ type JsonSchema string             // Always "json_schema"
 type Llm string                    // Always "llm"
 type MediaName string              // Always "media_name"
 type MediaURL string               // Always "media_url"
+type Navigate string               // Always "navigate"
 type Node string                   // Always "node"
+type None string                   // Always "none"
 type Noul string                   // Always "noul"
 type NumberLiteral string          // Always "number_literal"
+type Observe string                // Always "observe"
 type Pay string                    // Always "pay"
 type PredefinedMedia string        // Always "predefined_media"
+type Press string                  // Always "press"
 type ProviderRecordingMedia string // Always "provider_recording_media"
+type Ref string                    // Always "ref"
 type Refer string                  // Always "refer"
 type RequestResponseDelayed string // Always "request_response_delayed"
 type RequestStart string           // Always "request_start"
 type Retrieval string              // Always "retrieval"
 type Score string                  // Always "score"
+type Screenshot string             // Always "screenshot"
+type Scroll string                 // Always "scroll"
+type Select string                 // Always "select"
 type SendDtmf string               // Always "send_dtmf"
 type SendMessage string            // Always "send_message"
 type Simple string                 // Always "simple"
@@ -71,15 +84,20 @@ type TokenGroup string             // Always "token_group"
 type TokenKey string               // Always "token_key"
 type Transfer string               // Always "transfer"
 type UpdateDynamicVariables string // Always "update_dynamic_variables"
+type URLPattern string             // Always "url_pattern"
 type Variable string               // Always "variable"
 type Vision string                 // Always "vision"
+type WaitFor string                // Always "wait_for"
 
 func (c Android) Default() Android                               { return "android" }
 func (c Arithmetic) Default() Arithmetic                         { return "arithmetic" }
 func (c Assistant) Default() Assistant                           { return "assistant" }
+func (c Batch) Default() Batch                                   { return "batch" }
+func (c Bearer) Default() Bearer                                 { return "bearer" }
 func (c BoolLiteral) Default() BoolLiteral                       { return "bool_literal" }
 func (c BoolOp) Default() BoolOp                                 { return "bool_op" }
 func (c Choice) Default() Choice                                 { return "choice" }
+func (c Click) Default() Click                                   { return "click" }
 func (c ClientSideTool) Default() ClientSideTool                 { return "client_side_tool" }
 func (c Comparative) Default() Comparative                       { return "comparative" }
 func (c Comparison) Default() Comparison                         { return "comparison" }
@@ -88,8 +106,10 @@ func (c DeepgramFlux) Default() DeepgramFlux                     { return "deepg
 func (c DeepgramFluxMulti) Default() DeepgramFluxMulti           { return "deepgram/flux-multi" }
 func (c DeepgramNova3Medical) Default() DeepgramNova3Medical     { return "deepgram/nova-3-medical" }
 func (c Default) Default() Default                               { return "default" }
+func (c DomStable) Default() DomStable                           { return "dom_stable" }
 func (c Ein) Default() Ein                                       { return "EIN" }
 func (c Expression) Default() Expression                         { return "expression" }
+func (c Fill) Default() Fill                                     { return "fill" }
 func (c Function) Default() Function                             { return "function" }
 func (c GuardrailEvent) Default() GuardrailEvent                 { return "guardrail_event" }
 func (c GuardrailEvaluation) Default() GuardrailEvaluation       { return "guardrail.evaluation" }
@@ -104,17 +124,25 @@ func (c JsonSchema) Default() JsonSchema                         { return "json_
 func (c Llm) Default() Llm                                       { return "llm" }
 func (c MediaName) Default() MediaName                           { return "media_name" }
 func (c MediaURL) Default() MediaURL                             { return "media_url" }
+func (c Navigate) Default() Navigate                             { return "navigate" }
 func (c Node) Default() Node                                     { return "node" }
+func (c None) Default() None                                     { return "none" }
 func (c Noul) Default() Noul                                     { return "noul" }
 func (c NumberLiteral) Default() NumberLiteral                   { return "number_literal" }
+func (c Observe) Default() Observe                               { return "observe" }
 func (c Pay) Default() Pay                                       { return "pay" }
 func (c PredefinedMedia) Default() PredefinedMedia               { return "predefined_media" }
+func (c Press) Default() Press                                   { return "press" }
 func (c ProviderRecordingMedia) Default() ProviderRecordingMedia { return "provider_recording_media" }
+func (c Ref) Default() Ref                                       { return "ref" }
 func (c Refer) Default() Refer                                   { return "refer" }
 func (c RequestResponseDelayed) Default() RequestResponseDelayed { return "request_response_delayed" }
 func (c RequestStart) Default() RequestStart                     { return "request_start" }
 func (c Retrieval) Default() Retrieval                           { return "retrieval" }
 func (c Score) Default() Score                                   { return "score" }
+func (c Screenshot) Default() Screenshot                         { return "screenshot" }
+func (c Scroll) Default() Scroll                                 { return "scroll" }
+func (c Select) Default() Select                                 { return "select" }
 func (c SendDtmf) Default() SendDtmf                             { return "send_dtmf" }
 func (c SendMessage) Default() SendMessage                       { return "send_message" }
 func (c Simple) Default() Simple                                 { return "simple" }
@@ -127,15 +155,20 @@ func (c TokenGroup) Default() TokenGroup                         { return "token
 func (c TokenKey) Default() TokenKey                             { return "token_key" }
 func (c Transfer) Default() Transfer                             { return "transfer" }
 func (c UpdateDynamicVariables) Default() UpdateDynamicVariables { return "update_dynamic_variables" }
+func (c URLPattern) Default() URLPattern                         { return "url_pattern" }
 func (c Variable) Default() Variable                             { return "variable" }
 func (c Vision) Default() Vision                                 { return "vision" }
+func (c WaitFor) Default() WaitFor                               { return "wait_for" }
 
 func (c Android) MarshalJSON() ([]byte, error)                { return marshalString(c) }
 func (c Arithmetic) MarshalJSON() ([]byte, error)             { return marshalString(c) }
 func (c Assistant) MarshalJSON() ([]byte, error)              { return marshalString(c) }
+func (c Batch) MarshalJSON() ([]byte, error)                  { return marshalString(c) }
+func (c Bearer) MarshalJSON() ([]byte, error)                 { return marshalString(c) }
 func (c BoolLiteral) MarshalJSON() ([]byte, error)            { return marshalString(c) }
 func (c BoolOp) MarshalJSON() ([]byte, error)                 { return marshalString(c) }
 func (c Choice) MarshalJSON() ([]byte, error)                 { return marshalString(c) }
+func (c Click) MarshalJSON() ([]byte, error)                  { return marshalString(c) }
 func (c ClientSideTool) MarshalJSON() ([]byte, error)         { return marshalString(c) }
 func (c Comparative) MarshalJSON() ([]byte, error)            { return marshalString(c) }
 func (c Comparison) MarshalJSON() ([]byte, error)             { return marshalString(c) }
@@ -144,8 +177,10 @@ func (c DeepgramFlux) MarshalJSON() ([]byte, error)           { return marshalSt
 func (c DeepgramFluxMulti) MarshalJSON() ([]byte, error)      { return marshalString(c) }
 func (c DeepgramNova3Medical) MarshalJSON() ([]byte, error)   { return marshalString(c) }
 func (c Default) MarshalJSON() ([]byte, error)                { return marshalString(c) }
+func (c DomStable) MarshalJSON() ([]byte, error)              { return marshalString(c) }
 func (c Ein) MarshalJSON() ([]byte, error)                    { return marshalString(c) }
 func (c Expression) MarshalJSON() ([]byte, error)             { return marshalString(c) }
+func (c Fill) MarshalJSON() ([]byte, error)                   { return marshalString(c) }
 func (c Function) MarshalJSON() ([]byte, error)               { return marshalString(c) }
 func (c GuardrailEvent) MarshalJSON() ([]byte, error)         { return marshalString(c) }
 func (c GuardrailEvaluation) MarshalJSON() ([]byte, error)    { return marshalString(c) }
@@ -160,17 +195,25 @@ func (c JsonSchema) MarshalJSON() ([]byte, error)             { return marshalSt
 func (c Llm) MarshalJSON() ([]byte, error)                    { return marshalString(c) }
 func (c MediaName) MarshalJSON() ([]byte, error)              { return marshalString(c) }
 func (c MediaURL) MarshalJSON() ([]byte, error)               { return marshalString(c) }
+func (c Navigate) MarshalJSON() ([]byte, error)               { return marshalString(c) }
 func (c Node) MarshalJSON() ([]byte, error)                   { return marshalString(c) }
+func (c None) MarshalJSON() ([]byte, error)                   { return marshalString(c) }
 func (c Noul) MarshalJSON() ([]byte, error)                   { return marshalString(c) }
 func (c NumberLiteral) MarshalJSON() ([]byte, error)          { return marshalString(c) }
+func (c Observe) MarshalJSON() ([]byte, error)                { return marshalString(c) }
 func (c Pay) MarshalJSON() ([]byte, error)                    { return marshalString(c) }
 func (c PredefinedMedia) MarshalJSON() ([]byte, error)        { return marshalString(c) }
+func (c Press) MarshalJSON() ([]byte, error)                  { return marshalString(c) }
 func (c ProviderRecordingMedia) MarshalJSON() ([]byte, error) { return marshalString(c) }
+func (c Ref) MarshalJSON() ([]byte, error)                    { return marshalString(c) }
 func (c Refer) MarshalJSON() ([]byte, error)                  { return marshalString(c) }
 func (c RequestResponseDelayed) MarshalJSON() ([]byte, error) { return marshalString(c) }
 func (c RequestStart) MarshalJSON() ([]byte, error)           { return marshalString(c) }
 func (c Retrieval) MarshalJSON() ([]byte, error)              { return marshalString(c) }
 func (c Score) MarshalJSON() ([]byte, error)                  { return marshalString(c) }
+func (c Screenshot) MarshalJSON() ([]byte, error)             { return marshalString(c) }
+func (c Scroll) MarshalJSON() ([]byte, error)                 { return marshalString(c) }
+func (c Select) MarshalJSON() ([]byte, error)                 { return marshalString(c) }
 func (c SendDtmf) MarshalJSON() ([]byte, error)               { return marshalString(c) }
 func (c SendMessage) MarshalJSON() ([]byte, error)            { return marshalString(c) }
 func (c Simple) MarshalJSON() ([]byte, error)                 { return marshalString(c) }
@@ -183,8 +226,10 @@ func (c TokenGroup) MarshalJSON() ([]byte, error)             { return marshalSt
 func (c TokenKey) MarshalJSON() ([]byte, error)               { return marshalString(c) }
 func (c Transfer) MarshalJSON() ([]byte, error)               { return marshalString(c) }
 func (c UpdateDynamicVariables) MarshalJSON() ([]byte, error) { return marshalString(c) }
+func (c URLPattern) MarshalJSON() ([]byte, error)             { return marshalString(c) }
 func (c Variable) MarshalJSON() ([]byte, error)               { return marshalString(c) }
 func (c Vision) MarshalJSON() ([]byte, error)                 { return marshalString(c) }
+func (c WaitFor) MarshalJSON() ([]byte, error)                { return marshalString(c) }
 
 type constant[T any] interface {
 	Constant[T]

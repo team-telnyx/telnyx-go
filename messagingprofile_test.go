@@ -38,6 +38,10 @@ func TestMessagingProfileNewWithOptionalParams(t *testing.T) {
 			AIOptOutDetectionEnabled: telnyx.Bool(true),
 		},
 		HealthWebhookURL: telnyx.String("health_webhook_url"),
+		Mm7Metadata: telnyx.Mm7MetadataParam{
+			Mm7FailoverWebhookURL: telnyx.String("https://backup.example.com/hooks"),
+			Mm7WebhookURL:         telnyx.String("https://www.example.com/hooks"),
+		},
 		MmsFallBackToSMS: telnyx.Bool(true),
 		MmsTranscoding:   telnyx.Bool(true),
 		MobileOnly:       telnyx.Bool(true),
@@ -116,6 +120,10 @@ func TestMessagingProfileUpdateWithOptionalParams(t *testing.T) {
 			Enabled:                telnyx.Bool(true),
 			Features: telnyx.MessagingProfileFeaturesParam{
 				AIOptOutDetectionEnabled: telnyx.Bool(true),
+			},
+			Mm7Metadata: telnyx.Mm7MetadataParam{
+				Mm7FailoverWebhookURL: telnyx.String("https://backup.example.com/hooks"),
+				Mm7WebhookURL:         telnyx.String("https://www.example.com/hooks"),
 			},
 			MmsFallBackToSMS: telnyx.Bool(true),
 			MmsTranscoding:   telnyx.Bool(true),

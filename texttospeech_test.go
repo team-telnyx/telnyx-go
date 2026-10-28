@@ -67,7 +67,6 @@ func TestTextToSpeechGenerateSpeechWithOptionalParams(t *testing.T) {
 		OutputType: telnyx.TextToSpeechGenerateSpeechParamsOutputTypeBinaryOutput,
 		Provider:   telnyx.TextToSpeechGenerateSpeechParamsProviderAws,
 		Resemble: telnyx.TextToSpeechGenerateSpeechParamsResemble{
-			APIKey:     telnyx.String("string"),
 			Format:     telnyx.String("string"),
 			Precision:  telnyx.String("string"),
 			SampleRate: telnyx.String("string"),

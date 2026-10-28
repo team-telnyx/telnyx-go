@@ -240,6 +240,8 @@ type MessagingMessagingProfile struct {
 	Features MessagingProfileFeatures `json:"features" api:"nullable"`
 	// DEPRECATED: health check url service checking
 	HealthWebhookURL string `json:"health_webhook_url" api:"nullable" format:"url"`
+	// MM7 settings for inbound messages
+	Mm7Metadata Mm7Metadata `json:"mm7_metadata" api:"nullable"`
 	// enables SMS fallback for MMS messages.
 	MmsFallBackToSMS bool `json:"mms_fall_back_to_sms"`
 	// enables automated resizing of MMS media.
@@ -314,6 +316,7 @@ type MessagingMessagingProfile struct {
 		Enabled                 respjson.Field
 		Features                respjson.Field
 		HealthWebhookURL        respjson.Field
+		Mm7Metadata             respjson.Field
 		MmsFallBackToSMS        respjson.Field
 		MmsTranscoding          respjson.Field
 		MobileOnly              respjson.Field
@@ -412,6 +415,53 @@ func (r MessagingProfileFeaturesParam) MarshalJSON() (data []byte, err error) {
 	return param.MarshalWithExtras(r, (*shadow)(&r), r.ExtraFields)
 }
 func (r *MessagingProfileFeaturesParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// MM7 settings for inbound messages
+type Mm7Metadata struct {
+	// Failover webhook URL to receive inbound MM7 traffic
+	Mm7FailoverWebhookURL string `json:"mm7_failover_webhook_url" format:"url"`
+	// Webhook URL to receive inbound MM7 traffic
+	Mm7WebhookURL string `json:"mm7_webhook_url" format:"url"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Mm7FailoverWebhookURL respjson.Field
+		Mm7WebhookURL         respjson.Field
+		ExtraFields           map[string]respjson.Field
+		raw                   string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r Mm7Metadata) RawJSON() string { return r.JSON.raw }
+func (r *Mm7Metadata) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this Mm7Metadata to a Mm7MetadataParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// Mm7MetadataParam.Overrides()
+func (r Mm7Metadata) ToParam() Mm7MetadataParam {
+	return param.Override[Mm7MetadataParam](json.RawMessage(r.RawJSON()))
+}
+
+// MM7 settings for inbound messages
+type Mm7MetadataParam struct {
+	// Failover webhook URL to receive inbound MM7 traffic
+	Mm7FailoverWebhookURL param.Opt[string] `json:"mm7_failover_webhook_url,omitzero" format:"url"`
+	// Webhook URL to receive inbound MM7 traffic
+	Mm7WebhookURL param.Opt[string] `json:"mm7_webhook_url,omitzero" format:"url"`
+	paramObj
+}
+
+func (r Mm7MetadataParam) MarshalJSON() (data []byte, err error) {
+	type shadow Mm7MetadataParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *Mm7MetadataParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -721,6 +771,8 @@ type MessagingProfileNewParams struct {
 	// profile. Keys map to individual feature flags; unknown keys are accepted and
 	// preserved for forward compatibility with rolling deployments.
 	Features MessagingProfileFeaturesParam `json:"features,omitzero"`
+	// MM7 settings for inbound messages
+	Mm7Metadata Mm7MetadataParam `json:"mm7_metadata,omitzero"`
 	// Number Pool allows you to send messages from a pool of numbers of different
 	// types, assigning weights to each type. The pool consists of all the long code
 	// and toll free numbers assigned to the messaging profile.
@@ -806,6 +858,8 @@ type MessagingProfileUpdateParams struct {
 	// profile. Keys map to individual feature flags; unknown keys are accepted and
 	// preserved for forward compatibility with rolling deployments.
 	Features MessagingProfileFeaturesParam `json:"features,omitzero"`
+	// MM7 settings for inbound messages
+	Mm7Metadata Mm7MetadataParam `json:"mm7_metadata,omitzero"`
 	// Number Pool allows you to send messages from a pool of numbers of different
 	// types, assigning weights to each type. The pool consists of all the long code
 	// and toll free numbers assigned to the messaging profile.
