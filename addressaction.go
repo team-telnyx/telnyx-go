@@ -126,7 +126,7 @@ func (r *AddressActionValidateResponse) UnmarshalJSON(data []byte) error {
 }
 
 type AddressActionValidateResponseData struct {
-	// Any of "valid", "invalid".
+	// Any of "valid".
 	Result string `json:"result" api:"required"`
 	// Provides normalized address when available.
 	Suggested AddressActionValidateResponseDataSuggested `json:"suggested" api:"required"`
