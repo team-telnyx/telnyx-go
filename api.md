@@ -636,7 +636,9 @@ Params Types:
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#StartSpeakingPlanParam">StartSpeakingPlanParam</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TelephonySettingsParam">TelephonySettingsParam</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ToolNodeReqParam">ToolNodeReqParam</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TranscriptionChallengerParam">TranscriptionChallengerParam</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TranscriptionEndpointingPlanParam">TranscriptionEndpointingPlanParam</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TranscriptionFallbackModelParam">TranscriptionFallbackModelParam</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TranscriptionSettingsParam">TranscriptionSettingsParam</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TranscriptionSettingsConfigParam">TranscriptionSettingsConfigParam</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TransferToolParam">TransferToolParam</a>
@@ -681,7 +683,9 @@ Response Types:
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TelephonySettings">TelephonySettings</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TelnyxAvatarSettings">TelnyxAvatarSettings</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ToolNode">ToolNode</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TranscriptionChallenger">TranscriptionChallenger</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TranscriptionEndpointingPlan">TranscriptionEndpointingPlan</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TranscriptionFallbackModel">TranscriptionFallbackModel</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TranscriptionSettings">TranscriptionSettings</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TranscriptionSettingsConfig">TranscriptionSettingsConfig</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WebsocketSettings">WebsocketSettings</a>
@@ -1450,7 +1454,9 @@ Methods:
 
 Response Types:
 
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#NamespaceSettings">NamespaceSettings</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#NamespaceSettingsResponse">NamespaceSettingsResponse</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#SummarySettings">SummarySettings</a>
 
 Methods:
 
@@ -3459,6 +3465,8 @@ Methods:
 Response Types:
 
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#NumbersPhoneNumbersJob">NumbersPhoneNumbersJob</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#PhoneNumbersJobPendingOperation">PhoneNumbersJobPendingOperation</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#PhoneNumbersJobSuccessfulOperation">PhoneNumbersJobSuccessfulOperation</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#PhoneNumberJobGetResponse">PhoneNumberJobGetResponse</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#PhoneNumberJobDeleteBatchResponse">PhoneNumberJobDeleteBatchResponse</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#PhoneNumberJobUpdateBatchResponse">PhoneNumberJobUpdateBatchResponse</a>
@@ -4708,10 +4716,12 @@ Methods:
 Response Types:
 
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TelephonyCredential">TelephonyCredential</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TokenMaterial">TokenMaterial</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TelephonyCredentialNewResponse">TelephonyCredentialNewResponse</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TelephonyCredentialGetResponse">TelephonyCredentialGetResponse</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TelephonyCredentialUpdateResponse">TelephonyCredentialUpdateResponse</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TelephonyCredentialDeleteResponse">TelephonyCredentialDeleteResponse</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TelephonyCredentialGetTokenMaterialResponse">TelephonyCredentialGetTokenMaterialResponse</a>
 
 Methods:
 
@@ -4721,6 +4731,7 @@ Methods:
 - <code title="get /telephony_credentials">client.TelephonyCredentials.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TelephonyCredentialService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TelephonyCredentialListParams">TelephonyCredentialListParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination#DefaultFlatPagination">DefaultFlatPagination</a>[<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TelephonyCredential">TelephonyCredential</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="delete /telephony_credentials/{id}">client.TelephonyCredentials.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TelephonyCredentialService.Delete">Delete</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TelephonyCredentialDeleteResponse">TelephonyCredentialDeleteResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="post /telephony_credentials/{id}/token">client.TelephonyCredentials.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TelephonyCredentialService.NewToken">NewToken</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TelephonyCredentialNewTokenParams">TelephonyCredentialNewTokenParams</a>) (\*<a href="https://pkg.go.dev/builtin#string">string</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /telephony_credentials/{id}/token_material">client.TelephonyCredentials.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TelephonyCredentialService.GetTokenMaterial">GetTokenMaterial</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TelephonyCredentialGetTokenMaterialResponse">TelephonyCredentialGetTokenMaterialResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 # Texml
 
@@ -5535,13 +5546,9 @@ Methods:
 
 ### PhoneNumbers
 
-Response Types:
-
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappBusinessAccountPhoneNumberListResponse">WhatsappBusinessAccountPhoneNumberListResponse</a>
-
 Methods:
 
-- <code title="get /v2/whatsapp/business_accounts/{id}/phone_numbers">client.Whatsapp.BusinessAccounts.PhoneNumbers.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappBusinessAccountPhoneNumberService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappBusinessAccountPhoneNumberListParams">WhatsappBusinessAccountPhoneNumberListParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination#DefaultFlatPagination">DefaultFlatPagination</a>[<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappBusinessAccountPhoneNumberListResponse">WhatsappBusinessAccountPhoneNumberListResponse</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /v2/whatsapp/business_accounts/{id}/phone_numbers">client.Whatsapp.BusinessAccounts.PhoneNumbers.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappBusinessAccountPhoneNumberService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappBusinessAccountPhoneNumberListParams">WhatsappBusinessAccountPhoneNumberListParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination#DefaultFlatPagination">DefaultFlatPagination</a>[<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappPhoneResponse">WhatsappPhoneResponse</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="post /v2/whatsapp/business_accounts/{id}/phone_numbers">client.Whatsapp.BusinessAccounts.PhoneNumbers.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappBusinessAccountPhoneNumberService.InitializeVerification">InitializeVerification</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappBusinessAccountPhoneNumberInitializeVerificationParams">WhatsappBusinessAccountPhoneNumberInitializeVerificationParams</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
 
 ### Settings
@@ -5580,14 +5587,14 @@ Methods:
 
 Response Types:
 
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappPhoneNumberListResponse">WhatsappPhoneNumberListResponse</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappPhoneResponse">WhatsappPhoneResponse</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappPhoneNumberGetResponse">WhatsappPhoneNumberGetResponse</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappPhoneNumberGetConversationWindowResponse">WhatsappPhoneNumberGetConversationWindowResponse</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappPhoneNumberGetPhoneNumberResponse">WhatsappPhoneNumberGetPhoneNumberResponse</a>
 
 Methods:
 
-- <code title="get /v2/whatsapp/phone_numbers">client.Whatsapp.PhoneNumbers.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappPhoneNumberService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappPhoneNumberListParams">WhatsappPhoneNumberListParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination#DefaultFlatPagination">DefaultFlatPagination</a>[<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappPhoneNumberListResponse">WhatsappPhoneNumberListResponse</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /v2/whatsapp/phone_numbers">client.Whatsapp.PhoneNumbers.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappPhoneNumberService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappPhoneNumberListParams">WhatsappPhoneNumberListParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination#DefaultFlatPagination">DefaultFlatPagination</a>[<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappPhoneResponse">WhatsappPhoneResponse</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="delete /v2/whatsapp/phone_numbers/{phone_number}">client.Whatsapp.PhoneNumbers.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappPhoneNumberService.Delete">Delete</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, phoneNumber <a href="https://pkg.go.dev/builtin#string">string</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
 - <code title="get /whatsapp/phone_numbers">client.Whatsapp.PhoneNumbers.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappPhoneNumberService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappPhoneNumberGetParams">WhatsappPhoneNumberGetParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappPhoneNumberGetResponse">WhatsappPhoneNumberGetResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="post /v2/whatsapp/phone_numbers/{phone_number}/resend_verification">client.Whatsapp.PhoneNumbers.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappPhoneNumberService.ResendVerification">ResendVerification</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, phoneNumber <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappPhoneNumberResendVerificationParams">WhatsappPhoneNumberResendVerificationParams</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
@@ -5689,15 +5696,15 @@ Methods:
 
 Response Types:
 
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappHostedSignup">WhatsappHostedSignup</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappHostedSignupNewResponse">WhatsappHostedSignupNewResponse</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappHostedSignupGetResponse">WhatsappHostedSignupGetResponse</a>
-- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappHostedSignupListResponse">WhatsappHostedSignupListResponse</a>
 
 Methods:
 
 - <code title="post /whatsapp/hosted_signups">client.Whatsapp.HostedSignups.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappHostedSignupService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappHostedSignupNewParams">WhatsappHostedSignupNewParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappHostedSignupNewResponse">WhatsappHostedSignupNewResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /whatsapp/hosted_signups/{id}">client.Whatsapp.HostedSignups.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappHostedSignupService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappHostedSignupGetResponse">WhatsappHostedSignupGetResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
-- <code title="get /whatsapp/hosted_signups">client.Whatsapp.HostedSignups.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappHostedSignupService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappHostedSignupListParams">WhatsappHostedSignupListParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination#DefaultFlatPagination">DefaultFlatPagination</a>[<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappHostedSignupListResponse">WhatsappHostedSignupListResponse</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /whatsapp/hosted_signups">client.Whatsapp.HostedSignups.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappHostedSignupService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappHostedSignupListParams">WhatsappHostedSignupListParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination#DefaultFlatPagination">DefaultFlatPagination</a>[<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#WhatsappHostedSignup">WhatsappHostedSignup</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 # WhatsappMessageTemplates
 
@@ -5902,6 +5909,7 @@ Methods:
 
 Response Types:
 
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ExternalVerification">ExternalVerification</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ExternalVerificationStatus">ExternalVerificationStatus</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ExternalVerificationWrapped">ExternalVerificationWrapped</a>
 
@@ -5921,6 +5929,7 @@ Methods:
 
 Response Types:
 
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#EnterpriseEmailVerificationStatus">EnterpriseEmailVerificationStatus</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#EnterpriseEmailVerificationStatusWrapped">EnterpriseEmailVerificationStatusWrapped</a>
 
 Methods:
@@ -6469,12 +6478,14 @@ Methods:
 Params Types:
 
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#UpdateEmailTemplateRequestParam">UpdateEmailTemplateRequestParam</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#VariableSchemaEntryParam">VariableSchemaEntryParam</a>
 
 Response Types:
 
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#EmailTemplate">EmailTemplate</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#EmailTemplateCommon">EmailTemplateCommon</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#EmailTemplateResponse">EmailTemplateResponse</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#VariableSchemaEntry">VariableSchemaEntry</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#EmailTemplateRenderResponse">EmailTemplateRenderResponse</a>
 
 Methods:
@@ -6685,6 +6696,7 @@ Methods:
 
 Response Types:
 
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#FuncLogExportConfig">FuncLogExportConfig</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#FuncLogExportConfigResponse">FuncLogExportConfigResponse</a>
 
 Methods:
@@ -6852,10 +6864,6 @@ Response Types:
 Methods:
 
 - <code title="get /dial_metrics">client.DialMetrics.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#DialMetricService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#DialMetricListParams">DialMetricListParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination#CloudfsCursorPagination">CloudfsCursorPagination</a>[<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#DialMetricListResponse">DialMetricListResponse</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
-
-# TtsIntegrations
-
-## Actions
 
 # TailscaleSubnetRouters
 

@@ -5738,17 +5738,17 @@ type InferenceEmbeddingVoiceSettingsBackgroundAudioUnion struct {
 	} `json:"-"`
 }
 
-func (u InferenceEmbeddingVoiceSettingsBackgroundAudioUnion) AsInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0() (v InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0) {
+func (u InferenceEmbeddingVoiceSettingsBackgroundAudioUnion) AsUnionMember0() (v InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u InferenceEmbeddingVoiceSettingsBackgroundAudioUnion) AsInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember1() (v InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember1) {
+func (u InferenceEmbeddingVoiceSettingsBackgroundAudioUnion) AsUnionMember1() (v InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember1) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u InferenceEmbeddingVoiceSettingsBackgroundAudioUnion) AsInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember2() (v InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember2) {
+func (u InferenceEmbeddingVoiceSettingsBackgroundAudioUnion) AsUnionMember2() (v InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember2) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -5909,12 +5909,12 @@ type InferenceEmbeddingVoiceSettingsToolCallAudioUnion struct {
 	} `json:"-"`
 }
 
-func (u InferenceEmbeddingVoiceSettingsToolCallAudioUnion) AsInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0() (v InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0) {
+func (u InferenceEmbeddingVoiceSettingsToolCallAudioUnion) AsUnionMember0() (v InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u InferenceEmbeddingVoiceSettingsToolCallAudioUnion) AsInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1() (v InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1) {
+func (u InferenceEmbeddingVoiceSettingsToolCallAudioUnion) AsUnionMember1() (v InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -6059,33 +6059,33 @@ func (r *InferenceEmbeddingVoiceSettingsParam) UnmarshalJSON(data []byte) error 
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type InferenceEmbeddingVoiceSettingsBackgroundAudioUnionParam struct {
-	OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0 *InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0Param `json:",omitzero,inline"`
-	OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember1 *InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember1Param `json:",omitzero,inline"`
-	OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember2 *InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember2Param `json:",omitzero,inline"`
+	OfUnionMember0 *InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0Param `json:",omitzero,inline"`
+	OfUnionMember1 *InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember1Param `json:",omitzero,inline"`
+	OfUnionMember2 *InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember2Param `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u InferenceEmbeddingVoiceSettingsBackgroundAudioUnionParam) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0, u.OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember1, u.OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember2)
+	return param.MarshalUnion(u, u.OfUnionMember0, u.OfUnionMember1, u.OfUnionMember2)
 }
 func (u *InferenceEmbeddingVoiceSettingsBackgroundAudioUnionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *InferenceEmbeddingVoiceSettingsBackgroundAudioUnionParam) asAny() any {
-	if !param.IsOmitted(u.OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0) {
-		return u.OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0
-	} else if !param.IsOmitted(u.OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember1) {
-		return u.OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember1
-	} else if !param.IsOmitted(u.OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember2) {
-		return u.OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember2
+	if !param.IsOmitted(u.OfUnionMember0) {
+		return u.OfUnionMember0
+	} else if !param.IsOmitted(u.OfUnionMember1) {
+		return u.OfUnionMember1
+	} else if !param.IsOmitted(u.OfUnionMember2) {
+		return u.OfUnionMember2
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u InferenceEmbeddingVoiceSettingsBackgroundAudioUnionParam) GetVolume() *float64 {
-	if vt := u.OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0; vt != nil && vt.Volume.Valid() {
+	if vt := u.OfUnionMember0; vt != nil && vt.Volume.Valid() {
 		return &vt.Volume.Value
 	}
 	return nil
@@ -6093,11 +6093,11 @@ func (u InferenceEmbeddingVoiceSettingsBackgroundAudioUnionParam) GetVolume() *f
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u InferenceEmbeddingVoiceSettingsBackgroundAudioUnionParam) GetType() *string {
-	if vt := u.OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0; vt != nil {
+	if vt := u.OfUnionMember0; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember1; vt != nil {
+	} else if vt := u.OfUnionMember1; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember2; vt != nil {
+	} else if vt := u.OfUnionMember2; vt != nil {
 		return (*string)(&vt.Type)
 	}
 	return nil
@@ -6105,11 +6105,11 @@ func (u InferenceEmbeddingVoiceSettingsBackgroundAudioUnionParam) GetType() *str
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u InferenceEmbeddingVoiceSettingsBackgroundAudioUnionParam) GetValue() *string {
-	if vt := u.OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0; vt != nil {
+	if vt := u.OfUnionMember0; vt != nil {
 		return (*string)(&vt.Value)
-	} else if vt := u.OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember1; vt != nil {
+	} else if vt := u.OfUnionMember1; vt != nil {
 		return (*string)(&vt.Value)
-	} else if vt := u.OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember2; vt != nil {
+	} else if vt := u.OfUnionMember2; vt != nil {
 		return (*string)(&vt.Value)
 	}
 	return nil
@@ -6213,30 +6213,30 @@ func init() {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type InferenceEmbeddingVoiceSettingsToolCallAudioUnionParam struct {
-	OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0 *InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0Param `json:",omitzero,inline"`
-	OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1 *InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1Param `json:",omitzero,inline"`
+	OfUnionMember0 *InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0Param `json:",omitzero,inline"`
+	OfUnionMember1 *InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1Param `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u InferenceEmbeddingVoiceSettingsToolCallAudioUnionParam) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0, u.OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1)
+	return param.MarshalUnion(u, u.OfUnionMember0, u.OfUnionMember1)
 }
 func (u *InferenceEmbeddingVoiceSettingsToolCallAudioUnionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *InferenceEmbeddingVoiceSettingsToolCallAudioUnionParam) asAny() any {
-	if !param.IsOmitted(u.OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0) {
-		return u.OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0
-	} else if !param.IsOmitted(u.OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1) {
-		return u.OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1
+	if !param.IsOmitted(u.OfUnionMember0) {
+		return u.OfUnionMember0
+	} else if !param.IsOmitted(u.OfUnionMember1) {
+		return u.OfUnionMember1
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u InferenceEmbeddingVoiceSettingsToolCallAudioUnionParam) GetVolume() *float64 {
-	if vt := u.OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0; vt != nil && vt.Volume.Valid() {
+	if vt := u.OfUnionMember0; vt != nil && vt.Volume.Valid() {
 		return &vt.Volume.Value
 	}
 	return nil
@@ -6244,9 +6244,9 @@ func (u InferenceEmbeddingVoiceSettingsToolCallAudioUnionParam) GetVolume() *flo
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u InferenceEmbeddingVoiceSettingsToolCallAudioUnionParam) GetType() *string {
-	if vt := u.OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0; vt != nil {
+	if vt := u.OfUnionMember0; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1; vt != nil {
+	} else if vt := u.OfUnionMember1; vt != nil {
 		return (*string)(&vt.Type)
 	}
 	return nil
@@ -6254,9 +6254,9 @@ func (u InferenceEmbeddingVoiceSettingsToolCallAudioUnionParam) GetType() *strin
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u InferenceEmbeddingVoiceSettingsToolCallAudioUnionParam) GetValue() *string {
-	if vt := u.OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0; vt != nil {
+	if vt := u.OfUnionMember0; vt != nil {
 		return (*string)(&vt.Value)
-	} else if vt := u.OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember1; vt != nil {
+	} else if vt := u.OfUnionMember1; vt != nil {
 		return (*string)(&vt.Value)
 	}
 	return nil
@@ -7335,18 +7335,26 @@ type PrivacySettings struct {
 	// account, number, or application level. All such external settings remain in
 	// force regardless of your selection here.
 	DataRetention bool `json:"data_retention"`
-	// Requires every model call made for a web chat turn to be received and served
-	// inside your organization's data-locality region, rather than only stored there.
-	// Applies to web chat only — voice and messaging assistants are unaffected.
-	// Enabling it requires a data-locality region with in-region inference (USA, EU,
-	// AUS, UAE; see
-	// [Inference regions](https://developers.telnyx.com/docs/inference/models/regions))
-	// and Telnyx-hosted models for the assistant, its fallback, and any
-	// conversation-flow node that overrides the model; the request is rejected
-	// otherwise. Once enabled, send chat requests to your region's API hostname: a
-	// request entering the platform in another region is rejected rather than
-	// forwarded, because forwarding it would already have moved the content across the
-	// border. Defaults to false.
+	// Requires this assistant's conversations to be processed inside your
+	// organization's data-locality region, rather than only stored there, on every
+	// channel: for web chat, every model call of a turn; for voice, the call's model
+	// calls and the Telnyx-hosted speech services it uses; for SMS and WhatsApp, the
+	// model calls of each turn (how messages travel through carriers is not covered).
+	// Covered processing that cannot be handled in region fails rather than being
+	// served elsewhere. Enabling it requires a data-locality region with in-region
+	// inference (USA, EU, AUS, UAE; see
+	// [Inference regions](https://developers.telnyx.com/docs/inference/models/regions)),
+	// Telnyx-hosted models for the assistant, its fallback, and any conversation-flow
+	// node that overrides the model, and, when `insight_settings.model` is set, an
+	// insight model available in that region; the request is rejected otherwise. A
+	// voice call fails when it starts if its STT model or TTS voice is not self-hosted
+	// by Telnyx, if the assistant uses a speech-to-speech model, or if the call's
+	// media is anchored outside the region. Once enabled, send web chat requests and
+	// WebSocket or WebRTC conversations to your region's API hostname: one entering
+	// the platform in another region is refused rather than forwarded, because
+	// forwarding it would already have moved the content across the border. See
+	// [Data residency](https://developers.telnyx.com/docs/inference/data-residency#in-region-processing-for-ai-assistants).
+	// Defaults to false.
 	InTransitDataLocality bool `json:"in_transit_data_locality"`
 	// Controls redaction of personally identifiable information (PII) from the
 	// conversation history that is stored for this assistant. `disabled` (default)
@@ -7439,18 +7447,26 @@ type PrivacySettingsParam struct {
 	// account, number, or application level. All such external settings remain in
 	// force regardless of your selection here.
 	DataRetention param.Opt[bool] `json:"data_retention,omitzero"`
-	// Requires every model call made for a web chat turn to be received and served
-	// inside your organization's data-locality region, rather than only stored there.
-	// Applies to web chat only — voice and messaging assistants are unaffected.
-	// Enabling it requires a data-locality region with in-region inference (USA, EU,
-	// AUS, UAE; see
-	// [Inference regions](https://developers.telnyx.com/docs/inference/models/regions))
-	// and Telnyx-hosted models for the assistant, its fallback, and any
-	// conversation-flow node that overrides the model; the request is rejected
-	// otherwise. Once enabled, send chat requests to your region's API hostname: a
-	// request entering the platform in another region is rejected rather than
-	// forwarded, because forwarding it would already have moved the content across the
-	// border. Defaults to false.
+	// Requires this assistant's conversations to be processed inside your
+	// organization's data-locality region, rather than only stored there, on every
+	// channel: for web chat, every model call of a turn; for voice, the call's model
+	// calls and the Telnyx-hosted speech services it uses; for SMS and WhatsApp, the
+	// model calls of each turn (how messages travel through carriers is not covered).
+	// Covered processing that cannot be handled in region fails rather than being
+	// served elsewhere. Enabling it requires a data-locality region with in-region
+	// inference (USA, EU, AUS, UAE; see
+	// [Inference regions](https://developers.telnyx.com/docs/inference/models/regions)),
+	// Telnyx-hosted models for the assistant, its fallback, and any conversation-flow
+	// node that overrides the model, and, when `insight_settings.model` is set, an
+	// insight model available in that region; the request is rejected otherwise. A
+	// voice call fails when it starts if its STT model or TTS voice is not self-hosted
+	// by Telnyx, if the assistant uses a speech-to-speech model, or if the call's
+	// media is anchored outside the region. Once enabled, send web chat requests and
+	// WebSocket or WebRTC conversations to your region's API hostname: one entering
+	// the platform in another region is refused rather than forwarded, because
+	// forwarding it would already have moved the content across the border. See
+	// [Data residency](https://developers.telnyx.com/docs/inference/data-residency#in-region-processing-for-ai-assistants).
+	// Defaults to false.
 	InTransitDataLocality param.Opt[bool] `json:"in_transit_data_locality,omitzero"`
 	// Controls redaction of personally identifiable information (PII) from the
 	// conversation history that is stored for this assistant. `disabled` (default)
@@ -7735,6 +7751,12 @@ type TelephonySettings struct {
 	// detected), and it does not fire when the assistant already transferred or
 	// bridged the call.
 	FallbackDestination string `json:"fallback_destination"`
+	// Milliseconds to wait after an inbound call is answered before the assistant
+	// starts and speaks its greeting. Increase it if the beginning of the greeting is
+	// cut off on some connections (for example, WebRTC calls). When unset (`null`),
+	// the platform default of 250 ms is used. Set to `0` to start without a delay.
+	// Maximum 2000.
+	GreetingDelayMs int64 `json:"greeting_delay_ms" api:"nullable"`
 	// The noise suppression engine to use. 'aicoustics' is STT-optimized and
 	// recommended for AI assistants (configure through noise_suppression_config). Use
 	// 'disabled' to turn off noise suppression.
@@ -7802,6 +7824,7 @@ type TelephonySettings struct {
 		DefaultTexmlAppID               respjson.Field
 		DisableDtmf                     respjson.Field
 		FallbackDestination             respjson.Field
+		GreetingDelayMs                 respjson.Field
 		NoiseSuppression                respjson.Field
 		NoiseSuppressionConfig          respjson.Field
 		RecordingSettings               respjson.Field
@@ -8003,6 +8026,12 @@ func (r *TelephonySettingsVoicemailDetectionOnVoicemailDetectedVoicemailMessage)
 }
 
 type TelephonySettingsParam struct {
+	// Milliseconds to wait after an inbound call is answered before the assistant
+	// starts and speaks its greeting. Increase it if the beginning of the greeting is
+	// cut off on some connections (for example, WebRTC calls). When unset (`null`),
+	// the platform default of 250 ms is used. Set to `0` to start without a delay.
+	// Maximum 2000.
+	GreetingDelayMs param.Opt[int64] `json:"greeting_delay_ms,omitzero"`
 	// When enabled, the `messages` array of the `call.conversation.ended` webhook
 	// contains the full conversation history in order: user and assistant turns,
 	// assistant tool calls (`tool_calls`), tool results (`role: tool` with
@@ -8431,6 +8460,207 @@ const (
 	ToolNodeReqTypeTool ToolNodeReqType = "tool"
 )
 
+// A second speech-to-text model that transcribes alongside `transcription.model`,
+// and the rule that decides which transcript the assistant uses.
+type TranscriptionChallenger struct {
+	// The language booster's model. It must be the same kind of model as
+	// `transcription.model`: both streaming (`deepgram/flux`, `deepgram/nova-3`,
+	// `deepgram/nova-2`, `assemblyai/universal-3-6-pro` or its legacy aliases
+	// `assemblyai/universal-3-5-pro` and `assemblyai/universal-streaming`,
+	// `xai/grok-stt`, `soniox/stt-rt-v4`, `soniox/stt-rt-v5`, `humain/realtime`,
+	// `reson8/turns`) or both non-streaming (`azure/fast`, `nvidia/parakeet-v3`,
+	// `omi-health/omi-med-stt-v1`, `cohere/ar-stt`, `distil-whisper/distil-large-v2`,
+	// `openai/whisper-large-v3-turbo`, `telnyx/basira`). It can be the same model as
+	// `transcription.model` on a different `language`.
+	//
+	// Any of "deepgram/flux", "deepgram/nova-3", "deepgram/nova-2", "azure/fast",
+	// "assemblyai/universal-3-6-pro", "assemblyai/universal-3-5-pro",
+	// "assemblyai/universal-streaming", "xai/grok-stt", "soniox/stt-rt-v4",
+	// "soniox/stt-rt-v5", "nvidia/parakeet-v3", "omi-health/omi-med-stt-v1",
+	// "humain/realtime", "reson8/turns", "cohere/ar-stt", "telnyx/basira",
+	// "distil-whisper/distil-large-v2", "openai/whisper-large-v3-turbo".
+	Model TranscriptionChallengerModel `json:"model" api:"required"`
+	// The language this model transcribes. Omit it or set it to `null` to use the
+	// language of `transcription.model`. The request is rejected when this model
+	// doesn't support the language it would run. It is also rejected when it would run
+	// the same model on the same language as `transcription.model`.
+	Language string `json:"language" api:"nullable"`
+	// How the assistant picks the transcript it uses. The models are compared on how
+	// complete and confident their transcripts are, not on language, so the rules work
+	// best when both models understand the callers' language.
+	//
+	//   - `best_turn` (default): both models transcribe the whole call. Each turn uses
+	//     the language booster's transcript only when it scores higher than the
+	//     transcript of `transcription.model` (clearly higher with non-streaming
+	//     models). With streaming models, `transcription.model` also decides when each
+	//     turn ends. Available for every pair.
+	//   - `best_engine`: both models transcribe the first turns, then the call continues
+	//     alone on the model whose transcripts scored higher. If neither clearly leads,
+	//     `transcription.model` continues. Streaming models only.
+	//   - `merge_words`: both models transcribe each utterance and their words are
+	//     merged, keeping Arabic and English spoken in the same sentence. Available only
+	//     for `telnyx/basira` with `cohere/ar-stt`, in either order. The pair runs on
+	//     the language that applies to `telnyx/basira` (its own, or that of
+	//     `transcription.model`), which must be Arabic (`ar` or an `ar-` locale),
+	//     `multi`, or `auto`.
+	//
+	// Any of "best_turn", "best_engine", "merge_words".
+	Rule TranscriptionChallengerRule `json:"rule"`
+	// Settings for the language booster, with the same fields and limits as
+	// `transcription.settings`. Fields that don't apply to this model's provider are
+	// dropped, and the provider's defaults fill in the rest. Omit it or set it to
+	// `null` to use the settings of `transcription.model` where they apply to this
+	// model.
+	Settings TranscriptionSettingsConfig `json:"settings" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Model       respjson.Field
+		Language    respjson.Field
+		Rule        respjson.Field
+		Settings    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TranscriptionChallenger) RawJSON() string { return r.JSON.raw }
+func (r *TranscriptionChallenger) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this TranscriptionChallenger to a TranscriptionChallengerParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// TranscriptionChallengerParam.Overrides()
+func (r TranscriptionChallenger) ToParam() TranscriptionChallengerParam {
+	return param.Override[TranscriptionChallengerParam](json.RawMessage(r.RawJSON()))
+}
+
+// The language booster's model. It must be the same kind of model as
+// `transcription.model`: both streaming (`deepgram/flux`, `deepgram/nova-3`,
+// `deepgram/nova-2`, `assemblyai/universal-3-6-pro` or its legacy aliases
+// `assemblyai/universal-3-5-pro` and `assemblyai/universal-streaming`,
+// `xai/grok-stt`, `soniox/stt-rt-v4`, `soniox/stt-rt-v5`, `humain/realtime`,
+// `reson8/turns`) or both non-streaming (`azure/fast`, `nvidia/parakeet-v3`,
+// `omi-health/omi-med-stt-v1`, `cohere/ar-stt`, `distil-whisper/distil-large-v2`,
+// `openai/whisper-large-v3-turbo`, `telnyx/basira`). It can be the same model as
+// `transcription.model` on a different `language`.
+type TranscriptionChallengerModel string
+
+const (
+	TranscriptionChallengerModelDeepgramFlux                 TranscriptionChallengerModel = "deepgram/flux"
+	TranscriptionChallengerModelDeepgramNova3                TranscriptionChallengerModel = "deepgram/nova-3"
+	TranscriptionChallengerModelDeepgramNova2                TranscriptionChallengerModel = "deepgram/nova-2"
+	TranscriptionChallengerModelAzureFast                    TranscriptionChallengerModel = "azure/fast"
+	TranscriptionChallengerModelAssemblyaiUniversal3_6Pro    TranscriptionChallengerModel = "assemblyai/universal-3-6-pro"
+	TranscriptionChallengerModelAssemblyaiUniversal3_5Pro    TranscriptionChallengerModel = "assemblyai/universal-3-5-pro"
+	TranscriptionChallengerModelAssemblyaiUniversalStreaming TranscriptionChallengerModel = "assemblyai/universal-streaming"
+	TranscriptionChallengerModelXaiGrokStt                   TranscriptionChallengerModel = "xai/grok-stt"
+	TranscriptionChallengerModelSonioxSttRtV4                TranscriptionChallengerModel = "soniox/stt-rt-v4"
+	TranscriptionChallengerModelSonioxSttRtV5                TranscriptionChallengerModel = "soniox/stt-rt-v5"
+	TranscriptionChallengerModelNvidiaParakeetV3             TranscriptionChallengerModel = "nvidia/parakeet-v3"
+	TranscriptionChallengerModelOmiHealthOmiMedSttV1         TranscriptionChallengerModel = "omi-health/omi-med-stt-v1"
+	TranscriptionChallengerModelHumainRealtime               TranscriptionChallengerModel = "humain/realtime"
+	TranscriptionChallengerModelReson8Turns                  TranscriptionChallengerModel = "reson8/turns"
+	TranscriptionChallengerModelCohereArStt                  TranscriptionChallengerModel = "cohere/ar-stt"
+	TranscriptionChallengerModelTelnyxBasira                 TranscriptionChallengerModel = "telnyx/basira"
+	TranscriptionChallengerModelDistilWhisperDistilLargeV2   TranscriptionChallengerModel = "distil-whisper/distil-large-v2"
+	TranscriptionChallengerModelOpenAIWhisperLargeV3Turbo    TranscriptionChallengerModel = "openai/whisper-large-v3-turbo"
+)
+
+// How the assistant picks the transcript it uses. The models are compared on how
+// complete and confident their transcripts are, not on language, so the rules work
+// best when both models understand the callers' language.
+//
+//   - `best_turn` (default): both models transcribe the whole call. Each turn uses
+//     the language booster's transcript only when it scores higher than the
+//     transcript of `transcription.model` (clearly higher with non-streaming
+//     models). With streaming models, `transcription.model` also decides when each
+//     turn ends. Available for every pair.
+//   - `best_engine`: both models transcribe the first turns, then the call continues
+//     alone on the model whose transcripts scored higher. If neither clearly leads,
+//     `transcription.model` continues. Streaming models only.
+//   - `merge_words`: both models transcribe each utterance and their words are
+//     merged, keeping Arabic and English spoken in the same sentence. Available only
+//     for `telnyx/basira` with `cohere/ar-stt`, in either order. The pair runs on
+//     the language that applies to `telnyx/basira` (its own, or that of
+//     `transcription.model`), which must be Arabic (`ar` or an `ar-` locale),
+//     `multi`, or `auto`.
+type TranscriptionChallengerRule string
+
+const (
+	TranscriptionChallengerRuleBestTurn   TranscriptionChallengerRule = "best_turn"
+	TranscriptionChallengerRuleBestEngine TranscriptionChallengerRule = "best_engine"
+	TranscriptionChallengerRuleMergeWords TranscriptionChallengerRule = "merge_words"
+)
+
+// A second speech-to-text model that transcribes alongside `transcription.model`,
+// and the rule that decides which transcript the assistant uses.
+//
+// The property Model is required.
+type TranscriptionChallengerParam struct {
+	// The language booster's model. It must be the same kind of model as
+	// `transcription.model`: both streaming (`deepgram/flux`, `deepgram/nova-3`,
+	// `deepgram/nova-2`, `assemblyai/universal-3-6-pro` or its legacy aliases
+	// `assemblyai/universal-3-5-pro` and `assemblyai/universal-streaming`,
+	// `xai/grok-stt`, `soniox/stt-rt-v4`, `soniox/stt-rt-v5`, `humain/realtime`,
+	// `reson8/turns`) or both non-streaming (`azure/fast`, `nvidia/parakeet-v3`,
+	// `omi-health/omi-med-stt-v1`, `cohere/ar-stt`, `distil-whisper/distil-large-v2`,
+	// `openai/whisper-large-v3-turbo`, `telnyx/basira`). It can be the same model as
+	// `transcription.model` on a different `language`.
+	//
+	// Any of "deepgram/flux", "deepgram/nova-3", "deepgram/nova-2", "azure/fast",
+	// "assemblyai/universal-3-6-pro", "assemblyai/universal-3-5-pro",
+	// "assemblyai/universal-streaming", "xai/grok-stt", "soniox/stt-rt-v4",
+	// "soniox/stt-rt-v5", "nvidia/parakeet-v3", "omi-health/omi-med-stt-v1",
+	// "humain/realtime", "reson8/turns", "cohere/ar-stt", "telnyx/basira",
+	// "distil-whisper/distil-large-v2", "openai/whisper-large-v3-turbo".
+	Model TranscriptionChallengerModel `json:"model,omitzero" api:"required"`
+	// The language this model transcribes. Omit it or set it to `null` to use the
+	// language of `transcription.model`. The request is rejected when this model
+	// doesn't support the language it would run. It is also rejected when it would run
+	// the same model on the same language as `transcription.model`.
+	Language param.Opt[string] `json:"language,omitzero"`
+	// How the assistant picks the transcript it uses. The models are compared on how
+	// complete and confident their transcripts are, not on language, so the rules work
+	// best when both models understand the callers' language.
+	//
+	//   - `best_turn` (default): both models transcribe the whole call. Each turn uses
+	//     the language booster's transcript only when it scores higher than the
+	//     transcript of `transcription.model` (clearly higher with non-streaming
+	//     models). With streaming models, `transcription.model` also decides when each
+	//     turn ends. Available for every pair.
+	//   - `best_engine`: both models transcribe the first turns, then the call continues
+	//     alone on the model whose transcripts scored higher. If neither clearly leads,
+	//     `transcription.model` continues. Streaming models only.
+	//   - `merge_words`: both models transcribe each utterance and their words are
+	//     merged, keeping Arabic and English spoken in the same sentence. Available only
+	//     for `telnyx/basira` with `cohere/ar-stt`, in either order. The pair runs on
+	//     the language that applies to `telnyx/basira` (its own, or that of
+	//     `transcription.model`), which must be Arabic (`ar` or an `ar-` locale),
+	//     `multi`, or `auto`.
+	//
+	// Any of "best_turn", "best_engine", "merge_words".
+	Rule TranscriptionChallengerRule `json:"rule,omitzero"`
+	// Settings for the language booster, with the same fields and limits as
+	// `transcription.settings`. Fields that don't apply to this model's provider are
+	// dropped, and the provider's defaults fill in the rest. Omit it or set it to
+	// `null` to use the settings of `transcription.model` where they apply to this
+	// model.
+	Settings TranscriptionSettingsConfigParam `json:"settings,omitzero"`
+	paramObj
+}
+
+func (r TranscriptionChallengerParam) MarshalJSON() (data []byte, err error) {
+	type shadow TranscriptionChallengerParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TranscriptionChallengerParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // Endpointing thresholds used to decide when the user has finished speaking.
 // Applies to non turn-taking transcription models. For `deepgram/flux`, use
 // `transcription.settings.eot_threshold` / `eot_timeout_ms` /
@@ -8490,13 +8720,124 @@ func (r *TranscriptionEndpointingPlanParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// A streaming speech-to-text model that takes over transcription when the model in
+// use fails.
+type TranscriptionFallbackModel struct {
+	// The fallback model. It must be a streaming model other than
+	// `transcription.model` and the other fallbacks: `deepgram/flux`,
+	// `deepgram/nova-3`, `deepgram/nova-2`, `assemblyai/universal-3-6-pro` (or its
+	// legacy aliases `assemblyai/universal-3-5-pro` and
+	// `assemblyai/universal-streaming`), `xai/grok-stt`, `soniox/stt-rt-v4`,
+	// `soniox/stt-rt-v5`, `humain/realtime`, or `reson8/turns`.
+	//
+	// Any of "deepgram/flux", "deepgram/nova-3", "deepgram/nova-2",
+	// "assemblyai/universal-3-6-pro", "assemblyai/universal-3-5-pro",
+	// "assemblyai/universal-streaming", "xai/grok-stt", "soniox/stt-rt-v4",
+	// "soniox/stt-rt-v5", "humain/realtime", "reson8/turns".
+	Model TranscriptionFallbackModelModel `json:"model" api:"required"`
+	// The language the fallback transcribes. Omit it or set it to `null` to use the
+	// language of `transcription.model`. The request is rejected when the fallback
+	// model doesn't support the language it would run.
+	Language string `json:"language" api:"nullable"`
+	// Settings for the fallback, with the same fields and limits as
+	// `transcription.settings`. Fields that don't apply to this model's provider are
+	// dropped, and the provider's defaults fill in the rest. Omit it or set it to
+	// `null` to use the settings of `transcription.model` where they apply to this
+	// model.
+	Settings TranscriptionSettingsConfig `json:"settings" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Model       respjson.Field
+		Language    respjson.Field
+		Settings    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TranscriptionFallbackModel) RawJSON() string { return r.JSON.raw }
+func (r *TranscriptionFallbackModel) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this TranscriptionFallbackModel to a
+// TranscriptionFallbackModelParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// TranscriptionFallbackModelParam.Overrides()
+func (r TranscriptionFallbackModel) ToParam() TranscriptionFallbackModelParam {
+	return param.Override[TranscriptionFallbackModelParam](json.RawMessage(r.RawJSON()))
+}
+
+// The fallback model. It must be a streaming model other than
+// `transcription.model` and the other fallbacks: `deepgram/flux`,
+// `deepgram/nova-3`, `deepgram/nova-2`, `assemblyai/universal-3-6-pro` (or its
+// legacy aliases `assemblyai/universal-3-5-pro` and
+// `assemblyai/universal-streaming`), `xai/grok-stt`, `soniox/stt-rt-v4`,
+// `soniox/stt-rt-v5`, `humain/realtime`, or `reson8/turns`.
+type TranscriptionFallbackModelModel string
+
+const (
+	TranscriptionFallbackModelModelDeepgramFlux                 TranscriptionFallbackModelModel = "deepgram/flux"
+	TranscriptionFallbackModelModelDeepgramNova3                TranscriptionFallbackModelModel = "deepgram/nova-3"
+	TranscriptionFallbackModelModelDeepgramNova2                TranscriptionFallbackModelModel = "deepgram/nova-2"
+	TranscriptionFallbackModelModelAssemblyaiUniversal3_6Pro    TranscriptionFallbackModelModel = "assemblyai/universal-3-6-pro"
+	TranscriptionFallbackModelModelAssemblyaiUniversal3_5Pro    TranscriptionFallbackModelModel = "assemblyai/universal-3-5-pro"
+	TranscriptionFallbackModelModelAssemblyaiUniversalStreaming TranscriptionFallbackModelModel = "assemblyai/universal-streaming"
+	TranscriptionFallbackModelModelXaiGrokStt                   TranscriptionFallbackModelModel = "xai/grok-stt"
+	TranscriptionFallbackModelModelSonioxSttRtV4                TranscriptionFallbackModelModel = "soniox/stt-rt-v4"
+	TranscriptionFallbackModelModelSonioxSttRtV5                TranscriptionFallbackModelModel = "soniox/stt-rt-v5"
+	TranscriptionFallbackModelModelHumainRealtime               TranscriptionFallbackModelModel = "humain/realtime"
+	TranscriptionFallbackModelModelReson8Turns                  TranscriptionFallbackModelModel = "reson8/turns"
+)
+
+// A streaming speech-to-text model that takes over transcription when the model in
+// use fails.
+//
+// The property Model is required.
+type TranscriptionFallbackModelParam struct {
+	// The fallback model. It must be a streaming model other than
+	// `transcription.model` and the other fallbacks: `deepgram/flux`,
+	// `deepgram/nova-3`, `deepgram/nova-2`, `assemblyai/universal-3-6-pro` (or its
+	// legacy aliases `assemblyai/universal-3-5-pro` and
+	// `assemblyai/universal-streaming`), `xai/grok-stt`, `soniox/stt-rt-v4`,
+	// `soniox/stt-rt-v5`, `humain/realtime`, or `reson8/turns`.
+	//
+	// Any of "deepgram/flux", "deepgram/nova-3", "deepgram/nova-2",
+	// "assemblyai/universal-3-6-pro", "assemblyai/universal-3-5-pro",
+	// "assemblyai/universal-streaming", "xai/grok-stt", "soniox/stt-rt-v4",
+	// "soniox/stt-rt-v5", "humain/realtime", "reson8/turns".
+	Model TranscriptionFallbackModelModel `json:"model,omitzero" api:"required"`
+	// The language the fallback transcribes. Omit it or set it to `null` to use the
+	// language of `transcription.model`. The request is rejected when the fallback
+	// model doesn't support the language it would run.
+	Language param.Opt[string] `json:"language,omitzero"`
+	// Settings for the fallback, with the same fields and limits as
+	// `transcription.settings`. Fields that don't apply to this model's provider are
+	// dropped, and the provider's defaults fill in the rest. Omit it or set it to
+	// `null` to use the settings of `transcription.model` where they apply to this
+	// model.
+	Settings TranscriptionSettingsConfigParam `json:"settings,omitzero"`
+	paramObj
+}
+
+func (r TranscriptionFallbackModelParam) MarshalJSON() (data []byte, err error) {
+	type shadow TranscriptionFallbackModelParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TranscriptionFallbackModelParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type TranscriptionSettings struct {
 	// Integration secret identifier for the transcription provider API key. Currently
 	// used for Azure transcription regions that require a customer-provided API key.
 	APIKeyRef string `json:"api_key_ref"`
 	// A second speech-to-text model that transcribes alongside `transcription.model`,
 	// and the rule that decides which transcript the assistant uses.
-	Challenger TranscriptionSettingsChallenger `json:"challenger" api:"nullable"`
+	Challenger TranscriptionChallenger `json:"challenger" api:"nullable"`
 	// Up to 3 streaming models that take over transcription, in this order, when the
 	// model in use fails, at the start of a call or mid-call. `model` must be a
 	// streaming model too, and must support `language` alongside other models. On
@@ -8505,7 +8846,7 @@ type TranscriptionSettings struct {
 	// `language`, stored fallbacks that no longer fit are removed without an error.
 	// Can't be combined with `challenger`, the language booster; to replace a stored
 	// language booster, send `challenger: null` in the same request.
-	FallbackModels []TranscriptionSettingsFallbackModel `json:"fallback_models" api:"nullable"`
+	FallbackModels []TranscriptionFallbackModel `json:"fallback_models" api:"nullable"`
 	// The language of the audio to be transcribed. If not set, or if set to `auto`,
 	// supported models will automatically detect the language. For `deepgram/flux`,
 	// supported values are: `auto` (Telnyx language detection controls the language
@@ -8602,116 +8943,6 @@ func (r TranscriptionSettings) ToParam() TranscriptionSettingsParam {
 	return param.Override[TranscriptionSettingsParam](json.RawMessage(r.RawJSON()))
 }
 
-// A second speech-to-text model that transcribes alongside `transcription.model`,
-// and the rule that decides which transcript the assistant uses.
-type TranscriptionSettingsChallenger struct {
-	// The language booster's model. It must be the same kind of model as
-	// `transcription.model`: both streaming (`deepgram/flux`, `deepgram/nova-3`,
-	// `deepgram/nova-2`, `assemblyai/universal-3-6-pro` or its legacy aliases
-	// `assemblyai/universal-3-5-pro` and `assemblyai/universal-streaming`,
-	// `xai/grok-stt`, `soniox/stt-rt-v4`, `soniox/stt-rt-v5`, `humain/realtime`,
-	// `reson8/turns`) or both non-streaming (`azure/fast`, `nvidia/parakeet-v3`,
-	// `omi-health/omi-med-stt-v1`, `cohere/ar-stt`, `distil-whisper/distil-large-v2`,
-	// `openai/whisper-large-v3-turbo`, `telnyx/basira`). It can be the same model as
-	// `transcription.model` on a different `language`.
-	//
-	// Any of "deepgram/flux", "deepgram/nova-3", "deepgram/nova-2", "azure/fast",
-	// "assemblyai/universal-3-6-pro", "assemblyai/universal-3-5-pro",
-	// "assemblyai/universal-streaming", "xai/grok-stt", "soniox/stt-rt-v4",
-	// "soniox/stt-rt-v5", "nvidia/parakeet-v3", "omi-health/omi-med-stt-v1",
-	// "humain/realtime", "reson8/turns", "cohere/ar-stt", "telnyx/basira",
-	// "distil-whisper/distil-large-v2", "openai/whisper-large-v3-turbo".
-	Model string `json:"model" api:"required"`
-	// The language this model transcribes. Omit it or set it to `null` to use the
-	// language of `transcription.model`. The request is rejected when this model
-	// doesn't support the language it would run. It is also rejected when it would run
-	// the same model on the same language as `transcription.model`.
-	Language string `json:"language" api:"nullable"`
-	// How the assistant picks the transcript it uses. The models are compared on how
-	// complete and confident their transcripts are, not on language, so the rules work
-	// best when both models understand the callers' language.
-	//
-	//   - `best_turn` (default): both models transcribe the whole call. Each turn uses
-	//     the language booster's transcript only when it scores higher than the
-	//     transcript of `transcription.model` (clearly higher with non-streaming
-	//     models). With streaming models, `transcription.model` also decides when each
-	//     turn ends. Available for every pair.
-	//   - `best_engine`: both models transcribe the first turns, then the call continues
-	//     alone on the model whose transcripts scored higher. If neither clearly leads,
-	//     `transcription.model` continues. Streaming models only.
-	//   - `merge_words`: both models transcribe each utterance and their words are
-	//     merged, keeping Arabic and English spoken in the same sentence. Available only
-	//     for `telnyx/basira` with `cohere/ar-stt`, in either order. The pair runs on
-	//     the language that applies to `telnyx/basira` (its own, or that of
-	//     `transcription.model`), which must be Arabic (`ar` or an `ar-` locale),
-	//     `multi`, or `auto`.
-	//
-	// Any of "best_turn", "best_engine", "merge_words".
-	Rule string `json:"rule"`
-	// Settings for the language booster, with the same fields and limits as
-	// `transcription.settings`. Fields that don't apply to this model's provider are
-	// dropped, and the provider's defaults fill in the rest. Omit it or set it to
-	// `null` to use the settings of `transcription.model` where they apply to this
-	// model.
-	Settings TranscriptionSettingsConfig `json:"settings" api:"nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Model       respjson.Field
-		Language    respjson.Field
-		Rule        respjson.Field
-		Settings    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r TranscriptionSettingsChallenger) RawJSON() string { return r.JSON.raw }
-func (r *TranscriptionSettingsChallenger) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// A streaming speech-to-text model that takes over transcription when the model in
-// use fails.
-type TranscriptionSettingsFallbackModel struct {
-	// The fallback model. It must be a streaming model other than
-	// `transcription.model` and the other fallbacks: `deepgram/flux`,
-	// `deepgram/nova-3`, `deepgram/nova-2`, `assemblyai/universal-3-6-pro` (or its
-	// legacy aliases `assemblyai/universal-3-5-pro` and
-	// `assemblyai/universal-streaming`), `xai/grok-stt`, `soniox/stt-rt-v4`,
-	// `soniox/stt-rt-v5`, `humain/realtime`, or `reson8/turns`.
-	//
-	// Any of "deepgram/flux", "deepgram/nova-3", "deepgram/nova-2",
-	// "assemblyai/universal-3-6-pro", "assemblyai/universal-3-5-pro",
-	// "assemblyai/universal-streaming", "xai/grok-stt", "soniox/stt-rt-v4",
-	// "soniox/stt-rt-v5", "humain/realtime", "reson8/turns".
-	Model string `json:"model" api:"required"`
-	// The language the fallback transcribes. Omit it or set it to `null` to use the
-	// language of `transcription.model`. The request is rejected when the fallback
-	// model doesn't support the language it would run.
-	Language string `json:"language" api:"nullable"`
-	// Settings for the fallback, with the same fields and limits as
-	// `transcription.settings`. Fields that don't apply to this model's provider are
-	// dropped, and the provider's defaults fill in the rest. Omit it or set it to
-	// `null` to use the settings of `transcription.model` where they apply to this
-	// model.
-	Settings TranscriptionSettingsConfig `json:"settings" api:"nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Model       respjson.Field
-		Language    respjson.Field
-		Settings    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r TranscriptionSettingsFallbackModel) RawJSON() string { return r.JSON.raw }
-func (r *TranscriptionSettingsFallbackModel) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // The speech to text model to be used by the voice assistant. All Deepgram models
 // are run on-premise.
 //
@@ -8798,9 +9029,6 @@ type TranscriptionSettingsParam struct {
 	// Region on third party cloud providers (currently Azure) if using one of their
 	// models. Some regions require `api_key_ref`.
 	Region param.Opt[string] `json:"region,omitzero"`
-	// A second speech-to-text model that transcribes alongside `transcription.model`,
-	// and the rule that decides which transcript the assistant uses.
-	Challenger TranscriptionSettingsChallengerParam `json:"challenger,omitzero"`
 	// Up to 3 streaming models that take over transcription, in this order, when the
 	// model in use fails, at the start of a call or mid-call. `model` must be a
 	// streaming model too, and must support `language` alongside other models. On
@@ -8809,7 +9037,10 @@ type TranscriptionSettingsParam struct {
 	// `language`, stored fallbacks that no longer fit are removed without an error.
 	// Can't be combined with `challenger`, the language booster; to replace a stored
 	// language booster, send `challenger: null` in the same request.
-	FallbackModels []TranscriptionSettingsFallbackModelParam `json:"fallback_models,omitzero"`
+	FallbackModels []TranscriptionFallbackModelParam `json:"fallback_models,omitzero"`
+	// A second speech-to-text model that transcribes alongside `transcription.model`,
+	// and the rule that decides which transcript the assistant uses.
+	Challenger TranscriptionChallengerParam `json:"challenger,omitzero"`
 	// The speech to text model to be used by the voice assistant. All Deepgram models
 	// are run on-premise.
 	//
@@ -8862,124 +9093,6 @@ func (r *TranscriptionSettingsParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// A second speech-to-text model that transcribes alongside `transcription.model`,
-// and the rule that decides which transcript the assistant uses.
-//
-// The property Model is required.
-type TranscriptionSettingsChallengerParam struct {
-	// The language booster's model. It must be the same kind of model as
-	// `transcription.model`: both streaming (`deepgram/flux`, `deepgram/nova-3`,
-	// `deepgram/nova-2`, `assemblyai/universal-3-6-pro` or its legacy aliases
-	// `assemblyai/universal-3-5-pro` and `assemblyai/universal-streaming`,
-	// `xai/grok-stt`, `soniox/stt-rt-v4`, `soniox/stt-rt-v5`, `humain/realtime`,
-	// `reson8/turns`) or both non-streaming (`azure/fast`, `nvidia/parakeet-v3`,
-	// `omi-health/omi-med-stt-v1`, `cohere/ar-stt`, `distil-whisper/distil-large-v2`,
-	// `openai/whisper-large-v3-turbo`, `telnyx/basira`). It can be the same model as
-	// `transcription.model` on a different `language`.
-	//
-	// Any of "deepgram/flux", "deepgram/nova-3", "deepgram/nova-2", "azure/fast",
-	// "assemblyai/universal-3-6-pro", "assemblyai/universal-3-5-pro",
-	// "assemblyai/universal-streaming", "xai/grok-stt", "soniox/stt-rt-v4",
-	// "soniox/stt-rt-v5", "nvidia/parakeet-v3", "omi-health/omi-med-stt-v1",
-	// "humain/realtime", "reson8/turns", "cohere/ar-stt", "telnyx/basira",
-	// "distil-whisper/distil-large-v2", "openai/whisper-large-v3-turbo".
-	Model string `json:"model,omitzero" api:"required"`
-	// The language this model transcribes. Omit it or set it to `null` to use the
-	// language of `transcription.model`. The request is rejected when this model
-	// doesn't support the language it would run. It is also rejected when it would run
-	// the same model on the same language as `transcription.model`.
-	Language param.Opt[string] `json:"language,omitzero"`
-	// How the assistant picks the transcript it uses. The models are compared on how
-	// complete and confident their transcripts are, not on language, so the rules work
-	// best when both models understand the callers' language.
-	//
-	//   - `best_turn` (default): both models transcribe the whole call. Each turn uses
-	//     the language booster's transcript only when it scores higher than the
-	//     transcript of `transcription.model` (clearly higher with non-streaming
-	//     models). With streaming models, `transcription.model` also decides when each
-	//     turn ends. Available for every pair.
-	//   - `best_engine`: both models transcribe the first turns, then the call continues
-	//     alone on the model whose transcripts scored higher. If neither clearly leads,
-	//     `transcription.model` continues. Streaming models only.
-	//   - `merge_words`: both models transcribe each utterance and their words are
-	//     merged, keeping Arabic and English spoken in the same sentence. Available only
-	//     for `telnyx/basira` with `cohere/ar-stt`, in either order. The pair runs on
-	//     the language that applies to `telnyx/basira` (its own, or that of
-	//     `transcription.model`), which must be Arabic (`ar` or an `ar-` locale),
-	//     `multi`, or `auto`.
-	//
-	// Any of "best_turn", "best_engine", "merge_words".
-	Rule string `json:"rule,omitzero"`
-	// Settings for the language booster, with the same fields and limits as
-	// `transcription.settings`. Fields that don't apply to this model's provider are
-	// dropped, and the provider's defaults fill in the rest. Omit it or set it to
-	// `null` to use the settings of `transcription.model` where they apply to this
-	// model.
-	Settings TranscriptionSettingsConfigParam `json:"settings,omitzero"`
-	paramObj
-}
-
-func (r TranscriptionSettingsChallengerParam) MarshalJSON() (data []byte, err error) {
-	type shadow TranscriptionSettingsChallengerParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *TranscriptionSettingsChallengerParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[TranscriptionSettingsChallengerParam](
-		"model", "deepgram/flux", "deepgram/nova-3", "deepgram/nova-2", "azure/fast", "assemblyai/universal-3-6-pro", "assemblyai/universal-3-5-pro", "assemblyai/universal-streaming", "xai/grok-stt", "soniox/stt-rt-v4", "soniox/stt-rt-v5", "nvidia/parakeet-v3", "omi-health/omi-med-stt-v1", "humain/realtime", "reson8/turns", "cohere/ar-stt", "telnyx/basira", "distil-whisper/distil-large-v2", "openai/whisper-large-v3-turbo",
-	)
-	apijson.RegisterFieldValidator[TranscriptionSettingsChallengerParam](
-		"rule", "best_turn", "best_engine", "merge_words",
-	)
-}
-
-// A streaming speech-to-text model that takes over transcription when the model in
-// use fails.
-//
-// The property Model is required.
-type TranscriptionSettingsFallbackModelParam struct {
-	// The fallback model. It must be a streaming model other than
-	// `transcription.model` and the other fallbacks: `deepgram/flux`,
-	// `deepgram/nova-3`, `deepgram/nova-2`, `assemblyai/universal-3-6-pro` (or its
-	// legacy aliases `assemblyai/universal-3-5-pro` and
-	// `assemblyai/universal-streaming`), `xai/grok-stt`, `soniox/stt-rt-v4`,
-	// `soniox/stt-rt-v5`, `humain/realtime`, or `reson8/turns`.
-	//
-	// Any of "deepgram/flux", "deepgram/nova-3", "deepgram/nova-2",
-	// "assemblyai/universal-3-6-pro", "assemblyai/universal-3-5-pro",
-	// "assemblyai/universal-streaming", "xai/grok-stt", "soniox/stt-rt-v4",
-	// "soniox/stt-rt-v5", "humain/realtime", "reson8/turns".
-	Model string `json:"model,omitzero" api:"required"`
-	// The language the fallback transcribes. Omit it or set it to `null` to use the
-	// language of `transcription.model`. The request is rejected when the fallback
-	// model doesn't support the language it would run.
-	Language param.Opt[string] `json:"language,omitzero"`
-	// Settings for the fallback, with the same fields and limits as
-	// `transcription.settings`. Fields that don't apply to this model's provider are
-	// dropped, and the provider's defaults fill in the rest. Omit it or set it to
-	// `null` to use the settings of `transcription.model` where they apply to this
-	// model.
-	Settings TranscriptionSettingsConfigParam `json:"settings,omitzero"`
-	paramObj
-}
-
-func (r TranscriptionSettingsFallbackModelParam) MarshalJSON() (data []byte, err error) {
-	type shadow TranscriptionSettingsFallbackModelParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *TranscriptionSettingsFallbackModelParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[TranscriptionSettingsFallbackModelParam](
-		"model", "deepgram/flux", "deepgram/nova-3", "deepgram/nova-2", "assemblyai/universal-3-6-pro", "assemblyai/universal-3-5-pro", "assemblyai/universal-streaming", "xai/grok-stt", "soniox/stt-rt-v4", "soniox/stt-rt-v5", "humain/realtime", "reson8/turns",
-	)
-}
-
 type TranscriptionSettingsConfig struct {
 	// Available only for soniox/stt-rt-v4 and soniox/stt-rt-v5. A comma-separated list
 	// of terms to boost for recognition during transcription, for staff names,
@@ -9000,7 +9113,8 @@ type TranscriptionSettingsConfig struct {
 	// Deprecated and ignored. Accepted for backwards compatibility. AssemblyAI turn
 	// detection is configured with min_turn_silence and max_turn_silence.
 	//
-	// Deprecated: deprecated
+	// Deprecated: Ignored. Configure AssemblyAI turn detection with min_turn_silence
+	// and max_turn_silence instead.
 	EndOfTurnConfidenceThreshold float64 `json:"end_of_turn_confidence_threshold"`
 	// Available only for deepgram/flux. Confidence required to trigger an end of turn.
 	// Higher values = more reliable turn detection but slightly increased latency.
@@ -9113,7 +9227,8 @@ type TranscriptionSettingsConfigParam struct {
 	// Deprecated and ignored. Accepted for backwards compatibility. AssemblyAI turn
 	// detection is configured with min_turn_silence and max_turn_silence.
 	//
-	// Deprecated: deprecated
+	// Deprecated: Ignored. Configure AssemblyAI turn detection with min_turn_silence
+	// and max_turn_silence instead.
 	EndOfTurnConfidenceThreshold param.Opt[float64] `json:"end_of_turn_confidence_threshold,omitzero"`
 	// Available only for deepgram/flux. Confidence required to trigger an end of turn.
 	// Higher values = more reliable turn detection but slightly increased latency.

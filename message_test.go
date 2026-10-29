@@ -447,7 +447,9 @@ func TestMessageWhatsappWithOptionalParams(t *testing.T) {
 						DisplayText: telnyx.String("display_text"),
 						FlowAction:  "navigate",
 						FlowActionPayload: telnyx.MessageWhatsappParamsWhatsappMessageInteractiveActionParametersFlowActionPayload{
-							Data:   map[string]any{},
+							Data: map[string]any{
+								"foo": "bar",
+							},
 							Screen: telnyx.String("screen"),
 						},
 						FlowCta:            telnyx.String("flow_cta"),
@@ -523,8 +525,10 @@ func TestMessageWhatsappWithOptionalParams(t *testing.T) {
 					Index: telnyx.Int(0),
 					Parameters: []telnyx.MessageWhatsappParamsWhatsappMessageTemplateComponentsParameter{{
 						Action: telnyx.MessageWhatsappParamsWhatsappMessageTemplateComponentsParametersAction{
-							FlowActionData: map[string]any{},
-							FlowToken:      telnyx.String("flow_token"),
+							FlowActionData: map[string]any{
+								"foo": "bar",
+							},
+							FlowToken: telnyx.String("flow_token"),
 						},
 						Text: telnyx.String("text"),
 						Type: "text",

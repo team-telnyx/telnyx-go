@@ -103,16 +103,16 @@ func (r *BrowserSessionService) GetArtifact(ctx context.Context, artifactID stri
 }
 
 type Session struct {
-	ID             string        `json:"id" api:"required"`
-	ClosedAt       time.Time     `json:"closed_at" api:"required" format:"date-time"`
-	CreatedAt      time.Time     `json:"created_at" api:"required" format:"date-time"`
-	ExpiresAt      time.Time     `json:"expires_at" api:"required" format:"date-time"`
-	FailureReason  string        `json:"failure_reason" api:"required"`
-	LastActivityAt time.Time     `json:"last_activity_at" api:"required" format:"date-time"`
-	Limits         SessionLimits `json:"limits" api:"required"`
-	Metadata       any           `json:"metadata" api:"required"`
-	Policy         SessionPolicy `json:"policy" api:"required"`
-	ReadyAt        time.Time     `json:"ready_at" api:"required" format:"date-time"`
+	ID             string         `json:"id" api:"required"`
+	ClosedAt       time.Time      `json:"closed_at" api:"required" format:"date-time"`
+	CreatedAt      time.Time      `json:"created_at" api:"required" format:"date-time"`
+	ExpiresAt      time.Time      `json:"expires_at" api:"required" format:"date-time"`
+	FailureReason  string         `json:"failure_reason" api:"required"`
+	LastActivityAt time.Time      `json:"last_activity_at" api:"required" format:"date-time"`
+	Limits         SessionLimits  `json:"limits" api:"required"`
+	Metadata       map[string]any `json:"metadata" api:"required"`
+	Policy         SessionPolicy  `json:"policy" api:"required"`
+	ReadyAt        time.Time      `json:"ready_at" api:"required" format:"date-time"`
 	// Any of "provisioning", "ready", "closing", "closed", "failed", "expired".
 	Status SessionStatus `json:"status" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -308,7 +308,7 @@ type BrowserSessionNewParams struct {
 	IdempotencyKey param.Opt[string]             `json:"idempotency_key,omitzero"`
 	Limits         BrowserSessionNewParamsLimits `json:"limits,omitzero"`
 	// Arbitrary key-value metadata.
-	Metadata any `json:"metadata,omitzero"`
+	Metadata map[string]any `json:"metadata,omitzero"`
 	paramObj
 }
 

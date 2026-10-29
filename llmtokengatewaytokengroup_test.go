@@ -31,7 +31,7 @@ func TestLlmTokenGatewayTokenGroupNewWithOptionalParams(t *testing.T) {
 		Name:           "support-backend",
 		IdempotencyKey: "Idempotency-Key",
 		Blocked:        telnyx.Bool(true),
-		BudgetDuration: telnyx.BudgetDuration1d,
+		BudgetDuration: telnyx.BudgetDurationBudgetDuration1D,
 		CacheTtl:       telnyx.Int(1),
 		Fallbacks: map[string][]string{
 			"Kimi-K3": {"GLM-5.3-Flash"},
@@ -113,7 +113,7 @@ func TestLlmTokenGatewayTokenGroupUpdateWithOptionalParams(t *testing.T) {
 			IfMatch:        "If-Match",
 			AllowedModels:  []string{"Kimi-K3", "GLM-5.3-Flash"},
 			Blocked:        telnyx.Bool(true),
-			BudgetDuration: telnyx.BudgetDuration1d,
+			BudgetDuration: telnyx.BudgetDurationBudgetDuration1D,
 			CacheTtl:       telnyx.Int(1),
 			Fallbacks: map[string][]string{
 				"Kimi-K3": {"GLM-5.3-Flash"},

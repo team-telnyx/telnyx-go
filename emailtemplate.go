@@ -4,6 +4,7 @@ package telnyx
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -192,7 +193,7 @@ type EmailTemplateCommon struct {
 	UpdatedAt       time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// Structured variable requirements, or `null` when the template uses only the
 	// legacy `variables` array.
-	VariableSchema map[string]EmailTemplateCommonVariableSchema `json:"variable_schema" api:"required"`
+	VariableSchema map[string]VariableSchemaEntry `json:"variable_schema" api:"required"`
 	// Persisted variable names. In `explicit` mode this array preserves the exact
 	// provided order, duplicates, and string contents; in `automatic` mode it is
 	// derived from the stored subject and bodies.
@@ -233,27 +234,6 @@ const (
 	EmailTemplateCommonRecordTypeEmailTemplate EmailTemplateCommonRecordType = "email_template"
 )
 
-type EmailTemplateCommonVariableSchema struct {
-	// Whether the variable must be supplied when strict variable validation is
-	// enabled.
-	Required bool `json:"required" api:"required"`
-	// Default value for an optional variable. Rejected when `required` is `true`.
-	Default string `json:"default"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Required    respjson.Field
-		Default     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r EmailTemplateCommonVariableSchema) RawJSON() string { return r.JSON.raw }
-func (r *EmailTemplateCommonVariableSchema) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // `automatic` when variable names are derived from template content; `explicit`
 // when `variables` is the exact manually managed array.
 type EmailTemplateCommonVariablesMode string
@@ -293,7 +273,7 @@ type UpdateEmailTemplateRequestParam struct {
 	StrictVariables param.Opt[bool] `json:"strict_variables,omitzero"`
 	// Structured variable requirements. Required variables cannot define defaults;
 	// invalid combinations return 422. Set to `null` to clear the schema.
-	VariableSchema map[string]UpdateEmailTemplateRequestVariableSchemaParam `json:"variable_schema,omitzero"`
+	VariableSchema map[string]VariableSchemaEntryParam `json:"variable_schema,omitzero"`
 	// Persisted variable names. In `automatic` mode a non-null array is rejected; in
 	// `explicit` mode this is the exact manual array and each item is limited to 255
 	// Unicode code points.
@@ -318,24 +298,6 @@ func (r *UpdateEmailTemplateRequestParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The property Required is required.
-type UpdateEmailTemplateRequestVariableSchemaParam struct {
-	// Whether the variable must be supplied when strict variable validation is
-	// enabled.
-	Required bool `json:"required" api:"required"`
-	// Default value for an optional variable. Rejected when `required` is `true`.
-	Default param.Opt[string] `json:"default,omitzero"`
-	paramObj
-}
-
-func (r UpdateEmailTemplateRequestVariableSchemaParam) MarshalJSON() (data []byte, err error) {
-	type shadow UpdateEmailTemplateRequestVariableSchemaParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *UpdateEmailTemplateRequestVariableSchemaParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // Controls how `variables` is maintained. Setting `automatic` re-extracts
 // immediately from the effective subject, HTML body, and text body and rejects a
 // simultaneous non-null array. Setting `explicit` requires the exact non-null
@@ -348,6 +310,54 @@ const (
 	UpdateEmailTemplateRequestVariablesModeAutomatic UpdateEmailTemplateRequestVariablesMode = "automatic"
 	UpdateEmailTemplateRequestVariablesModeExplicit  UpdateEmailTemplateRequestVariablesMode = "explicit"
 )
+
+type VariableSchemaEntry struct {
+	// Whether the variable must be supplied when strict variable validation is
+	// enabled.
+	Required bool `json:"required" api:"required"`
+	// Default value for an optional variable. Rejected when `required` is `true`.
+	Default string `json:"default"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Required    respjson.Field
+		Default     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VariableSchemaEntry) RawJSON() string { return r.JSON.raw }
+func (r *VariableSchemaEntry) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this VariableSchemaEntry to a VariableSchemaEntryParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// VariableSchemaEntryParam.Overrides()
+func (r VariableSchemaEntry) ToParam() VariableSchemaEntryParam {
+	return param.Override[VariableSchemaEntryParam](json.RawMessage(r.RawJSON()))
+}
+
+// The property Required is required.
+type VariableSchemaEntryParam struct {
+	// Whether the variable must be supplied when strict variable validation is
+	// enabled.
+	Required bool `json:"required" api:"required"`
+	// Default value for an optional variable. Rejected when `required` is `true`.
+	Default param.Opt[string] `json:"default,omitzero"`
+	paramObj
+}
+
+func (r VariableSchemaEntryParam) MarshalJSON() (data []byte, err error) {
+	type shadow VariableSchemaEntryParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *VariableSchemaEntryParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type EmailTemplateRenderResponse struct {
 	// Template object with `subject`, `html_body`, and `text_body` replaced by their
@@ -421,7 +431,7 @@ type EmailTemplateNewParams struct {
 	// and empty array `[]` all fail with 422 naming the variable, while present values
 	// such as `false` and `0` pass (they are present, not empty). Optional variables
 	// fall back to their `default` when absent.
-	VariableSchema map[string]EmailTemplateNewParamsVariableSchema `json:"variable_schema,omitzero"`
+	VariableSchema map[string]VariableSchemaEntryParam `json:"variable_schema,omitzero"`
 	// Persisted variable names. In `automatic` mode a non-null array is rejected; in
 	// `explicit` mode this is the exact manual array and each item is limited to 255
 	// Unicode code points.
@@ -443,24 +453,6 @@ func (r EmailTemplateNewParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *EmailTemplateNewParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The property Required is required.
-type EmailTemplateNewParamsVariableSchema struct {
-	// Whether the variable must be supplied when strict variable validation is
-	// enabled.
-	Required bool `json:"required" api:"required"`
-	// Default value for an optional variable. Rejected when `required` is `true`.
-	Default param.Opt[string] `json:"default,omitzero"`
-	paramObj
-}
-
-func (r EmailTemplateNewParamsVariableSchema) MarshalJSON() (data []byte, err error) {
-	type shadow EmailTemplateNewParamsVariableSchema
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *EmailTemplateNewParamsVariableSchema) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

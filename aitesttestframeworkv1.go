@@ -76,19 +76,19 @@ type AITestTestFrameworkV1GetPersonalitiesResponse struct {
 	BackgroundSoundVolume float64 `json:"background_sound_volume" api:"nullable"`
 	EffectiveVoiceVolume  float64 `json:"effective_voice_volume" api:"nullable"`
 	// ID of the personality this one was forked from.
-	ForkedFrom       int64 `json:"forked_from" api:"nullable"`
-	GenerationConfig any   `json:"generation_config" api:"nullable"`
+	ForkedFrom       int64          `json:"forked_from" api:"nullable"`
+	GenerationConfig map[string]any `json:"generation_config" api:"nullable"`
 	// How aggressively the personality interrupts the assistant.
 	InterruptionLevel string `json:"interruption_level" api:"nullable"`
 	// Idle-timeout plan for messages during a call.
-	MessagePlan       any                                                     `json:"message_plan" api:"nullable"`
-	NetworkSimulation any                                                     `json:"network_simulation" api:"nullable"`
-	Organization      int64                                                   `json:"organization" api:"nullable"`
-	Project           int64                                                   `json:"project" api:"nullable"`
-	Speed             AITestTestFrameworkV1GetPersonalitiesResponseSpeedUnion `json:"speed" api:"nullable"`
-	StartSpeakingPlan any                                                     `json:"start_speaking_plan" api:"nullable"`
-	StopSpeakingPlan  any                                                     `json:"stop_speaking_plan" api:"nullable"`
-	VoiceVolume       float64                                                 `json:"voice_volume" api:"nullable"`
+	MessagePlan       map[string]any                                                      `json:"message_plan" api:"nullable"`
+	NetworkSimulation map[string]any                                                      `json:"network_simulation" api:"nullable"`
+	Organization      int64                                                               `json:"organization" api:"nullable"`
+	Project           int64                                                               `json:"project" api:"nullable"`
+	Speed             AITestTestFrameworkV1GetPersonalitiesResponseSpeedUnion             `json:"speed" api:"nullable"`
+	StartSpeakingPlan AITestTestFrameworkV1GetPersonalitiesResponseStartSpeakingPlanUnion `json:"start_speaking_plan" api:"nullable"`
+	StopSpeakingPlan  map[string]any                                                      `json:"stop_speaking_plan" api:"nullable"`
+	VoiceVolume       float64                                                             `json:"voice_volume" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                    respjson.Field
@@ -155,5 +155,44 @@ func (u AITestTestFrameworkV1GetPersonalitiesResponseSpeedUnion) AsString() (v s
 func (u AITestTestFrameworkV1GetPersonalitiesResponseSpeedUnion) RawJSON() string { return u.JSON.raw }
 
 func (r *AITestTestFrameworkV1GetPersonalitiesResponseSpeedUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// AITestTestFrameworkV1GetPersonalitiesResponseStartSpeakingPlanUnion contains all
+// possible properties and values from [float64], [map[string]any].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfFloat
+// OfAITestTestFrameworkV1GetPersonalitiesResponseStartSpeakingPlanUnionMember1]
+type AITestTestFrameworkV1GetPersonalitiesResponseStartSpeakingPlanUnion struct {
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [any] instead of an object.
+	OfAITestTestFrameworkV1GetPersonalitiesResponseStartSpeakingPlanUnionMember1 any `json:",inline"`
+	JSON                                                                         struct {
+		OfFloat                                                                      respjson.Field
+		OfAITestTestFrameworkV1GetPersonalitiesResponseStartSpeakingPlanUnionMember1 respjson.Field
+		raw                                                                          string
+	} `json:"-"`
+}
+
+func (u AITestTestFrameworkV1GetPersonalitiesResponseStartSpeakingPlanUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u AITestTestFrameworkV1GetPersonalitiesResponseStartSpeakingPlanUnion) AsAnyMap() (v map[string]any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u AITestTestFrameworkV1GetPersonalitiesResponseStartSpeakingPlanUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *AITestTestFrameworkV1GetPersonalitiesResponseStartSpeakingPlanUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
