@@ -10212,8 +10212,10 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 	Body UnsafeUnwrapWebhookEventUnionDataPayloadBody `json:"body"`
 	// This field is a union of [[]OutboundMessagePayloadCc],
 	// [[]MessagingInboundMessagePayloadCc]
-	Cc          UnsafeUnwrapWebhookEventUnionDataPayloadCc `json:"cc"`
-	CompletedAt time.Time                                  `json:"completed_at"`
+	Cc UnsafeUnwrapWebhookEventUnionDataPayloadCc `json:"cc"`
+	// This field is from variant [OutboundMessagePayload].
+	ChildMessageID string    `json:"child_message_id"`
+	CompletedAt    time.Time `json:"completed_at"`
 	// This field is a union of [OutboundMessagePayloadCostBreakdown],
 	// [MessagingInboundMessagePayloadCostBreakdown]
 	CostBreakdown UnsafeUnwrapWebhookEventUnionDataPayloadCostBreakdown `json:"cost_breakdown"`
@@ -10227,10 +10229,12 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 	MessagingProfileID string                                        `json:"messaging_profile_id"`
 	NumChars           int64                                         `json:"num_chars"`
 	OrganizationID     string                                        `json:"organization_id"`
-	Parts              int64                                         `json:"parts"`
-	ReceivedAt         time.Time                                     `json:"received_at"`
-	RecordType         string                                        `json:"record_type"`
-	SentAt             time.Time                                     `json:"sent_at"`
+	// This field is from variant [OutboundMessagePayload].
+	ParentMessageID string    `json:"parent_message_id"`
+	Parts           int64     `json:"parts"`
+	ReceivedAt      time.Time `json:"received_at"`
+	RecordType      string    `json:"record_type"`
+	SentAt          time.Time `json:"sent_at"`
 	// This field is from variant [OutboundMessagePayload].
 	SmartEncodingApplied  bool   `json:"smart_encoding_applied"`
 	Subject               string `json:"subject"`
@@ -10423,6 +10427,7 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 		ID                       respjson.Field
 		Body                     respjson.Field
 		Cc                       respjson.Field
+		ChildMessageID           respjson.Field
 		CompletedAt              respjson.Field
 		CostBreakdown            respjson.Field
 		Encoding                 respjson.Field
@@ -10431,6 +10436,7 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 		MessagingProfileID       respjson.Field
 		NumChars                 respjson.Field
 		OrganizationID           respjson.Field
+		ParentMessageID          respjson.Field
 		Parts                    respjson.Field
 		ReceivedAt               respjson.Field
 		RecordType               respjson.Field
@@ -11829,8 +11835,10 @@ type UnwrapWebhookEventUnionDataPayload struct {
 	Body UnwrapWebhookEventUnionDataPayloadBody `json:"body"`
 	// This field is a union of [[]OutboundMessagePayloadCc],
 	// [[]MessagingInboundMessagePayloadCc]
-	Cc          UnwrapWebhookEventUnionDataPayloadCc `json:"cc"`
-	CompletedAt time.Time                            `json:"completed_at"`
+	Cc UnwrapWebhookEventUnionDataPayloadCc `json:"cc"`
+	// This field is from variant [OutboundMessagePayload].
+	ChildMessageID string    `json:"child_message_id"`
+	CompletedAt    time.Time `json:"completed_at"`
 	// This field is a union of [OutboundMessagePayloadCostBreakdown],
 	// [MessagingInboundMessagePayloadCostBreakdown]
 	CostBreakdown UnwrapWebhookEventUnionDataPayloadCostBreakdown `json:"cost_breakdown"`
@@ -11844,10 +11852,12 @@ type UnwrapWebhookEventUnionDataPayload struct {
 	MessagingProfileID string                                  `json:"messaging_profile_id"`
 	NumChars           int64                                   `json:"num_chars"`
 	OrganizationID     string                                  `json:"organization_id"`
-	Parts              int64                                   `json:"parts"`
-	ReceivedAt         time.Time                               `json:"received_at"`
-	RecordType         string                                  `json:"record_type"`
-	SentAt             time.Time                               `json:"sent_at"`
+	// This field is from variant [OutboundMessagePayload].
+	ParentMessageID string    `json:"parent_message_id"`
+	Parts           int64     `json:"parts"`
+	ReceivedAt      time.Time `json:"received_at"`
+	RecordType      string    `json:"record_type"`
+	SentAt          time.Time `json:"sent_at"`
 	// This field is from variant [OutboundMessagePayload].
 	SmartEncodingApplied  bool   `json:"smart_encoding_applied"`
 	Subject               string `json:"subject"`
@@ -12040,6 +12050,7 @@ type UnwrapWebhookEventUnionDataPayload struct {
 		ID                       respjson.Field
 		Body                     respjson.Field
 		Cc                       respjson.Field
+		ChildMessageID           respjson.Field
 		CompletedAt              respjson.Field
 		CostBreakdown            respjson.Field
 		Encoding                 respjson.Field
@@ -12048,6 +12059,7 @@ type UnwrapWebhookEventUnionDataPayload struct {
 		MessagingProfileID       respjson.Field
 		NumChars                 respjson.Field
 		OrganizationID           respjson.Field
+		ParentMessageID          respjson.Field
 		Parts                    respjson.Field
 		ReceivedAt               respjson.Field
 		RecordType               respjson.Field

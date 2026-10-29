@@ -377,9 +377,9 @@ type MessagingProfileFeatures struct {
 	// segments by default; some aggregators accept up to 25) is automatically split
 	// into multiple child messages, each within the segment limit, and sent
 	// sequentially in order. Splitting is encoding-aware: GSM-7 bodies split at
-	// 153-character boundaries and UCS-2 bodies at 134-character boundaries. When
-	// disabled (the default), messages exceeding the segment limit are rejected with
-	// an error.
+	// 153-character boundaries and UCS-2 bodies at 134-byte (67-character) boundaries.
+	// When disabled (the default), messages exceeding the segment limit are rejected
+	// with an error.
 	AutoChunkLongMessages bool           `json:"auto_chunk_long_messages"`
 	ExtraFields           map[string]any `json:"" api:"extrafields"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -421,9 +421,9 @@ type MessagingProfileFeaturesParam struct {
 	// segments by default; some aggregators accept up to 25) is automatically split
 	// into multiple child messages, each within the segment limit, and sent
 	// sequentially in order. Splitting is encoding-aware: GSM-7 bodies split at
-	// 153-character boundaries and UCS-2 bodies at 134-character boundaries. When
-	// disabled (the default), messages exceeding the segment limit are rejected with
-	// an error.
+	// 153-character boundaries and UCS-2 bodies at 134-byte (67-character) boundaries.
+	// When disabled (the default), messages exceeding the segment limit are rejected
+	// with an error.
 	AutoChunkLongMessages param.Opt[bool] `json:"auto_chunk_long_messages,omitzero"`
 	ExtraFields           map[string]any  `json:"-"`
 	paramObj
