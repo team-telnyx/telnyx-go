@@ -472,6 +472,7 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 			DefaultTexmlAppID:            telnyx.String("default_texml_app_id"),
 			DisableDtmf:                  telnyx.Bool(true),
 			FallbackDestination:          telnyx.String("fallback_destination"),
+			GreetingDelayMs:              telnyx.Int(0),
 			NoiseSuppression:             telnyx.TelephonySettingsNoiseSuppressionAicoustics,
 			NoiseSuppressionConfig: telnyx.TelephonySettingsNoiseSuppressionConfigParam{
 				AttenuationLimit: telnyx.Int(0),
@@ -1157,6 +1158,7 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 				DefaultTexmlAppID:            telnyx.String("default_texml_app_id"),
 				DisableDtmf:                  telnyx.Bool(true),
 				FallbackDestination:          telnyx.String("fallback_destination"),
+				GreetingDelayMs:              telnyx.Int(0),
 				NoiseSuppression:             telnyx.TelephonySettingsNoiseSuppressionAicoustics,
 				NoiseSuppressionConfig: telnyx.TelephonySettingsNoiseSuppressionConfigParam{
 					AttenuationLimit: telnyx.Int(0),

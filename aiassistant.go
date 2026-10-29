@@ -7735,6 +7735,12 @@ type TelephonySettings struct {
 	// detected), and it does not fire when the assistant already transferred or
 	// bridged the call.
 	FallbackDestination string `json:"fallback_destination"`
+	// Milliseconds to wait after an inbound call is answered before the assistant
+	// starts and speaks its greeting. Increase it if the beginning of the greeting is
+	// cut off on some connections (for example, WebRTC calls). When unset (`null`),
+	// the platform default of 250 ms is used. Set to `0` to start without a delay.
+	// Maximum 2000.
+	GreetingDelayMs int64 `json:"greeting_delay_ms" api:"nullable"`
 	// The noise suppression engine to use. 'aicoustics' is STT-optimized and
 	// recommended for AI assistants (configure through noise_suppression_config). Use
 	// 'disabled' to turn off noise suppression.
@@ -7802,6 +7808,7 @@ type TelephonySettings struct {
 		DefaultTexmlAppID               respjson.Field
 		DisableDtmf                     respjson.Field
 		FallbackDestination             respjson.Field
+		GreetingDelayMs                 respjson.Field
 		NoiseSuppression                respjson.Field
 		NoiseSuppressionConfig          respjson.Field
 		RecordingSettings               respjson.Field
@@ -8003,6 +8010,12 @@ func (r *TelephonySettingsVoicemailDetectionOnVoicemailDetectedVoicemailMessage)
 }
 
 type TelephonySettingsParam struct {
+	// Milliseconds to wait after an inbound call is answered before the assistant
+	// starts and speaks its greeting. Increase it if the beginning of the greeting is
+	// cut off on some connections (for example, WebRTC calls). When unset (`null`),
+	// the platform default of 250 ms is used. Set to `0` to start without a delay.
+	// Maximum 2000.
+	GreetingDelayMs param.Opt[int64] `json:"greeting_delay_ms,omitzero"`
 	// When enabled, the `messages` array of the `call.conversation.ended` webhook
 	// contains the full conversation history in order: user and assistant turns,
 	// assistant tool calls (`tool_calls`), tool results (`role: tool` with
