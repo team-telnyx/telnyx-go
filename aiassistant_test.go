@@ -77,10 +77,10 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 					ToolsMode:     telnyx.FlowNodeReqToolsModeReplace,
 					Transcription: telnyx.TranscriptionSettingsParam{
 						APIKeyRef: telnyx.String("api_key_ref"),
-						Challenger: telnyx.TranscriptionSettingsChallengerParam{
-							Model:    "deepgram/nova-3",
+						Challenger: telnyx.TranscriptionChallengerParam{
+							Model:    telnyx.TranscriptionChallengerModelDeepgramNova3,
 							Language: telnyx.String("en"),
-							Rule:     "best_turn",
+							Rule:     telnyx.TranscriptionChallengerRuleBestTurn,
 							Settings: telnyx.TranscriptionSettingsConfigParam{
 								Context:                      telnyx.String("context"),
 								EagerEotThreshold:            telnyx.Float(0.3),
@@ -100,8 +100,8 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 								SmartFormat:                  telnyx.Bool(true),
 							},
 						},
-						FallbackModels: []telnyx.TranscriptionSettingsFallbackModelParam{{
-							Model:    "deepgram/nova-3",
+						FallbackModels: []telnyx.TranscriptionFallbackModelParam{{
+							Model:    telnyx.TranscriptionFallbackModelModelDeepgramNova3,
 							Language: telnyx.String("en"),
 							Settings: telnyx.TranscriptionSettingsConfigParam{
 								Context:                      telnyx.String("context"),
@@ -122,7 +122,7 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 								SmartFormat:                  telnyx.Bool(true),
 							},
 						}, {
-							Model:    "soniox/stt-rt-v5",
+							Model:    telnyx.TranscriptionFallbackModelModelSonioxSttRtV5,
 							Language: telnyx.String("en"),
 							Settings: telnyx.TranscriptionSettingsConfigParam{
 								Context:                      telnyx.String("Telnyx,VoIP,SIP"),
@@ -218,10 +218,10 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 					ToolsMode:     telnyx.FlowNodeReqToolsModeAppend,
 					Transcription: telnyx.TranscriptionSettingsParam{
 						APIKeyRef: telnyx.String("api_key_ref"),
-						Challenger: telnyx.TranscriptionSettingsChallengerParam{
-							Model:    "deepgram/nova-3",
+						Challenger: telnyx.TranscriptionChallengerParam{
+							Model:    telnyx.TranscriptionChallengerModelDeepgramNova3,
 							Language: telnyx.String("en"),
-							Rule:     "best_turn",
+							Rule:     telnyx.TranscriptionChallengerRuleBestTurn,
 							Settings: telnyx.TranscriptionSettingsConfigParam{
 								Context:                      telnyx.String("context"),
 								EagerEotThreshold:            telnyx.Float(0.3),
@@ -241,8 +241,8 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 								SmartFormat:                  telnyx.Bool(true),
 							},
 						},
-						FallbackModels: []telnyx.TranscriptionSettingsFallbackModelParam{{
-							Model:    "deepgram/nova-3",
+						FallbackModels: []telnyx.TranscriptionFallbackModelParam{{
+							Model:    telnyx.TranscriptionFallbackModelModelDeepgramNova3,
 							Language: telnyx.String("en"),
 							Settings: telnyx.TranscriptionSettingsConfigParam{
 								Context:                      telnyx.String("context"),
@@ -263,7 +263,7 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 								SmartFormat:                  telnyx.Bool(true),
 							},
 						}, {
-							Model:    "soniox/stt-rt-v5",
+							Model:    telnyx.TranscriptionFallbackModelModelSonioxSttRtV5,
 							Language: telnyx.String("en"),
 							Settings: telnyx.TranscriptionSettingsConfigParam{
 								Context:                      telnyx.String("Telnyx,VoIP,SIP"),
@@ -516,10 +516,10 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 		}},
 		Transcription: telnyx.TranscriptionSettingsParam{
 			APIKeyRef: telnyx.String("api_key_ref"),
-			Challenger: telnyx.TranscriptionSettingsChallengerParam{
-				Model:    "deepgram/nova-3",
+			Challenger: telnyx.TranscriptionChallengerParam{
+				Model:    telnyx.TranscriptionChallengerModelDeepgramNova3,
 				Language: telnyx.String("en"),
-				Rule:     "best_turn",
+				Rule:     telnyx.TranscriptionChallengerRuleBestTurn,
 				Settings: telnyx.TranscriptionSettingsConfigParam{
 					Context:                      telnyx.String("context"),
 					EagerEotThreshold:            telnyx.Float(0.3),
@@ -539,8 +539,8 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 					SmartFormat:                  telnyx.Bool(true),
 				},
 			},
-			FallbackModels: []telnyx.TranscriptionSettingsFallbackModelParam{{
-				Model:    "deepgram/nova-3",
+			FallbackModels: []telnyx.TranscriptionFallbackModelParam{{
+				Model:    telnyx.TranscriptionFallbackModelModelDeepgramNova3,
 				Language: telnyx.String("en"),
 				Settings: telnyx.TranscriptionSettingsConfigParam{
 					Context:                      telnyx.String("context"),
@@ -561,7 +561,7 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 					SmartFormat:                  telnyx.Bool(true),
 				},
 			}, {
-				Model:    "soniox/stt-rt-v5",
+				Model:    telnyx.TranscriptionFallbackModelModelSonioxSttRtV5,
 				Language: telnyx.String("en"),
 				Settings: telnyx.TranscriptionSettingsConfigParam{
 					Context:                      telnyx.String("Telnyx,VoIP,SIP"),
@@ -759,10 +759,10 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 						ToolsMode:     telnyx.FlowNodeReqToolsModeReplace,
 						Transcription: telnyx.TranscriptionSettingsParam{
 							APIKeyRef: telnyx.String("api_key_ref"),
-							Challenger: telnyx.TranscriptionSettingsChallengerParam{
-								Model:    "deepgram/nova-3",
+							Challenger: telnyx.TranscriptionChallengerParam{
+								Model:    telnyx.TranscriptionChallengerModelDeepgramNova3,
 								Language: telnyx.String("en"),
-								Rule:     "best_turn",
+								Rule:     telnyx.TranscriptionChallengerRuleBestTurn,
 								Settings: telnyx.TranscriptionSettingsConfigParam{
 									Context:                      telnyx.String("context"),
 									EagerEotThreshold:            telnyx.Float(0.3),
@@ -782,8 +782,8 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 									SmartFormat:                  telnyx.Bool(true),
 								},
 							},
-							FallbackModels: []telnyx.TranscriptionSettingsFallbackModelParam{{
-								Model:    "deepgram/nova-3",
+							FallbackModels: []telnyx.TranscriptionFallbackModelParam{{
+								Model:    telnyx.TranscriptionFallbackModelModelDeepgramNova3,
 								Language: telnyx.String("en"),
 								Settings: telnyx.TranscriptionSettingsConfigParam{
 									Context:                      telnyx.String("context"),
@@ -804,7 +804,7 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 									SmartFormat:                  telnyx.Bool(true),
 								},
 							}, {
-								Model:    "soniox/stt-rt-v5",
+								Model:    telnyx.TranscriptionFallbackModelModelSonioxSttRtV5,
 								Language: telnyx.String("en"),
 								Settings: telnyx.TranscriptionSettingsConfigParam{
 									Context:                      telnyx.String("Telnyx,VoIP,SIP"),
@@ -900,10 +900,10 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 						ToolsMode:     telnyx.FlowNodeReqToolsModeAppend,
 						Transcription: telnyx.TranscriptionSettingsParam{
 							APIKeyRef: telnyx.String("api_key_ref"),
-							Challenger: telnyx.TranscriptionSettingsChallengerParam{
-								Model:    "deepgram/nova-3",
+							Challenger: telnyx.TranscriptionChallengerParam{
+								Model:    telnyx.TranscriptionChallengerModelDeepgramNova3,
 								Language: telnyx.String("en"),
-								Rule:     "best_turn",
+								Rule:     telnyx.TranscriptionChallengerRuleBestTurn,
 								Settings: telnyx.TranscriptionSettingsConfigParam{
 									Context:                      telnyx.String("context"),
 									EagerEotThreshold:            telnyx.Float(0.3),
@@ -923,8 +923,8 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 									SmartFormat:                  telnyx.Bool(true),
 								},
 							},
-							FallbackModels: []telnyx.TranscriptionSettingsFallbackModelParam{{
-								Model:    "deepgram/nova-3",
+							FallbackModels: []telnyx.TranscriptionFallbackModelParam{{
+								Model:    telnyx.TranscriptionFallbackModelModelDeepgramNova3,
 								Language: telnyx.String("en"),
 								Settings: telnyx.TranscriptionSettingsConfigParam{
 									Context:                      telnyx.String("context"),
@@ -945,7 +945,7 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 									SmartFormat:                  telnyx.Bool(true),
 								},
 							}, {
-								Model:    "soniox/stt-rt-v5",
+								Model:    telnyx.TranscriptionFallbackModelModelSonioxSttRtV5,
 								Language: telnyx.String("en"),
 								Settings: telnyx.TranscriptionSettingsConfigParam{
 									Context:                      telnyx.String("Telnyx,VoIP,SIP"),
@@ -1201,10 +1201,10 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 			}},
 			Transcription: telnyx.TranscriptionSettingsParam{
 				APIKeyRef: telnyx.String("api_key_ref"),
-				Challenger: telnyx.TranscriptionSettingsChallengerParam{
-					Model:    "deepgram/nova-3",
+				Challenger: telnyx.TranscriptionChallengerParam{
+					Model:    telnyx.TranscriptionChallengerModelDeepgramNova3,
 					Language: telnyx.String("en"),
-					Rule:     "best_turn",
+					Rule:     telnyx.TranscriptionChallengerRuleBestTurn,
 					Settings: telnyx.TranscriptionSettingsConfigParam{
 						Context:                      telnyx.String("context"),
 						EagerEotThreshold:            telnyx.Float(0.3),
@@ -1224,8 +1224,8 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 						SmartFormat:                  telnyx.Bool(true),
 					},
 				},
-				FallbackModels: []telnyx.TranscriptionSettingsFallbackModelParam{{
-					Model:    "deepgram/nova-3",
+				FallbackModels: []telnyx.TranscriptionFallbackModelParam{{
+					Model:    telnyx.TranscriptionFallbackModelModelDeepgramNova3,
 					Language: telnyx.String("en"),
 					Settings: telnyx.TranscriptionSettingsConfigParam{
 						Context:                      telnyx.String("context"),
@@ -1246,7 +1246,7 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 						SmartFormat:                  telnyx.Bool(true),
 					},
 				}, {
-					Model:    "soniox/stt-rt-v5",
+					Model:    telnyx.TranscriptionFallbackModelModelSonioxSttRtV5,
 					Language: telnyx.String("en"),
 					Settings: telnyx.TranscriptionSettingsConfigParam{
 						Context:                      telnyx.String("Telnyx,VoIP,SIP"),

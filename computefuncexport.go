@@ -90,27 +90,9 @@ func (r *ComputeFuncExportService) DeleteAll(ctx context.Context, id string, opt
 	return err
 }
 
-type FuncLogExportConfigResponse struct {
-	// Metadata-only view of a function's log export destination. Header values are
-	// write-only (encrypted server-side) and never appear in any response.
-	Data FuncLogExportConfigResponseData `json:"data"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r FuncLogExportConfigResponse) RawJSON() string { return r.JSON.raw }
-func (r *FuncLogExportConfigResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // Metadata-only view of a function's log export destination. Header values are
 // write-only (encrypted server-side) and never appear in any response.
-type FuncLogExportConfigResponseData struct {
+type FuncLogExportConfig struct {
 	// Configuration record ID
 	ID        string    `json:"id"`
 	CreatedAt time.Time `json:"created_at" format:"date-time"`
@@ -123,7 +105,7 @@ type FuncLogExportConfigResponseData struct {
 	// Whether invocation records (one per HTTP request) are exported
 	InvocationExportEnabled bool `json:"invocation_export_enabled"`
 	// Any of "compute_func_log_export_config".
-	RecordType string `json:"record_type"`
+	RecordType FuncLogExportConfigRecordType `json:"record_type"`
 	// Whether runtime logs (function stdout/stderr) are exported
 	RuntimeExportEnabled bool      `json:"runtime_export_enabled"`
 	UpdatedAt            time.Time `json:"updated_at" format:"date-time"`
@@ -144,8 +126,32 @@ type FuncLogExportConfigResponseData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r FuncLogExportConfigResponseData) RawJSON() string { return r.JSON.raw }
-func (r *FuncLogExportConfigResponseData) UnmarshalJSON(data []byte) error {
+func (r FuncLogExportConfig) RawJSON() string { return r.JSON.raw }
+func (r *FuncLogExportConfig) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type FuncLogExportConfigRecordType string
+
+const (
+	FuncLogExportConfigRecordTypeComputeFuncLogExportConfig FuncLogExportConfigRecordType = "compute_func_log_export_config"
+)
+
+type FuncLogExportConfigResponse struct {
+	// Metadata-only view of a function's log export destination. Header values are
+	// write-only (encrypted server-side) and never appear in any response.
+	Data FuncLogExportConfig `json:"data"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r FuncLogExportConfigResponse) RawJSON() string { return r.JSON.raw }
+func (r *FuncLogExportConfigResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
