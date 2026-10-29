@@ -47,9 +47,36 @@ func TestAIToolNewWithOptionalParams(t *testing.T) {
 				"campaignid":   "bar",
 				"customer_ref": "bar",
 			},
-			Currency:       telnyx.String("currency"),
-			Description:    telnyx.String("description"),
-			PaymentMethod:  telnyx.String("payment_method"),
+			Currency:                telnyx.String("currency"),
+			Description:             telnyx.String("description"),
+			InterDigitTimeoutMillis: telnyx.Int(1),
+			MaxAttempts:             telnyx.Int(1),
+			MinPostalCodeLength:     telnyx.Int(5),
+			PaymentMethod:           telnyx.String("payment_method"),
+			PostalCode: telnyx.PayToolParamsPostalCodeUnion{
+				OfBool: telnyx.Bool(false),
+			},
+			Prompts: telnyx.PayToolParamsPrompts{
+				BankAccountNumber: telnyx.PayToolParamsPromptsBankAccountNumberUnion{
+					OfString: telnyx.String("x"),
+				},
+				BankRoutingNumber: telnyx.PayToolParamsPromptsBankRoutingNumberUnion{
+					OfString: telnyx.String("x"),
+				},
+				ExpirationDate: telnyx.PayToolParamsPromptsExpirationDateUnion{
+					OfString: telnyx.String("x"),
+				},
+				PaymentCardNumber: telnyx.PayToolParamsPromptsPaymentCardNumberUnion{
+					OfString: telnyx.String("x"),
+				},
+				PostalCode: telnyx.PayToolParamsPromptsPostalCodeUnion{
+					OfString: telnyx.String("x"),
+				},
+				SecurityCode: telnyx.PayToolParamsPromptsSecurityCodeUnion{
+					OfString: telnyx.String("x"),
+				},
+			},
+			TimeoutMillis:  telnyx.Int(12000),
 			ValidCardTypes: []string{"visa", "mastercard"},
 		},
 		Retrieval: map[string]any{
@@ -141,9 +168,36 @@ func TestAIToolUpdateWithOptionalParams(t *testing.T) {
 					"campaignid":   "bar",
 					"customer_ref": "bar",
 				},
-				Currency:       telnyx.String("currency"),
-				Description:    telnyx.String("description"),
-				PaymentMethod:  telnyx.String("payment_method"),
+				Currency:                telnyx.String("currency"),
+				Description:             telnyx.String("description"),
+				InterDigitTimeoutMillis: telnyx.Int(1),
+				MaxAttempts:             telnyx.Int(1),
+				MinPostalCodeLength:     telnyx.Int(5),
+				PaymentMethod:           telnyx.String("payment_method"),
+				PostalCode: telnyx.PayToolParamsPostalCodeUnion{
+					OfBool: telnyx.Bool(false),
+				},
+				Prompts: telnyx.PayToolParamsPrompts{
+					BankAccountNumber: telnyx.PayToolParamsPromptsBankAccountNumberUnion{
+						OfString: telnyx.String("x"),
+					},
+					BankRoutingNumber: telnyx.PayToolParamsPromptsBankRoutingNumberUnion{
+						OfString: telnyx.String("x"),
+					},
+					ExpirationDate: telnyx.PayToolParamsPromptsExpirationDateUnion{
+						OfString: telnyx.String("x"),
+					},
+					PaymentCardNumber: telnyx.PayToolParamsPromptsPaymentCardNumberUnion{
+						OfString: telnyx.String("x"),
+					},
+					PostalCode: telnyx.PayToolParamsPromptsPostalCodeUnion{
+						OfString: telnyx.String("x"),
+					},
+					SecurityCode: telnyx.PayToolParamsPromptsSecurityCodeUnion{
+						OfString: telnyx.String("x"),
+					},
+				},
+				TimeoutMillis:  telnyx.Int(12000),
 				ValidCardTypes: []string{"visa", "mastercard"},
 			},
 			Retrieval: map[string]any{
