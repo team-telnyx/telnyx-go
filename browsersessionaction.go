@@ -480,15 +480,15 @@ func (r *WaitForActionParam) UnmarshalJSON(data []byte) error {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type WaitForActionConditionUnionParam struct {
-	OfUnionMember0               *WaitForActionConditionUnionMember0Param `json:",omitzero,inline"`
-	OfUnionMember1               *WaitForActionConditionUnionMember1Param `json:",omitzero,inline"`
-	OfUnionMember2               *WaitForActionConditionUnionMember2Param `json:",omitzero,inline"`
-	OfWaitForActionConditionKind *WaitForActionConditionKindParam         `json:",omitzero,inline"`
+	OfUnionMember0 *WaitForActionConditionUnionMember0Param `json:",omitzero,inline"`
+	OfUnionMember1 *WaitForActionConditionUnionMember1Param `json:",omitzero,inline"`
+	OfUnionMember2 *WaitForActionConditionUnionMember2Param `json:",omitzero,inline"`
+	OfUnionMember3 *WaitForActionConditionUnionMember3Param `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u WaitForActionConditionUnionParam) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfUnionMember0, u.OfUnionMember1, u.OfUnionMember2, u.OfWaitForActionConditionKind)
+	return param.MarshalUnion(u, u.OfUnionMember0, u.OfUnionMember1, u.OfUnionMember2, u.OfUnionMember3)
 }
 func (u *WaitForActionConditionUnionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -501,8 +501,8 @@ func (u *WaitForActionConditionUnionParam) asAny() any {
 		return u.OfUnionMember1
 	} else if !param.IsOmitted(u.OfUnionMember2) {
 		return u.OfUnionMember2
-	} else if !param.IsOmitted(u.OfWaitForActionConditionKind) {
-		return u.OfWaitForActionConditionKind
+	} else if !param.IsOmitted(u.OfUnionMember3) {
+		return u.OfUnionMember3
 	}
 	return nil
 }
@@ -547,7 +547,7 @@ func (u WaitForActionConditionUnionParam) GetKind() *string {
 		return (*string)(&vt.Kind)
 	} else if vt := u.OfUnionMember2; vt != nil {
 		return (*string)(&vt.Kind)
-	} else if vt := u.OfWaitForActionConditionKind; vt != nil {
+	} else if vt := u.OfUnionMember3; vt != nil {
 		return (*string)(&vt.Kind)
 	}
 	return nil
@@ -559,7 +559,7 @@ func init() {
 		apijson.Variant[WaitForActionConditionUnionMember0Param](gjson.JSON),
 		apijson.Variant[WaitForActionConditionUnionMember1Param](gjson.JSON),
 		apijson.Variant[WaitForActionConditionUnionMember2Param](gjson.JSON),
-		apijson.Variant[WaitForActionConditionKindParam](gjson.JSON),
+		apijson.Variant[WaitForActionConditionUnionMember3Param](gjson.JSON),
 	)
 }
 
@@ -612,24 +612,24 @@ func (r *WaitForActionConditionUnionMember2Param) UnmarshalJSON(data []byte) err
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func NewWaitForActionConditionKindParam() WaitForActionConditionKindParam {
-	return WaitForActionConditionKindParam{
+func NewWaitForActionConditionUnionMember3Param() WaitForActionConditionUnionMember3Param {
+	return WaitForActionConditionUnionMember3Param{
 		Kind: "dom_stable",
 	}
 }
 
 // This struct has a constant value, construct it with
-// [NewWaitForActionConditionKindParam].
-type WaitForActionConditionKindParam struct {
+// [NewWaitForActionConditionUnionMember3Param].
+type WaitForActionConditionUnionMember3Param struct {
 	Kind constant.DomStable `json:"kind" default:"dom_stable"`
 	paramObj
 }
 
-func (r WaitForActionConditionKindParam) MarshalJSON() (data []byte, err error) {
-	type shadow WaitForActionConditionKindParam
+func (r WaitForActionConditionUnionMember3Param) MarshalJSON() (data []byte, err error) {
+	type shadow WaitForActionConditionUnionMember3Param
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *WaitForActionConditionKindParam) UnmarshalJSON(data []byte) error {
+func (r *WaitForActionConditionUnionMember3Param) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
