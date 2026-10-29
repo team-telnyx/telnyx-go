@@ -180,6 +180,42 @@ func (u *GenericPayConnectorConfigUnionParam) asAny() any {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
+func (u GenericPayConnectorConfigUnionParam) GetPassword() *string {
+	if vt := u.OfBasicAuthenticationAlsoTheValidationDefault; vt != nil {
+		return (*string)(&vt.Password)
+	} else if vt := u.OfBearerAuthentication; vt != nil && vt.Password.Valid() {
+		return &vt.Password.Value
+	} else if vt := u.OfNoProcessorAuthentication; vt != nil && vt.Password.Valid() {
+		return &vt.Password.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u GenericPayConnectorConfigUnionParam) GetUsername() *string {
+	if vt := u.OfBasicAuthenticationAlsoTheValidationDefault; vt != nil {
+		return (*string)(&vt.Username)
+	} else if vt := u.OfBearerAuthentication; vt != nil && vt.Username.Valid() {
+		return &vt.Username.Value
+	} else if vt := u.OfNoProcessorAuthentication; vt != nil && vt.Username.Valid() {
+		return &vt.Username.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u GenericPayConnectorConfigUnionParam) GetToken() *string {
+	if vt := u.OfBasicAuthenticationAlsoTheValidationDefault; vt != nil && vt.Token.Valid() {
+		return &vt.Token.Value
+	} else if vt := u.OfBearerAuthentication; vt != nil {
+		return (*string)(&vt.Token)
+	} else if vt := u.OfNoProcessorAuthentication; vt != nil && vt.Token.Valid() {
+		return &vt.Token.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
 func (u GenericPayConnectorConfigUnionParam) GetAuthType() *string {
 	if vt := u.OfBasicAuthenticationAlsoTheValidationDefault; vt != nil {
 		return (*string)(&vt.AuthType)
@@ -215,87 +251,6 @@ func (u GenericPayConnectorConfigUnionParam) GetTimeout() *int64 {
 	return nil
 }
 
-// Returns a subunion which exports methods to access subproperties
-//
-// Or use AsAny() to get the underlying value
-func (u GenericPayConnectorConfigUnionParam) GetPassword() (res genericPayConnectorConfigUnionParamPassword) {
-	if vt := u.OfBasicAuthenticationAlsoTheValidationDefault; vt != nil {
-		res.any = &vt.Password
-	} else if vt := u.OfBearerAuthentication; vt != nil {
-		res.any = &vt.Password
-	} else if vt := u.OfNoProcessorAuthentication; vt != nil {
-		res.any = &vt.Password
-	}
-	return
-}
-
-// Can have the runtime types [*string], [*any]
-type genericPayConnectorConfigUnionParamPassword struct{ any }
-
-// Use the following switch statement to get the type of the union:
-//
-//	switch u.AsAny().(type) {
-//	case *string:
-//	case *any:
-//	default:
-//	    fmt.Errorf("not present")
-//	}
-func (u genericPayConnectorConfigUnionParamPassword) AsAny() any { return u.any }
-
-// Returns a subunion which exports methods to access subproperties
-//
-// Or use AsAny() to get the underlying value
-func (u GenericPayConnectorConfigUnionParam) GetUsername() (res genericPayConnectorConfigUnionParamUsername) {
-	if vt := u.OfBasicAuthenticationAlsoTheValidationDefault; vt != nil {
-		res.any = &vt.Username
-	} else if vt := u.OfBearerAuthentication; vt != nil {
-		res.any = &vt.Username
-	} else if vt := u.OfNoProcessorAuthentication; vt != nil {
-		res.any = &vt.Username
-	}
-	return
-}
-
-// Can have the runtime types [*string], [*any]
-type genericPayConnectorConfigUnionParamUsername struct{ any }
-
-// Use the following switch statement to get the type of the union:
-//
-//	switch u.AsAny().(type) {
-//	case *string:
-//	case *any:
-//	default:
-//	    fmt.Errorf("not present")
-//	}
-func (u genericPayConnectorConfigUnionParamUsername) AsAny() any { return u.any }
-
-// Returns a subunion which exports methods to access subproperties
-//
-// Or use AsAny() to get the underlying value
-func (u GenericPayConnectorConfigUnionParam) GetToken() (res genericPayConnectorConfigUnionParamToken) {
-	if vt := u.OfBasicAuthenticationAlsoTheValidationDefault; vt != nil {
-		res.any = &vt.Token
-	} else if vt := u.OfBearerAuthentication; vt != nil {
-		res.any = &vt.Token
-	} else if vt := u.OfNoProcessorAuthentication; vt != nil {
-		res.any = &vt.Token
-	}
-	return
-}
-
-// Can have the runtime types [*any], [*string]
-type genericPayConnectorConfigUnionParamToken struct{ any }
-
-// Use the following switch statement to get the type of the union:
-//
-//	switch u.AsAny().(type) {
-//	case *any:
-//	case *string:
-//	default:
-//	    fmt.Errorf("not present")
-//	}
-func (u genericPayConnectorConfigUnionParamToken) AsAny() any { return u.any }
-
 func init() {
 	apijson.RegisterUnion[GenericPayConnectorConfigUnionParam](
 		"",
@@ -314,12 +269,12 @@ type GenericPayConnectorConfigBasicAuthenticationAlsoTheValidationDefaultParam s
 	// Processor HTTP timeout in milliseconds. Omitted or null uses 10000; null is
 	// removed before storage. Not the IVR digit-gather timeout.
 	Timeout param.Opt[int64] `json:"timeout,omitzero"`
+	// Nonblank string required for bearer authentication. Write-only; omitted from
+	// responses. Re-send when replacing a bearer-auth config.
+	Token param.Opt[string] `json:"token,omitzero"`
 	// HTTP or HTTPS processor URL with a host. Use HTTPS to protect payment data in
 	// transit.
 	EndpointURL param.Opt[string] `json:"endpoint_url,omitzero"`
-	// Nonblank string required for bearer authentication. Write-only; omitted from
-	// responses. Re-send when replacing a bearer-auth config.
-	Token any `json:"token,omitzero"`
 	// Any of "basic".
 	AuthType string `json:"auth_type,omitzero"`
 	paramObj
@@ -351,10 +306,10 @@ type GenericPayConnectorConfigBearerAuthenticationParam struct {
 	EndpointURL param.Opt[string] `json:"endpoint_url,omitzero"`
 	// Nonblank string required for basic authentication. Write-only; omitted from
 	// responses. Re-send when replacing a basic-auth config.
-	Password any `json:"password,omitzero"`
+	Password param.Opt[string] `json:"password,omitzero"`
 	// Nonblank string required for basic authentication. Returned in connector
 	// responses.
-	Username any `json:"username,omitzero"`
+	Username param.Opt[string] `json:"username,omitzero"`
 	// This field can be elided, and will marshal its zero value as "bearer".
 	AuthType constant.Bearer `json:"auth_type" default:"bearer"`
 	paramObj
@@ -373,18 +328,18 @@ type GenericPayConnectorConfigNoProcessorAuthenticationParam struct {
 	// Processor HTTP timeout in milliseconds. Omitted or null uses 10000; null is
 	// removed before storage. Not the IVR digit-gather timeout.
 	Timeout param.Opt[int64] `json:"timeout,omitzero"`
+	// Nonblank string required for bearer authentication. Write-only; omitted from
+	// responses. Re-send when replacing a bearer-auth config.
+	Token param.Opt[string] `json:"token,omitzero"`
 	// HTTP or HTTPS processor URL with a host. Use HTTPS to protect payment data in
 	// transit.
 	EndpointURL param.Opt[string] `json:"endpoint_url,omitzero"`
-	// Nonblank string required for bearer authentication. Write-only; omitted from
-	// responses. Re-send when replacing a bearer-auth config.
-	Token any `json:"token,omitzero"`
 	// Nonblank string required for basic authentication. Write-only; omitted from
 	// responses. Re-send when replacing a basic-auth config.
-	Password any `json:"password,omitzero"`
+	Password param.Opt[string] `json:"password,omitzero"`
 	// Nonblank string required for basic authentication. Returned in connector
 	// responses.
-	Username any `json:"username,omitzero"`
+	Username param.Opt[string] `json:"username,omitzero"`
 	// This field can be elided, and will marshal its zero value as "none".
 	AuthType constant.None `json:"auth_type" default:"none"`
 	paramObj
@@ -468,7 +423,7 @@ type PayConnectorConfig struct {
 	Timeout int64 `json:"timeout"`
 	// Stored username, when supplied. Required to be a nonblank string for basic
 	// authentication.
-	Username any `json:"username"`
+	Username string `json:"username"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AuthType    respjson.Field

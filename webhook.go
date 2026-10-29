@@ -10212,8 +10212,10 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 	Body UnsafeUnwrapWebhookEventUnionDataPayloadBody `json:"body"`
 	// This field is a union of [[]OutboundMessagePayloadCc],
 	// [[]MessagingInboundMessagePayloadCc]
-	Cc          UnsafeUnwrapWebhookEventUnionDataPayloadCc `json:"cc"`
-	CompletedAt time.Time                                  `json:"completed_at"`
+	Cc UnsafeUnwrapWebhookEventUnionDataPayloadCc `json:"cc"`
+	// This field is from variant [OutboundMessagePayload].
+	ChildMessageID string    `json:"child_message_id"`
+	CompletedAt    time.Time `json:"completed_at"`
 	// This field is a union of [OutboundMessagePayloadCostBreakdown],
 	// [MessagingInboundMessagePayloadCostBreakdown]
 	CostBreakdown UnsafeUnwrapWebhookEventUnionDataPayloadCostBreakdown `json:"cost_breakdown"`
@@ -10227,10 +10229,12 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 	MessagingProfileID string                                        `json:"messaging_profile_id"`
 	NumChars           int64                                         `json:"num_chars"`
 	OrganizationID     string                                        `json:"organization_id"`
-	Parts              int64                                         `json:"parts"`
-	ReceivedAt         time.Time                                     `json:"received_at"`
-	RecordType         string                                        `json:"record_type"`
-	SentAt             time.Time                                     `json:"sent_at"`
+	// This field is from variant [OutboundMessagePayload].
+	ParentMessageID string    `json:"parent_message_id"`
+	Parts           int64     `json:"parts"`
+	ReceivedAt      time.Time `json:"received_at"`
+	RecordType      string    `json:"record_type"`
+	SentAt          time.Time `json:"sent_at"`
 	// This field is from variant [OutboundMessagePayload].
 	SmartEncodingApplied  bool   `json:"smart_encoding_applied"`
 	Subject               string `json:"subject"`
@@ -10423,6 +10427,7 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 		ID                       respjson.Field
 		Body                     respjson.Field
 		Cc                       respjson.Field
+		ChildMessageID           respjson.Field
 		CompletedAt              respjson.Field
 		CostBreakdown            respjson.Field
 		Encoding                 respjson.Field
@@ -10431,6 +10436,7 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 		MessagingProfileID       respjson.Field
 		NumChars                 respjson.Field
 		OrganizationID           respjson.Field
+		ParentMessageID          respjson.Field
 		Parts                    respjson.Field
 		ReceivedAt               respjson.Field
 		RecordType               respjson.Field
@@ -10596,8 +10602,7 @@ func (r *UnsafeUnwrapWebhookEventUnionDataPayloadResult) UnmarshalJSON(data []by
 // [UnsafeUnwrapWebhookEventUnion].
 //
 // If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfOutboundMessagePayloadToArray
-// OfMessagingInboundMessagePayloadToArray]
+// will be valid: OfString OfOutboundMessagePayloadToArray OfUnionMember0]
 type UnsafeUnwrapWebhookEventUnionDataPayloadTo struct {
 	// This field will be present if the value is a [string] instead of an object.
 	OfString string `json:",inline"`
@@ -10605,13 +10610,13 @@ type UnsafeUnwrapWebhookEventUnionDataPayloadTo struct {
 	// instead of an object.
 	OfOutboundMessagePayloadToArray []OutboundMessagePayloadTo `json:",inline"`
 	// This field will be present if the value is a
-	// [[]MessagingInboundMessagePayloadToArrayItem] instead of an object.
-	OfMessagingInboundMessagePayloadToArray []MessagingInboundMessagePayloadToArrayItem `json:",inline"`
-	JSON                                    struct {
-		OfString                                respjson.Field
-		OfOutboundMessagePayloadToArray         respjson.Field
-		OfMessagingInboundMessagePayloadToArray respjson.Field
-		raw                                     string
+	// [[]MessagingInboundMessagePayloadToUnionMember0Item] instead of an object.
+	OfUnionMember0 []MessagingInboundMessagePayloadToUnionMember0Item `json:",inline"`
+	JSON           struct {
+		OfString                        respjson.Field
+		OfOutboundMessagePayloadToArray respjson.Field
+		OfUnionMember0                  respjson.Field
+		raw                             string
 	} `json:"-"`
 }
 
@@ -11830,8 +11835,10 @@ type UnwrapWebhookEventUnionDataPayload struct {
 	Body UnwrapWebhookEventUnionDataPayloadBody `json:"body"`
 	// This field is a union of [[]OutboundMessagePayloadCc],
 	// [[]MessagingInboundMessagePayloadCc]
-	Cc          UnwrapWebhookEventUnionDataPayloadCc `json:"cc"`
-	CompletedAt time.Time                            `json:"completed_at"`
+	Cc UnwrapWebhookEventUnionDataPayloadCc `json:"cc"`
+	// This field is from variant [OutboundMessagePayload].
+	ChildMessageID string    `json:"child_message_id"`
+	CompletedAt    time.Time `json:"completed_at"`
 	// This field is a union of [OutboundMessagePayloadCostBreakdown],
 	// [MessagingInboundMessagePayloadCostBreakdown]
 	CostBreakdown UnwrapWebhookEventUnionDataPayloadCostBreakdown `json:"cost_breakdown"`
@@ -11845,10 +11852,12 @@ type UnwrapWebhookEventUnionDataPayload struct {
 	MessagingProfileID string                                  `json:"messaging_profile_id"`
 	NumChars           int64                                   `json:"num_chars"`
 	OrganizationID     string                                  `json:"organization_id"`
-	Parts              int64                                   `json:"parts"`
-	ReceivedAt         time.Time                               `json:"received_at"`
-	RecordType         string                                  `json:"record_type"`
-	SentAt             time.Time                               `json:"sent_at"`
+	// This field is from variant [OutboundMessagePayload].
+	ParentMessageID string    `json:"parent_message_id"`
+	Parts           int64     `json:"parts"`
+	ReceivedAt      time.Time `json:"received_at"`
+	RecordType      string    `json:"record_type"`
+	SentAt          time.Time `json:"sent_at"`
 	// This field is from variant [OutboundMessagePayload].
 	SmartEncodingApplied  bool   `json:"smart_encoding_applied"`
 	Subject               string `json:"subject"`
@@ -12041,6 +12050,7 @@ type UnwrapWebhookEventUnionDataPayload struct {
 		ID                       respjson.Field
 		Body                     respjson.Field
 		Cc                       respjson.Field
+		ChildMessageID           respjson.Field
 		CompletedAt              respjson.Field
 		CostBreakdown            respjson.Field
 		Encoding                 respjson.Field
@@ -12049,6 +12059,7 @@ type UnwrapWebhookEventUnionDataPayload struct {
 		MessagingProfileID       respjson.Field
 		NumChars                 respjson.Field
 		OrganizationID           respjson.Field
+		ParentMessageID          respjson.Field
 		Parts                    respjson.Field
 		ReceivedAt               respjson.Field
 		RecordType               respjson.Field
@@ -12213,8 +12224,7 @@ func (r *UnwrapWebhookEventUnionDataPayloadResult) UnmarshalJSON(data []byte) er
 // [UnwrapWebhookEventUnion].
 //
 // If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfOutboundMessagePayloadToArray
-// OfMessagingInboundMessagePayloadToArray]
+// will be valid: OfString OfOutboundMessagePayloadToArray OfUnionMember0]
 type UnwrapWebhookEventUnionDataPayloadTo struct {
 	// This field will be present if the value is a [string] instead of an object.
 	OfString string `json:",inline"`
@@ -12222,13 +12232,13 @@ type UnwrapWebhookEventUnionDataPayloadTo struct {
 	// instead of an object.
 	OfOutboundMessagePayloadToArray []OutboundMessagePayloadTo `json:",inline"`
 	// This field will be present if the value is a
-	// [[]MessagingInboundMessagePayloadToArrayItem] instead of an object.
-	OfMessagingInboundMessagePayloadToArray []MessagingInboundMessagePayloadToArrayItem `json:",inline"`
-	JSON                                    struct {
-		OfString                                respjson.Field
-		OfOutboundMessagePayloadToArray         respjson.Field
-		OfMessagingInboundMessagePayloadToArray respjson.Field
-		raw                                     string
+	// [[]MessagingInboundMessagePayloadToUnionMember0Item] instead of an object.
+	OfUnionMember0 []MessagingInboundMessagePayloadToUnionMember0Item `json:",inline"`
+	JSON           struct {
+		OfString                        respjson.Field
+		OfOutboundMessagePayloadToArray respjson.Field
+		OfUnionMember0                  respjson.Field
+		raw                             string
 	} `json:"-"`
 }
 

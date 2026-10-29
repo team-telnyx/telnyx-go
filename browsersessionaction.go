@@ -92,7 +92,7 @@ type ActionResponse struct {
 	Error ActionResponseError `json:"error" api:"required"`
 	// Normalized request metadata; defaults may be materialized and fill values are
 	// redacted as {redacted: true, length: number}, including inside batch actions.
-	Request   any                  `json:"request" api:"required"`
+	Request   map[string]any       `json:"request" api:"required"`
 	Result    ActionResponseResult `json:"result" api:"required"`
 	Seq       int64                `json:"seq" api:"required"`
 	SessionID string               `json:"session_id" api:"required"`
@@ -162,9 +162,9 @@ type ActionResponseResult struct {
 	// action to obtain usable refs.
 	Observation ActionResponseResultObservation `json:"observation"`
 	// Present only for batch actions.
-	Results []any  `json:"results"`
-	Title   string `json:"title"`
-	URL     string `json:"url"`
+	Results []map[string]any `json:"results"`
+	Title   string           `json:"title"`
+	URL     string           `json:"url"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Artifact    respjson.Field
@@ -211,12 +211,12 @@ type ActionResponseResultObservation struct {
 	ObservationID string `json:"observation_id"`
 	// Number of refs in the original observation, present on stored observation
 	// metadata.
-	RefCount  int64  `json:"ref_count"`
-	Refs      any    `json:"refs"`
-	Title     string `json:"title"`
-	Tree      string `json:"tree"`
-	Truncated bool   `json:"truncated"`
-	URL       string `json:"url"`
+	RefCount  int64          `json:"ref_count"`
+	Refs      map[string]any `json:"refs"`
+	Title     string         `json:"title"`
+	Tree      string         `json:"tree"`
+	Truncated bool           `json:"truncated"`
+	URL       string         `json:"url"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ObservationID respjson.Field
@@ -480,36 +480,36 @@ func (r *WaitForActionParam) UnmarshalJSON(data []byte) error {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type WaitForActionConditionUnionParam struct {
-	OfWaitForActionConditionUnionMember0 *WaitForActionConditionUnionMember0Param `json:",omitzero,inline"`
-	OfWaitForActionConditionUnionMember1 *WaitForActionConditionUnionMember1Param `json:",omitzero,inline"`
-	OfWaitForActionConditionUnionMember2 *WaitForActionConditionUnionMember2Param `json:",omitzero,inline"`
-	OfWaitForActionConditionKind         *WaitForActionConditionKindParam         `json:",omitzero,inline"`
+	OfUnionMember0 *WaitForActionConditionUnionMember0Param `json:",omitzero,inline"`
+	OfUnionMember1 *WaitForActionConditionUnionMember1Param `json:",omitzero,inline"`
+	OfUnionMember2 *WaitForActionConditionUnionMember2Param `json:",omitzero,inline"`
+	OfUnionMember3 *WaitForActionConditionUnionMember3Param `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u WaitForActionConditionUnionParam) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfWaitForActionConditionUnionMember0, u.OfWaitForActionConditionUnionMember1, u.OfWaitForActionConditionUnionMember2, u.OfWaitForActionConditionKind)
+	return param.MarshalUnion(u, u.OfUnionMember0, u.OfUnionMember1, u.OfUnionMember2, u.OfUnionMember3)
 }
 func (u *WaitForActionConditionUnionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *WaitForActionConditionUnionParam) asAny() any {
-	if !param.IsOmitted(u.OfWaitForActionConditionUnionMember0) {
-		return u.OfWaitForActionConditionUnionMember0
-	} else if !param.IsOmitted(u.OfWaitForActionConditionUnionMember1) {
-		return u.OfWaitForActionConditionUnionMember1
-	} else if !param.IsOmitted(u.OfWaitForActionConditionUnionMember2) {
-		return u.OfWaitForActionConditionUnionMember2
-	} else if !param.IsOmitted(u.OfWaitForActionConditionKind) {
-		return u.OfWaitForActionConditionKind
+	if !param.IsOmitted(u.OfUnionMember0) {
+		return u.OfUnionMember0
+	} else if !param.IsOmitted(u.OfUnionMember1) {
+		return u.OfUnionMember1
+	} else if !param.IsOmitted(u.OfUnionMember2) {
+		return u.OfUnionMember2
+	} else if !param.IsOmitted(u.OfUnionMember3) {
+		return u.OfUnionMember3
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u WaitForActionConditionUnionParam) GetPattern() *string {
-	if vt := u.OfWaitForActionConditionUnionMember0; vt != nil {
+	if vt := u.OfUnionMember0; vt != nil {
 		return &vt.Pattern
 	}
 	return nil
@@ -517,7 +517,7 @@ func (u WaitForActionConditionUnionParam) GetPattern() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u WaitForActionConditionUnionParam) GetObservationID() *string {
-	if vt := u.OfWaitForActionConditionUnionMember1; vt != nil {
+	if vt := u.OfUnionMember1; vt != nil {
 		return &vt.ObservationID
 	}
 	return nil
@@ -525,7 +525,7 @@ func (u WaitForActionConditionUnionParam) GetObservationID() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u WaitForActionConditionUnionParam) GetRef() *string {
-	if vt := u.OfWaitForActionConditionUnionMember1; vt != nil {
+	if vt := u.OfUnionMember1; vt != nil {
 		return &vt.Ref
 	}
 	return nil
@@ -533,7 +533,7 @@ func (u WaitForActionConditionUnionParam) GetRef() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u WaitForActionConditionUnionParam) GetText() *string {
-	if vt := u.OfWaitForActionConditionUnionMember2; vt != nil {
+	if vt := u.OfUnionMember2; vt != nil {
 		return &vt.Text
 	}
 	return nil
@@ -541,13 +541,13 @@ func (u WaitForActionConditionUnionParam) GetText() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u WaitForActionConditionUnionParam) GetKind() *string {
-	if vt := u.OfWaitForActionConditionUnionMember0; vt != nil {
+	if vt := u.OfUnionMember0; vt != nil {
 		return (*string)(&vt.Kind)
-	} else if vt := u.OfWaitForActionConditionUnionMember1; vt != nil {
+	} else if vt := u.OfUnionMember1; vt != nil {
 		return (*string)(&vt.Kind)
-	} else if vt := u.OfWaitForActionConditionUnionMember2; vt != nil {
+	} else if vt := u.OfUnionMember2; vt != nil {
 		return (*string)(&vt.Kind)
-	} else if vt := u.OfWaitForActionConditionKind; vt != nil {
+	} else if vt := u.OfUnionMember3; vt != nil {
 		return (*string)(&vt.Kind)
 	}
 	return nil
@@ -559,7 +559,7 @@ func init() {
 		apijson.Variant[WaitForActionConditionUnionMember0Param](gjson.JSON),
 		apijson.Variant[WaitForActionConditionUnionMember1Param](gjson.JSON),
 		apijson.Variant[WaitForActionConditionUnionMember2Param](gjson.JSON),
-		apijson.Variant[WaitForActionConditionKindParam](gjson.JSON),
+		apijson.Variant[WaitForActionConditionUnionMember3Param](gjson.JSON),
 	)
 }
 
@@ -612,24 +612,24 @@ func (r *WaitForActionConditionUnionMember2Param) UnmarshalJSON(data []byte) err
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func NewWaitForActionConditionKindParam() WaitForActionConditionKindParam {
-	return WaitForActionConditionKindParam{
+func NewWaitForActionConditionUnionMember3Param() WaitForActionConditionUnionMember3Param {
+	return WaitForActionConditionUnionMember3Param{
 		Kind: "dom_stable",
 	}
 }
 
 // This struct has a constant value, construct it with
-// [NewWaitForActionConditionKindParam].
-type WaitForActionConditionKindParam struct {
+// [NewWaitForActionConditionUnionMember3Param].
+type WaitForActionConditionUnionMember3Param struct {
 	Kind constant.DomStable `json:"kind" default:"dom_stable"`
 	paramObj
 }
 
-func (r WaitForActionConditionKindParam) MarshalJSON() (data []byte, err error) {
-	type shadow WaitForActionConditionKindParam
+func (r WaitForActionConditionUnionMember3Param) MarshalJSON() (data []byte, err error) {
+	type shadow WaitForActionConditionUnionMember3Param
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *WaitForActionConditionKindParam) UnmarshalJSON(data []byte) error {
+func (r *WaitForActionConditionUnionMember3Param) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

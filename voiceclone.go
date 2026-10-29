@@ -155,7 +155,7 @@ type VoiceCloneData struct {
 	Name string `json:"name"`
 	// Voice synthesis provider used for this clone.
 	//
-	// Any of "telnyx", "minimax".
+	// Any of "telnyx", "minimax", "resemble".
 	Provider VoiceCloneDataProvider `json:"provider"`
 	// List of TTS model identifiers supported by this clone's provider.
 	ProviderSupportedModels []string `json:"provider_supported_models"`
@@ -231,8 +231,9 @@ const (
 type VoiceCloneDataProvider string
 
 const (
-	VoiceCloneDataProviderTelnyx  VoiceCloneDataProvider = "telnyx"
-	VoiceCloneDataProviderMinimax VoiceCloneDataProvider = "minimax"
+	VoiceCloneDataProviderTelnyx   VoiceCloneDataProvider = "telnyx"
+	VoiceCloneDataProviderMinimax  VoiceCloneDataProvider = "minimax"
+	VoiceCloneDataProviderResemble VoiceCloneDataProvider = "resemble"
 )
 
 // Identifies the resource type.
@@ -440,7 +441,7 @@ type VoiceCloneListParams struct {
 	FilterModelID VoiceCloneListParamsFilterModelID `query:"filter[model_id],omitzero" json:"-"`
 	// Filter by voice synthesis provider. Case-insensitive.
 	//
-	// Any of "telnyx", "minimax".
+	// Any of "telnyx", "minimax", "resemble".
 	FilterProvider VoiceCloneListParamsFilterProvider `query:"filter[provider],omitzero" json:"-"`
 	// Sort order. Prefix with `-` for descending. Defaults to `-created_at`.
 	//
@@ -474,8 +475,9 @@ const (
 type VoiceCloneListParamsFilterProvider string
 
 const (
-	VoiceCloneListParamsFilterProviderTelnyx  VoiceCloneListParamsFilterProvider = "telnyx"
-	VoiceCloneListParamsFilterProviderMinimax VoiceCloneListParamsFilterProvider = "minimax"
+	VoiceCloneListParamsFilterProviderTelnyx   VoiceCloneListParamsFilterProvider = "telnyx"
+	VoiceCloneListParamsFilterProviderMinimax  VoiceCloneListParamsFilterProvider = "minimax"
+	VoiceCloneListParamsFilterProviderResemble VoiceCloneListParamsFilterProvider = "resemble"
 )
 
 // Sort order. Prefix with `-` for descending. Defaults to `-created_at`.
@@ -670,7 +672,7 @@ type VoiceCloneNewFromUploadParamsVoiceCloneUploadRequestTelnyxBayanClone struct
 	Language string `json:"language,omitzero"`
 	// Voice synthesis provider. Defaults to `telnyx`.
 	//
-	// Any of "telnyx", "Telnyx".
+	// Any of "telnyx".
 	Provider string `json:"provider,omitzero"`
 	paramObj
 }
@@ -694,7 +696,7 @@ func init() {
 		"language", "ar", "en",
 	)
 	apijson.RegisterFieldValidator[VoiceCloneNewFromUploadParamsVoiceCloneUploadRequestTelnyxBayanClone](
-		"provider", "telnyx", "Telnyx",
+		"provider", "telnyx",
 	)
 }
 
@@ -771,7 +773,7 @@ type VoiceCloneNewFromUploadParamsVoiceCloneUploadRequestResembleClone struct {
 	Name string `json:"name" api:"required"`
 	// Voice synthesis provider. Must be `resemble`.
 	//
-	// Any of "resemble", "Resemble".
+	// Any of "resemble".
 	Provider string `json:"provider,omitzero" api:"required"`
 	// Optional custom label describing the voice style.
 	Label param.Opt[string] `json:"label,omitzero"`
@@ -803,7 +805,7 @@ func init() {
 		"model_id", "Pro", "Turbo", "Urdu",
 	)
 	apijson.RegisterFieldValidator[VoiceCloneNewFromUploadParamsVoiceCloneUploadRequestResembleClone](
-		"provider", "resemble", "Resemble",
+		"provider", "resemble",
 	)
 	apijson.RegisterFieldValidator[VoiceCloneNewFromUploadParamsVoiceCloneUploadRequestResembleClone](
 		"language", "ar", "da", "de", "el", "en", "en-US", "es", "fi", "fr-fr", "he", "hi", "it", "ja", "ko", "ms", "nl", "no", "pl", "pt", "ru", "sv", "sw", "tr", "ur", "zh",

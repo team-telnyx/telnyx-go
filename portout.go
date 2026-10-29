@@ -65,7 +65,8 @@ func (r *PortoutService) Get(ctx context.Context, id string, opts ...option.Requ
 	return res, err
 }
 
-// Returns the portout requests according to filters
+// Returns the portout requests according to filters. Carrier Port Out API
+// available. Please contact porting@telnyx.com.
 func (r *PortoutService) List(ctx context.Context, query PortoutListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[PortoutDetails], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -83,7 +84,8 @@ func (r *PortoutService) List(ctx context.Context, query PortoutListParams, opts
 	return res, nil
 }
 
-// Returns the portout requests according to filters
+// Returns the portout requests according to filters. Carrier Port Out API
+// available. Please contact porting@telnyx.com.
 func (r *PortoutService) ListAutoPaging(ctx context.Context, query PortoutListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[PortoutDetails] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
