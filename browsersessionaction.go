@@ -92,7 +92,7 @@ type ActionResponse struct {
 	Error ActionResponseError `json:"error" api:"required"`
 	// Normalized request metadata; defaults may be materialized and fill values are
 	// redacted as {redacted: true, length: number}, including inside batch actions.
-	Request   any                  `json:"request" api:"required"`
+	Request   map[string]any       `json:"request" api:"required"`
 	Result    ActionResponseResult `json:"result" api:"required"`
 	Seq       int64                `json:"seq" api:"required"`
 	SessionID string               `json:"session_id" api:"required"`
@@ -162,9 +162,9 @@ type ActionResponseResult struct {
 	// action to obtain usable refs.
 	Observation ActionResponseResultObservation `json:"observation"`
 	// Present only for batch actions.
-	Results []any  `json:"results"`
-	Title   string `json:"title"`
-	URL     string `json:"url"`
+	Results []map[string]any `json:"results"`
+	Title   string           `json:"title"`
+	URL     string           `json:"url"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Artifact    respjson.Field
@@ -211,12 +211,12 @@ type ActionResponseResultObservation struct {
 	ObservationID string `json:"observation_id"`
 	// Number of refs in the original observation, present on stored observation
 	// metadata.
-	RefCount  int64  `json:"ref_count"`
-	Refs      any    `json:"refs"`
-	Title     string `json:"title"`
-	Tree      string `json:"tree"`
-	Truncated bool   `json:"truncated"`
-	URL       string `json:"url"`
+	RefCount  int64          `json:"ref_count"`
+	Refs      map[string]any `json:"refs"`
+	Title     string         `json:"title"`
+	Tree      string         `json:"tree"`
+	Truncated bool           `json:"truncated"`
+	URL       string         `json:"url"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ObservationID respjson.Field
