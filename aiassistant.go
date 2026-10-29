@@ -9084,7 +9084,8 @@ type TranscriptionSettingsConfig struct {
 	// Deprecated and ignored. Accepted for backwards compatibility. AssemblyAI turn
 	// detection is configured with min_turn_silence and max_turn_silence.
 	//
-	// Deprecated: deprecated
+	// Deprecated: Ignored. Configure AssemblyAI turn detection with min_turn_silence
+	// and max_turn_silence instead.
 	EndOfTurnConfidenceThreshold float64 `json:"end_of_turn_confidence_threshold"`
 	// Available only for deepgram/flux. Confidence required to trigger an end of turn.
 	// Higher values = more reliable turn detection but slightly increased latency.
@@ -9197,7 +9198,8 @@ type TranscriptionSettingsConfigParam struct {
 	// Deprecated and ignored. Accepted for backwards compatibility. AssemblyAI turn
 	// detection is configured with min_turn_silence and max_turn_silence.
 	//
-	// Deprecated: deprecated
+	// Deprecated: Ignored. Configure AssemblyAI turn detection with min_turn_silence
+	// and max_turn_silence instead.
 	EndOfTurnConfidenceThreshold param.Opt[float64] `json:"end_of_turn_confidence_threshold,omitzero"`
 	// Available only for deepgram/flux. Confidence required to trigger an end of turn.
 	// Higher values = more reliable turn detection but slightly increased latency.

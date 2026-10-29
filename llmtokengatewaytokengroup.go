@@ -158,9 +158,9 @@ func (r *AIGatewayResourcesPageMeta) UnmarshalJSON(data []byte) error {
 type BudgetDuration string
 
 const (
-	BudgetDuration1d  BudgetDuration = "1d"
-	BudgetDuration7d  BudgetDuration = "7d"
-	BudgetDuration30d BudgetDuration = "30d"
+	BudgetDurationBudgetDuration1D  BudgetDuration = "1d"
+	BudgetDurationBudgetDuration7D  BudgetDuration = "7d"
+	BudgetDurationBudgetDuration30D BudgetDuration = "30d"
 )
 
 type TokenGroup struct {

@@ -4716,10 +4716,12 @@ Methods:
 Response Types:
 
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TelephonyCredential">TelephonyCredential</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TokenMaterial">TokenMaterial</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TelephonyCredentialNewResponse">TelephonyCredentialNewResponse</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TelephonyCredentialGetResponse">TelephonyCredentialGetResponse</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TelephonyCredentialUpdateResponse">TelephonyCredentialUpdateResponse</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TelephonyCredentialDeleteResponse">TelephonyCredentialDeleteResponse</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TelephonyCredentialGetTokenMaterialResponse">TelephonyCredentialGetTokenMaterialResponse</a>
 
 Methods:
 
@@ -4729,6 +4731,7 @@ Methods:
 - <code title="get /telephony_credentials">client.TelephonyCredentials.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TelephonyCredentialService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TelephonyCredentialListParams">TelephonyCredentialListParams</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4/packages/pagination#DefaultFlatPagination">DefaultFlatPagination</a>[<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TelephonyCredential">TelephonyCredential</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="delete /telephony_credentials/{id}">client.TelephonyCredentials.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TelephonyCredentialService.Delete">Delete</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TelephonyCredentialDeleteResponse">TelephonyCredentialDeleteResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="post /telephony_credentials/{id}/token">client.TelephonyCredentials.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TelephonyCredentialService.NewToken">NewToken</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TelephonyCredentialNewTokenParams">TelephonyCredentialNewTokenParams</a>) (\*<a href="https://pkg.go.dev/builtin#string">string</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /telephony_credentials/{id}/token_material">client.TelephonyCredentials.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TelephonyCredentialService.GetTokenMaterial">GetTokenMaterial</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#TelephonyCredentialGetTokenMaterialResponse">TelephonyCredentialGetTokenMaterialResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 # Texml
 
@@ -5906,6 +5909,7 @@ Methods:
 
 Response Types:
 
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ExternalVerification">ExternalVerification</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ExternalVerificationStatus">ExternalVerificationStatus</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#ExternalVerificationWrapped">ExternalVerificationWrapped</a>
 
@@ -5925,6 +5929,7 @@ Methods:
 
 Response Types:
 
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#EnterpriseEmailVerificationStatus">EnterpriseEmailVerificationStatus</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#EnterpriseEmailVerificationStatusWrapped">EnterpriseEmailVerificationStatusWrapped</a>
 
 Methods:

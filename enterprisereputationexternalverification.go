@@ -68,33 +68,7 @@ func (r *EnterpriseReputationExternalVerificationService) List(ctx context.Conte
 	return res, err
 }
 
-// Review state of the ownership proof that allows adding phone numbers hosted with
-// another provider.
-type ExternalVerificationStatus string
-
-const (
-	ExternalVerificationStatusPending  ExternalVerificationStatus = "pending"
-	ExternalVerificationStatusApproved ExternalVerificationStatus = "approved"
-	ExternalVerificationStatusRejected ExternalVerificationStatus = "rejected"
-)
-
-type ExternalVerificationWrapped struct {
-	Data ExternalVerificationWrappedData `json:"data" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ExternalVerificationWrapped) RawJSON() string { return r.JSON.raw }
-func (r *ExternalVerificationWrapped) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type ExternalVerificationWrappedData struct {
+type ExternalVerification struct {
 	// The ownership-proof documents on file.
 	DocumentIDs  []string `json:"document_ids"`
 	EnterpriseID string   `json:"enterprise_id" format:"uuid"`
@@ -124,8 +98,34 @@ type ExternalVerificationWrappedData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ExternalVerificationWrappedData) RawJSON() string { return r.JSON.raw }
-func (r *ExternalVerificationWrappedData) UnmarshalJSON(data []byte) error {
+func (r ExternalVerification) RawJSON() string { return r.JSON.raw }
+func (r *ExternalVerification) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Review state of the ownership proof that allows adding phone numbers hosted with
+// another provider.
+type ExternalVerificationStatus string
+
+const (
+	ExternalVerificationStatusPending  ExternalVerificationStatus = "pending"
+	ExternalVerificationStatusApproved ExternalVerificationStatus = "approved"
+	ExternalVerificationStatusRejected ExternalVerificationStatus = "rejected"
+)
+
+type ExternalVerificationWrapped struct {
+	Data ExternalVerification `json:"data" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExternalVerificationWrapped) RawJSON() string { return r.JSON.raw }
+func (r *ExternalVerificationWrapped) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

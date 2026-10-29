@@ -4664,7 +4664,7 @@ type MessageWhatsappParamsWhatsappMessageInteractiveActionParametersFlowActionPa
 	// ID of the first screen to show
 	Screen param.Opt[string] `json:"screen,omitzero"`
 	// input data for the first screen. Must be a non-empty object when provided
-	Data any `json:"data,omitzero"`
+	Data map[string]any `json:"data,omitzero"`
 	paramObj
 }
 
@@ -4861,7 +4861,7 @@ type MessageWhatsappParamsWhatsappMessageTemplateComponentsParametersAction stru
 	// response for correlation
 	FlowToken param.Opt[string] `json:"flow_token,omitzero"`
 	// input data for the first screen of the flow
-	FlowActionData any `json:"flow_action_data,omitzero"`
+	FlowActionData map[string]any `json:"flow_action_data,omitzero"`
 	paramObj
 }
 
