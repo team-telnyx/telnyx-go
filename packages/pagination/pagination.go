@@ -1123,6 +1123,122 @@ func (r *EmailCursorPaginationAutoPager[T]) Index() int {
 	return r.run
 }
 
+type EmailEventsCursorPaginationMeta struct {
+	PageCursor string `json:"page_cursor"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PageCursor  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EmailEventsCursorPaginationMeta) RawJSON() string { return r.JSON.raw }
+func (r *EmailEventsCursorPaginationMeta) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type EmailEventsCursorPagination[T any] struct {
+	Data []T                             `json:"data"`
+	Meta EmailEventsCursorPaginationMeta `json:"meta"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Meta        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+	cfg *requestconfig.RequestConfig
+	res *http.Response
+}
+
+// Returns the unmodified JSON received from the API
+func (r EmailEventsCursorPagination[T]) RawJSON() string { return r.JSON.raw }
+func (r *EmailEventsCursorPagination[T]) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// GetNextPage returns the next page as defined by this pagination style. When
+// there is no next page, this function will return a 'nil' for the page value, but
+// will not return an error
+func (r *EmailEventsCursorPagination[T]) GetNextPage() (res *EmailEventsCursorPagination[T], err error) {
+	if len(r.Data) == 0 {
+		return nil, nil
+	}
+	next := r.Meta.PageCursor
+	if len(next) == 0 {
+		return nil, nil
+	}
+	cfg := r.cfg.Clone(r.cfg.Context)
+	err = cfg.Apply(option.WithQuery("page[cursor]", next))
+	if err != nil {
+		return nil, err
+	}
+	var raw *http.Response
+	cfg.ResponseInto = &raw
+	cfg.ResponseBodyInto = &res
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+func (r *EmailEventsCursorPagination[T]) SetPageConfig(cfg *requestconfig.RequestConfig, res *http.Response) {
+	if r == nil {
+		r = &EmailEventsCursorPagination[T]{}
+	}
+	r.cfg = cfg
+	r.res = res
+}
+
+type EmailEventsCursorPaginationAutoPager[T any] struct {
+	page *EmailEventsCursorPagination[T]
+	cur  T
+	idx  int
+	run  int
+	err  error
+	paramObj
+}
+
+func NewEmailEventsCursorPaginationAutoPager[T any](page *EmailEventsCursorPagination[T], err error) *EmailEventsCursorPaginationAutoPager[T] {
+	return &EmailEventsCursorPaginationAutoPager[T]{
+		page: page,
+		err:  err,
+	}
+}
+
+func (r *EmailEventsCursorPaginationAutoPager[T]) Next() bool {
+	if r.page == nil || len(r.page.Data) == 0 {
+		return false
+	}
+	if r.idx >= len(r.page.Data) {
+		r.idx = 0
+		r.page, r.err = r.page.GetNextPage()
+		if r.err != nil || r.page == nil || len(r.page.Data) == 0 {
+			return false
+		}
+	}
+	r.cur = r.page.Data[r.idx]
+	r.run += 1
+	r.idx += 1
+	return true
+}
+
+func (r *EmailEventsCursorPaginationAutoPager[T]) Current() T {
+	return r.cur
+}
+
+func (r *EmailEventsCursorPaginationAutoPager[T]) Err() error {
+	return r.err
+}
+
+func (r *EmailEventsCursorPaginationAutoPager[T]) Index() int {
+	return r.run
+}
+
 type EmailBracketCursorPaginationMeta struct {
 	PageCursor string `json:"page_cursor"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].

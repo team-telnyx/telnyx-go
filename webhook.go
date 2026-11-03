@@ -6344,7 +6344,8 @@ func (r *CallAnalyzedWebhookEventDataPayloadConversationInsightsConversationInsi
 }
 
 // CallAnalyzedWebhookEventDataPayloadCostUnion contains all possible properties
-// and values from [CallAnalyzedWebhookEventDataPayloadCostUnionMember0], [string].
+// and values from [CallAnalyzedWebhookEventDataPayloadCostCallCostBreakdown],
+// [string].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 //
@@ -6354,13 +6355,13 @@ type CallAnalyzedWebhookEventDataPayloadCostUnion struct {
 	// This field will be present if the value is a [string] instead of an object.
 	OfString string `json:",inline"`
 	// This field is from variant
-	// [CallAnalyzedWebhookEventDataPayloadCostUnionMember0].
-	Breakdown []CallAnalyzedWebhookEventDataPayloadCostUnionMember0Breakdown `json:"breakdown"`
+	// [CallAnalyzedWebhookEventDataPayloadCostCallCostBreakdown].
+	Breakdown []CallAnalyzedWebhookEventDataPayloadCostCallCostBreakdownBreakdown `json:"breakdown"`
 	// This field is from variant
-	// [CallAnalyzedWebhookEventDataPayloadCostUnionMember0].
+	// [CallAnalyzedWebhookEventDataPayloadCostCallCostBreakdown].
 	Currency string `json:"currency"`
 	// This field is from variant
-	// [CallAnalyzedWebhookEventDataPayloadCostUnionMember0].
+	// [CallAnalyzedWebhookEventDataPayloadCostCallCostBreakdown].
 	Total string `json:"total"`
 	JSON  struct {
 		OfString  respjson.Field
@@ -6371,7 +6372,7 @@ type CallAnalyzedWebhookEventDataPayloadCostUnion struct {
 	} `json:"-"`
 }
 
-func (u CallAnalyzedWebhookEventDataPayloadCostUnion) AsCallAnalyzedWebhookEventDataPayloadCostUnionMember0() (v CallAnalyzedWebhookEventDataPayloadCostUnionMember0) {
+func (u CallAnalyzedWebhookEventDataPayloadCostUnion) AsCallCostBreakdown() (v CallAnalyzedWebhookEventDataPayloadCostCallCostBreakdown) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -6388,15 +6389,10 @@ func (r *CallAnalyzedWebhookEventDataPayloadCostUnion) UnmarshalJSON(data []byte
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The session's cost breakdown from Session Analysis, covering every product
-// billed on the call: the AI Voice Assistant engine minutes
-// (`ai-voice-assistant`), LLM inference tokens (`inference`), and call-control,
-// SIP trunking, and recording lines. If cost data could not be retrieved after
-// retries, this field carries the placeholder string `No cost data available.`
-// instead of an object.
-type CallAnalyzedWebhookEventDataPayloadCostUnionMember0 struct {
+// The itemized cost of the call.
+type CallAnalyzedWebhookEventDataPayloadCostCallCostBreakdown struct {
 	// Cost lines grouped by product.
-	Breakdown []CallAnalyzedWebhookEventDataPayloadCostUnionMember0Breakdown `json:"breakdown"`
+	Breakdown []CallAnalyzedWebhookEventDataPayloadCostCallCostBreakdownBreakdown `json:"breakdown"`
 	// The currency of the cost amounts.
 	Currency string `json:"currency"`
 	// The total cost of the call, summed across every product in the breakdown.
@@ -6412,12 +6408,12 @@ type CallAnalyzedWebhookEventDataPayloadCostUnionMember0 struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CallAnalyzedWebhookEventDataPayloadCostUnionMember0) RawJSON() string { return r.JSON.raw }
-func (r *CallAnalyzedWebhookEventDataPayloadCostUnionMember0) UnmarshalJSON(data []byte) error {
+func (r CallAnalyzedWebhookEventDataPayloadCostCallCostBreakdown) RawJSON() string { return r.JSON.raw }
+func (r *CallAnalyzedWebhookEventDataPayloadCostCallCostBreakdown) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type CallAnalyzedWebhookEventDataPayloadCostUnionMember0Breakdown struct {
+type CallAnalyzedWebhookEventDataPayloadCostCallCostBreakdownBreakdown struct {
 	// Total cost for this product across the call, in the currency given by
 	// `cost.currency`.
 	Cost string `json:"cost"`
@@ -6434,10 +6430,10 @@ type CallAnalyzedWebhookEventDataPayloadCostUnionMember0Breakdown struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CallAnalyzedWebhookEventDataPayloadCostUnionMember0Breakdown) RawJSON() string {
+func (r CallAnalyzedWebhookEventDataPayloadCostCallCostBreakdownBreakdown) RawJSON() string {
 	return r.JSON.raw
 }
-func (r *CallAnalyzedWebhookEventDataPayloadCostUnionMember0Breakdown) UnmarshalJSON(data []byte) error {
+func (r *CallAnalyzedWebhookEventDataPayloadCostCallCostBreakdownBreakdown) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -10637,8 +10633,8 @@ type UnsafeUnwrapWebhookEventUnionDataPayloadCost struct {
 	// This field will be present if the value is a [string] instead of an object.
 	OfString string `json:",inline"`
 	// This field is from variant [CallAnalyzedWebhookEventDataPayloadCostUnion].
-	Breakdown []CallAnalyzedWebhookEventDataPayloadCostUnionMember0Breakdown `json:"breakdown"`
-	Currency  string                                                         `json:"currency"`
+	Breakdown []CallAnalyzedWebhookEventDataPayloadCostCallCostBreakdownBreakdown `json:"breakdown"`
+	Currency  string                                                              `json:"currency"`
 	// This field is from variant [CallAnalyzedWebhookEventDataPayloadCostUnion].
 	Total  string `json:"total"`
 	Amount string `json:"amount"`
@@ -12259,8 +12255,8 @@ type UnwrapWebhookEventUnionDataPayloadCost struct {
 	// This field will be present if the value is a [string] instead of an object.
 	OfString string `json:",inline"`
 	// This field is from variant [CallAnalyzedWebhookEventDataPayloadCostUnion].
-	Breakdown []CallAnalyzedWebhookEventDataPayloadCostUnionMember0Breakdown `json:"breakdown"`
-	Currency  string                                                         `json:"currency"`
+	Breakdown []CallAnalyzedWebhookEventDataPayloadCostCallCostBreakdownBreakdown `json:"breakdown"`
+	Currency  string                                                              `json:"currency"`
 	// This field is from variant [CallAnalyzedWebhookEventDataPayloadCostUnion].
 	Total  string `json:"total"`
 	Amount string `json:"amount"`

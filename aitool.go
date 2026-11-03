@@ -267,22 +267,23 @@ func (r *PayToolParamsPromptsResp) UnmarshalJSON(data []byte) error {
 
 // PayToolParamsPromptsBankAccountNumberUnionResp contains all possible properties
 // and values from [string],
-// [[]PayToolParamsPromptsBankAccountNumberArrayItemResp].
+// [[]PayToolParamsPromptsBankAccountNumberPayToolPromptListItemResp].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 //
 // If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfPayToolsPromptsBankAccountNumberArray]
+// will be valid: OfString OfPayToolPromptList]
 type PayToolParamsPromptsBankAccountNumberUnionResp struct {
 	// This field will be present if the value is a [string] instead of an object.
 	OfString string `json:",inline"`
 	// This field will be present if the value is a
-	// [[]PayToolParamsPromptsBankAccountNumberArrayItemResp] instead of an object.
-	OfPayToolsPromptsBankAccountNumberArray []PayToolParamsPromptsBankAccountNumberArrayItemResp `json:",inline"`
-	JSON                                    struct {
-		OfString                                respjson.Field
-		OfPayToolsPromptsBankAccountNumberArray respjson.Field
-		raw                                     string
+	// [[]PayToolParamsPromptsBankAccountNumberPayToolPromptListItemResp] instead of an
+	// object.
+	OfPayToolPromptList []PayToolParamsPromptsBankAccountNumberPayToolPromptListItemResp `json:",inline"`
+	JSON                struct {
+		OfString            respjson.Field
+		OfPayToolPromptList respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 
@@ -291,7 +292,7 @@ func (u PayToolParamsPromptsBankAccountNumberUnionResp) AsString() (v string) {
 	return
 }
 
-func (u PayToolParamsPromptsBankAccountNumberUnionResp) AsPayToolParamsPromptsBankAccountNumberArrayRespArray() (v []PayToolParamsPromptsBankAccountNumberArrayItemResp) {
+func (u PayToolParamsPromptsBankAccountNumberUnionResp) AsPayToolPromptList() (v []PayToolParamsPromptsBankAccountNumberPayToolPromptListItemResp) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -305,7 +306,7 @@ func (r *PayToolParamsPromptsBankAccountNumberUnionResp) UnmarshalJSON(data []by
 
 // A text-to-speech prompt with optional matching qualifiers, mirroring the Voice
 // API PayPrompt schema.
-type PayToolParamsPromptsBankAccountNumberArrayItemResp struct {
+type PayToolParamsPromptsBankAccountNumberPayToolPromptListItemResp struct {
 	// Text spoken for the payment collection step.
 	Text string `json:"text" api:"required"`
 	// Space-separated 1-based attempt numbers (1-9 followed by digits only, e.g.
@@ -336,29 +337,32 @@ type PayToolParamsPromptsBankAccountNumberArrayItemResp struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r PayToolParamsPromptsBankAccountNumberArrayItemResp) RawJSON() string { return r.JSON.raw }
-func (r *PayToolParamsPromptsBankAccountNumberArrayItemResp) UnmarshalJSON(data []byte) error {
+func (r PayToolParamsPromptsBankAccountNumberPayToolPromptListItemResp) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *PayToolParamsPromptsBankAccountNumberPayToolPromptListItemResp) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // PayToolParamsPromptsBankRoutingNumberUnionResp contains all possible properties
 // and values from [string],
-// [[]PayToolParamsPromptsBankRoutingNumberArrayItemResp].
+// [[]PayToolParamsPromptsBankRoutingNumberPayToolPromptListItemResp].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 //
 // If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfPayToolsPromptsBankRoutingNumberArray]
+// will be valid: OfString OfPayToolPromptList]
 type PayToolParamsPromptsBankRoutingNumberUnionResp struct {
 	// This field will be present if the value is a [string] instead of an object.
 	OfString string `json:",inline"`
 	// This field will be present if the value is a
-	// [[]PayToolParamsPromptsBankRoutingNumberArrayItemResp] instead of an object.
-	OfPayToolsPromptsBankRoutingNumberArray []PayToolParamsPromptsBankRoutingNumberArrayItemResp `json:",inline"`
-	JSON                                    struct {
-		OfString                                respjson.Field
-		OfPayToolsPromptsBankRoutingNumberArray respjson.Field
-		raw                                     string
+	// [[]PayToolParamsPromptsBankRoutingNumberPayToolPromptListItemResp] instead of an
+	// object.
+	OfPayToolPromptList []PayToolParamsPromptsBankRoutingNumberPayToolPromptListItemResp `json:",inline"`
+	JSON                struct {
+		OfString            respjson.Field
+		OfPayToolPromptList respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 
@@ -367,7 +371,7 @@ func (u PayToolParamsPromptsBankRoutingNumberUnionResp) AsString() (v string) {
 	return
 }
 
-func (u PayToolParamsPromptsBankRoutingNumberUnionResp) AsPayToolParamsPromptsBankRoutingNumberArrayRespArray() (v []PayToolParamsPromptsBankRoutingNumberArrayItemResp) {
+func (u PayToolParamsPromptsBankRoutingNumberUnionResp) AsPayToolPromptList() (v []PayToolParamsPromptsBankRoutingNumberPayToolPromptListItemResp) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -381,7 +385,7 @@ func (r *PayToolParamsPromptsBankRoutingNumberUnionResp) UnmarshalJSON(data []by
 
 // A text-to-speech prompt with optional matching qualifiers, mirroring the Voice
 // API PayPrompt schema.
-type PayToolParamsPromptsBankRoutingNumberArrayItemResp struct {
+type PayToolParamsPromptsBankRoutingNumberPayToolPromptListItemResp struct {
 	// Text spoken for the payment collection step.
 	Text string `json:"text" api:"required"`
 	// Space-separated 1-based attempt numbers (1-9 followed by digits only, e.g.
@@ -412,28 +416,32 @@ type PayToolParamsPromptsBankRoutingNumberArrayItemResp struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r PayToolParamsPromptsBankRoutingNumberArrayItemResp) RawJSON() string { return r.JSON.raw }
-func (r *PayToolParamsPromptsBankRoutingNumberArrayItemResp) UnmarshalJSON(data []byte) error {
+func (r PayToolParamsPromptsBankRoutingNumberPayToolPromptListItemResp) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *PayToolParamsPromptsBankRoutingNumberPayToolPromptListItemResp) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // PayToolParamsPromptsExpirationDateUnionResp contains all possible properties and
-// values from [string], [[]PayToolParamsPromptsExpirationDateArrayItemResp].
+// values from [string],
+// [[]PayToolParamsPromptsExpirationDatePayToolPromptListItemResp].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 //
 // If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfPayToolsPromptsExpirationDateArray]
+// will be valid: OfString OfPayToolPromptList]
 type PayToolParamsPromptsExpirationDateUnionResp struct {
 	// This field will be present if the value is a [string] instead of an object.
 	OfString string `json:",inline"`
 	// This field will be present if the value is a
-	// [[]PayToolParamsPromptsExpirationDateArrayItemResp] instead of an object.
-	OfPayToolsPromptsExpirationDateArray []PayToolParamsPromptsExpirationDateArrayItemResp `json:",inline"`
-	JSON                                 struct {
-		OfString                             respjson.Field
-		OfPayToolsPromptsExpirationDateArray respjson.Field
-		raw                                  string
+	// [[]PayToolParamsPromptsExpirationDatePayToolPromptListItemResp] instead of an
+	// object.
+	OfPayToolPromptList []PayToolParamsPromptsExpirationDatePayToolPromptListItemResp `json:",inline"`
+	JSON                struct {
+		OfString            respjson.Field
+		OfPayToolPromptList respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 
@@ -442,7 +450,7 @@ func (u PayToolParamsPromptsExpirationDateUnionResp) AsString() (v string) {
 	return
 }
 
-func (u PayToolParamsPromptsExpirationDateUnionResp) AsPayToolParamsPromptsExpirationDateArrayRespArray() (v []PayToolParamsPromptsExpirationDateArrayItemResp) {
+func (u PayToolParamsPromptsExpirationDateUnionResp) AsPayToolPromptList() (v []PayToolParamsPromptsExpirationDatePayToolPromptListItemResp) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -456,7 +464,7 @@ func (r *PayToolParamsPromptsExpirationDateUnionResp) UnmarshalJSON(data []byte)
 
 // A text-to-speech prompt with optional matching qualifiers, mirroring the Voice
 // API PayPrompt schema.
-type PayToolParamsPromptsExpirationDateArrayItemResp struct {
+type PayToolParamsPromptsExpirationDatePayToolPromptListItemResp struct {
 	// Text spoken for the payment collection step.
 	Text string `json:"text" api:"required"`
 	// Space-separated 1-based attempt numbers (1-9 followed by digits only, e.g.
@@ -487,29 +495,32 @@ type PayToolParamsPromptsExpirationDateArrayItemResp struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r PayToolParamsPromptsExpirationDateArrayItemResp) RawJSON() string { return r.JSON.raw }
-func (r *PayToolParamsPromptsExpirationDateArrayItemResp) UnmarshalJSON(data []byte) error {
+func (r PayToolParamsPromptsExpirationDatePayToolPromptListItemResp) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *PayToolParamsPromptsExpirationDatePayToolPromptListItemResp) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // PayToolParamsPromptsPaymentCardNumberUnionResp contains all possible properties
 // and values from [string],
-// [[]PayToolParamsPromptsPaymentCardNumberArrayItemResp].
+// [[]PayToolParamsPromptsPaymentCardNumberPayToolPromptListItemResp].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 //
 // If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfPayToolsPromptsPaymentCardNumberArray]
+// will be valid: OfString OfPayToolPromptList]
 type PayToolParamsPromptsPaymentCardNumberUnionResp struct {
 	// This field will be present if the value is a [string] instead of an object.
 	OfString string `json:",inline"`
 	// This field will be present if the value is a
-	// [[]PayToolParamsPromptsPaymentCardNumberArrayItemResp] instead of an object.
-	OfPayToolsPromptsPaymentCardNumberArray []PayToolParamsPromptsPaymentCardNumberArrayItemResp `json:",inline"`
-	JSON                                    struct {
-		OfString                                respjson.Field
-		OfPayToolsPromptsPaymentCardNumberArray respjson.Field
-		raw                                     string
+	// [[]PayToolParamsPromptsPaymentCardNumberPayToolPromptListItemResp] instead of an
+	// object.
+	OfPayToolPromptList []PayToolParamsPromptsPaymentCardNumberPayToolPromptListItemResp `json:",inline"`
+	JSON                struct {
+		OfString            respjson.Field
+		OfPayToolPromptList respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 
@@ -518,7 +529,7 @@ func (u PayToolParamsPromptsPaymentCardNumberUnionResp) AsString() (v string) {
 	return
 }
 
-func (u PayToolParamsPromptsPaymentCardNumberUnionResp) AsPayToolParamsPromptsPaymentCardNumberArrayRespArray() (v []PayToolParamsPromptsPaymentCardNumberArrayItemResp) {
+func (u PayToolParamsPromptsPaymentCardNumberUnionResp) AsPayToolPromptList() (v []PayToolParamsPromptsPaymentCardNumberPayToolPromptListItemResp) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -532,7 +543,7 @@ func (r *PayToolParamsPromptsPaymentCardNumberUnionResp) UnmarshalJSON(data []by
 
 // A text-to-speech prompt with optional matching qualifiers, mirroring the Voice
 // API PayPrompt schema.
-type PayToolParamsPromptsPaymentCardNumberArrayItemResp struct {
+type PayToolParamsPromptsPaymentCardNumberPayToolPromptListItemResp struct {
 	// Text spoken for the payment collection step.
 	Text string `json:"text" api:"required"`
 	// Space-separated 1-based attempt numbers (1-9 followed by digits only, e.g.
@@ -563,28 +574,32 @@ type PayToolParamsPromptsPaymentCardNumberArrayItemResp struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r PayToolParamsPromptsPaymentCardNumberArrayItemResp) RawJSON() string { return r.JSON.raw }
-func (r *PayToolParamsPromptsPaymentCardNumberArrayItemResp) UnmarshalJSON(data []byte) error {
+func (r PayToolParamsPromptsPaymentCardNumberPayToolPromptListItemResp) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *PayToolParamsPromptsPaymentCardNumberPayToolPromptListItemResp) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // PayToolParamsPromptsPostalCodeUnionResp contains all possible properties and
-// values from [string], [[]PayToolParamsPromptsPostalCodeArrayItemResp].
+// values from [string],
+// [[]PayToolParamsPromptsPostalCodePayToolPromptListItemResp].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 //
 // If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfPayToolsPromptsPostalCodeArray]
+// will be valid: OfString OfPayToolPromptList]
 type PayToolParamsPromptsPostalCodeUnionResp struct {
 	// This field will be present if the value is a [string] instead of an object.
 	OfString string `json:",inline"`
 	// This field will be present if the value is a
-	// [[]PayToolParamsPromptsPostalCodeArrayItemResp] instead of an object.
-	OfPayToolsPromptsPostalCodeArray []PayToolParamsPromptsPostalCodeArrayItemResp `json:",inline"`
-	JSON                             struct {
-		OfString                         respjson.Field
-		OfPayToolsPromptsPostalCodeArray respjson.Field
-		raw                              string
+	// [[]PayToolParamsPromptsPostalCodePayToolPromptListItemResp] instead of an
+	// object.
+	OfPayToolPromptList []PayToolParamsPromptsPostalCodePayToolPromptListItemResp `json:",inline"`
+	JSON                struct {
+		OfString            respjson.Field
+		OfPayToolPromptList respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 
@@ -593,7 +608,7 @@ func (u PayToolParamsPromptsPostalCodeUnionResp) AsString() (v string) {
 	return
 }
 
-func (u PayToolParamsPromptsPostalCodeUnionResp) AsPayToolParamsPromptsPostalCodeArrayRespArray() (v []PayToolParamsPromptsPostalCodeArrayItemResp) {
+func (u PayToolParamsPromptsPostalCodeUnionResp) AsPayToolPromptList() (v []PayToolParamsPromptsPostalCodePayToolPromptListItemResp) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -607,7 +622,7 @@ func (r *PayToolParamsPromptsPostalCodeUnionResp) UnmarshalJSON(data []byte) err
 
 // A text-to-speech prompt with optional matching qualifiers, mirroring the Voice
 // API PayPrompt schema.
-type PayToolParamsPromptsPostalCodeArrayItemResp struct {
+type PayToolParamsPromptsPostalCodePayToolPromptListItemResp struct {
 	// Text spoken for the payment collection step.
 	Text string `json:"text" api:"required"`
 	// Space-separated 1-based attempt numbers (1-9 followed by digits only, e.g.
@@ -638,28 +653,30 @@ type PayToolParamsPromptsPostalCodeArrayItemResp struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r PayToolParamsPromptsPostalCodeArrayItemResp) RawJSON() string { return r.JSON.raw }
-func (r *PayToolParamsPromptsPostalCodeArrayItemResp) UnmarshalJSON(data []byte) error {
+func (r PayToolParamsPromptsPostalCodePayToolPromptListItemResp) RawJSON() string { return r.JSON.raw }
+func (r *PayToolParamsPromptsPostalCodePayToolPromptListItemResp) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // PayToolParamsPromptsSecurityCodeUnionResp contains all possible properties and
-// values from [string], [[]PayToolParamsPromptsSecurityCodeArrayItemResp].
+// values from [string],
+// [[]PayToolParamsPromptsSecurityCodePayToolPromptListItemResp].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 //
 // If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfPayToolsPromptsSecurityCodeArray]
+// will be valid: OfString OfPayToolPromptList]
 type PayToolParamsPromptsSecurityCodeUnionResp struct {
 	// This field will be present if the value is a [string] instead of an object.
 	OfString string `json:",inline"`
 	// This field will be present if the value is a
-	// [[]PayToolParamsPromptsSecurityCodeArrayItemResp] instead of an object.
-	OfPayToolsPromptsSecurityCodeArray []PayToolParamsPromptsSecurityCodeArrayItemResp `json:",inline"`
-	JSON                               struct {
-		OfString                           respjson.Field
-		OfPayToolsPromptsSecurityCodeArray respjson.Field
-		raw                                string
+	// [[]PayToolParamsPromptsSecurityCodePayToolPromptListItemResp] instead of an
+	// object.
+	OfPayToolPromptList []PayToolParamsPromptsSecurityCodePayToolPromptListItemResp `json:",inline"`
+	JSON                struct {
+		OfString            respjson.Field
+		OfPayToolPromptList respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 
@@ -668,7 +685,7 @@ func (u PayToolParamsPromptsSecurityCodeUnionResp) AsString() (v string) {
 	return
 }
 
-func (u PayToolParamsPromptsSecurityCodeUnionResp) AsPayToolParamsPromptsSecurityCodeArrayRespArray() (v []PayToolParamsPromptsSecurityCodeArrayItemResp) {
+func (u PayToolParamsPromptsSecurityCodeUnionResp) AsPayToolPromptList() (v []PayToolParamsPromptsSecurityCodePayToolPromptListItemResp) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -682,7 +699,7 @@ func (r *PayToolParamsPromptsSecurityCodeUnionResp) UnmarshalJSON(data []byte) e
 
 // A text-to-speech prompt with optional matching qualifiers, mirroring the Voice
 // API PayPrompt schema.
-type PayToolParamsPromptsSecurityCodeArrayItemResp struct {
+type PayToolParamsPromptsSecurityCodePayToolPromptListItemResp struct {
 	// Text spoken for the payment collection step.
 	Text string `json:"text" api:"required"`
 	// Space-separated 1-based attempt numbers (1-9 followed by digits only, e.g.
@@ -713,8 +730,10 @@ type PayToolParamsPromptsSecurityCodeArrayItemResp struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r PayToolParamsPromptsSecurityCodeArrayItemResp) RawJSON() string { return r.JSON.raw }
-func (r *PayToolParamsPromptsSecurityCodeArrayItemResp) UnmarshalJSON(data []byte) error {
+func (r PayToolParamsPromptsSecurityCodePayToolPromptListItemResp) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *PayToolParamsPromptsSecurityCodePayToolPromptListItemResp) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -834,13 +853,13 @@ func (r *PayToolParamsPrompts) UnmarshalJSON(data []byte) error {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type PayToolParamsPromptsBankAccountNumberUnion struct {
-	OfString                                param.Opt[string]                                `json:",omitzero,inline"`
-	OfPayToolsPromptsBankAccountNumberArray []PayToolParamsPromptsBankAccountNumberArrayItem `json:",omitzero,inline"`
+	OfString            param.Opt[string]                                            `json:",omitzero,inline"`
+	OfPayToolPromptList []PayToolParamsPromptsBankAccountNumberPayToolPromptListItem `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u PayToolParamsPromptsBankAccountNumberUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfString, u.OfPayToolsPromptsBankAccountNumberArray)
+	return param.MarshalUnion(u, u.OfString, u.OfPayToolPromptList)
 }
 func (u *PayToolParamsPromptsBankAccountNumberUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -849,8 +868,8 @@ func (u *PayToolParamsPromptsBankAccountNumberUnion) UnmarshalJSON(data []byte) 
 func (u *PayToolParamsPromptsBankAccountNumberUnion) asAny() any {
 	if !param.IsOmitted(u.OfString) {
 		return &u.OfString.Value
-	} else if !param.IsOmitted(u.OfPayToolsPromptsBankAccountNumberArray) {
-		return &u.OfPayToolsPromptsBankAccountNumberArray
+	} else if !param.IsOmitted(u.OfPayToolPromptList) {
+		return &u.OfPayToolPromptList
 	}
 	return nil
 }
@@ -859,7 +878,7 @@ func (u *PayToolParamsPromptsBankAccountNumberUnion) asAny() any {
 // API PayPrompt schema.
 //
 // The property Text is required.
-type PayToolParamsPromptsBankAccountNumberArrayItem struct {
+type PayToolParamsPromptsBankAccountNumberPayToolPromptListItem struct {
 	// Text spoken for the payment collection step.
 	Text string `json:"text" api:"required"`
 	// Space-separated 1-based attempt numbers (1-9 followed by digits only, e.g.
@@ -881,19 +900,19 @@ type PayToolParamsPromptsBankAccountNumberArrayItem struct {
 	paramObj
 }
 
-func (r PayToolParamsPromptsBankAccountNumberArrayItem) MarshalJSON() (data []byte, err error) {
-	type shadow PayToolParamsPromptsBankAccountNumberArrayItem
+func (r PayToolParamsPromptsBankAccountNumberPayToolPromptListItem) MarshalJSON() (data []byte, err error) {
+	type shadow PayToolParamsPromptsBankAccountNumberPayToolPromptListItem
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *PayToolParamsPromptsBankAccountNumberArrayItem) UnmarshalJSON(data []byte) error {
+func (r *PayToolParamsPromptsBankAccountNumberPayToolPromptListItem) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[PayToolParamsPromptsBankAccountNumberArrayItem](
+	apijson.RegisterFieldValidator[PayToolParamsPromptsBankAccountNumberPayToolPromptListItem](
 		"card_type", "visa", "mastercard", "amex", "optima", "discover", "diners-club", "jcb", "maestro", "enroute",
 	)
-	apijson.RegisterFieldValidator[PayToolParamsPromptsBankAccountNumberArrayItem](
+	apijson.RegisterFieldValidator[PayToolParamsPromptsBankAccountNumberPayToolPromptListItem](
 		"error_type", "timeout", "invalid-card-number", "invalid-card-type", "invalid-date", "invalid-security-code", "invalid-postal-code", "invalid-bank-routing-number", "invalid-bank-account-number", "input-matching-failed",
 	)
 }
@@ -902,13 +921,13 @@ func init() {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type PayToolParamsPromptsBankRoutingNumberUnion struct {
-	OfString                                param.Opt[string]                                `json:",omitzero,inline"`
-	OfPayToolsPromptsBankRoutingNumberArray []PayToolParamsPromptsBankRoutingNumberArrayItem `json:",omitzero,inline"`
+	OfString            param.Opt[string]                                            `json:",omitzero,inline"`
+	OfPayToolPromptList []PayToolParamsPromptsBankRoutingNumberPayToolPromptListItem `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u PayToolParamsPromptsBankRoutingNumberUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfString, u.OfPayToolsPromptsBankRoutingNumberArray)
+	return param.MarshalUnion(u, u.OfString, u.OfPayToolPromptList)
 }
 func (u *PayToolParamsPromptsBankRoutingNumberUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -917,8 +936,8 @@ func (u *PayToolParamsPromptsBankRoutingNumberUnion) UnmarshalJSON(data []byte) 
 func (u *PayToolParamsPromptsBankRoutingNumberUnion) asAny() any {
 	if !param.IsOmitted(u.OfString) {
 		return &u.OfString.Value
-	} else if !param.IsOmitted(u.OfPayToolsPromptsBankRoutingNumberArray) {
-		return &u.OfPayToolsPromptsBankRoutingNumberArray
+	} else if !param.IsOmitted(u.OfPayToolPromptList) {
+		return &u.OfPayToolPromptList
 	}
 	return nil
 }
@@ -927,7 +946,7 @@ func (u *PayToolParamsPromptsBankRoutingNumberUnion) asAny() any {
 // API PayPrompt schema.
 //
 // The property Text is required.
-type PayToolParamsPromptsBankRoutingNumberArrayItem struct {
+type PayToolParamsPromptsBankRoutingNumberPayToolPromptListItem struct {
 	// Text spoken for the payment collection step.
 	Text string `json:"text" api:"required"`
 	// Space-separated 1-based attempt numbers (1-9 followed by digits only, e.g.
@@ -949,19 +968,19 @@ type PayToolParamsPromptsBankRoutingNumberArrayItem struct {
 	paramObj
 }
 
-func (r PayToolParamsPromptsBankRoutingNumberArrayItem) MarshalJSON() (data []byte, err error) {
-	type shadow PayToolParamsPromptsBankRoutingNumberArrayItem
+func (r PayToolParamsPromptsBankRoutingNumberPayToolPromptListItem) MarshalJSON() (data []byte, err error) {
+	type shadow PayToolParamsPromptsBankRoutingNumberPayToolPromptListItem
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *PayToolParamsPromptsBankRoutingNumberArrayItem) UnmarshalJSON(data []byte) error {
+func (r *PayToolParamsPromptsBankRoutingNumberPayToolPromptListItem) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[PayToolParamsPromptsBankRoutingNumberArrayItem](
+	apijson.RegisterFieldValidator[PayToolParamsPromptsBankRoutingNumberPayToolPromptListItem](
 		"card_type", "visa", "mastercard", "amex", "optima", "discover", "diners-club", "jcb", "maestro", "enroute",
 	)
-	apijson.RegisterFieldValidator[PayToolParamsPromptsBankRoutingNumberArrayItem](
+	apijson.RegisterFieldValidator[PayToolParamsPromptsBankRoutingNumberPayToolPromptListItem](
 		"error_type", "timeout", "invalid-card-number", "invalid-card-type", "invalid-date", "invalid-security-code", "invalid-postal-code", "invalid-bank-routing-number", "invalid-bank-account-number", "input-matching-failed",
 	)
 }
@@ -970,13 +989,13 @@ func init() {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type PayToolParamsPromptsExpirationDateUnion struct {
-	OfString                             param.Opt[string]                             `json:",omitzero,inline"`
-	OfPayToolsPromptsExpirationDateArray []PayToolParamsPromptsExpirationDateArrayItem `json:",omitzero,inline"`
+	OfString            param.Opt[string]                                         `json:",omitzero,inline"`
+	OfPayToolPromptList []PayToolParamsPromptsExpirationDatePayToolPromptListItem `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u PayToolParamsPromptsExpirationDateUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfString, u.OfPayToolsPromptsExpirationDateArray)
+	return param.MarshalUnion(u, u.OfString, u.OfPayToolPromptList)
 }
 func (u *PayToolParamsPromptsExpirationDateUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -985,8 +1004,8 @@ func (u *PayToolParamsPromptsExpirationDateUnion) UnmarshalJSON(data []byte) err
 func (u *PayToolParamsPromptsExpirationDateUnion) asAny() any {
 	if !param.IsOmitted(u.OfString) {
 		return &u.OfString.Value
-	} else if !param.IsOmitted(u.OfPayToolsPromptsExpirationDateArray) {
-		return &u.OfPayToolsPromptsExpirationDateArray
+	} else if !param.IsOmitted(u.OfPayToolPromptList) {
+		return &u.OfPayToolPromptList
 	}
 	return nil
 }
@@ -995,7 +1014,7 @@ func (u *PayToolParamsPromptsExpirationDateUnion) asAny() any {
 // API PayPrompt schema.
 //
 // The property Text is required.
-type PayToolParamsPromptsExpirationDateArrayItem struct {
+type PayToolParamsPromptsExpirationDatePayToolPromptListItem struct {
 	// Text spoken for the payment collection step.
 	Text string `json:"text" api:"required"`
 	// Space-separated 1-based attempt numbers (1-9 followed by digits only, e.g.
@@ -1017,19 +1036,19 @@ type PayToolParamsPromptsExpirationDateArrayItem struct {
 	paramObj
 }
 
-func (r PayToolParamsPromptsExpirationDateArrayItem) MarshalJSON() (data []byte, err error) {
-	type shadow PayToolParamsPromptsExpirationDateArrayItem
+func (r PayToolParamsPromptsExpirationDatePayToolPromptListItem) MarshalJSON() (data []byte, err error) {
+	type shadow PayToolParamsPromptsExpirationDatePayToolPromptListItem
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *PayToolParamsPromptsExpirationDateArrayItem) UnmarshalJSON(data []byte) error {
+func (r *PayToolParamsPromptsExpirationDatePayToolPromptListItem) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[PayToolParamsPromptsExpirationDateArrayItem](
+	apijson.RegisterFieldValidator[PayToolParamsPromptsExpirationDatePayToolPromptListItem](
 		"card_type", "visa", "mastercard", "amex", "optima", "discover", "diners-club", "jcb", "maestro", "enroute",
 	)
-	apijson.RegisterFieldValidator[PayToolParamsPromptsExpirationDateArrayItem](
+	apijson.RegisterFieldValidator[PayToolParamsPromptsExpirationDatePayToolPromptListItem](
 		"error_type", "timeout", "invalid-card-number", "invalid-card-type", "invalid-date", "invalid-security-code", "invalid-postal-code", "invalid-bank-routing-number", "invalid-bank-account-number", "input-matching-failed",
 	)
 }
@@ -1038,13 +1057,13 @@ func init() {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type PayToolParamsPromptsPaymentCardNumberUnion struct {
-	OfString                                param.Opt[string]                                `json:",omitzero,inline"`
-	OfPayToolsPromptsPaymentCardNumberArray []PayToolParamsPromptsPaymentCardNumberArrayItem `json:",omitzero,inline"`
+	OfString            param.Opt[string]                                            `json:",omitzero,inline"`
+	OfPayToolPromptList []PayToolParamsPromptsPaymentCardNumberPayToolPromptListItem `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u PayToolParamsPromptsPaymentCardNumberUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfString, u.OfPayToolsPromptsPaymentCardNumberArray)
+	return param.MarshalUnion(u, u.OfString, u.OfPayToolPromptList)
 }
 func (u *PayToolParamsPromptsPaymentCardNumberUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -1053,8 +1072,8 @@ func (u *PayToolParamsPromptsPaymentCardNumberUnion) UnmarshalJSON(data []byte) 
 func (u *PayToolParamsPromptsPaymentCardNumberUnion) asAny() any {
 	if !param.IsOmitted(u.OfString) {
 		return &u.OfString.Value
-	} else if !param.IsOmitted(u.OfPayToolsPromptsPaymentCardNumberArray) {
-		return &u.OfPayToolsPromptsPaymentCardNumberArray
+	} else if !param.IsOmitted(u.OfPayToolPromptList) {
+		return &u.OfPayToolPromptList
 	}
 	return nil
 }
@@ -1063,7 +1082,7 @@ func (u *PayToolParamsPromptsPaymentCardNumberUnion) asAny() any {
 // API PayPrompt schema.
 //
 // The property Text is required.
-type PayToolParamsPromptsPaymentCardNumberArrayItem struct {
+type PayToolParamsPromptsPaymentCardNumberPayToolPromptListItem struct {
 	// Text spoken for the payment collection step.
 	Text string `json:"text" api:"required"`
 	// Space-separated 1-based attempt numbers (1-9 followed by digits only, e.g.
@@ -1085,19 +1104,19 @@ type PayToolParamsPromptsPaymentCardNumberArrayItem struct {
 	paramObj
 }
 
-func (r PayToolParamsPromptsPaymentCardNumberArrayItem) MarshalJSON() (data []byte, err error) {
-	type shadow PayToolParamsPromptsPaymentCardNumberArrayItem
+func (r PayToolParamsPromptsPaymentCardNumberPayToolPromptListItem) MarshalJSON() (data []byte, err error) {
+	type shadow PayToolParamsPromptsPaymentCardNumberPayToolPromptListItem
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *PayToolParamsPromptsPaymentCardNumberArrayItem) UnmarshalJSON(data []byte) error {
+func (r *PayToolParamsPromptsPaymentCardNumberPayToolPromptListItem) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[PayToolParamsPromptsPaymentCardNumberArrayItem](
+	apijson.RegisterFieldValidator[PayToolParamsPromptsPaymentCardNumberPayToolPromptListItem](
 		"card_type", "visa", "mastercard", "amex", "optima", "discover", "diners-club", "jcb", "maestro", "enroute",
 	)
-	apijson.RegisterFieldValidator[PayToolParamsPromptsPaymentCardNumberArrayItem](
+	apijson.RegisterFieldValidator[PayToolParamsPromptsPaymentCardNumberPayToolPromptListItem](
 		"error_type", "timeout", "invalid-card-number", "invalid-card-type", "invalid-date", "invalid-security-code", "invalid-postal-code", "invalid-bank-routing-number", "invalid-bank-account-number", "input-matching-failed",
 	)
 }
@@ -1106,13 +1125,13 @@ func init() {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type PayToolParamsPromptsPostalCodeUnion struct {
-	OfString                         param.Opt[string]                         `json:",omitzero,inline"`
-	OfPayToolsPromptsPostalCodeArray []PayToolParamsPromptsPostalCodeArrayItem `json:",omitzero,inline"`
+	OfString            param.Opt[string]                                     `json:",omitzero,inline"`
+	OfPayToolPromptList []PayToolParamsPromptsPostalCodePayToolPromptListItem `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u PayToolParamsPromptsPostalCodeUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfString, u.OfPayToolsPromptsPostalCodeArray)
+	return param.MarshalUnion(u, u.OfString, u.OfPayToolPromptList)
 }
 func (u *PayToolParamsPromptsPostalCodeUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -1121,8 +1140,8 @@ func (u *PayToolParamsPromptsPostalCodeUnion) UnmarshalJSON(data []byte) error {
 func (u *PayToolParamsPromptsPostalCodeUnion) asAny() any {
 	if !param.IsOmitted(u.OfString) {
 		return &u.OfString.Value
-	} else if !param.IsOmitted(u.OfPayToolsPromptsPostalCodeArray) {
-		return &u.OfPayToolsPromptsPostalCodeArray
+	} else if !param.IsOmitted(u.OfPayToolPromptList) {
+		return &u.OfPayToolPromptList
 	}
 	return nil
 }
@@ -1131,7 +1150,7 @@ func (u *PayToolParamsPromptsPostalCodeUnion) asAny() any {
 // API PayPrompt schema.
 //
 // The property Text is required.
-type PayToolParamsPromptsPostalCodeArrayItem struct {
+type PayToolParamsPromptsPostalCodePayToolPromptListItem struct {
 	// Text spoken for the payment collection step.
 	Text string `json:"text" api:"required"`
 	// Space-separated 1-based attempt numbers (1-9 followed by digits only, e.g.
@@ -1153,19 +1172,19 @@ type PayToolParamsPromptsPostalCodeArrayItem struct {
 	paramObj
 }
 
-func (r PayToolParamsPromptsPostalCodeArrayItem) MarshalJSON() (data []byte, err error) {
-	type shadow PayToolParamsPromptsPostalCodeArrayItem
+func (r PayToolParamsPromptsPostalCodePayToolPromptListItem) MarshalJSON() (data []byte, err error) {
+	type shadow PayToolParamsPromptsPostalCodePayToolPromptListItem
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *PayToolParamsPromptsPostalCodeArrayItem) UnmarshalJSON(data []byte) error {
+func (r *PayToolParamsPromptsPostalCodePayToolPromptListItem) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[PayToolParamsPromptsPostalCodeArrayItem](
+	apijson.RegisterFieldValidator[PayToolParamsPromptsPostalCodePayToolPromptListItem](
 		"card_type", "visa", "mastercard", "amex", "optima", "discover", "diners-club", "jcb", "maestro", "enroute",
 	)
-	apijson.RegisterFieldValidator[PayToolParamsPromptsPostalCodeArrayItem](
+	apijson.RegisterFieldValidator[PayToolParamsPromptsPostalCodePayToolPromptListItem](
 		"error_type", "timeout", "invalid-card-number", "invalid-card-type", "invalid-date", "invalid-security-code", "invalid-postal-code", "invalid-bank-routing-number", "invalid-bank-account-number", "input-matching-failed",
 	)
 }
@@ -1174,13 +1193,13 @@ func init() {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type PayToolParamsPromptsSecurityCodeUnion struct {
-	OfString                           param.Opt[string]                           `json:",omitzero,inline"`
-	OfPayToolsPromptsSecurityCodeArray []PayToolParamsPromptsSecurityCodeArrayItem `json:",omitzero,inline"`
+	OfString            param.Opt[string]                                       `json:",omitzero,inline"`
+	OfPayToolPromptList []PayToolParamsPromptsSecurityCodePayToolPromptListItem `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u PayToolParamsPromptsSecurityCodeUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfString, u.OfPayToolsPromptsSecurityCodeArray)
+	return param.MarshalUnion(u, u.OfString, u.OfPayToolPromptList)
 }
 func (u *PayToolParamsPromptsSecurityCodeUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -1189,8 +1208,8 @@ func (u *PayToolParamsPromptsSecurityCodeUnion) UnmarshalJSON(data []byte) error
 func (u *PayToolParamsPromptsSecurityCodeUnion) asAny() any {
 	if !param.IsOmitted(u.OfString) {
 		return &u.OfString.Value
-	} else if !param.IsOmitted(u.OfPayToolsPromptsSecurityCodeArray) {
-		return &u.OfPayToolsPromptsSecurityCodeArray
+	} else if !param.IsOmitted(u.OfPayToolPromptList) {
+		return &u.OfPayToolPromptList
 	}
 	return nil
 }
@@ -1199,7 +1218,7 @@ func (u *PayToolParamsPromptsSecurityCodeUnion) asAny() any {
 // API PayPrompt schema.
 //
 // The property Text is required.
-type PayToolParamsPromptsSecurityCodeArrayItem struct {
+type PayToolParamsPromptsSecurityCodePayToolPromptListItem struct {
 	// Text spoken for the payment collection step.
 	Text string `json:"text" api:"required"`
 	// Space-separated 1-based attempt numbers (1-9 followed by digits only, e.g.
@@ -1221,19 +1240,19 @@ type PayToolParamsPromptsSecurityCodeArrayItem struct {
 	paramObj
 }
 
-func (r PayToolParamsPromptsSecurityCodeArrayItem) MarshalJSON() (data []byte, err error) {
-	type shadow PayToolParamsPromptsSecurityCodeArrayItem
+func (r PayToolParamsPromptsSecurityCodePayToolPromptListItem) MarshalJSON() (data []byte, err error) {
+	type shadow PayToolParamsPromptsSecurityCodePayToolPromptListItem
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *PayToolParamsPromptsSecurityCodeArrayItem) UnmarshalJSON(data []byte) error {
+func (r *PayToolParamsPromptsSecurityCodePayToolPromptListItem) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[PayToolParamsPromptsSecurityCodeArrayItem](
+	apijson.RegisterFieldValidator[PayToolParamsPromptsSecurityCodePayToolPromptListItem](
 		"card_type", "visa", "mastercard", "amex", "optima", "discover", "diners-club", "jcb", "maestro", "enroute",
 	)
-	apijson.RegisterFieldValidator[PayToolParamsPromptsSecurityCodeArrayItem](
+	apijson.RegisterFieldValidator[PayToolParamsPromptsSecurityCodePayToolPromptListItem](
 		"error_type", "timeout", "invalid-card-number", "invalid-card-type", "invalid-date", "invalid-security-code", "invalid-postal-code", "invalid-bank-routing-number", "invalid-bank-account-number", "input-matching-failed",
 	)
 }
