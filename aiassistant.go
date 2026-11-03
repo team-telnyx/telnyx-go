@@ -5707,6 +5707,11 @@ type InferenceEmbeddingVoiceSettings struct {
 	// assistant uses audio tags like angry, excited, content, and sad to add emotional
 	// nuance. Only supported for Telnyx Ultra voices.
 	ExpressiveMode bool `json:"expressive_mode"`
+	// Two-letter ISO 639-1 code of the language the voice speaks, for example `es`.
+	// Only applicable to Soniox and AssemblyAI voices, which speak every language of
+	// their model. AssemblyAI accepts `en`, `es`, `de`, `fr`, `it`, and `pt`. When
+	// unset, the voice speaks English.
+	Language string `json:"language" api:"nullable"`
 	// Enhances recognition for specific languages and dialects during MiniMax TTS
 	// synthesis. Default is null (no boost). Set to 'auto' for automatic language
 	// detection. Only applicable when using MiniMax voices.
@@ -5752,6 +5757,7 @@ type InferenceEmbeddingVoiceSettings struct {
 		APIKeyRef       respjson.Field
 		BackgroundAudio respjson.Field
 		ExpressiveMode  respjson.Field
+		Language        respjson.Field
 		LanguageBoost   respjson.Field
 		SimilarityBoost respjson.Field
 		Speed           respjson.Field
@@ -6056,6 +6062,11 @@ type InferenceEmbeddingVoiceSettingsParam struct {
 	// resolved at call time from your dynamic variables webhook, allowing you to
 	// select the voice dynamically per call.
 	Voice string `json:"voice" api:"required"`
+	// Two-letter ISO 639-1 code of the language the voice speaks, for example `es`.
+	// Only applicable to Soniox and AssemblyAI voices, which speak every language of
+	// their model. AssemblyAI accepts `en`, `es`, `de`, `fr`, `it`, and `pt`. When
+	// unset, the voice speaks English.
+	Language param.Opt[string] `json:"language,omitzero"`
 	// The `identifier` for an integration secret
 	// [/v2/integration_secrets](https://developers.telnyx.com/api-reference/integration-secrets/create-a-secret)
 	// that refers to your ElevenLabs API key. Warning: Free plans are unlikely to work
