@@ -441,6 +441,8 @@ type Client struct {
 	// Tunnels connect a Network to hosts behind a tunnel process within the user's
 	// network.
 	Tunnels TunnelService
+	// Read and update the authenticated user's profile and data locality.
+	UserProfile UserProfileService
 }
 
 // DefaultClientOptions read from the environment (TELNYX_API_KEY,
@@ -683,6 +685,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.NetworkRoutes = NewNetworkRouteService(opts...)
 	r.PayConnectors = NewPayConnectorService(opts...)
 	r.Tunnels = NewTunnelService(opts...)
+	r.UserProfile = NewUserProfileService(opts...)
 
 	return
 }
