@@ -7135,6 +7135,7 @@ Params Types:
 
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AgentGatewayPolicyGuardrailsParam">AgentGatewayPolicyGuardrailsParam</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AgentGatewayPolicyPipelineParam">AgentGatewayPolicyPipelineParam</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AgentGatewayPolicyStepParam">AgentGatewayPolicyStepParam</a>
 
 Response Types:
 
@@ -7142,6 +7143,7 @@ Response Types:
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AgentGatewayPolicyGuardrails">AgentGatewayPolicyGuardrails</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AgentGatewayPolicyPipeline">AgentGatewayPolicyPipeline</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AgentGatewayPolicyResponse">AgentGatewayPolicyResponse</a>
+- <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AgentGatewayPolicyStep">AgentGatewayPolicyStep</a>
 - <a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4">telnyx</a>.<a href="https://pkg.go.dev/github.com/team-telnyx/telnyx-go/v4#AgentGatewayPolicyListResponse">AgentGatewayPolicyListResponse</a>
 
 Methods:

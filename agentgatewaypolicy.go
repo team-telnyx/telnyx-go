@@ -219,8 +219,8 @@ type AgentGatewayPolicyPipeline struct {
 	// model's response.
 	//
 	// Any of "before_request", "after_request".
-	Hook  AgentGatewayPolicyPipelineHook   `json:"hook" api:"required"`
-	Steps []AgentGatewayPolicyPipelineStep `json:"steps" api:"required"`
+	Hook  AgentGatewayPolicyPipelineHook `json:"hook" api:"required"`
+	Steps []AgentGatewayPolicyStep       `json:"steps" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Hook        respjson.Field
@@ -255,48 +255,6 @@ const (
 	AgentGatewayPolicyPipelineHookAfterRequest  AgentGatewayPolicyPipelineHook = "after_request"
 )
 
-// One pipeline step: a guardrail, and what happens when it passes, fails, or
-// errors.
-type AgentGatewayPolicyPipelineStep struct {
-	// A guardrail on the instance, by name.
-	Guardrail string `json:"guardrail" api:"required"`
-	// The response that replaces the model's when an outcome is `respond`. Required
-	// with `respond`.
-	Message string `json:"message" api:"nullable"`
-	// What happens when the guardrail errors. Left out, the same as `on_fail`.
-	//
-	// Any of "next", "allow", "block", "respond".
-	OnError string `json:"on_error" api:"nullable"`
-	// What happens when the guardrail fails.
-	//
-	// Any of "next", "allow", "block", "respond".
-	OnFail string `json:"on_fail"`
-	// What happens when the guardrail passes. `next` goes on to the next step, `allow`
-	// allows the request, `block` blocks it, and `respond` answers with `message`.
-	//
-	// Any of "next", "allow", "block", "respond".
-	OnPass string `json:"on_pass"`
-	// `true` hands the step's modified request, such as masked text, to the next step.
-	PassData bool `json:"pass_data"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Guardrail   respjson.Field
-		Message     respjson.Field
-		OnError     respjson.Field
-		OnFail      respjson.Field
-		OnPass      respjson.Field
-		PassData    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AgentGatewayPolicyPipelineStep) RawJSON() string { return r.JSON.raw }
-func (r *AgentGatewayPolicyPipelineStep) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // Ordered steps that run in place of the policy's guardrails running
 // independently.
 //
@@ -306,8 +264,8 @@ type AgentGatewayPolicyPipelineParam struct {
 	// model's response.
 	//
 	// Any of "before_request", "after_request".
-	Hook  AgentGatewayPolicyPipelineHook        `json:"hook,omitzero" api:"required"`
-	Steps []AgentGatewayPolicyPipelineStepParam `json:"steps,omitzero" api:"required"`
+	Hook  AgentGatewayPolicyPipelineHook `json:"hook,omitzero" api:"required"`
+	Steps []AgentGatewayPolicyStepParam  `json:"steps,omitzero" api:"required"`
 	paramObj
 }
 
@@ -317,54 +275,6 @@ func (r AgentGatewayPolicyPipelineParam) MarshalJSON() (data []byte, err error) 
 }
 func (r *AgentGatewayPolicyPipelineParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-// One pipeline step: a guardrail, and what happens when it passes, fails, or
-// errors.
-//
-// The property Guardrail is required.
-type AgentGatewayPolicyPipelineStepParam struct {
-	// A guardrail on the instance, by name.
-	Guardrail string `json:"guardrail" api:"required"`
-	// The response that replaces the model's when an outcome is `respond`. Required
-	// with `respond`.
-	Message param.Opt[string] `json:"message,omitzero"`
-	// `true` hands the step's modified request, such as masked text, to the next step.
-	PassData param.Opt[bool] `json:"pass_data,omitzero"`
-	// What happens when the guardrail errors. Left out, the same as `on_fail`.
-	//
-	// Any of "next", "allow", "block", "respond".
-	OnError string `json:"on_error,omitzero"`
-	// What happens when the guardrail fails.
-	//
-	// Any of "next", "allow", "block", "respond".
-	OnFail string `json:"on_fail,omitzero"`
-	// What happens when the guardrail passes. `next` goes on to the next step, `allow`
-	// allows the request, `block` blocks it, and `respond` answers with `message`.
-	//
-	// Any of "next", "allow", "block", "respond".
-	OnPass string `json:"on_pass,omitzero"`
-	paramObj
-}
-
-func (r AgentGatewayPolicyPipelineStepParam) MarshalJSON() (data []byte, err error) {
-	type shadow AgentGatewayPolicyPipelineStepParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *AgentGatewayPolicyPipelineStepParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[AgentGatewayPolicyPipelineStepParam](
-		"on_error", "next", "allow", "block", "respond",
-	)
-	apijson.RegisterFieldValidator[AgentGatewayPolicyPipelineStepParam](
-		"on_fail", "next", "allow", "block", "respond",
-	)
-	apijson.RegisterFieldValidator[AgentGatewayPolicyPipelineStepParam](
-		"on_pass", "next", "allow", "block", "respond",
-	)
 }
 
 type AgentGatewayPolicyResponse struct {
@@ -381,6 +291,124 @@ type AgentGatewayPolicyResponse struct {
 // Returns the unmodified JSON received from the API
 func (r AgentGatewayPolicyResponse) RawJSON() string { return r.JSON.raw }
 func (r *AgentGatewayPolicyResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// One pipeline step: a guardrail, and what happens when it passes, fails, or
+// errors.
+type AgentGatewayPolicyStep struct {
+	// A guardrail on the instance, by name.
+	Guardrail string `json:"guardrail" api:"required"`
+	// The response that replaces the model's when an outcome is `respond`. Required
+	// with `respond`.
+	Message string `json:"message" api:"nullable"`
+	// What happens when the guardrail errors. Left out, the same as `on_fail`.
+	//
+	// Any of "next", "allow", "block", "respond".
+	OnError AgentGatewayPolicyStepOnError `json:"on_error" api:"nullable"`
+	// What happens when the guardrail fails.
+	//
+	// Any of "next", "allow", "block", "respond".
+	OnFail AgentGatewayPolicyStepOnFail `json:"on_fail"`
+	// What happens when the guardrail passes. `next` goes on to the next step, `allow`
+	// allows the request, `block` blocks it, and `respond` answers with `message`.
+	//
+	// Any of "next", "allow", "block", "respond".
+	OnPass AgentGatewayPolicyStepOnPass `json:"on_pass"`
+	// `true` hands the step's modified request, such as masked text, to the next step.
+	PassData bool `json:"pass_data"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Guardrail   respjson.Field
+		Message     respjson.Field
+		OnError     respjson.Field
+		OnFail      respjson.Field
+		OnPass      respjson.Field
+		PassData    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AgentGatewayPolicyStep) RawJSON() string { return r.JSON.raw }
+func (r *AgentGatewayPolicyStep) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this AgentGatewayPolicyStep to a AgentGatewayPolicyStepParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// AgentGatewayPolicyStepParam.Overrides()
+func (r AgentGatewayPolicyStep) ToParam() AgentGatewayPolicyStepParam {
+	return param.Override[AgentGatewayPolicyStepParam](json.RawMessage(r.RawJSON()))
+}
+
+// What happens when the guardrail errors. Left out, the same as `on_fail`.
+type AgentGatewayPolicyStepOnError string
+
+const (
+	AgentGatewayPolicyStepOnErrorNext    AgentGatewayPolicyStepOnError = "next"
+	AgentGatewayPolicyStepOnErrorAllow   AgentGatewayPolicyStepOnError = "allow"
+	AgentGatewayPolicyStepOnErrorBlock   AgentGatewayPolicyStepOnError = "block"
+	AgentGatewayPolicyStepOnErrorRespond AgentGatewayPolicyStepOnError = "respond"
+)
+
+// What happens when the guardrail fails.
+type AgentGatewayPolicyStepOnFail string
+
+const (
+	AgentGatewayPolicyStepOnFailNext    AgentGatewayPolicyStepOnFail = "next"
+	AgentGatewayPolicyStepOnFailAllow   AgentGatewayPolicyStepOnFail = "allow"
+	AgentGatewayPolicyStepOnFailBlock   AgentGatewayPolicyStepOnFail = "block"
+	AgentGatewayPolicyStepOnFailRespond AgentGatewayPolicyStepOnFail = "respond"
+)
+
+// What happens when the guardrail passes. `next` goes on to the next step, `allow`
+// allows the request, `block` blocks it, and `respond` answers with `message`.
+type AgentGatewayPolicyStepOnPass string
+
+const (
+	AgentGatewayPolicyStepOnPassNext    AgentGatewayPolicyStepOnPass = "next"
+	AgentGatewayPolicyStepOnPassAllow   AgentGatewayPolicyStepOnPass = "allow"
+	AgentGatewayPolicyStepOnPassBlock   AgentGatewayPolicyStepOnPass = "block"
+	AgentGatewayPolicyStepOnPassRespond AgentGatewayPolicyStepOnPass = "respond"
+)
+
+// One pipeline step: a guardrail, and what happens when it passes, fails, or
+// errors.
+//
+// The property Guardrail is required.
+type AgentGatewayPolicyStepParam struct {
+	// A guardrail on the instance, by name.
+	Guardrail string `json:"guardrail" api:"required"`
+	// The response that replaces the model's when an outcome is `respond`. Required
+	// with `respond`.
+	Message param.Opt[string] `json:"message,omitzero"`
+	// `true` hands the step's modified request, such as masked text, to the next step.
+	PassData param.Opt[bool] `json:"pass_data,omitzero"`
+	// What happens when the guardrail errors. Left out, the same as `on_fail`.
+	//
+	// Any of "next", "allow", "block", "respond".
+	OnError AgentGatewayPolicyStepOnError `json:"on_error,omitzero"`
+	// What happens when the guardrail fails.
+	//
+	// Any of "next", "allow", "block", "respond".
+	OnFail AgentGatewayPolicyStepOnFail `json:"on_fail,omitzero"`
+	// What happens when the guardrail passes. `next` goes on to the next step, `allow`
+	// allows the request, `block` blocks it, and `respond` answers with `message`.
+	//
+	// Any of "next", "allow", "block", "respond".
+	OnPass AgentGatewayPolicyStepOnPass `json:"on_pass,omitzero"`
+	paramObj
+}
+
+func (r AgentGatewayPolicyStepParam) MarshalJSON() (data []byte, err error) {
+	type shadow AgentGatewayPolicyStepParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AgentGatewayPolicyStepParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

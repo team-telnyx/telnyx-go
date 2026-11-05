@@ -40,12 +40,12 @@ func TestAgentGatewayPolicyNewWithOptionalParams(t *testing.T) {
 			Model: telnyx.String("model"),
 			Pipeline: telnyx.AgentGatewayPolicyPipelineParam{
 				Hook: telnyx.AgentGatewayPolicyPipelineHookBeforeRequest,
-				Steps: []telnyx.AgentGatewayPolicyPipelineStepParam{{
+				Steps: []telnyx.AgentGatewayPolicyStepParam{{
 					Guardrail: "guardrail",
 					Message:   telnyx.String("message"),
-					OnError:   "next",
-					OnFail:    "next",
-					OnPass:    "next",
+					OnError:   telnyx.AgentGatewayPolicyStepOnErrorNext,
+					OnFail:    telnyx.AgentGatewayPolicyStepOnFailNext,
+					OnPass:    telnyx.AgentGatewayPolicyStepOnPassNext,
 					PassData:  telnyx.Bool(true),
 				}},
 			},
@@ -116,12 +116,12 @@ func TestAgentGatewayPolicyUpdateWithOptionalParams(t *testing.T) {
 			Model: telnyx.String("model"),
 			Pipeline: telnyx.AgentGatewayPolicyPipelineParam{
 				Hook: telnyx.AgentGatewayPolicyPipelineHookBeforeRequest,
-				Steps: []telnyx.AgentGatewayPolicyPipelineStepParam{{
+				Steps: []telnyx.AgentGatewayPolicyStepParam{{
 					Guardrail: "guardrail",
 					Message:   telnyx.String("message"),
-					OnError:   "next",
-					OnFail:    "next",
-					OnPass:    "next",
+					OnError:   telnyx.AgentGatewayPolicyStepOnErrorNext,
+					OnFail:    telnyx.AgentGatewayPolicyStepOnFailNext,
+					OnPass:    telnyx.AgentGatewayPolicyStepOnPassNext,
 					PassData:  telnyx.Bool(true),
 				}},
 			},
