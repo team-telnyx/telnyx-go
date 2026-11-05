@@ -165,16 +165,16 @@ func (r *AITestTestFrameworkV1GetPersonalitiesResponseSpeedUnion) UnmarshalJSON(
 //
 // If the underlying value is not a json object, one of the following properties
 // will be valid: OfFloat
-// OfAITestTestFrameworkV1GetPersonalitiesResponseStartSpeakingPlanUnionMember1]
+// OfAITestTestFrameworkV1GetPersonalitiesResponseStartSpeakingPlanStartSpeakingPlanObject]
 type AITestTestFrameworkV1GetPersonalitiesResponseStartSpeakingPlanUnion struct {
 	// This field will be present if the value is a [float64] instead of an object.
 	OfFloat float64 `json:",inline"`
 	// This field will be present if the value is a [any] instead of an object.
-	OfAITestTestFrameworkV1GetPersonalitiesResponseStartSpeakingPlanUnionMember1 any `json:",inline"`
-	JSON                                                                         struct {
-		OfFloat                                                                      respjson.Field
-		OfAITestTestFrameworkV1GetPersonalitiesResponseStartSpeakingPlanUnionMember1 respjson.Field
-		raw                                                                          string
+	OfAITestTestFrameworkV1GetPersonalitiesResponseStartSpeakingPlanStartSpeakingPlanObject any `json:",inline"`
+	JSON                                                                                    struct {
+		OfFloat                                                                                 respjson.Field
+		OfAITestTestFrameworkV1GetPersonalitiesResponseStartSpeakingPlanStartSpeakingPlanObject respjson.Field
+		raw                                                                                     string
 	} `json:"-"`
 }
 
@@ -183,7 +183,7 @@ func (u AITestTestFrameworkV1GetPersonalitiesResponseStartSpeakingPlanUnion) AsF
 	return
 }
 
-func (u AITestTestFrameworkV1GetPersonalitiesResponseStartSpeakingPlanUnion) AsAnyMap() (v map[string]any) {
+func (u AITestTestFrameworkV1GetPersonalitiesResponseStartSpeakingPlanUnion) AsStartSpeakingPlanObject() (v map[string]any) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }

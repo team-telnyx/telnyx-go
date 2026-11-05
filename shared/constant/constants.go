@@ -21,6 +21,7 @@ func ValueOf[T Constant[T]]() T {
 type Android string                // Always "android"
 type Arithmetic string             // Always "arithmetic"
 type Assistant string              // Always "assistant"
+type AwsSigv4 string               // Always "aws_sigv4"
 type Batch string                  // Always "batch"
 type Bearer string                 // Always "bearer"
 type BoolLiteral string            // Always "bool_literal"
@@ -50,6 +51,7 @@ type Ios string                    // Always "ios"
 type Jpeg string                   // Always "jpeg"
 type JsonObject string             // Always "json_object"
 type JsonSchema string             // Always "json_schema"
+type Litellm string                // Always "litellm"
 type Llm string                    // Always "llm"
 type MediaName string              // Always "media_name"
 type MediaURL string               // Always "media_url"
@@ -58,6 +60,7 @@ type Node string                   // Always "node"
 type None string                   // Always "none"
 type Noul string                   // Always "noul"
 type NumberLiteral string          // Always "number_literal"
+type OAuthClientCredentials string // Always "oauth_client_credentials"
 type Observe string                // Always "observe"
 type Pay string                    // Always "pay"
 type PredefinedMedia string        // Always "predefined_media"
@@ -92,6 +95,7 @@ type WaitFor string                // Always "wait_for"
 func (c Android) Default() Android                               { return "android" }
 func (c Arithmetic) Default() Arithmetic                         { return "arithmetic" }
 func (c Assistant) Default() Assistant                           { return "assistant" }
+func (c AwsSigv4) Default() AwsSigv4                             { return "aws_sigv4" }
 func (c Batch) Default() Batch                                   { return "batch" }
 func (c Bearer) Default() Bearer                                 { return "bearer" }
 func (c BoolLiteral) Default() BoolLiteral                       { return "bool_literal" }
@@ -121,6 +125,7 @@ func (c Ios) Default() Ios                                       { return "ios" 
 func (c Jpeg) Default() Jpeg                                     { return "jpeg" }
 func (c JsonObject) Default() JsonObject                         { return "json_object" }
 func (c JsonSchema) Default() JsonSchema                         { return "json_schema" }
+func (c Litellm) Default() Litellm                               { return "litellm" }
 func (c Llm) Default() Llm                                       { return "llm" }
 func (c MediaName) Default() MediaName                           { return "media_name" }
 func (c MediaURL) Default() MediaURL                             { return "media_url" }
@@ -129,6 +134,7 @@ func (c Node) Default() Node                                     { return "node"
 func (c None) Default() None                                     { return "none" }
 func (c Noul) Default() Noul                                     { return "noul" }
 func (c NumberLiteral) Default() NumberLiteral                   { return "number_literal" }
+func (c OAuthClientCredentials) Default() OAuthClientCredentials { return "oauth_client_credentials" }
 func (c Observe) Default() Observe                               { return "observe" }
 func (c Pay) Default() Pay                                       { return "pay" }
 func (c PredefinedMedia) Default() PredefinedMedia               { return "predefined_media" }
@@ -163,6 +169,7 @@ func (c WaitFor) Default() WaitFor                               { return "wait_
 func (c Android) MarshalJSON() ([]byte, error)                { return marshalString(c) }
 func (c Arithmetic) MarshalJSON() ([]byte, error)             { return marshalString(c) }
 func (c Assistant) MarshalJSON() ([]byte, error)              { return marshalString(c) }
+func (c AwsSigv4) MarshalJSON() ([]byte, error)               { return marshalString(c) }
 func (c Batch) MarshalJSON() ([]byte, error)                  { return marshalString(c) }
 func (c Bearer) MarshalJSON() ([]byte, error)                 { return marshalString(c) }
 func (c BoolLiteral) MarshalJSON() ([]byte, error)            { return marshalString(c) }
@@ -192,6 +199,7 @@ func (c Ios) MarshalJSON() ([]byte, error)                    { return marshalSt
 func (c Jpeg) MarshalJSON() ([]byte, error)                   { return marshalString(c) }
 func (c JsonObject) MarshalJSON() ([]byte, error)             { return marshalString(c) }
 func (c JsonSchema) MarshalJSON() ([]byte, error)             { return marshalString(c) }
+func (c Litellm) MarshalJSON() ([]byte, error)                { return marshalString(c) }
 func (c Llm) MarshalJSON() ([]byte, error)                    { return marshalString(c) }
 func (c MediaName) MarshalJSON() ([]byte, error)              { return marshalString(c) }
 func (c MediaURL) MarshalJSON() ([]byte, error)               { return marshalString(c) }
@@ -200,6 +208,7 @@ func (c Node) MarshalJSON() ([]byte, error)                   { return marshalSt
 func (c None) MarshalJSON() ([]byte, error)                   { return marshalString(c) }
 func (c Noul) MarshalJSON() ([]byte, error)                   { return marshalString(c) }
 func (c NumberLiteral) MarshalJSON() ([]byte, error)          { return marshalString(c) }
+func (c OAuthClientCredentials) MarshalJSON() ([]byte, error) { return marshalString(c) }
 func (c Observe) MarshalJSON() ([]byte, error)                { return marshalString(c) }
 func (c Pay) MarshalJSON() ([]byte, error)                    { return marshalString(c) }
 func (c PredefinedMedia) MarshalJSON() ([]byte, error)        { return marshalString(c) }
