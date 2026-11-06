@@ -137,16 +137,16 @@ type NumbersPhoneNumbersJob struct {
 	// null and empty values are preserved. Tags may be normalized to arrays;
 	// filter-created jobs contain resolved target identifiers rather than the original
 	// filters. Historical jobs with no saved arguments return an empty object.
-	Parameters        NumbersPhoneNumbersJobParameters         `json:"parameters"`
-	PendingOperations []NumbersPhoneNumbersJobPendingOperation `json:"pending_operations"`
-	PhoneNumbers      []shared.PhoneNumbersJobPhoneNumber      `json:"phone_numbers"`
+	Parameters        NumbersPhoneNumbersJobParameters    `json:"parameters"`
+	PendingOperations []PhoneNumbersJobPendingOperation   `json:"pending_operations"`
+	PhoneNumbers      []shared.PhoneNumbersJobPhoneNumber `json:"phone_numbers"`
 	// Identifies the type of the resource.
 	RecordType string `json:"record_type"`
 	// Indicates the completion status of the background update.
 	//
 	// Any of "pending", "in_progress", "completed", "failed", "expired".
-	Status               NumbersPhoneNumbersJobStatus                `json:"status"`
-	SuccessfulOperations []NumbersPhoneNumbersJobSuccessfulOperation `json:"successful_operations"`
+	Status               NumbersPhoneNumbersJobStatus         `json:"status"`
+	SuccessfulOperations []PhoneNumbersJobSuccessfulOperation `json:"successful_operations"`
 	// Identifies the type of the background job.
 	//
 	// Any of "update_emergency_settings", "delete_phone_numbers",
@@ -432,29 +432,6 @@ func (r *NumbersPhoneNumbersJobParametersVoiceMediaFeatures) UnmarshalJSON(data 
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The phone numbers pending confirmation on update results. Entries in this list
-// are transient, and will be moved to either successful_operations or
-// failed_operations once the processing is done.
-type NumbersPhoneNumbersJobPendingOperation struct {
-	// The phone number's ID
-	ID string `json:"id"`
-	// The phone number in e164 format.
-	PhoneNumber string `json:"phone_number"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		PhoneNumber respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r NumbersPhoneNumbersJobPendingOperation) RawJSON() string { return r.JSON.raw }
-func (r *NumbersPhoneNumbersJobPendingOperation) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // Indicates the completion status of the background update.
 type NumbersPhoneNumbersJobStatus string
 
@@ -466,8 +443,16 @@ const (
 	NumbersPhoneNumbersJobStatusExpired    NumbersPhoneNumbersJobStatus = "expired"
 )
 
-// The phone numbers successfully updated.
-type NumbersPhoneNumbersJobSuccessfulOperation struct {
+// Identifies the type of the background job.
+type NumbersPhoneNumbersJobType string
+
+const (
+	NumbersPhoneNumbersJobTypeUpdateEmergencySettings NumbersPhoneNumbersJobType = "update_emergency_settings"
+	NumbersPhoneNumbersJobTypeDeletePhoneNumbers      NumbersPhoneNumbersJobType = "delete_phone_numbers"
+	NumbersPhoneNumbersJobTypeUpdatePhoneNumbers      NumbersPhoneNumbersJobType = "update_phone_numbers"
+)
+
+type PhoneNumbersJobPendingOperation struct {
 	// The phone number's ID
 	ID string `json:"id"`
 	// The phone number in e164 format.
@@ -482,19 +467,30 @@ type NumbersPhoneNumbersJobSuccessfulOperation struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r NumbersPhoneNumbersJobSuccessfulOperation) RawJSON() string { return r.JSON.raw }
-func (r *NumbersPhoneNumbersJobSuccessfulOperation) UnmarshalJSON(data []byte) error {
+func (r PhoneNumbersJobPendingOperation) RawJSON() string { return r.JSON.raw }
+func (r *PhoneNumbersJobPendingOperation) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Identifies the type of the background job.
-type NumbersPhoneNumbersJobType string
+type PhoneNumbersJobSuccessfulOperation struct {
+	// The phone number's ID
+	ID string `json:"id"`
+	// The phone number in e164 format.
+	PhoneNumber string `json:"phone_number"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		PhoneNumber respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
 
-const (
-	NumbersPhoneNumbersJobTypeUpdateEmergencySettings NumbersPhoneNumbersJobType = "update_emergency_settings"
-	NumbersPhoneNumbersJobTypeDeletePhoneNumbers      NumbersPhoneNumbersJobType = "delete_phone_numbers"
-	NumbersPhoneNumbersJobTypeUpdatePhoneNumbers      NumbersPhoneNumbersJobType = "update_phone_numbers"
-)
+// Returns the unmodified JSON received from the API
+func (r PhoneNumbersJobSuccessfulOperation) RawJSON() string { return r.JSON.raw }
+func (r *PhoneNumbersJobSuccessfulOperation) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type PhoneNumberJobGetResponse struct {
 	Data NumbersPhoneNumbersJob `json:"data"`

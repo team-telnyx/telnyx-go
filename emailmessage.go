@@ -354,7 +354,7 @@ type MessageEvent struct {
 	// "quarantine_release_dispatched", "quarantine_rejected", "quarantine_expired",
 	// "gw_reject", "injection_timeout", "expired".
 	//
-	// Deprecated: deprecated
+	// Deprecated: Use event_type instead.
 	Type    EmailEventType `json:"type" api:"required"`
 	Payload map[string]any `json:"payload"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].

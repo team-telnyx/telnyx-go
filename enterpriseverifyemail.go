@@ -76,35 +76,18 @@ func (r *EnterpriseVerifyEmailService) Confirm(ctx context.Context, enterpriseID
 	return res, err
 }
 
-type EnterpriseEmailVerificationStatusWrapped struct {
-	// Verification state for an enterprise account's contact email.
-	Data EnterpriseEmailVerificationStatusWrappedData `json:"data" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r EnterpriseEmailVerificationStatusWrapped) RawJSON() string { return r.JSON.raw }
-func (r *EnterpriseEmailVerificationStatusWrapped) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // Verification state for an enterprise account's contact email.
-type EnterpriseEmailVerificationStatusWrappedData struct {
+type EnterpriseEmailVerificationStatus struct {
 	// Whether the enterprise account's contact email has been confirmed.
 	EmailVerified bool `json:"email_verified" api:"required"`
 	// Always `email_verification`.
 	//
 	// Any of "email_verification".
-	RecordType string `json:"record_type" api:"required"`
+	RecordType EnterpriseEmailVerificationStatusRecordType `json:"record_type" api:"required"`
 	// `sent` after a code is emailed; `verified` after a successful confirm.
 	//
 	// Any of "sent", "verified".
-	Status string `json:"status" api:"required"`
+	Status EnterpriseEmailVerificationStatusStatus `json:"status" api:"required"`
 	// When the code just sent stops being accepted. Present on a send response; null
 	// on a confirm response.
 	ExpiresAt time.Time `json:"expires_at" api:"nullable" format:"date-time"`
@@ -124,8 +107,40 @@ type EnterpriseEmailVerificationStatusWrappedData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r EnterpriseEmailVerificationStatusWrappedData) RawJSON() string { return r.JSON.raw }
-func (r *EnterpriseEmailVerificationStatusWrappedData) UnmarshalJSON(data []byte) error {
+func (r EnterpriseEmailVerificationStatus) RawJSON() string { return r.JSON.raw }
+func (r *EnterpriseEmailVerificationStatus) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Always `email_verification`.
+type EnterpriseEmailVerificationStatusRecordType string
+
+const (
+	EnterpriseEmailVerificationStatusRecordTypeEmailVerification EnterpriseEmailVerificationStatusRecordType = "email_verification"
+)
+
+// `sent` after a code is emailed; `verified` after a successful confirm.
+type EnterpriseEmailVerificationStatusStatus string
+
+const (
+	EnterpriseEmailVerificationStatusStatusSent     EnterpriseEmailVerificationStatusStatus = "sent"
+	EnterpriseEmailVerificationStatusStatusVerified EnterpriseEmailVerificationStatusStatus = "verified"
+)
+
+type EnterpriseEmailVerificationStatusWrapped struct {
+	// Verification state for an enterprise account's contact email.
+	Data EnterpriseEmailVerificationStatus `json:"data" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EnterpriseEmailVerificationStatusWrapped) RawJSON() string { return r.JSON.raw }
+func (r *EnterpriseEmailVerificationStatusWrapped) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

@@ -33,7 +33,7 @@ func TestEmailTemplateNewWithOptionalParams(t *testing.T) {
 		StrictVariables: telnyx.Bool(true),
 		Subject:         telnyx.String("Welcome, {{ first_name }}!"),
 		TextBody:        telnyx.String("Hello {{ first_name }}"),
-		VariableSchema: map[string]telnyx.EmailTemplateNewParamsVariableSchema{
+		VariableSchema: map[string]telnyx.VariableSchemaEntryParam{
 			"foo": {
 				Required: true,
 				Default:  telnyx.String("default"),
@@ -99,7 +99,7 @@ func TestEmailTemplateUpdateWithOptionalParams(t *testing.T) {
 				StrictVariables: telnyx.Bool(true),
 				Subject:         telnyx.String("Welcome aboard, {{first_name}}!"),
 				TextBody:        telnyx.String("text_body"),
-				VariableSchema: map[string]telnyx.UpdateEmailTemplateRequestVariableSchemaParam{
+				VariableSchema: map[string]telnyx.VariableSchemaEntryParam{
 					"foo": {
 						Required: true,
 						Default:  telnyx.String("default"),
@@ -227,7 +227,7 @@ func TestEmailTemplateReplaceWithOptionalParams(t *testing.T) {
 				StrictVariables: telnyx.Bool(true),
 				Subject:         telnyx.String("Welcome aboard, {{first_name}}!"),
 				TextBody:        telnyx.String("text_body"),
-				VariableSchema: map[string]telnyx.UpdateEmailTemplateRequestVariableSchemaParam{
+				VariableSchema: map[string]telnyx.VariableSchemaEntryParam{
 					"foo": {
 						Required: true,
 						Default:  telnyx.String("default"),

@@ -27,6 +27,13 @@ func TestTextToSpeechGenerateSpeechWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.TextToSpeech.GenerateSpeech(context.TODO(), telnyx.TextToSpeechGenerateSpeechParams{
+		Assemblyai: telnyx.TextToSpeechGenerateSpeechParamsAssemblyai{
+			VoiceID:     "aai-jane",
+			AudioFormat: "mp3",
+			Language:    "en",
+			ModelID:     "assemblyai-tts-1",
+			SampleRate:  8000,
+		},
 		Aws: telnyx.TextToSpeechGenerateSpeechParamsAws{
 			LanguageCode: telnyx.String("string"),
 			LexiconNames: []string{"string"},

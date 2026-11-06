@@ -35,7 +35,9 @@ func TestBrowserSessionNewWithOptionalParams(t *testing.T) {
 			IdleTimeoutS: telnyx.Int(30),
 			LifetimeS:    telnyx.Int(60),
 		},
-		Metadata: map[string]any{},
+		Metadata: map[string]any{
+			"foo": "bar",
+		},
 	})
 	if err != nil {
 		var apierr *telnyx.Error

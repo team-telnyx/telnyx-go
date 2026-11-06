@@ -69,9 +69,27 @@ func (r *AIMemoryNamespaceSettingService) PatchAll(ctx context.Context, namespac
 	return res, err
 }
 
+// A namespace's settings, grouped by what they affect.
+type NamespaceSettings struct {
+	// Settings that shape this namespace's summaries.
+	Summary SummarySettings `json:"summary"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Summary     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r NamespaceSettings) RawJSON() string { return r.JSON.raw }
+func (r *NamespaceSettings) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type NamespaceSettingsResponse struct {
 	// A namespace's settings, grouped by what they affect.
-	Data NamespaceSettingsResponseData `json:"data" api:"required"`
+	Data NamespaceSettings `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -86,26 +104,8 @@ func (r *NamespaceSettingsResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// A namespace's settings, grouped by what they affect.
-type NamespaceSettingsResponseData struct {
-	// Settings that shape this namespace's summaries.
-	Summary NamespaceSettingsResponseDataSummary `json:"summary"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Summary     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r NamespaceSettingsResponseData) RawJSON() string { return r.JSON.raw }
-func (r *NamespaceSettingsResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Settings that shape this namespace's summaries.
-type NamespaceSettingsResponseDataSummary struct {
+// A namespace's summary settings, shared by every profile in it.
+type SummarySettings struct {
 	// Free-form instructions that influence how this namespace's summaries are
 	// written, shared by every profile in the namespace. How you use them is up to you
 	// -- they steer the outcome, so try a phrasing and see how the summary comes out.
@@ -123,8 +123,8 @@ type NamespaceSettingsResponseDataSummary struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r NamespaceSettingsResponseDataSummary) RawJSON() string { return r.JSON.raw }
-func (r *NamespaceSettingsResponseDataSummary) UnmarshalJSON(data []byte) error {
+func (r SummarySettings) RawJSON() string { return r.JSON.raw }
+func (r *SummarySettings) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

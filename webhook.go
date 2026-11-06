@@ -9,6 +9,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/v4/option"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/shared/constant"
 )
 
 // WebhookService contains methods and other services that help with interacting
@@ -6344,7 +6345,8 @@ func (r *CallAnalyzedWebhookEventDataPayloadConversationInsightsConversationInsi
 }
 
 // CallAnalyzedWebhookEventDataPayloadCostUnion contains all possible properties
-// and values from [CallAnalyzedWebhookEventDataPayloadCostUnionMember0], [string].
+// and values from [CallAnalyzedWebhookEventDataPayloadCostCallCostBreakdown],
+// [string].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 //
@@ -6354,13 +6356,13 @@ type CallAnalyzedWebhookEventDataPayloadCostUnion struct {
 	// This field will be present if the value is a [string] instead of an object.
 	OfString string `json:",inline"`
 	// This field is from variant
-	// [CallAnalyzedWebhookEventDataPayloadCostUnionMember0].
-	Breakdown []CallAnalyzedWebhookEventDataPayloadCostUnionMember0Breakdown `json:"breakdown"`
+	// [CallAnalyzedWebhookEventDataPayloadCostCallCostBreakdown].
+	Breakdown []CallAnalyzedWebhookEventDataPayloadCostCallCostBreakdownBreakdown `json:"breakdown"`
 	// This field is from variant
-	// [CallAnalyzedWebhookEventDataPayloadCostUnionMember0].
+	// [CallAnalyzedWebhookEventDataPayloadCostCallCostBreakdown].
 	Currency string `json:"currency"`
 	// This field is from variant
-	// [CallAnalyzedWebhookEventDataPayloadCostUnionMember0].
+	// [CallAnalyzedWebhookEventDataPayloadCostCallCostBreakdown].
 	Total string `json:"total"`
 	JSON  struct {
 		OfString  respjson.Field
@@ -6371,7 +6373,7 @@ type CallAnalyzedWebhookEventDataPayloadCostUnion struct {
 	} `json:"-"`
 }
 
-func (u CallAnalyzedWebhookEventDataPayloadCostUnion) AsCallAnalyzedWebhookEventDataPayloadCostUnionMember0() (v CallAnalyzedWebhookEventDataPayloadCostUnionMember0) {
+func (u CallAnalyzedWebhookEventDataPayloadCostUnion) AsCallCostBreakdown() (v CallAnalyzedWebhookEventDataPayloadCostCallCostBreakdown) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -6388,15 +6390,10 @@ func (r *CallAnalyzedWebhookEventDataPayloadCostUnion) UnmarshalJSON(data []byte
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The session's cost breakdown from Session Analysis, covering every product
-// billed on the call: the AI Voice Assistant engine minutes
-// (`ai-voice-assistant`), LLM inference tokens (`inference`), and call-control,
-// SIP trunking, and recording lines. If cost data could not be retrieved after
-// retries, this field carries the placeholder string `No cost data available.`
-// instead of an object.
-type CallAnalyzedWebhookEventDataPayloadCostUnionMember0 struct {
+// The itemized cost of the call.
+type CallAnalyzedWebhookEventDataPayloadCostCallCostBreakdown struct {
 	// Cost lines grouped by product.
-	Breakdown []CallAnalyzedWebhookEventDataPayloadCostUnionMember0Breakdown `json:"breakdown"`
+	Breakdown []CallAnalyzedWebhookEventDataPayloadCostCallCostBreakdownBreakdown `json:"breakdown"`
 	// The currency of the cost amounts.
 	Currency string `json:"currency"`
 	// The total cost of the call, summed across every product in the breakdown.
@@ -6412,12 +6409,12 @@ type CallAnalyzedWebhookEventDataPayloadCostUnionMember0 struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CallAnalyzedWebhookEventDataPayloadCostUnionMember0) RawJSON() string { return r.JSON.raw }
-func (r *CallAnalyzedWebhookEventDataPayloadCostUnionMember0) UnmarshalJSON(data []byte) error {
+func (r CallAnalyzedWebhookEventDataPayloadCostCallCostBreakdown) RawJSON() string { return r.JSON.raw }
+func (r *CallAnalyzedWebhookEventDataPayloadCostCallCostBreakdown) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type CallAnalyzedWebhookEventDataPayloadCostUnionMember0Breakdown struct {
+type CallAnalyzedWebhookEventDataPayloadCostCallCostBreakdownBreakdown struct {
 	// Total cost for this product across the call, in the currency given by
 	// `cost.currency`.
 	Cost string `json:"cost"`
@@ -6434,10 +6431,10 @@ type CallAnalyzedWebhookEventDataPayloadCostUnionMember0Breakdown struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CallAnalyzedWebhookEventDataPayloadCostUnionMember0Breakdown) RawJSON() string {
+func (r CallAnalyzedWebhookEventDataPayloadCostCallCostBreakdownBreakdown) RawJSON() string {
 	return r.JSON.raw
 }
-func (r *CallAnalyzedWebhookEventDataPayloadCostUnionMember0Breakdown) UnmarshalJSON(data []byte) error {
+func (r *CallAnalyzedWebhookEventDataPayloadCostCallCostBreakdownBreakdown) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -9106,6 +9103,137 @@ func (r *NumberReputationNumberRemovedWebhookEventMeta) UnmarshalJSON(data []byt
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type RecordingExportFailedWebhookEvent struct {
+	// Unique event id; deduplicate deliveries on it.
+	ID   string                                `json:"id" api:"required"`
+	Data RecordingExportFailedWebhookEventData `json:"data" api:"required"`
+	// Event type.
+	//
+	// Any of "recording.export_failed".
+	Event RecordingExportFailedWebhookEventEvent `json:"event" api:"required"`
+	// When the event occurred.
+	OccurredAt time.Time `json:"occurred_at" api:"required" format:"date-time"`
+	// Envelope version.
+	Version string `json:"version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Data        respjson.Field
+		Event       respjson.Field
+		OccurredAt  respjson.Field
+		Version     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r RecordingExportFailedWebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *RecordingExportFailedWebhookEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type RecordingExportFailedWebhookEventData struct {
+	Bucket string `json:"bucket" api:"required"`
+	Key    string `json:"key" api:"required"`
+	// Any of "invalid_target", "invalid_media", "source_changed",
+	// "source_unavailable", "too_large", "storage_unavailable", "object_conflict",
+	// "verification_failed", "worker_lost", "internal_error".
+	Reason    string         `json:"reason" api:"required"`
+	Region    string         `json:"region" api:"required"`
+	SessionID string         `json:"session_id" api:"required"`
+	Type      constant.Video `json:"type" default:"video"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Bucket      respjson.Field
+		Key         respjson.Field
+		Reason      respjson.Field
+		Region      respjson.Field
+		SessionID   respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r RecordingExportFailedWebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *RecordingExportFailedWebhookEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Event type.
+type RecordingExportFailedWebhookEventEvent string
+
+const (
+	RecordingExportFailedWebhookEventEventRecordingExportFailed RecordingExportFailedWebhookEventEvent = "recording.export_failed"
+)
+
+type RecordingExportedWebhookEvent struct {
+	// Unique event id; deduplicate deliveries on it.
+	ID   string                            `json:"id" api:"required"`
+	Data RecordingExportedWebhookEventData `json:"data" api:"required"`
+	// Event type.
+	//
+	// Any of "recording.exported".
+	Event RecordingExportedWebhookEventEvent `json:"event" api:"required"`
+	// When the event occurred.
+	OccurredAt time.Time `json:"occurred_at" api:"required" format:"date-time"`
+	// Envelope version.
+	Version string `json:"version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Data        respjson.Field
+		Event       respjson.Field
+		OccurredAt  respjson.Field
+		Version     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r RecordingExportedWebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *RecordingExportedWebhookEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type RecordingExportedWebhookEventData struct {
+	Bucket    string         `json:"bucket" api:"required"`
+	Bytes     int64          `json:"bytes" api:"required"`
+	Key       string         `json:"key" api:"required"`
+	Region    string         `json:"region" api:"required"`
+	SessionID string         `json:"session_id" api:"required"`
+	Sha256    string         `json:"sha256" api:"required"`
+	Type      constant.Video `json:"type" default:"video"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Bucket      respjson.Field
+		Bytes       respjson.Field
+		Key         respjson.Field
+		Region      respjson.Field
+		SessionID   respjson.Field
+		Sha256      respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r RecordingExportedWebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *RecordingExportedWebhookEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Event type.
+type RecordingExportedWebhookEventEvent string
+
+const (
+	RecordingExportedWebhookEventEventRecordingExported RecordingExportedWebhookEventEvent = "recording.exported"
+)
+
 type ReplacedLinkClickWebhookEvent struct {
 	Data ReplacedLinkClick `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -9163,14 +9291,20 @@ type SessionStatusChangedWebhookEventData struct {
 	Status string `json:"status" api:"required"`
 	// Additional detail about the status (for example `cancelled`), or null.
 	StatusDetail string `json:"status_detail" api:"required"`
+	// Previous lifecycle status, when supplied.
+	//
+	// Any of "scheduled", "joining", "waiting_for_admission", "active", "leaving",
+	// "ended", "failed", "admission_denied".
+	PreviousStatus string `json:"previous_status"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Recording    respjson.Field
-		SessionID    respjson.Field
-		Status       respjson.Field
-		StatusDetail respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
+		Recording      respjson.Field
+		SessionID      respjson.Field
+		Status         respjson.Field
+		StatusDetail   respjson.Field
+		PreviousStatus respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
 	} `json:"-"`
 }
 
@@ -9390,10 +9524,11 @@ func (r *WhatsappWabaAddedWebhookEventDataPayload) UnmarshalJSON(data []byte) er
 // [InboundMessageWebhookEvent], [NumberOrderStatusUpdateWebhookEvent],
 // [NumberReputationExternalVerificationStatusChangedWebhookEvent],
 // [NumberReputationNumberFlaggedWebhookEvent],
-// [NumberReputationNumberRemovedWebhookEvent], [ReplacedLinkClickWebhookEvent],
-// [SessionStatusChangedWebhookEvent], [TranscriptCompletedWebhookEvent],
-// [TranscriptionWebhookEvent], [WhatsappAccountUpdate], [WhatsappMessageEcho],
-// [WhatsappWabaAddedWebhookEvent].
+// [NumberReputationNumberRemovedWebhookEvent],
+// [RecordingExportFailedWebhookEvent], [RecordingExportedWebhookEvent],
+// [ReplacedLinkClickWebhookEvent], [SessionStatusChangedWebhookEvent],
+// [TranscriptCompletedWebhookEvent], [TranscriptionWebhookEvent],
+// [WhatsappAccountUpdate], [WhatsappMessageEcho], [WhatsappWabaAddedWebhookEvent].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type UnsafeUnwrapWebhookEventUnion struct {
@@ -9431,9 +9566,11 @@ type UnsafeUnwrapWebhookEventUnion struct {
 	// [NumberOrderStatusUpdateWebhookEventData],
 	// [NumberReputationExternalVerificationStatusChangedWebhookEventData],
 	// [NumberReputationNumberFlaggedWebhookEventData],
-	// [NumberReputationNumberRemovedWebhookEventData], [ReplacedLinkClick],
-	// [SessionStatusChangedWebhookEventData], [TranscriptCompletedWebhookEventData],
-	// [Transcription], [WhatsappAccountUpdateData], [WhatsappMessageEchoData],
+	// [NumberReputationNumberRemovedWebhookEventData],
+	// [RecordingExportFailedWebhookEventData], [RecordingExportedWebhookEventData],
+	// [ReplacedLinkClick], [SessionStatusChangedWebhookEventData],
+	// [TranscriptCompletedWebhookEventData], [Transcription],
+	// [WhatsappAccountUpdateData], [WhatsappMessageEchoData],
 	// [WhatsappWabaAddedWebhookEventData]
 	Data       UnsafeUnwrapWebhookEventUnionData `json:"data"`
 	ID         string                            `json:"id"`
@@ -9871,6 +10008,16 @@ func (u UnsafeUnwrapWebhookEventUnion) AsNumberReputationNumberRemovedWebhookEve
 	return
 }
 
+func (u UnsafeUnwrapWebhookEventUnion) AsRecordingExportFailedWebhookEvent() (v RecordingExportFailedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsRecordingExportedWebhookEvent() (v RecordingExportedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
 func (u UnsafeUnwrapWebhookEventUnion) AsReplacedLinkClickWebhookEvent() (v ReplacedLinkClickWebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
@@ -9980,6 +10127,15 @@ type UnsafeUnwrapWebhookEventUnionData struct {
 	SessionID string    `json:"session_id"`
 	Type      string    `json:"type"`
 	CreatedAt time.Time `json:"created_at"`
+	Bucket    string    `json:"bucket"`
+	Key       string    `json:"key"`
+	// This field is from variant [RecordingExportFailedWebhookEventData].
+	Reason string `json:"reason"`
+	Region string `json:"region"`
+	// This field is from variant [RecordingExportedWebhookEventData].
+	Bytes int64 `json:"bytes"`
+	// This field is from variant [RecordingExportedWebhookEventData].
+	Sha256 string `json:"sha256"`
 	// This field is from variant [ReplacedLinkClick].
 	MessageID string `json:"message_id"`
 	// This field is from variant [ReplacedLinkClick].
@@ -9994,6 +10150,8 @@ type UnsafeUnwrapWebhookEventUnionData struct {
 	Status string `json:"status"`
 	// This field is from variant [SessionStatusChangedWebhookEventData].
 	StatusDetail string `json:"status_detail"`
+	// This field is from variant [SessionStatusChangedWebhookEventData].
+	PreviousStatus string `json:"previous_status"`
 	// This field is from variant [TranscriptCompletedWebhookEventData].
 	EndedAt time.Time `json:"ended_at"`
 	// This field is from variant [TranscriptCompletedWebhookEventData].
@@ -10013,6 +10171,12 @@ type UnsafeUnwrapWebhookEventUnionData struct {
 		SessionID       respjson.Field
 		Type            respjson.Field
 		CreatedAt       respjson.Field
+		Bucket          respjson.Field
+		Key             respjson.Field
+		Reason          respjson.Field
+		Region          respjson.Field
+		Bytes           respjson.Field
+		Sha256          respjson.Field
 		MessageID       respjson.Field
 		TimeClicked     respjson.Field
 		To              respjson.Field
@@ -10020,6 +10184,7 @@ type UnsafeUnwrapWebhookEventUnionData struct {
 		Recording       respjson.Field
 		Status          respjson.Field
 		StatusDetail    respjson.Field
+		PreviousStatus  respjson.Field
 		EndedAt         respjson.Field
 		LastSeq         respjson.Field
 		SegmentCount    respjson.Field
@@ -10212,8 +10377,10 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 	Body UnsafeUnwrapWebhookEventUnionDataPayloadBody `json:"body"`
 	// This field is a union of [[]OutboundMessagePayloadCc],
 	// [[]MessagingInboundMessagePayloadCc]
-	Cc          UnsafeUnwrapWebhookEventUnionDataPayloadCc `json:"cc"`
-	CompletedAt time.Time                                  `json:"completed_at"`
+	Cc UnsafeUnwrapWebhookEventUnionDataPayloadCc `json:"cc"`
+	// This field is from variant [OutboundMessagePayload].
+	ChildMessageID string    `json:"child_message_id"`
+	CompletedAt    time.Time `json:"completed_at"`
 	// This field is a union of [OutboundMessagePayloadCostBreakdown],
 	// [MessagingInboundMessagePayloadCostBreakdown]
 	CostBreakdown UnsafeUnwrapWebhookEventUnionDataPayloadCostBreakdown `json:"cost_breakdown"`
@@ -10227,10 +10394,12 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 	MessagingProfileID string                                        `json:"messaging_profile_id"`
 	NumChars           int64                                         `json:"num_chars"`
 	OrganizationID     string                                        `json:"organization_id"`
-	Parts              int64                                         `json:"parts"`
-	ReceivedAt         time.Time                                     `json:"received_at"`
-	RecordType         string                                        `json:"record_type"`
-	SentAt             time.Time                                     `json:"sent_at"`
+	// This field is from variant [OutboundMessagePayload].
+	ParentMessageID string    `json:"parent_message_id"`
+	Parts           int64     `json:"parts"`
+	ReceivedAt      time.Time `json:"received_at"`
+	RecordType      string    `json:"record_type"`
+	SentAt          time.Time `json:"sent_at"`
 	// This field is from variant [OutboundMessagePayload].
 	SmartEncodingApplied  bool   `json:"smart_encoding_applied"`
 	Subject               string `json:"subject"`
@@ -10423,6 +10592,7 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 		ID                       respjson.Field
 		Body                     respjson.Field
 		Cc                       respjson.Field
+		ChildMessageID           respjson.Field
 		CompletedAt              respjson.Field
 		CostBreakdown            respjson.Field
 		Encoding                 respjson.Field
@@ -10431,6 +10601,7 @@ type UnsafeUnwrapWebhookEventUnionDataPayload struct {
 		MessagingProfileID       respjson.Field
 		NumChars                 respjson.Field
 		OrganizationID           respjson.Field
+		ParentMessageID          respjson.Field
 		Parts                    respjson.Field
 		ReceivedAt               respjson.Field
 		RecordType               respjson.Field
@@ -10596,8 +10767,7 @@ func (r *UnsafeUnwrapWebhookEventUnionDataPayloadResult) UnmarshalJSON(data []by
 // [UnsafeUnwrapWebhookEventUnion].
 //
 // If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfOutboundMessagePayloadToArray
-// OfMessagingInboundMessagePayloadToArray]
+// will be valid: OfString OfOutboundMessagePayloadToArray OfUnionMember0]
 type UnsafeUnwrapWebhookEventUnionDataPayloadTo struct {
 	// This field will be present if the value is a [string] instead of an object.
 	OfString string `json:",inline"`
@@ -10605,13 +10775,13 @@ type UnsafeUnwrapWebhookEventUnionDataPayloadTo struct {
 	// instead of an object.
 	OfOutboundMessagePayloadToArray []OutboundMessagePayloadTo `json:",inline"`
 	// This field will be present if the value is a
-	// [[]MessagingInboundMessagePayloadToArrayItem] instead of an object.
-	OfMessagingInboundMessagePayloadToArray []MessagingInboundMessagePayloadToArrayItem `json:",inline"`
-	JSON                                    struct {
-		OfString                                respjson.Field
-		OfOutboundMessagePayloadToArray         respjson.Field
-		OfMessagingInboundMessagePayloadToArray respjson.Field
-		raw                                     string
+	// [[]MessagingInboundMessagePayloadToUnionMember0Item] instead of an object.
+	OfUnionMember0 []MessagingInboundMessagePayloadToUnionMember0Item `json:",inline"`
+	JSON           struct {
+		OfString                        respjson.Field
+		OfOutboundMessagePayloadToArray respjson.Field
+		OfUnionMember0                  respjson.Field
+		raw                             string
 	} `json:"-"`
 }
 
@@ -10632,8 +10802,8 @@ type UnsafeUnwrapWebhookEventUnionDataPayloadCost struct {
 	// This field will be present if the value is a [string] instead of an object.
 	OfString string `json:",inline"`
 	// This field is from variant [CallAnalyzedWebhookEventDataPayloadCostUnion].
-	Breakdown []CallAnalyzedWebhookEventDataPayloadCostUnionMember0Breakdown `json:"breakdown"`
-	Currency  string                                                         `json:"currency"`
+	Breakdown []CallAnalyzedWebhookEventDataPayloadCostCallCostBreakdownBreakdown `json:"breakdown"`
+	Currency  string                                                              `json:"currency"`
 	// This field is from variant [CallAnalyzedWebhookEventDataPayloadCostUnion].
 	Total  string `json:"total"`
 	Amount string `json:"amount"`
@@ -11008,10 +11178,11 @@ func (r *UnsafeUnwrapWebhookEventUnionMeta) UnmarshalJSON(data []byte) error {
 // [InboundMessageWebhookEvent], [NumberOrderStatusUpdateWebhookEvent],
 // [NumberReputationExternalVerificationStatusChangedWebhookEvent],
 // [NumberReputationNumberFlaggedWebhookEvent],
-// [NumberReputationNumberRemovedWebhookEvent], [ReplacedLinkClickWebhookEvent],
-// [SessionStatusChangedWebhookEvent], [TranscriptCompletedWebhookEvent],
-// [TranscriptionWebhookEvent], [WhatsappAccountUpdate], [WhatsappMessageEcho],
-// [WhatsappWabaAddedWebhookEvent].
+// [NumberReputationNumberRemovedWebhookEvent],
+// [RecordingExportFailedWebhookEvent], [RecordingExportedWebhookEvent],
+// [ReplacedLinkClickWebhookEvent], [SessionStatusChangedWebhookEvent],
+// [TranscriptCompletedWebhookEvent], [TranscriptionWebhookEvent],
+// [WhatsappAccountUpdate], [WhatsappMessageEcho], [WhatsappWabaAddedWebhookEvent].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type UnwrapWebhookEventUnion struct {
@@ -11049,9 +11220,11 @@ type UnwrapWebhookEventUnion struct {
 	// [NumberOrderStatusUpdateWebhookEventData],
 	// [NumberReputationExternalVerificationStatusChangedWebhookEventData],
 	// [NumberReputationNumberFlaggedWebhookEventData],
-	// [NumberReputationNumberRemovedWebhookEventData], [ReplacedLinkClick],
-	// [SessionStatusChangedWebhookEventData], [TranscriptCompletedWebhookEventData],
-	// [Transcription], [WhatsappAccountUpdateData], [WhatsappMessageEchoData],
+	// [NumberReputationNumberRemovedWebhookEventData],
+	// [RecordingExportFailedWebhookEventData], [RecordingExportedWebhookEventData],
+	// [ReplacedLinkClick], [SessionStatusChangedWebhookEventData],
+	// [TranscriptCompletedWebhookEventData], [Transcription],
+	// [WhatsappAccountUpdateData], [WhatsappMessageEchoData],
 	// [WhatsappWabaAddedWebhookEventData]
 	Data       UnwrapWebhookEventUnionData `json:"data"`
 	ID         string                      `json:"id"`
@@ -11489,6 +11662,16 @@ func (u UnwrapWebhookEventUnion) AsNumberReputationNumberRemovedWebhookEvent() (
 	return
 }
 
+func (u UnwrapWebhookEventUnion) AsRecordingExportFailedWebhookEvent() (v RecordingExportFailedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnwrapWebhookEventUnion) AsRecordingExportedWebhookEvent() (v RecordingExportedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
 func (u UnwrapWebhookEventUnion) AsReplacedLinkClickWebhookEvent() (v ReplacedLinkClickWebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
@@ -11598,6 +11781,15 @@ type UnwrapWebhookEventUnionData struct {
 	SessionID string    `json:"session_id"`
 	Type      string    `json:"type"`
 	CreatedAt time.Time `json:"created_at"`
+	Bucket    string    `json:"bucket"`
+	Key       string    `json:"key"`
+	// This field is from variant [RecordingExportFailedWebhookEventData].
+	Reason string `json:"reason"`
+	Region string `json:"region"`
+	// This field is from variant [RecordingExportedWebhookEventData].
+	Bytes int64 `json:"bytes"`
+	// This field is from variant [RecordingExportedWebhookEventData].
+	Sha256 string `json:"sha256"`
 	// This field is from variant [ReplacedLinkClick].
 	MessageID string `json:"message_id"`
 	// This field is from variant [ReplacedLinkClick].
@@ -11612,6 +11804,8 @@ type UnwrapWebhookEventUnionData struct {
 	Status string `json:"status"`
 	// This field is from variant [SessionStatusChangedWebhookEventData].
 	StatusDetail string `json:"status_detail"`
+	// This field is from variant [SessionStatusChangedWebhookEventData].
+	PreviousStatus string `json:"previous_status"`
 	// This field is from variant [TranscriptCompletedWebhookEventData].
 	EndedAt time.Time `json:"ended_at"`
 	// This field is from variant [TranscriptCompletedWebhookEventData].
@@ -11631,6 +11825,12 @@ type UnwrapWebhookEventUnionData struct {
 		SessionID       respjson.Field
 		Type            respjson.Field
 		CreatedAt       respjson.Field
+		Bucket          respjson.Field
+		Key             respjson.Field
+		Reason          respjson.Field
+		Region          respjson.Field
+		Bytes           respjson.Field
+		Sha256          respjson.Field
 		MessageID       respjson.Field
 		TimeClicked     respjson.Field
 		To              respjson.Field
@@ -11638,6 +11838,7 @@ type UnwrapWebhookEventUnionData struct {
 		Recording       respjson.Field
 		Status          respjson.Field
 		StatusDetail    respjson.Field
+		PreviousStatus  respjson.Field
 		EndedAt         respjson.Field
 		LastSeq         respjson.Field
 		SegmentCount    respjson.Field
@@ -11830,8 +12031,10 @@ type UnwrapWebhookEventUnionDataPayload struct {
 	Body UnwrapWebhookEventUnionDataPayloadBody `json:"body"`
 	// This field is a union of [[]OutboundMessagePayloadCc],
 	// [[]MessagingInboundMessagePayloadCc]
-	Cc          UnwrapWebhookEventUnionDataPayloadCc `json:"cc"`
-	CompletedAt time.Time                            `json:"completed_at"`
+	Cc UnwrapWebhookEventUnionDataPayloadCc `json:"cc"`
+	// This field is from variant [OutboundMessagePayload].
+	ChildMessageID string    `json:"child_message_id"`
+	CompletedAt    time.Time `json:"completed_at"`
 	// This field is a union of [OutboundMessagePayloadCostBreakdown],
 	// [MessagingInboundMessagePayloadCostBreakdown]
 	CostBreakdown UnwrapWebhookEventUnionDataPayloadCostBreakdown `json:"cost_breakdown"`
@@ -11845,10 +12048,12 @@ type UnwrapWebhookEventUnionDataPayload struct {
 	MessagingProfileID string                                  `json:"messaging_profile_id"`
 	NumChars           int64                                   `json:"num_chars"`
 	OrganizationID     string                                  `json:"organization_id"`
-	Parts              int64                                   `json:"parts"`
-	ReceivedAt         time.Time                               `json:"received_at"`
-	RecordType         string                                  `json:"record_type"`
-	SentAt             time.Time                               `json:"sent_at"`
+	// This field is from variant [OutboundMessagePayload].
+	ParentMessageID string    `json:"parent_message_id"`
+	Parts           int64     `json:"parts"`
+	ReceivedAt      time.Time `json:"received_at"`
+	RecordType      string    `json:"record_type"`
+	SentAt          time.Time `json:"sent_at"`
 	// This field is from variant [OutboundMessagePayload].
 	SmartEncodingApplied  bool   `json:"smart_encoding_applied"`
 	Subject               string `json:"subject"`
@@ -12041,6 +12246,7 @@ type UnwrapWebhookEventUnionDataPayload struct {
 		ID                       respjson.Field
 		Body                     respjson.Field
 		Cc                       respjson.Field
+		ChildMessageID           respjson.Field
 		CompletedAt              respjson.Field
 		CostBreakdown            respjson.Field
 		Encoding                 respjson.Field
@@ -12049,6 +12255,7 @@ type UnwrapWebhookEventUnionDataPayload struct {
 		MessagingProfileID       respjson.Field
 		NumChars                 respjson.Field
 		OrganizationID           respjson.Field
+		ParentMessageID          respjson.Field
 		Parts                    respjson.Field
 		ReceivedAt               respjson.Field
 		RecordType               respjson.Field
@@ -12213,8 +12420,7 @@ func (r *UnwrapWebhookEventUnionDataPayloadResult) UnmarshalJSON(data []byte) er
 // [UnwrapWebhookEventUnion].
 //
 // If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfOutboundMessagePayloadToArray
-// OfMessagingInboundMessagePayloadToArray]
+// will be valid: OfString OfOutboundMessagePayloadToArray OfUnionMember0]
 type UnwrapWebhookEventUnionDataPayloadTo struct {
 	// This field will be present if the value is a [string] instead of an object.
 	OfString string `json:",inline"`
@@ -12222,13 +12428,13 @@ type UnwrapWebhookEventUnionDataPayloadTo struct {
 	// instead of an object.
 	OfOutboundMessagePayloadToArray []OutboundMessagePayloadTo `json:",inline"`
 	// This field will be present if the value is a
-	// [[]MessagingInboundMessagePayloadToArrayItem] instead of an object.
-	OfMessagingInboundMessagePayloadToArray []MessagingInboundMessagePayloadToArrayItem `json:",inline"`
-	JSON                                    struct {
-		OfString                                respjson.Field
-		OfOutboundMessagePayloadToArray         respjson.Field
-		OfMessagingInboundMessagePayloadToArray respjson.Field
-		raw                                     string
+	// [[]MessagingInboundMessagePayloadToUnionMember0Item] instead of an object.
+	OfUnionMember0 []MessagingInboundMessagePayloadToUnionMember0Item `json:",inline"`
+	JSON           struct {
+		OfString                        respjson.Field
+		OfOutboundMessagePayloadToArray respjson.Field
+		OfUnionMember0                  respjson.Field
+		raw                             string
 	} `json:"-"`
 }
 
@@ -12249,8 +12455,8 @@ type UnwrapWebhookEventUnionDataPayloadCost struct {
 	// This field will be present if the value is a [string] instead of an object.
 	OfString string `json:",inline"`
 	// This field is from variant [CallAnalyzedWebhookEventDataPayloadCostUnion].
-	Breakdown []CallAnalyzedWebhookEventDataPayloadCostUnionMember0Breakdown `json:"breakdown"`
-	Currency  string                                                         `json:"currency"`
+	Breakdown []CallAnalyzedWebhookEventDataPayloadCostCallCostBreakdownBreakdown `json:"breakdown"`
+	Currency  string                                                              `json:"currency"`
 	// This field is from variant [CallAnalyzedWebhookEventDataPayloadCostUnion].
 	Total  string `json:"total"`
 	Amount string `json:"amount"`

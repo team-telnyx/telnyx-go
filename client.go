@@ -428,8 +428,7 @@ type Client struct {
 	// UAC connection operations
 	SipRegistrationStatus SipRegistrationStatusService
 	// Call information
-	DialMetrics     DialMetricService
-	TtsIntegrations TtsIntegrationService
+	DialMetrics DialMetricService
 	// Tailscale Subnet Router operations
 	TailscaleSubnetRouters TailscaleSubnetRouterService
 	// Download screenshots and other artifacts.
@@ -442,6 +441,12 @@ type Client struct {
 	// Tunnels connect a Network to hosts behind a tunnel process within the user's
 	// network.
 	Tunnels TunnelService
+	// Read and update the authenticated user's profile and data locality.
+	UserProfile   UserProfileService
+	AgentGateways AgentGatewayService
+	// Connect calendars and manage automatic meeting joins.
+	CalendarConnections CalendarConnectionService
+	MeetingBot          MeetingBotService
 }
 
 // DefaultClientOptions read from the environment (TELNYX_API_KEY,
@@ -678,13 +683,16 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.LlmTokenGateway = NewLlmTokenGatewayService(opts...)
 	r.SipRegistrationStatus = NewSipRegistrationStatusService(opts...)
 	r.DialMetrics = NewDialMetricService(opts...)
-	r.TtsIntegrations = NewTtsIntegrationService(opts...)
 	r.TailscaleSubnetRouters = NewTailscaleSubnetRouterService(opts...)
 	r.ArtifactDownloads = NewArtifactDownloadService(opts...)
 	r.Email = NewEmailService(opts...)
 	r.NetworkRoutes = NewNetworkRouteService(opts...)
 	r.PayConnectors = NewPayConnectorService(opts...)
 	r.Tunnels = NewTunnelService(opts...)
+	r.UserProfile = NewUserProfileService(opts...)
+	r.AgentGateways = NewAgentGatewayService(opts...)
+	r.CalendarConnections = NewCalendarConnectionService(opts...)
+	r.MeetingBot = NewMeetingBotService(opts...)
 
 	return
 }
