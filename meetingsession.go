@@ -4,6 +4,7 @@ package telnyx
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -46,19 +47,18 @@ func NewMeetingSessionService(opts ...option.RequestOption) (r MeetingSessionSer
 	return
 }
 
-// Creates a new meeting session. When an idempotency_key is supplied in the
-// request body, replay lookup is scoped to the authenticated account and compares
-// only the key; the request payload is not fingerprinted or compared. If a session
-// with that key already exists for the account, the existing session is replayed
-// (200); otherwise a new session is created (201). The session may enter
-// asynchronous states (e.g. joining, waiting_for_admission) before becoming
-// active. Optional `camera_image` input is write-only and applies only when no
-// avatar or Assistant webpage output takes precedence. An ignored URL is not
-// fetched. An effective URL source is resolved before bot creation; neither the
-// source URL nor image bytes are persisted, returned, or logged. Treat signed URLs
-// as credentials. With `assistant.avatar: true`, the assistant is read before the
-// bot is created: an assistant without a Telnyx avatar configured is rejected with
-// 400 `invalid_request` (message prefix `assistant_avatar_not_configured:`), an
+// Creates a meeting session and returns 201, or 200 for a replay. Use a unique
+// `idempotency_key` per intended join and reuse the same key and request on
+// retries. Reusing a key with a different join configuration or meeting URL can
+// return 409 invalid_state. Always retry with the original request. The session
+// can pass through joining and waiting_for_admission before active. Optional
+// `camera_image` input is write-only and applies when no assistant avatar takes
+// precedence. An ignored URL is not fetched. An effective URL source is resolved
+// before bot creation; the source URL and image bytes are not returned in the
+// session response. Treat signed URLs as credentials. With
+// `assistant.avatar: true`, the assistant is read before the bot is created: an
+// assistant without a Telnyx avatar configured is rejected with 400
+// `invalid_request` (message prefix `assistant_avatar_not_configured:`), an
 // unknown assistant with 400 `invalid_request` (prefix `assistant_not_found:`),
 // and a failed lookup with 503 `assistant_lookup_unavailable`; no bot is created
 // in any of these cases.
@@ -85,7 +85,10 @@ func (r *MeetingSessionService) Get(ctx context.Context, id string, opts ...opti
 // Updates mutable properties of a meeting session. Only sessions in the scheduled
 // state can be updated; any other state returns 409 with the invalid_state error
 // code. All request fields are optional, and an empty object is a valid no-op
-// update.
+// update. Calendar-controlled Google Meet and Teams sessions return 409
+// calendar_managed; change the event instead. A conflicting pending edit returns
+// 409 edit_in_progress. On a timeout or 503, read the session and retry the same
+// changes.
 func (r *MeetingSessionService) Update(ctx context.Context, id string, body MeetingSessionUpdateParams, opts ...option.RequestOption) (res *MeetingSessionResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -97,7 +100,9 @@ func (r *MeetingSessionService) Update(ctx context.Context, id string, body Meet
 	return res, err
 }
 
-// Returns a list of meeting sessions, optionally filtered by status.
+// Returns a list of meeting sessions, optionally filtered by status. List items
+// omit assistant.dynamic_variables and recording_export. Some items include
+// remote_state_observed_at; retrieve the individual session for current state.
 func (r *MeetingSessionService) List(ctx context.Context, query MeetingSessionListParams, opts ...option.RequestOption) (res *MeetingSessionListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "meeting_sessions"
@@ -107,7 +112,9 @@ func (r *MeetingSessionService) List(ctx context.Context, query MeetingSessionLi
 
 // Stops a meeting session without deleting its persisted record. Scheduled bots
 // are cancelled, while bots that are joining or active are asked to leave. The
-// persisted meeting session record remains available.
+// persisted meeting session record remains available. A successful response can
+// report leaving while departure is pending. Poll until ended, failed, or
+// admission_denied. Exported Storage objects are unaffected.
 func (r *MeetingSessionService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *MeetingSessionResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -124,7 +131,10 @@ func (r *MeetingSessionService) Delete(ctx context.Context, id string, opts ...o
 // events, artifacts, and usage records. It is separate from
 // `DELETE /meeting_sessions/{id}`, which stops or cancels participation without
 // deleting the persisted session. A missing/foreign session returns 404; a
-// deletion request whose outcome is unknown returns 502.
+// deletion request whose outcome is unknown returns 502. Customer Storage exports
+// do not support this operation (422 unsupported_capability); delete the exported
+// object through Storage instead. Stopping a session does not delete an exported
+// object.
 func (r *MeetingSessionService) DeleteRecordingMedia(ctx context.Context, id string, opts ...option.RequestOption) (res *MeetingSessionDeleteRecordingMediaResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -151,10 +161,31 @@ func (r *MeetingSessionService) GetEvents(ctx context.Context, id string, query 
 	return res, err
 }
 
-// Returns transcript segments ordered by ascending `seq`. Default `limit` is 100
-// and maximum is 1,000. Continue with `after=meta.next_after`. A long-poll timeout
-// returns 200 with empty `data` and `meta.next_after: null`; retain the cursor
-// supplied to that request because null is not a replacement cursor.
+// Retrieve recording export status. Customer Storage exports include
+// recording_export with the bucket, region, key and pending/exported/failed
+// status, or null when no reference is available. The data array is empty for
+// these exports. Download or share the object using the Storage API once its
+// status is exported. Zoom recordings and existing Google Meet or Teams recordings
+// held by the Meeting service continue returning temporary download links in data
+// through this same endpoint and session ID. Those recordings do not require
+// Storage setup or migration. Refresh this endpoint when a link expires. Select
+// the download method from the returned fields, not the platform alone.
+func (r *MeetingSessionService) GetRecordings(ctx context.Context, id string, opts ...option.RequestOption) (res *MeetingSessionGetRecordingsResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("meeting_sessions/%s/recordings", url.PathEscape(id))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return res, err
+}
+
+// Returns transcript segments ordered by ascending seq. Default limit is 100,
+// maximum 1000. Continue with after=meta.next_after. On an empty page,
+// meta.next_after preserves a positive supplied after cursor, or is null when no
+// positive cursor was supplied. wait_seconds holds an empty read for up to 25
+// seconds; a timeout still returns 200.
 func (r *MeetingSessionService) GetTranscript(ctx context.Context, id string, query MeetingSessionGetTranscriptParams, opts ...option.RequestOption) (res *MeetingSessionGetTranscriptResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -166,9 +197,9 @@ func (r *MeetingSessionService) GetTranscript(ctx context.Context, id string, qu
 	return res, err
 }
 
-// Represents a meeting session. All serializer fields are present and required;
-// nullable fields use null when absent. No actor, provider-bot, idempotency,
-// routing, key, or internal fields are exposed.
+// Represents a meeting session. Core serializer fields are required;
+// platform-specific fields are optional. Nullable fields use null when absent. No
+// actor, provider-bot, idempotency, routing, key, or internal fields are exposed.
 type MeetingSession struct {
 	// Unique identifier for the meeting session.
 	ID string `json:"id" api:"required"`
@@ -201,7 +232,14 @@ type MeetingSession struct {
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Timestamp when the session ended, or null if ongoing.
 	EndedAt time.Time `json:"ended_at" api:"required" format:"date-time"`
-	// Human-readable failure reason if the session failed, or null.
+	// A machine-readable lifecycle reason, or null. Values include left_on_request,
+	// meeting_ended, everyone_left, no_one_joined, silence_timeout,
+	// max_duration_reached, admission_timeout, admission_denied, removed_from_meeting,
+	// recording_permission_denied, meeting_not_found, meeting_not_started,
+	// meeting_access_denied, meeting_full, cancelled, cancelled_calendar_disconnected,
+	// cancelled_calendar_event_deleted, cancelled_calendar_superseded,
+	// cancelled_policy, internal_error, and other. Treat this vocabulary as
+	// extensible.
 	FailureReason string `json:"failure_reason" api:"required"`
 	// Scheduled join time, or null for immediate join.
 	JoinAt time.Time `json:"join_at" api:"required" format:"date-time"`
@@ -216,8 +254,8 @@ type MeetingSession struct {
 	//
 	// Any of "zoom", "google_meet", "teams", "webex", "unknown".
 	Platform MeetingSessionPlatform `json:"platform" api:"required"`
-	// Provider handling the meeting session.
-	Provider string `json:"provider" api:"required"`
+	// Always telnyx.
+	Provider constant.Telnyx `json:"provider" default:"telnyx"`
 	// Whether the session is being recorded.
 	Recording bool `json:"recording" api:"required"`
 	// Lifecycle status. `waiting_for_admission` means the bot reached the meeting
@@ -230,12 +268,26 @@ type MeetingSession struct {
 	// Any of "scheduled", "joining", "waiting_for_admission", "active", "leaving",
 	// "ended", "failed", "admission_denied".
 	Status MeetingSessionStatus `json:"status" api:"required"`
-	// Additional human-readable detail about the status, or null.
+	// A machine-readable lifecycle reason, or null. Values include left_on_request,
+	// meeting_ended, everyone_left, no_one_joined, silence_timeout,
+	// max_duration_reached, admission_timeout, admission_denied, removed_from_meeting,
+	// recording_permission_denied, meeting_not_found, meeting_not_started,
+	// meeting_access_denied, meeting_full, cancelled, cancelled_calendar_disconnected,
+	// cancelled_calendar_event_deleted, cancelled_calendar_superseded,
+	// cancelled_policy, internal_error, and other. Treat this vocabulary as
+	// extensible.
 	StatusDetail string `json:"status_detail" api:"required"`
 	// Timestamp of the last update to the session.
 	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// Webhook endpoint for session lifecycle callbacks, or null if not configured.
 	WebhookURL string `json:"webhook_url" api:"required" format:"uri"`
+	// Customer Storage recording reference. Pending is not downloadable; exported
+	// means upload was verified; failed is terminal. Download with ordinary Storage
+	// authorization. No presigned URL is returned.
+	RecordingExport MeetingSessionRecordingExport `json:"recording_export" api:"nullable"`
+	// Optional observation time on session list items. Retrieve the individual session
+	// when current state is required.
+	RemoteStateObservedAt time.Time `json:"remote_state_observed_at" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                      respjson.Field
@@ -262,6 +314,8 @@ type MeetingSession struct {
 		StatusDetail            respjson.Field
 		UpdatedAt               respjson.Field
 		WebhookURL              respjson.Field
+		RecordingExport         respjson.Field
+		RemoteStateObservedAt   respjson.Field
 		ExtraFields             map[string]respjson.Field
 		raw                     string
 	} `json:"-"`
@@ -270,36 +324,6 @@ type MeetingSession struct {
 // Returns the unmodified JSON received from the API
 func (r MeetingSession) RawJSON() string { return r.JSON.raw }
 func (r *MeetingSession) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Assistant configuration if an assistant is attached, otherwise null.
-type MeetingSessionAssistant struct {
-	// Identifier of the assistant.
-	ID string `json:"id" api:"required"`
-	// Audio gating strategy in force for the assistant call leg.
-	//
-	// Any of "half_duplex", "full_duplex".
-	AudioGate string `json:"audio_gate" api:"required"`
-	// The dynamic variables in force for this session, or null when none were
-	// supplied.
-	DynamicVariables map[string]string `json:"dynamic_variables" api:"required"`
-	// Whether the bot leaves when the Assistant's conversation ends or fails.
-	LeaveOnEnd bool `json:"leave_on_end" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID               respjson.Field
-		AudioGate        respjson.Field
-		DynamicVariables respjson.Field
-		LeaveOnEnd       respjson.Field
-		ExtraFields      map[string]respjson.Field
-		raw              string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r MeetingSessionAssistant) RawJSON() string { return r.JSON.raw }
-func (r *MeetingSessionAssistant) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -361,27 +385,63 @@ type MeetingSessionConfig struct {
 	BargeIn bool `json:"barge_in" api:"required"`
 	// The message posted to chat on join, or null when unset.
 	ChatOnEnter string `json:"chat_on_enter" api:"required"`
+	// Detection settings. Enabling audio or video detection is currently unsupported.
+	DeepfakeDetection MeetingSessionConfigDeepfakeDetection `json:"deepfake_detection" api:"required"`
 	// Text spoken on meeting entry, or null if not set.
 	SpeakOnEnter string `json:"speak_on_enter" api:"required"`
 	// Whether a summary artifact is generated on session end.
 	SummarizeOnEnd bool `json:"summarize_on_end" api:"required"`
 	// Configured voice identifier, or null if not set.
 	Voice string `json:"voice" api:"required"`
+	// Automatic departure settings for Google Meet and Teams. Omitted fields use the
+	// default behavior. Set at creation; cannot be changed later. Zoom ignores this
+	// policy.
+	LeavePolicy MeetingSessionLeavePolicy `json:"leave_policy"`
+	// Recording intent set at creation for Google Meet and Teams. Distinct from the
+	// top-level recording field, which reports current activity.
+	Recording bool `json:"recording"`
+	// Non-default recording layout. Omitted for the default speaker_view layout.
+	//
+	// Any of "gallery_view", "speaker_view_no_sidebar".
+	RecordingView string `json:"recording_view"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		BargeIn        respjson.Field
-		ChatOnEnter    respjson.Field
-		SpeakOnEnter   respjson.Field
-		SummarizeOnEnd respjson.Field
-		Voice          respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
+		BargeIn           respjson.Field
+		ChatOnEnter       respjson.Field
+		DeepfakeDetection respjson.Field
+		SpeakOnEnter      respjson.Field
+		SummarizeOnEnd    respjson.Field
+		Voice             respjson.Field
+		LeavePolicy       respjson.Field
+		Recording         respjson.Field
+		RecordingView     respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
 func (r MeetingSessionConfig) RawJSON() string { return r.JSON.raw }
 func (r *MeetingSessionConfig) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Detection settings. Enabling audio or video detection is currently unsupported.
+type MeetingSessionConfigDeepfakeDetection struct {
+	Audio bool `json:"audio" api:"required"`
+	Video bool `json:"video" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Audio       respjson.Field
+		Video       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MeetingSessionConfigDeepfakeDetection) RawJSON() string { return r.JSON.raw }
+func (r *MeetingSessionConfigDeepfakeDetection) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -415,10 +475,193 @@ const (
 	MeetingSessionStatusAdmissionDenied     MeetingSessionStatus = "admission_denied"
 )
 
+// Automatic departure settings for Google Meet and Teams. Omitted fields use the
+// default behavior. Set at creation; cannot be changed later. Zoom ignores this
+// policy.
+type MeetingSessionLeavePolicy struct {
+	// Seconds alone after another participant has attended and left. Does not start
+	// just because the bot arrives first.
+	AloneSeconds int64 `json:"alone_seconds"`
+	// Case-insensitive names or phrases identifying other bots to exclude when
+	// deciding whether this bot is alone. Matching splits names on spaces, hyphens and
+	// underscores. Null or an empty array disables filtering.
+	BotNameKeywords []string `json:"bot_name_keywords" api:"nullable"`
+	// Seconds to wait for the host to start the meeting.
+	HostWaitSeconds int64 `json:"host_wait_seconds"`
+	// Seconds to wait for lobby admission.
+	LobbyWaitSeconds int64 `json:"lobby_wait_seconds"`
+	// Maximum seconds after joining. Null means no per-join duration limit; service
+	// safety limits still apply.
+	MaxDurationSeconds int64 `json:"max_duration_seconds" api:"nullable"`
+	// Seconds after joining before silence detection starts a fresh inactivity timer.
+	SilenceGraceSeconds int64 `json:"silence_grace_seconds"`
+	// Continuous audio inactivity before departure after the silence grace period.
+	SilenceSeconds int64 `json:"silence_seconds"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AloneSeconds        respjson.Field
+		BotNameKeywords     respjson.Field
+		HostWaitSeconds     respjson.Field
+		LobbyWaitSeconds    respjson.Field
+		MaxDurationSeconds  respjson.Field
+		SilenceGraceSeconds respjson.Field
+		SilenceSeconds      respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MeetingSessionLeavePolicy) RawJSON() string { return r.JSON.raw }
+func (r *MeetingSessionLeavePolicy) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this MeetingSessionLeavePolicy to a
+// MeetingSessionLeavePolicyParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// MeetingSessionLeavePolicyParam.Overrides()
+func (r MeetingSessionLeavePolicy) ToParam() MeetingSessionLeavePolicyParam {
+	return param.Override[MeetingSessionLeavePolicyParam](json.RawMessage(r.RawJSON()))
+}
+
+// Automatic departure settings for Google Meet and Teams. Omitted fields use the
+// default behavior. Set at creation; cannot be changed later. Zoom ignores this
+// policy.
+type MeetingSessionLeavePolicyParam struct {
+	// Maximum seconds after joining. Null means no per-join duration limit; service
+	// safety limits still apply.
+	MaxDurationSeconds param.Opt[int64] `json:"max_duration_seconds,omitzero"`
+	// Seconds alone after another participant has attended and left. Does not start
+	// just because the bot arrives first.
+	AloneSeconds param.Opt[int64] `json:"alone_seconds,omitzero"`
+	// Seconds to wait for the host to start the meeting.
+	HostWaitSeconds param.Opt[int64] `json:"host_wait_seconds,omitzero"`
+	// Seconds to wait for lobby admission.
+	LobbyWaitSeconds param.Opt[int64] `json:"lobby_wait_seconds,omitzero"`
+	// Seconds after joining before silence detection starts a fresh inactivity timer.
+	SilenceGraceSeconds param.Opt[int64] `json:"silence_grace_seconds,omitzero"`
+	// Continuous audio inactivity before departure after the silence grace period.
+	SilenceSeconds param.Opt[int64] `json:"silence_seconds,omitzero"`
+	// Case-insensitive names or phrases identifying other bots to exclude when
+	// deciding whether this bot is alone. Matching splits names on spaces, hyphens and
+	// underscores. Null or an empty array disables filtering.
+	BotNameKeywords []string `json:"bot_name_keywords,omitzero"`
+	paramObj
+}
+
+func (r MeetingSessionLeavePolicyParam) MarshalJSON() (data []byte, err error) {
+	type shadow MeetingSessionLeavePolicyParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MeetingSessionLeavePolicyParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Customer-owned Telnyx Storage destination for recording exports. Uses the
+// authenticated organization and user; do not supply credentials, region,
+// organization ID or object key.
+type MeetingSessionRecordingDestination struct {
+	// Existing accessible bucket. Consecutive dots and IPv4-address names are
+	// rejected.
+	Bucket string `json:"bucket" api:"required"`
+	// Optional object-key prefix. One trailing slash is normalized. Empty path
+	// segments, . and .. segments are rejected.
+	Prefix string `json:"prefix"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Bucket      respjson.Field
+		Prefix      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MeetingSessionRecordingDestination) RawJSON() string { return r.JSON.raw }
+func (r *MeetingSessionRecordingDestination) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this MeetingSessionRecordingDestination to a
+// MeetingSessionRecordingDestinationParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// MeetingSessionRecordingDestinationParam.Overrides()
+func (r MeetingSessionRecordingDestination) ToParam() MeetingSessionRecordingDestinationParam {
+	return param.Override[MeetingSessionRecordingDestinationParam](json.RawMessage(r.RawJSON()))
+}
+
+// Customer-owned Telnyx Storage destination for recording exports. Uses the
+// authenticated organization and user; do not supply credentials, region,
+// organization ID or object key.
+//
+// The property Bucket is required.
+type MeetingSessionRecordingDestinationParam struct {
+	// Existing accessible bucket. Consecutive dots and IPv4-address names are
+	// rejected.
+	Bucket string `json:"bucket" api:"required"`
+	// Optional object-key prefix. One trailing slash is normalized. Empty path
+	// segments, . and .. segments are rejected.
+	Prefix param.Opt[string] `json:"prefix,omitzero"`
+	paramObj
+}
+
+func (r MeetingSessionRecordingDestinationParam) MarshalJSON() (data []byte, err error) {
+	type shadow MeetingSessionRecordingDestinationParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MeetingSessionRecordingDestinationParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Customer Storage recording reference. Pending is not downloadable; exported
+// means upload was verified; failed is terminal. Download with ordinary Storage
+// authorization. No presigned URL is returned.
+type MeetingSessionRecordingExport struct {
+	Bucket     string    `json:"bucket" api:"required"`
+	Bytes      int64     `json:"bytes" api:"required"`
+	ExportedAt time.Time `json:"exported_at" api:"required" format:"date-time"`
+	Key        string    `json:"key" api:"required"`
+	Region     string    `json:"region" api:"required"`
+	// Any of "pending", "exported", "failed".
+	Status MeetingSessionRecordingExportStatus `json:"status" api:"required"`
+	Type   constant.Video                      `json:"type" default:"video"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Bucket      respjson.Field
+		Bytes       respjson.Field
+		ExportedAt  respjson.Field
+		Key         respjson.Field
+		Region      respjson.Field
+		Status      respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MeetingSessionRecordingExport) RawJSON() string { return r.JSON.raw }
+func (r *MeetingSessionRecordingExport) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MeetingSessionRecordingExportStatus string
+
+const (
+	MeetingSessionRecordingExportStatusPending  MeetingSessionRecordingExportStatus = "pending"
+	MeetingSessionRecordingExportStatusExported MeetingSessionRecordingExportStatus = "exported"
+	MeetingSessionRecordingExportStatusFailed   MeetingSessionRecordingExportStatus = "failed"
+)
+
 type MeetingSessionResponse struct {
-	// Represents a meeting session. All serializer fields are present and required;
-	// nullable fields use null when absent. No actor, provider-bot, idempotency,
-	// routing, key, or internal fields are exposed.
+	// Represents a meeting session. Core serializer fields are required;
+	// platform-specific fields are optional. Nullable fields use null when absent. No
+	// actor, provider-bot, idempotency, routing, key, or internal fields are exposed.
 	Data MeetingSession `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -528,6 +771,51 @@ func (r *MeetingSessionGetEventsResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type MeetingSessionGetRecordingsResponse struct {
+	// Temporary download URLs for recordings held by the Meeting service, including
+	// Zoom and existing Google Meet and Teams recordings. Empty for customer Storage
+	// exports; use recording_export instead. Choose the download method from these
+	// fields rather than the platform alone.
+	Data []MeetingSessionGetRecordingsResponseData `json:"data" api:"required"`
+	// Customer Storage recording reference. Pending is not downloadable; exported
+	// means upload was verified; failed is terminal. Download with ordinary Storage
+	// authorization. No presigned URL is returned.
+	RecordingExport MeetingSessionRecordingExport `json:"recording_export" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data            respjson.Field
+		RecordingExport respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MeetingSessionGetRecordingsResponse) RawJSON() string { return r.JSON.raw }
+func (r *MeetingSessionGetRecordingsResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MeetingSessionGetRecordingsResponseData struct {
+	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
+	Type      string    `json:"type" api:"required"`
+	URL       string    `json:"url" api:"required" format:"uri"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ExpiresAt   respjson.Field
+		Type        respjson.Field
+		URL         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MeetingSessionGetRecordingsResponseData) RawJSON() string { return r.JSON.raw }
+func (r *MeetingSessionGetRecordingsResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type MeetingSessionGetTranscriptResponse struct {
 	Data []MeetingSessionGetTranscriptResponseData `json:"data" api:"required"`
 	Meta MeetingSessionGetTranscriptResponseMeta   `json:"meta" api:"required"`
@@ -547,12 +835,17 @@ func (r *MeetingSessionGetTranscriptResponse) UnmarshalJSON(data []byte) error {
 }
 
 type MeetingSessionGetTranscriptResponseData struct {
-	Confidence   float64   `json:"confidence" api:"required"`
-	OccurredAt   time.Time `json:"occurred_at" api:"required" format:"date-time"`
-	RelativeTs   float64   `json:"relative_ts" api:"required"`
-	Seq          int64     `json:"seq" api:"required"`
-	SpeakerLabel string    `json:"speaker_label" api:"required"`
-	Text         string    `json:"text" api:"required"`
+	Confidence float64   `json:"confidence" api:"required"`
+	OccurredAt time.Time `json:"occurred_at" api:"required" format:"date-time"`
+	RelativeTs float64   `json:"relative_ts" api:"required"`
+	// Monotonic transcript append cursor. This is separate from the event-history
+	// cursor and does not establish conversational turn order.
+	Seq int64 `json:"seq" api:"required"`
+	// Recorded participant or bot label, or null when unavailable. Labels are
+	// attribution, not verified identity. Segments from concurrent speakers can
+	// finalize in a different order from the conversation.
+	SpeakerLabel string `json:"speaker_label" api:"required"`
+	Text         string `json:"text" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Confidence   respjson.Field
@@ -603,46 +896,67 @@ type MeetingSessionNewParams struct {
 	// typically a recording disclosure. Delivered at most once. Independent of
 	// `speak_on_enter`: both may be set, and the chat message posts first because it
 	// does not wait for text-to-speech or avatar startup. Rejected with 422
-	// `unsupported_capability` on platforms without meeting chat.
+	// `unsupported_capability` on platforms without meeting chat. For Google Meet and
+	// Teams, text must be nonblank, at most 4096 UTF-8 bytes, with no control
+	// characters except tabs and line breaks. Counts toward the 1000-chat-request
+	// session limit.
 	ChatOnEnter param.Opt[string] `json:"chat_on_enter,omitzero"`
-	// Client-supplied idempotency key to safely retry creation requests without
-	// duplicating sessions. Lookup is scoped to the authenticated account and compares
-	// the key only; the request payload is not fingerprinted or compared.
+	// Use a unique key per intended join and reuse the same key and request on
+	// retries. Reusing a key with a different join configuration or meeting URL can
+	// return 409 invalid_state. Always retry with the original request.
 	IdempotencyKey param.Opt[string] `json:"idempotency_key,omitzero"`
-	// ISO-8601 timestamp in the future at which the bot should join. If omitted, the
-	// bot joins immediately.
+	// Future ISO-8601 join timestamp including timezone. Google Meet and Teams accept
+	// dates at most three years ahead. Omit for an immediate join. Assistant sessions
+	// created through this endpoint must join immediately.
 	JoinAt param.Opt[time.Time] `json:"join_at,omitzero" format:"date-time"`
-	// Text the bot speaks when it enters the meeting. **Not spoken when an `assistant`
-	// is attached**: the value is accepted and echoed back on the session, but the
-	// assistant owns the voice and the line is never delivered, with no event
-	// reporting the omission. Use `chat_on_enter` to announce an assistant-backed bot.
-	// Rejected with 400 `invalid_request` when `assistant.avatar` is `true`.
+	// Google Meet and Teams only. Defaults to true when recording_export is supplied
+	// and false otherwise. True requires recording_export.bucket; false cannot be
+	// combined with recording_export. Fixed at creation, with no pause/resume action.
+	// Zoom rejects recording, recording_view, and recording_export with 422
+	// unsupported_capability; omit these fields for Zoom.
+	Recording param.Opt[bool] `json:"recording,omitzero"`
+	// Text the bot speaks after joining. Available for sessions without a digital
+	// avatar. With an AI Assistant, the greeting waits until the assistant is
+	// connected. Rejected with 400 invalid_request when assistant.avatar is true.
 	SpeakOnEnter param.Opt[string] `json:"speak_on_enter,omitzero"`
 	// If true, generate a summary artifact when the session ends.
 	SummarizeOnEnd param.Opt[bool] `json:"summarize_on_end,omitzero"`
 	// Session-default voice identifier used for `speak_on_enter` and ordinary speak
 	// actions. A voice supplied on an individual speak action overrides this default
-	// for that utterance.
+	// for that utterance. With an assistant attached, its conversational voice remains
+	// configured on the assistant.
 	Voice param.Opt[string] `json:"voice,omitzero"`
 	// HTTPS endpoint to receive session lifecycle callbacks. Static validation
 	// requires HTTPS, rejects embedded credentials and blocked hosts, and enforces
 	// egress policy. Validation makes no network request to the endpoint.
 	WebhookURL param.Opt[string] `json:"webhook_url,omitzero" format:"uri"`
-	// Attach a Telnyx AI Assistant to the session. Supply the Assistant's ID; the
-	// Meeting service connects it to the meeting directly. The Call Control
-	// connection, caller ID and loopback SIP URI previously required here have been
-	// removed and are now rejected as unknown fields.
+	// Attach a Telnyx AI Assistant owned by the authenticated account. Supply its ID
+	// and optional conversation settings. Unknown fields are rejected.
 	Assistant MeetingSessionNewParamsAssistant `json:"assistant,omitzero"`
-	// Write-only static camera-tile image for this session, not a native account or
+	// Not supported for Google Meet and Teams joins (422 unsupported_capability).
+	// Write-only static camera-tile image for this session, not an account or
 	// participant profile photo. Supply exactly one JPEG source. When effective, the
 	// image is used as the bot's static camera/video output; presentation varies by
 	// meeting platform and recording configuration and is not guaranteed in
-	// recordings. An effective Avatar or Assistant webpage output takes precedence, so
-	// this input is ignored and a URL source is not fetched.
+	// recordings. An attached assistant or avatar takes precedence, so this input is
+	// ignored and a URL source is not fetched.
 	CameraImage MeetingSessionNewParamsCameraImageUnion `json:"camera_image,omitzero"`
+	// Automatic departure settings for Google Meet and Teams. Omitted fields use the
+	// default behavior. Set at creation; cannot be changed later. Zoom ignores this
+	// policy.
+	LeavePolicy MeetingSessionLeavePolicyParam `json:"leave_policy,omitzero"`
 	// Arbitrary key-value metadata attached to the session. The serialized JSON
 	// representation must not exceed 16384 characters at runtime.
 	Metadata map[string]any `json:"metadata,omitzero"`
+	// Customer-owned Telnyx Storage destination for recording exports. Uses the
+	// authenticated organization and user; do not supply credentials, region,
+	// organization ID or object key.
+	RecordingExport MeetingSessionRecordingDestinationParam `json:"recording_export,omitzero"`
+	// Recording layout for Google Meet and Teams. Defaults to speaker_view. Accepted
+	// at creation only; does not enable recording by itself.
+	//
+	// Any of "speaker_view", "gallery_view", "speaker_view_no_sidebar".
+	RecordingView MeetingSessionNewParamsRecordingView `json:"recording_view,omitzero"`
 	paramObj
 }
 
@@ -654,10 +968,8 @@ func (r *MeetingSessionNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Attach a Telnyx AI Assistant to the session. Supply the Assistant's ID; the
-// Meeting service connects it to the meeting directly. The Call Control
-// connection, caller ID and loopback SIP URI previously required here have been
-// removed and are now rejected as unknown fields.
+// Attach a Telnyx AI Assistant owned by the authenticated account. Supply its ID
+// and optional conversation settings. Unknown fields are rejected.
 //
 // The property ID is required.
 type MeetingSessionNewParamsAssistant struct {
@@ -667,25 +979,18 @@ type MeetingSessionNewParamsAssistant struct {
 	// [AI Assistant avatars](/docs/inference/ai-assistants/avatars)) as the bot's
 	// camera, lip-synced to the assistant's own speech. The request carries no avatar
 	// ID or key: the assistant is read at creation and the request is rejected with
-	// 400 `invalid_request` if it has no Telnyx avatar configured. Supported on Google
-	// Meet, Zoom, Microsoft Teams and Webex; other platforms return 422
-	// `unsupported_capability`. REST-only. Not echoed back on `assistant`; the
-	// session's top-level `avatar` and `avatar_state` fields report it instead. If the
-	// avatar fails, the session continues voice-only and `avatar_state` becomes
-	// `degraded`.
+	// 400 `invalid_request` if it has no Telnyx avatar configured. Available for
+	// Google Meet, Zoom, and Teams sessions. REST-only. Not echoed back on
+	// `assistant`; the session's top-level `avatar` and `avatar_state` fields report
+	// it instead. If the avatar fails, the session continues voice-only and
+	// `avatar_state` becomes `degraded`.
 	Avatar param.Opt[bool] `json:"avatar,omitzero"`
-	// Leave the meeting when the Assistant's conversation reaches a terminal state --
-	// `ended` **or** `failed`. Off by default, which leaves the bot in the meeting
-	// after the Assistant stops. Fires once: a second terminal transition does not
-	// leave twice, and a leave the provider refuses is logged without changing how the
-	// session settles.
+	// Leave when the assistant conversation ends or fails. Defaults to false. Other
+	// leave-policy rules and explicit leave requests still apply.
 	LeaveOnEnd param.Opt[bool] `json:"leave_on_end,omitzero"`
-	// Audio gating strategy for the assistant call leg. `half_duplex` (default) sends
-	// the assistant a single mixed meeting stream and mutes it while the assistant
-	// speaks, so the assistant cannot hear itself and cannot be interrupted.
-	// `full_duplex` sends a separate stream per participant, which allows barge-in and
-	// removes self-hearing, and COSTS SIGNIFICANTLY MORE: per-participant streams
-	// multiply the per-minute cost by the number of participants.
+	// Use half_duplex (default) to pause listening while the assistant speaks, or
+	// full_duplex to allow participants to interrupt. Full-duplex pricing depends on
+	// participant audio usage; see the Meeting pricing guide.
 	//
 	// Any of "half_duplex", "full_duplex".
 	AudioGate string `json:"audio_gate,omitzero"`
@@ -696,9 +1001,7 @@ type MeetingSessionNewParamsAssistant struct {
 	// conversation. At most 63 entries; keys 1-128 characters; values must be strings.
 	// The map is budgeted in aggregate at 1,047,552 bytes (1023 KiB) rather than
 	// capped per value. `streaming_audio`, `ai_assistant_streaming_audio` and
-	// `meeting_session_id` are reserved and rejected with `400 invalid_request` --
-	// they toggle provider infrastructure or are set by the service rather than fill a
-	// prompt template.
+	// `meeting_session_id` are reserved and rejected with `400 invalid_request`.
 	DynamicVariables map[string]string `json:"dynamic_variables,omitzero"`
 	paramObj
 }
@@ -782,7 +1085,7 @@ type MeetingSessionNewParamsCameraImageMeetingSessionCameraImageBase64Source str
 	// and the URL-safe alphabet are rejected. The encoded value is limited to
 	// 1,835,008 characters and the decoded JPEG to 1,363,148 bytes. The JPEG is
 	// limited to 4,096 pixels per dimension, 4 megapixels, and 128 MB of decoder
-	// memory. The image bytes are not persisted, returned, or logged.
+	// memory. The image bytes are not returned in the session response.
 	Base64Data string `json:"base64_data" api:"required"`
 	// Only JPEG images are accepted.
 	//
@@ -807,8 +1110,8 @@ type MeetingSessionNewParamsCameraImageMeetingSessionCameraImageURLSource struct
 	// Fetching is limited to public network destinations, a five-second timeout, no
 	// redirects, a 2xx image/jpeg response with identity or no content encoding, and a
 	// 1,363,148-byte limit enforced against both declared and streamed content. The
-	// service resolves the URL before bot creation and does not persist, return, or
-	// log the URL or image bytes.
+	// service resolves the URL before bot creation and does not return the URL or
+	// image bytes in the session response.
 	URL string `json:"url" api:"required" format:"uri"`
 	// Only JPEG images are accepted.
 	//
@@ -824,6 +1127,16 @@ func (r MeetingSessionNewParamsCameraImageMeetingSessionCameraImageURLSource) Ma
 func (r *MeetingSessionNewParamsCameraImageMeetingSessionCameraImageURLSource) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// Recording layout for Google Meet and Teams. Defaults to speaker_view. Accepted
+// at creation only; does not enable recording by itself.
+type MeetingSessionNewParamsRecordingView string
+
+const (
+	MeetingSessionNewParamsRecordingViewSpeakerView          MeetingSessionNewParamsRecordingView = "speaker_view"
+	MeetingSessionNewParamsRecordingViewGalleryView          MeetingSessionNewParamsRecordingView = "gallery_view"
+	MeetingSessionNewParamsRecordingViewSpeakerViewNoSidebar MeetingSessionNewParamsRecordingView = "speaker_view_no_sidebar"
+)
 
 type MeetingSessionUpdateParams struct {
 	// Updated display name for the bot.

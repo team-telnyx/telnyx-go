@@ -9,6 +9,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/internal/apijson"
 	"github.com/team-telnyx/telnyx-go/v4/option"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
+	"github.com/team-telnyx/telnyx-go/v4/shared/constant"
 )
 
 // WebhookService contains methods and other services that help with interacting
@@ -9102,6 +9103,137 @@ func (r *NumberReputationNumberRemovedWebhookEventMeta) UnmarshalJSON(data []byt
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type RecordingExportFailedWebhookEvent struct {
+	// Unique event id; deduplicate deliveries on it.
+	ID   string                                `json:"id" api:"required"`
+	Data RecordingExportFailedWebhookEventData `json:"data" api:"required"`
+	// Event type.
+	//
+	// Any of "recording.export_failed".
+	Event RecordingExportFailedWebhookEventEvent `json:"event" api:"required"`
+	// When the event occurred.
+	OccurredAt time.Time `json:"occurred_at" api:"required" format:"date-time"`
+	// Envelope version.
+	Version string `json:"version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Data        respjson.Field
+		Event       respjson.Field
+		OccurredAt  respjson.Field
+		Version     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r RecordingExportFailedWebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *RecordingExportFailedWebhookEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type RecordingExportFailedWebhookEventData struct {
+	Bucket string `json:"bucket" api:"required"`
+	Key    string `json:"key" api:"required"`
+	// Any of "invalid_target", "invalid_media", "source_changed",
+	// "source_unavailable", "too_large", "storage_unavailable", "object_conflict",
+	// "verification_failed", "worker_lost", "internal_error".
+	Reason    string         `json:"reason" api:"required"`
+	Region    string         `json:"region" api:"required"`
+	SessionID string         `json:"session_id" api:"required"`
+	Type      constant.Video `json:"type" default:"video"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Bucket      respjson.Field
+		Key         respjson.Field
+		Reason      respjson.Field
+		Region      respjson.Field
+		SessionID   respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r RecordingExportFailedWebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *RecordingExportFailedWebhookEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Event type.
+type RecordingExportFailedWebhookEventEvent string
+
+const (
+	RecordingExportFailedWebhookEventEventRecordingExportFailed RecordingExportFailedWebhookEventEvent = "recording.export_failed"
+)
+
+type RecordingExportedWebhookEvent struct {
+	// Unique event id; deduplicate deliveries on it.
+	ID   string                            `json:"id" api:"required"`
+	Data RecordingExportedWebhookEventData `json:"data" api:"required"`
+	// Event type.
+	//
+	// Any of "recording.exported".
+	Event RecordingExportedWebhookEventEvent `json:"event" api:"required"`
+	// When the event occurred.
+	OccurredAt time.Time `json:"occurred_at" api:"required" format:"date-time"`
+	// Envelope version.
+	Version string `json:"version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Data        respjson.Field
+		Event       respjson.Field
+		OccurredAt  respjson.Field
+		Version     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r RecordingExportedWebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *RecordingExportedWebhookEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type RecordingExportedWebhookEventData struct {
+	Bucket    string         `json:"bucket" api:"required"`
+	Bytes     int64          `json:"bytes" api:"required"`
+	Key       string         `json:"key" api:"required"`
+	Region    string         `json:"region" api:"required"`
+	SessionID string         `json:"session_id" api:"required"`
+	Sha256    string         `json:"sha256" api:"required"`
+	Type      constant.Video `json:"type" default:"video"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Bucket      respjson.Field
+		Bytes       respjson.Field
+		Key         respjson.Field
+		Region      respjson.Field
+		SessionID   respjson.Field
+		Sha256      respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r RecordingExportedWebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *RecordingExportedWebhookEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Event type.
+type RecordingExportedWebhookEventEvent string
+
+const (
+	RecordingExportedWebhookEventEventRecordingExported RecordingExportedWebhookEventEvent = "recording.exported"
+)
+
 type ReplacedLinkClickWebhookEvent struct {
 	Data ReplacedLinkClick `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -9159,14 +9291,20 @@ type SessionStatusChangedWebhookEventData struct {
 	Status string `json:"status" api:"required"`
 	// Additional detail about the status (for example `cancelled`), or null.
 	StatusDetail string `json:"status_detail" api:"required"`
+	// Previous lifecycle status, when supplied.
+	//
+	// Any of "scheduled", "joining", "waiting_for_admission", "active", "leaving",
+	// "ended", "failed", "admission_denied".
+	PreviousStatus string `json:"previous_status"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Recording    respjson.Field
-		SessionID    respjson.Field
-		Status       respjson.Field
-		StatusDetail respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
+		Recording      respjson.Field
+		SessionID      respjson.Field
+		Status         respjson.Field
+		StatusDetail   respjson.Field
+		PreviousStatus respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
 	} `json:"-"`
 }
 
@@ -9386,10 +9524,11 @@ func (r *WhatsappWabaAddedWebhookEventDataPayload) UnmarshalJSON(data []byte) er
 // [InboundMessageWebhookEvent], [NumberOrderStatusUpdateWebhookEvent],
 // [NumberReputationExternalVerificationStatusChangedWebhookEvent],
 // [NumberReputationNumberFlaggedWebhookEvent],
-// [NumberReputationNumberRemovedWebhookEvent], [ReplacedLinkClickWebhookEvent],
-// [SessionStatusChangedWebhookEvent], [TranscriptCompletedWebhookEvent],
-// [TranscriptionWebhookEvent], [WhatsappAccountUpdate], [WhatsappMessageEcho],
-// [WhatsappWabaAddedWebhookEvent].
+// [NumberReputationNumberRemovedWebhookEvent],
+// [RecordingExportFailedWebhookEvent], [RecordingExportedWebhookEvent],
+// [ReplacedLinkClickWebhookEvent], [SessionStatusChangedWebhookEvent],
+// [TranscriptCompletedWebhookEvent], [TranscriptionWebhookEvent],
+// [WhatsappAccountUpdate], [WhatsappMessageEcho], [WhatsappWabaAddedWebhookEvent].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type UnsafeUnwrapWebhookEventUnion struct {
@@ -9427,9 +9566,11 @@ type UnsafeUnwrapWebhookEventUnion struct {
 	// [NumberOrderStatusUpdateWebhookEventData],
 	// [NumberReputationExternalVerificationStatusChangedWebhookEventData],
 	// [NumberReputationNumberFlaggedWebhookEventData],
-	// [NumberReputationNumberRemovedWebhookEventData], [ReplacedLinkClick],
-	// [SessionStatusChangedWebhookEventData], [TranscriptCompletedWebhookEventData],
-	// [Transcription], [WhatsappAccountUpdateData], [WhatsappMessageEchoData],
+	// [NumberReputationNumberRemovedWebhookEventData],
+	// [RecordingExportFailedWebhookEventData], [RecordingExportedWebhookEventData],
+	// [ReplacedLinkClick], [SessionStatusChangedWebhookEventData],
+	// [TranscriptCompletedWebhookEventData], [Transcription],
+	// [WhatsappAccountUpdateData], [WhatsappMessageEchoData],
 	// [WhatsappWabaAddedWebhookEventData]
 	Data       UnsafeUnwrapWebhookEventUnionData `json:"data"`
 	ID         string                            `json:"id"`
@@ -9867,6 +10008,16 @@ func (u UnsafeUnwrapWebhookEventUnion) AsNumberReputationNumberRemovedWebhookEve
 	return
 }
 
+func (u UnsafeUnwrapWebhookEventUnion) AsRecordingExportFailedWebhookEvent() (v RecordingExportFailedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsRecordingExportedWebhookEvent() (v RecordingExportedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
 func (u UnsafeUnwrapWebhookEventUnion) AsReplacedLinkClickWebhookEvent() (v ReplacedLinkClickWebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
@@ -9976,6 +10127,15 @@ type UnsafeUnwrapWebhookEventUnionData struct {
 	SessionID string    `json:"session_id"`
 	Type      string    `json:"type"`
 	CreatedAt time.Time `json:"created_at"`
+	Bucket    string    `json:"bucket"`
+	Key       string    `json:"key"`
+	// This field is from variant [RecordingExportFailedWebhookEventData].
+	Reason string `json:"reason"`
+	Region string `json:"region"`
+	// This field is from variant [RecordingExportedWebhookEventData].
+	Bytes int64 `json:"bytes"`
+	// This field is from variant [RecordingExportedWebhookEventData].
+	Sha256 string `json:"sha256"`
 	// This field is from variant [ReplacedLinkClick].
 	MessageID string `json:"message_id"`
 	// This field is from variant [ReplacedLinkClick].
@@ -9990,6 +10150,8 @@ type UnsafeUnwrapWebhookEventUnionData struct {
 	Status string `json:"status"`
 	// This field is from variant [SessionStatusChangedWebhookEventData].
 	StatusDetail string `json:"status_detail"`
+	// This field is from variant [SessionStatusChangedWebhookEventData].
+	PreviousStatus string `json:"previous_status"`
 	// This field is from variant [TranscriptCompletedWebhookEventData].
 	EndedAt time.Time `json:"ended_at"`
 	// This field is from variant [TranscriptCompletedWebhookEventData].
@@ -10009,6 +10171,12 @@ type UnsafeUnwrapWebhookEventUnionData struct {
 		SessionID       respjson.Field
 		Type            respjson.Field
 		CreatedAt       respjson.Field
+		Bucket          respjson.Field
+		Key             respjson.Field
+		Reason          respjson.Field
+		Region          respjson.Field
+		Bytes           respjson.Field
+		Sha256          respjson.Field
 		MessageID       respjson.Field
 		TimeClicked     respjson.Field
 		To              respjson.Field
@@ -10016,6 +10184,7 @@ type UnsafeUnwrapWebhookEventUnionData struct {
 		Recording       respjson.Field
 		Status          respjson.Field
 		StatusDetail    respjson.Field
+		PreviousStatus  respjson.Field
 		EndedAt         respjson.Field
 		LastSeq         respjson.Field
 		SegmentCount    respjson.Field
@@ -11009,10 +11178,11 @@ func (r *UnsafeUnwrapWebhookEventUnionMeta) UnmarshalJSON(data []byte) error {
 // [InboundMessageWebhookEvent], [NumberOrderStatusUpdateWebhookEvent],
 // [NumberReputationExternalVerificationStatusChangedWebhookEvent],
 // [NumberReputationNumberFlaggedWebhookEvent],
-// [NumberReputationNumberRemovedWebhookEvent], [ReplacedLinkClickWebhookEvent],
-// [SessionStatusChangedWebhookEvent], [TranscriptCompletedWebhookEvent],
-// [TranscriptionWebhookEvent], [WhatsappAccountUpdate], [WhatsappMessageEcho],
-// [WhatsappWabaAddedWebhookEvent].
+// [NumberReputationNumberRemovedWebhookEvent],
+// [RecordingExportFailedWebhookEvent], [RecordingExportedWebhookEvent],
+// [ReplacedLinkClickWebhookEvent], [SessionStatusChangedWebhookEvent],
+// [TranscriptCompletedWebhookEvent], [TranscriptionWebhookEvent],
+// [WhatsappAccountUpdate], [WhatsappMessageEcho], [WhatsappWabaAddedWebhookEvent].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type UnwrapWebhookEventUnion struct {
@@ -11050,9 +11220,11 @@ type UnwrapWebhookEventUnion struct {
 	// [NumberOrderStatusUpdateWebhookEventData],
 	// [NumberReputationExternalVerificationStatusChangedWebhookEventData],
 	// [NumberReputationNumberFlaggedWebhookEventData],
-	// [NumberReputationNumberRemovedWebhookEventData], [ReplacedLinkClick],
-	// [SessionStatusChangedWebhookEventData], [TranscriptCompletedWebhookEventData],
-	// [Transcription], [WhatsappAccountUpdateData], [WhatsappMessageEchoData],
+	// [NumberReputationNumberRemovedWebhookEventData],
+	// [RecordingExportFailedWebhookEventData], [RecordingExportedWebhookEventData],
+	// [ReplacedLinkClick], [SessionStatusChangedWebhookEventData],
+	// [TranscriptCompletedWebhookEventData], [Transcription],
+	// [WhatsappAccountUpdateData], [WhatsappMessageEchoData],
 	// [WhatsappWabaAddedWebhookEventData]
 	Data       UnwrapWebhookEventUnionData `json:"data"`
 	ID         string                      `json:"id"`
@@ -11490,6 +11662,16 @@ func (u UnwrapWebhookEventUnion) AsNumberReputationNumberRemovedWebhookEvent() (
 	return
 }
 
+func (u UnwrapWebhookEventUnion) AsRecordingExportFailedWebhookEvent() (v RecordingExportFailedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnwrapWebhookEventUnion) AsRecordingExportedWebhookEvent() (v RecordingExportedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
 func (u UnwrapWebhookEventUnion) AsReplacedLinkClickWebhookEvent() (v ReplacedLinkClickWebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
@@ -11599,6 +11781,15 @@ type UnwrapWebhookEventUnionData struct {
 	SessionID string    `json:"session_id"`
 	Type      string    `json:"type"`
 	CreatedAt time.Time `json:"created_at"`
+	Bucket    string    `json:"bucket"`
+	Key       string    `json:"key"`
+	// This field is from variant [RecordingExportFailedWebhookEventData].
+	Reason string `json:"reason"`
+	Region string `json:"region"`
+	// This field is from variant [RecordingExportedWebhookEventData].
+	Bytes int64 `json:"bytes"`
+	// This field is from variant [RecordingExportedWebhookEventData].
+	Sha256 string `json:"sha256"`
 	// This field is from variant [ReplacedLinkClick].
 	MessageID string `json:"message_id"`
 	// This field is from variant [ReplacedLinkClick].
@@ -11613,6 +11804,8 @@ type UnwrapWebhookEventUnionData struct {
 	Status string `json:"status"`
 	// This field is from variant [SessionStatusChangedWebhookEventData].
 	StatusDetail string `json:"status_detail"`
+	// This field is from variant [SessionStatusChangedWebhookEventData].
+	PreviousStatus string `json:"previous_status"`
 	// This field is from variant [TranscriptCompletedWebhookEventData].
 	EndedAt time.Time `json:"ended_at"`
 	// This field is from variant [TranscriptCompletedWebhookEventData].
@@ -11632,6 +11825,12 @@ type UnwrapWebhookEventUnionData struct {
 		SessionID       respjson.Field
 		Type            respjson.Field
 		CreatedAt       respjson.Field
+		Bucket          respjson.Field
+		Key             respjson.Field
+		Reason          respjson.Field
+		Region          respjson.Field
+		Bytes           respjson.Field
+		Sha256          respjson.Field
 		MessageID       respjson.Field
 		TimeClicked     respjson.Field
 		To              respjson.Field
@@ -11639,6 +11838,7 @@ type UnwrapWebhookEventUnionData struct {
 		Recording       respjson.Field
 		Status          respjson.Field
 		StatusDetail    respjson.Field
+		PreviousStatus  respjson.Field
 		EndedAt         respjson.Field
 		LastSeq         respjson.Field
 		SegmentCount    respjson.Field

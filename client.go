@@ -444,6 +444,9 @@ type Client struct {
 	// Read and update the authenticated user's profile and data locality.
 	UserProfile   UserProfileService
 	AgentGateways AgentGatewayService
+	// Connect calendars and manage automatic meeting joins.
+	CalendarConnections CalendarConnectionService
+	MeetingBot          MeetingBotService
 }
 
 // DefaultClientOptions read from the environment (TELNYX_API_KEY,
@@ -688,6 +691,8 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.Tunnels = NewTunnelService(opts...)
 	r.UserProfile = NewUserProfileService(opts...)
 	r.AgentGateways = NewAgentGatewayService(opts...)
+	r.CalendarConnections = NewCalendarConnectionService(opts...)
+	r.MeetingBot = NewMeetingBotService(opts...)
 
 	return
 }

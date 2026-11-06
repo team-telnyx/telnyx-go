@@ -35,16 +35,7 @@ func TestAgentGatewayGuardrailNewWithOptionalParams(t *testing.T) {
 			Type:     telnyx.AgentGatewayGuardrailNewParamsTypeContentFilter,
 			AlwaysOn: telnyx.Bool(true),
 			Settings: map[string]any{
-				"patterns": []any{
-					map[string]any{
-						"name":   "us_ssn",
-						"action": "mask",
-					},
-					map[string]any{
-						"name":   "email",
-						"action": "mask",
-					},
-				},
+				"patterns": "bar",
 			},
 		},
 	)
@@ -78,7 +69,9 @@ func TestAgentGatewayGuardrailUpdateWithOptionalParams(t *testing.T) {
 			AlwaysOn:   telnyx.Bool(true),
 			Modes:      []string{"before_request"},
 			Name:       telnyx.String("name"),
-			Settings:   map[string]any{},
+			Settings: map[string]any{
+				"foo": "bar",
+			},
 		},
 	)
 	if err != nil {

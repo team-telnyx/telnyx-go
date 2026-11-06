@@ -127,7 +127,7 @@ type AgentGatewayGuardrail struct {
 	// `secret_access_key`, or `role_name`. `azure_content_safety`: `api_key`,
 	// `endpoint`, `severity` (0 to 7). Provider secrets are write-only. Responses
 	// leave the secrets out.
-	Settings any `json:"settings" api:"required"`
+	Settings map[string]any `json:"settings" api:"required"`
 	// Any of "content_filter", "tool_permission", "model_judge", "custom_code",
 	// "lakera", "presidio", "bedrock", "azure_content_safety".
 	Type      AgentGatewayGuardrailType `json:"type" api:"required"`
@@ -228,7 +228,7 @@ type AgentGatewayGuardrailNewParams struct {
 	// `guardrail_id`, `version`, `region`, and `access_key_id` with
 	// `secret_access_key`, or `role_name`. `azure_content_safety`: `api_key`,
 	// `endpoint`, `severity` (0 to 7). Provider secrets are write-only.
-	Settings any `json:"settings,omitzero"`
+	Settings map[string]any `json:"settings,omitzero"`
 	paramObj
 }
 
@@ -279,7 +279,7 @@ type AgentGatewayGuardrailUpdateParams struct {
 	// `bedrock`: `guardrail_id`, `version`, `region`, and `access_key_id` with
 	// `secret_access_key`, or `role_name`. `azure_content_safety`: `api_key`,
 	// `endpoint`, `severity` (0 to 7). Provider secrets are write-only.
-	Settings any `json:"settings,omitzero"`
+	Settings map[string]any `json:"settings,omitzero"`
 	paramObj
 }
 

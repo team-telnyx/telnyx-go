@@ -63,6 +63,7 @@ type NumberLiteral string          // Always "number_literal"
 type OAuthClientCredentials string // Always "oauth_client_credentials"
 type Observe string                // Always "observe"
 type Pay string                    // Always "pay"
+type PendingOAuth string           // Always "pending_oauth"
 type PredefinedMedia string        // Always "predefined_media"
 type Press string                  // Always "press"
 type ProviderRecordingMedia string // Always "provider_recording_media"
@@ -89,6 +90,7 @@ type Transfer string               // Always "transfer"
 type UpdateDynamicVariables string // Always "update_dynamic_variables"
 type URLPattern string             // Always "url_pattern"
 type Variable string               // Always "variable"
+type Video string                  // Always "video"
 type Vision string                 // Always "vision"
 type WaitFor string                // Always "wait_for"
 
@@ -137,6 +139,7 @@ func (c NumberLiteral) Default() NumberLiteral                   { return "numbe
 func (c OAuthClientCredentials) Default() OAuthClientCredentials { return "oauth_client_credentials" }
 func (c Observe) Default() Observe                               { return "observe" }
 func (c Pay) Default() Pay                                       { return "pay" }
+func (c PendingOAuth) Default() PendingOAuth                     { return "pending_oauth" }
 func (c PredefinedMedia) Default() PredefinedMedia               { return "predefined_media" }
 func (c Press) Default() Press                                   { return "press" }
 func (c ProviderRecordingMedia) Default() ProviderRecordingMedia { return "provider_recording_media" }
@@ -163,6 +166,7 @@ func (c Transfer) Default() Transfer                             { return "trans
 func (c UpdateDynamicVariables) Default() UpdateDynamicVariables { return "update_dynamic_variables" }
 func (c URLPattern) Default() URLPattern                         { return "url_pattern" }
 func (c Variable) Default() Variable                             { return "variable" }
+func (c Video) Default() Video                                   { return "video" }
 func (c Vision) Default() Vision                                 { return "vision" }
 func (c WaitFor) Default() WaitFor                               { return "wait_for" }
 
@@ -211,6 +215,7 @@ func (c NumberLiteral) MarshalJSON() ([]byte, error)          { return marshalSt
 func (c OAuthClientCredentials) MarshalJSON() ([]byte, error) { return marshalString(c) }
 func (c Observe) MarshalJSON() ([]byte, error)                { return marshalString(c) }
 func (c Pay) MarshalJSON() ([]byte, error)                    { return marshalString(c) }
+func (c PendingOAuth) MarshalJSON() ([]byte, error)           { return marshalString(c) }
 func (c PredefinedMedia) MarshalJSON() ([]byte, error)        { return marshalString(c) }
 func (c Press) MarshalJSON() ([]byte, error)                  { return marshalString(c) }
 func (c ProviderRecordingMedia) MarshalJSON() ([]byte, error) { return marshalString(c) }
@@ -237,6 +242,7 @@ func (c Transfer) MarshalJSON() ([]byte, error)               { return marshalSt
 func (c UpdateDynamicVariables) MarshalJSON() ([]byte, error) { return marshalString(c) }
 func (c URLPattern) MarshalJSON() ([]byte, error)             { return marshalString(c) }
 func (c Variable) MarshalJSON() ([]byte, error)               { return marshalString(c) }
+func (c Video) MarshalJSON() ([]byte, error)                  { return marshalString(c) }
 func (c Vision) MarshalJSON() ([]byte, error)                 { return marshalString(c) }
 func (c WaitFor) MarshalJSON() ([]byte, error)                { return marshalString(c) }
 
