@@ -5709,8 +5709,9 @@ type InferenceEmbeddingVoiceSettings struct {
 	ExpressiveMode bool `json:"expressive_mode"`
 	// Two-letter ISO 639-1 code of the language the voice speaks, for example `es`.
 	// Only applicable to Soniox and AssemblyAI voices, which speak every language of
-	// their model. AssemblyAI accepts `en`, `es`, `de`, `fr`, `it`, and `pt`. When
-	// unset, the voice speaks English.
+	// their model. AssemblyAI accepts `en`, `es`, `de`, `fr`, `it`, and `pt`, as a
+	// literal code: a dynamic variable is rejected. When unset, the voice speaks
+	// English.
 	Language string `json:"language" api:"nullable"`
 	// Enhances recognition for specific languages and dialects during MiniMax TTS
 	// synthesis. Default is null (no boost). Set to 'auto' for automatic language
@@ -6064,8 +6065,9 @@ type InferenceEmbeddingVoiceSettingsParam struct {
 	Voice string `json:"voice" api:"required"`
 	// Two-letter ISO 639-1 code of the language the voice speaks, for example `es`.
 	// Only applicable to Soniox and AssemblyAI voices, which speak every language of
-	// their model. AssemblyAI accepts `en`, `es`, `de`, `fr`, `it`, and `pt`. When
-	// unset, the voice speaks English.
+	// their model. AssemblyAI accepts `en`, `es`, `de`, `fr`, `it`, and `pt`, as a
+	// literal code: a dynamic variable is rejected. When unset, the voice speaks
+	// English.
 	Language param.Opt[string] `json:"language,omitzero"`
 	// The `identifier` for an integration secret
 	// [/v2/integration_secrets](https://developers.telnyx.com/api-reference/integration-secrets/create-a-secret)
