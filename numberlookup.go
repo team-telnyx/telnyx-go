@@ -252,12 +252,16 @@ func (r *NumberLookupGetResponseDataCarrier) UnmarshalJSON(data []byte) error {
 type NumberLookupGetResponseDataEnhancedCallerName struct {
 	// The name associated with the phone number.
 	CallerName string `json:"caller_name" api:"nullable"`
+	// The entity type of the phone number's owner, from the enhanced caller name data
+	// source — `Person` or `Business`. Null when not available.
+	EntityType string `json:"entity_type" api:"nullable"`
 	// A lookup-specific error code if the enhanced caller name could not be resolved;
 	// otherwise null.
 	ErrorCode string `json:"error_code" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CallerName  respjson.Field
+		EntityType  respjson.Field
 		ErrorCode   respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string

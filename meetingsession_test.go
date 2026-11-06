@@ -30,8 +30,8 @@ func TestMeetingSessionNewWithOptionalParams(t *testing.T) {
 	_, err := client.MeetingSessions.New(context.TODO(), telnyx.MeetingSessionNewParams{
 		MeetingURL: "https://zoom.us/j/1234567890",
 		Assistant: telnyx.MeetingSessionNewParamsAssistant{
-			ID:        "asst_fake-uuid-1234",
-			AudioGate: "full_duplex",
+			ID:        "x",
+			AudioGate: "half_duplex",
 			Avatar:    telnyx.Bool(true),
 			DynamicVariables: map[string]string{
 				"foo": "string",
@@ -46,11 +46,26 @@ func TestMeetingSessionNewWithOptionalParams(t *testing.T) {
 			},
 		},
 		ChatOnEnter:    telnyx.String("x"),
-		IdempotencyKey: telnyx.String("x"),
+		IdempotencyKey: telnyx.String("weekly-planning-2026-11-10"),
 		JoinAt:         telnyx.Time(time.Now()),
+		LeavePolicy: telnyx.MeetingSessionLeavePolicyParam{
+			AloneSeconds:        telnyx.Int(300),
+			BotNameKeywords:     []string{"x"},
+			HostWaitSeconds:     telnyx.Int(1),
+			LobbyWaitSeconds:    telnyx.Int(1),
+			MaxDurationSeconds:  telnyx.Int(7200),
+			SilenceGraceSeconds: telnyx.Int(1),
+			SilenceSeconds:      telnyx.Int(1),
+		},
 		Metadata: map[string]any{
 			"foo": "bar",
 		},
+		Recording: telnyx.Bool(true),
+		RecordingExport: telnyx.MeetingSessionRecordingDestinationParam{
+			Bucket: "meeting-recordings",
+			Prefix: telnyx.String("weekly-planning"),
+		},
+		RecordingView:  telnyx.MeetingSessionNewParamsRecordingViewSpeakerView,
 		SpeakOnEnter:   telnyx.String("x"),
 		SummarizeOnEnd: telnyx.Bool(true),
 		Voice:          telnyx.String("x"),
@@ -210,6 +225,29 @@ func TestMeetingSessionGetEventsWithOptionalParams(t *testing.T) {
 			Limit: telnyx.Int(1),
 		},
 	)
+	if err != nil {
+		var apierr *telnyx.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestMeetingSessionGetRecordings(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := telnyx.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.MeetingSessions.GetRecordings(context.TODO(), "mtgsess_a1b2c3d4-e5f6-7890-abcd-ef1234567890")
 	if err != nil {
 		var apierr *telnyx.Error
 		if errors.As(err, &apierr) {

@@ -90,7 +90,7 @@ func TestAIMemoryNamespaceProfileIngestWithOptionalParams(t *testing.T) {
 		"profile_id",
 		telnyx.AIMemoryNamespaceProfileIngestParams{
 			Namespace: "namespace",
-			OfAnyMap: map[string]any{
+			OfIngestPayloadObject: map[string]any{
 				"messages": "bar",
 			},
 			SessionID: telnyx.String("session_id"),

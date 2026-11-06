@@ -100,7 +100,11 @@ func (r *AIConversationService) List(ctx context.Context, query AIConversationLi
 	return res, err
 }
 
-// Delete a specific conversation by its ID.
+// Delete a specific conversation by its ID. Permanently deletes the conversation
+// and its associated data: the conversation's messages, its insight generation
+// results, any conversation memories, and its webhook request logs. Recordings are
+// not deleted — recordings are managed separately through the /v2/recordings
+// endpoints. This action cannot be undone.
 func (r *AIConversationService) Delete(ctx context.Context, conversationID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
@@ -127,6 +131,27 @@ func (r *AIConversationService) AddMessage(ctx context.Context, conversationID s
 	}
 	path := fmt.Sprintf("ai/conversations/%s/message", conversationID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, nil, opts...)
+	return err
+}
+
+// Delete one insight generation request for a conversation. Generation results are
+// stored per conversation and per insight template; deleting a request permanently
+// removes the stored result but does not stop insight generation from running
+// again. To remove every insight result for the conversation, delete the
+// conversation itself. A successful delete returns an empty response.
+func (r *AIConversationService) DeleteDelete(ctx context.Context, insightID string, body AIConversationDeleteDeleteParams, opts ...option.RequestOption) (err error) {
+	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
+	if body.ConversationID == "" {
+		err = errors.New("missing required conversation_id parameter")
+		return err
+	}
+	if insightID == "" {
+		err = errors.New("missing required insight_id parameter")
+		return err
+	}
+	path := fmt.Sprintf("ai/conversations/%s/conversations-insights/%s", url.PathEscape(body.ConversationID), url.PathEscape(insightID))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return err
 }
 
@@ -476,4 +501,9 @@ func (u *AIConversationAddMessageParamsToolChoiceUnion) asAny() any {
 		return &u.OfToolChoiceObject
 	}
 	return nil
+}
+
+type AIConversationDeleteDeleteParams struct {
+	ConversationID string `path:"conversation_id" api:"required" json:"-"`
+	paramObj
 }

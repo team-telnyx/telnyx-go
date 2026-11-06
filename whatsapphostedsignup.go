@@ -64,7 +64,7 @@ func (r *WhatsappHostedSignupService) Get(ctx context.Context, id string, opts .
 
 // List hosted signups created by the account, newest first. Expired hosted signups
 // are included.
-func (r *WhatsappHostedSignupService) List(ctx context.Context, query WhatsappHostedSignupListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[WhatsappHostedSignupListResponse], err error) {
+func (r *WhatsappHostedSignupService) List(ctx context.Context, query WhatsappHostedSignupListParams, opts ...option.RequestOption) (res *pagination.DefaultFlatPagination[WhatsappHostedSignup], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -83,12 +83,56 @@ func (r *WhatsappHostedSignupService) List(ctx context.Context, query WhatsappHo
 
 // List hosted signups created by the account, newest first. Expired hosted signups
 // are included.
-func (r *WhatsappHostedSignupService) ListAutoPaging(ctx context.Context, query WhatsappHostedSignupListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[WhatsappHostedSignupListResponse] {
+func (r *WhatsappHostedSignupService) ListAutoPaging(ctx context.Context, query WhatsappHostedSignupListParams, opts ...option.RequestOption) *pagination.DefaultFlatPaginationAutoPager[WhatsappHostedSignup] {
 	return pagination.NewDefaultFlatPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
+type WhatsappHostedSignup struct {
+	// Hosted signup ID
+	ID string `json:"id"`
+	// Meta App ID the hosted signup onboards customers into
+	AppID     string    `json:"app_id"`
+	CreatedAt time.Time `json:"created_at" format:"date-time"`
+	// When the onboarding URL stops working
+	ExpiresAt time.Time `json:"expires_at" format:"date-time"`
+	// Signed token embedded in `url`
+	Jwt string `json:"jwt"`
+	// Any of "whatsapp_jwt".
+	RecordType WhatsappHostedSignupRecordType `json:"record_type"`
+	// Meta Partner Solution ID linked to the app. Returned only when creating a hosted
+	// signup.
+	SolutionID string `json:"solution_id"`
+	// Hosted onboarding URL to share with the end customer
+	URL string `json:"url" format:"uri"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		AppID       respjson.Field
+		CreatedAt   respjson.Field
+		ExpiresAt   respjson.Field
+		Jwt         respjson.Field
+		RecordType  respjson.Field
+		SolutionID  respjson.Field
+		URL         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WhatsappHostedSignup) RawJSON() string { return r.JSON.raw }
+func (r *WhatsappHostedSignup) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WhatsappHostedSignupRecordType string
+
+const (
+	WhatsappHostedSignupRecordTypeWhatsappJwt WhatsappHostedSignupRecordType = "whatsapp_jwt"
+)
+
 type WhatsappHostedSignupNewResponse struct {
-	Data WhatsappHostedSignupNewResponseData `json:"data"`
+	Data WhatsappHostedSignup `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -103,46 +147,8 @@ func (r *WhatsappHostedSignupNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type WhatsappHostedSignupNewResponseData struct {
-	// Hosted signup ID
-	ID string `json:"id"`
-	// Meta App ID the hosted signup onboards customers into
-	AppID     string    `json:"app_id"`
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// When the onboarding URL stops working
-	ExpiresAt time.Time `json:"expires_at" format:"date-time"`
-	// Signed token embedded in `url`
-	Jwt string `json:"jwt"`
-	// Any of "whatsapp_jwt".
-	RecordType string `json:"record_type"`
-	// Meta Partner Solution ID linked to the app. Returned only when creating a hosted
-	// signup.
-	SolutionID string `json:"solution_id"`
-	// Hosted onboarding URL to share with the end customer
-	URL string `json:"url" format:"uri"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		AppID       respjson.Field
-		CreatedAt   respjson.Field
-		ExpiresAt   respjson.Field
-		Jwt         respjson.Field
-		RecordType  respjson.Field
-		SolutionID  respjson.Field
-		URL         respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r WhatsappHostedSignupNewResponseData) RawJSON() string { return r.JSON.raw }
-func (r *WhatsappHostedSignupNewResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type WhatsappHostedSignupGetResponse struct {
-	Data WhatsappHostedSignupGetResponseData `json:"data"`
+	Data WhatsappHostedSignup `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -156,88 +162,6 @@ func (r WhatsappHostedSignupGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *WhatsappHostedSignupGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type WhatsappHostedSignupGetResponseData struct {
-	// Hosted signup ID
-	ID string `json:"id"`
-	// Meta App ID the hosted signup onboards customers into
-	AppID     string    `json:"app_id"`
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// When the onboarding URL stops working
-	ExpiresAt time.Time `json:"expires_at" format:"date-time"`
-	// Signed token embedded in `url`
-	Jwt string `json:"jwt"`
-	// Any of "whatsapp_jwt".
-	RecordType string `json:"record_type"`
-	// Meta Partner Solution ID linked to the app. Returned only when creating a hosted
-	// signup.
-	SolutionID string `json:"solution_id"`
-	// Hosted onboarding URL to share with the end customer
-	URL string `json:"url" format:"uri"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		AppID       respjson.Field
-		CreatedAt   respjson.Field
-		ExpiresAt   respjson.Field
-		Jwt         respjson.Field
-		RecordType  respjson.Field
-		SolutionID  respjson.Field
-		URL         respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r WhatsappHostedSignupGetResponseData) RawJSON() string { return r.JSON.raw }
-func (r *WhatsappHostedSignupGetResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type WhatsappHostedSignupListResponse struct {
-	// Hosted signup ID
-	ID string `json:"id"`
-	// Meta App ID the hosted signup onboards customers into
-	AppID     string    `json:"app_id"`
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// When the onboarding URL stops working
-	ExpiresAt time.Time `json:"expires_at" format:"date-time"`
-	// Signed token embedded in `url`
-	Jwt string `json:"jwt"`
-	// Any of "whatsapp_jwt".
-	RecordType WhatsappHostedSignupListResponseRecordType `json:"record_type"`
-	// Meta Partner Solution ID linked to the app. Returned only when creating a hosted
-	// signup.
-	SolutionID string `json:"solution_id"`
-	// Hosted onboarding URL to share with the end customer
-	URL string `json:"url" format:"uri"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		AppID       respjson.Field
-		CreatedAt   respjson.Field
-		ExpiresAt   respjson.Field
-		Jwt         respjson.Field
-		RecordType  respjson.Field
-		SolutionID  respjson.Field
-		URL         respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r WhatsappHostedSignupListResponse) RawJSON() string { return r.JSON.raw }
-func (r *WhatsappHostedSignupListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type WhatsappHostedSignupListResponseRecordType string
-
-const (
-	WhatsappHostedSignupListResponseRecordTypeWhatsappJwt WhatsappHostedSignupListResponseRecordType = "whatsapp_jwt"
-)
 
 type WhatsappHostedSignupNewParams struct {
 	// Meta App ID linked to the Telnyx account or its manager account. The app must be

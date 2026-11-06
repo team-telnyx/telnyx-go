@@ -196,13 +196,13 @@ func (r *AIMemoryNamespaceProfileSourceGetResponseData) UnmarshalJSON(data []byt
 //
 // If the underlying value is not a json object, one of the following properties
 // will be valid:
-// OfAIMemoryNamespaceProfileSourceGetResponseDataContentUnionMember0 OfAnyArray
-// OfString OfFloat OfBool]
+// OfAIMemoryNamespaceProfileSourceGetResponseDataContentSourceContentObject
+// OfSourceContentValue OfString OfFloat OfBool]
 type AIMemoryNamespaceProfileSourceGetResponseDataContentUnion struct {
 	// This field will be present if the value is a [any] instead of an object.
-	OfAIMemoryNamespaceProfileSourceGetResponseDataContentUnionMember0 any `json:",inline"`
+	OfAIMemoryNamespaceProfileSourceGetResponseDataContentSourceContentObject any `json:",inline"`
 	// This field will be present if the value is a [[]any] instead of an object.
-	OfAnyArray []any `json:",inline"`
+	OfSourceContentValue []any `json:",inline"`
 	// This field will be present if the value is a [string] instead of an object.
 	OfString string `json:",inline"`
 	// This field will be present if the value is a [float64] instead of an object.
@@ -210,16 +210,16 @@ type AIMemoryNamespaceProfileSourceGetResponseDataContentUnion struct {
 	// This field will be present if the value is a [bool] instead of an object.
 	OfBool bool `json:",inline"`
 	JSON   struct {
-		OfAIMemoryNamespaceProfileSourceGetResponseDataContentUnionMember0 respjson.Field
-		OfAnyArray                                                         respjson.Field
-		OfString                                                           respjson.Field
-		OfFloat                                                            respjson.Field
-		OfBool                                                             respjson.Field
-		raw                                                                string
+		OfAIMemoryNamespaceProfileSourceGetResponseDataContentSourceContentObject respjson.Field
+		OfSourceContentValue                                                      respjson.Field
+		OfString                                                                  respjson.Field
+		OfFloat                                                                   respjson.Field
+		OfBool                                                                    respjson.Field
+		raw                                                                       string
 	} `json:"-"`
 }
 
-func (u AIMemoryNamespaceProfileSourceGetResponseDataContentUnion) AsAnyMap() (v map[string]any) {
+func (u AIMemoryNamespaceProfileSourceGetResponseDataContentUnion) AsSourceContentObject() (v map[string]any) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -244,10 +244,10 @@ func (r *AIMemoryNamespaceProfileSourceGetResponseDataContentUnion) UnmarshalJSO
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 //
 // If the underlying value is not a json object, one of the following properties
-// will be valid: OfAnyArray OfString OfFloat OfBool]
+// will be valid: OfSourceContentValue OfString OfFloat OfBool]
 type AIMemoryNamespaceProfileSourceGetResponseDataContentUnionMember1Union struct {
 	// This field will be present if the value is a [[]any] instead of an object.
-	OfAnyArray []any `json:",inline"`
+	OfSourceContentValue []any `json:",inline"`
 	// This field will be present if the value is a [string] instead of an object.
 	OfString string `json:",inline"`
 	// This field will be present if the value is a [float64] instead of an object.
@@ -255,15 +255,15 @@ type AIMemoryNamespaceProfileSourceGetResponseDataContentUnionMember1Union struc
 	// This field will be present if the value is a [bool] instead of an object.
 	OfBool bool `json:",inline"`
 	JSON   struct {
-		OfAnyArray respjson.Field
-		OfString   respjson.Field
-		OfFloat    respjson.Field
-		OfBool     respjson.Field
-		raw        string
+		OfSourceContentValue respjson.Field
+		OfString             respjson.Field
+		OfFloat              respjson.Field
+		OfBool               respjson.Field
+		raw                  string
 	} `json:"-"`
 }
 
-func (u AIMemoryNamespaceProfileSourceGetResponseDataContentUnionMember1Union) AsAnyArray() (v []any) {
+func (u AIMemoryNamespaceProfileSourceGetResponseDataContentUnionMember1Union) AsSourceContentValue() (v []any) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }

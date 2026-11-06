@@ -125,6 +125,21 @@ func (r *TelephonyCredentialService) NewToken(ctx context.Context, id string, bo
 	return res, err
 }
 
+// Returns the material a server needs to mint login tokens for the credential
+// locally, with no request per token: `kid`, `tel_token` and `signing_secret`. The
+// same material is in the response of `POST /telephony_credentials`. Treat it like
+// the SIP password.
+func (r *TelephonyCredentialService) GetTokenMaterial(ctx context.Context, id string, opts ...option.RequestOption) (res *TelephonyCredentialGetTokenMaterialResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("telephony_credentials/%s/token_material", url.PathEscape(id))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return res, err
+}
+
 type TelephonyCredential struct {
 	// Identifies the resource.
 	ID string `json:"id"`
@@ -143,31 +158,63 @@ type TelephonyCredential struct {
 	SipPassword string `json:"sip_password"`
 	// The randomly generated SIP username for the credential.
 	SipUsername string `json:"sip_username"`
+	// Returned when the credential is created. See
+	// `GET /telephony_credentials/{id}/token_material` to fetch it again.
+	TokenMaterial TokenMaterial `json:"token_material"`
 	// ISO-8601 formatted date indicating when the resource was updated.
 	UpdatedAt string `json:"updated_at"`
 	// Identifies the user this credential is associated with.
 	UserID string `json:"user_id"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		CreatedAt   respjson.Field
-		Expired     respjson.Field
-		ExpiresAt   respjson.Field
-		Name        respjson.Field
-		RecordType  respjson.Field
-		ResourceID  respjson.Field
-		SipPassword respjson.Field
-		SipUsername respjson.Field
-		UpdatedAt   respjson.Field
-		UserID      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		ID            respjson.Field
+		CreatedAt     respjson.Field
+		Expired       respjson.Field
+		ExpiresAt     respjson.Field
+		Name          respjson.Field
+		RecordType    respjson.Field
+		ResourceID    respjson.Field
+		SipPassword   respjson.Field
+		SipUsername   respjson.Field
+		TokenMaterial respjson.Field
+		UpdatedAt     respjson.Field
+		UserID        respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
 func (r TelephonyCredential) RawJSON() string { return r.JSON.raw }
 func (r *TelephonyCredential) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// What a server needs to mint login tokens for the credential itself, with no
+// request per token (`TelephonyCredential#to_jwt` in telnyx-ruby 3.1.0 or later).
+// As sensitive as `sip_password`: keep it on the server.
+type TokenMaterial struct {
+	// Identifies the Telnyx signing key the `signing_secret` was derived with. Goes in
+	// the token header.
+	Kid string `json:"kid"`
+	// The HMAC-SHA256 key the token is signed with, base64url without padding.
+	SigningSecret string `json:"signing_secret"`
+	// Opaque value Telnyx uses to resolve the credential. Carried in the token's
+	// `tel_token` claim as is.
+	TelToken string `json:"tel_token"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Kid           respjson.Field
+		SigningSecret respjson.Field
+		TelToken      respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TokenMaterial) RawJSON() string { return r.JSON.raw }
+func (r *TokenMaterial) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -232,6 +279,25 @@ type TelephonyCredentialDeleteResponse struct {
 // Returns the unmodified JSON received from the API
 func (r TelephonyCredentialDeleteResponse) RawJSON() string { return r.JSON.raw }
 func (r *TelephonyCredentialDeleteResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type TelephonyCredentialGetTokenMaterialResponse struct {
+	// What a server needs to mint login tokens for the credential itself, with no
+	// request per token (`TelephonyCredential#to_jwt` in telnyx-ruby 3.1.0 or later).
+	// As sensitive as `sip_password`: keep it on the server.
+	Data TokenMaterial `json:"data"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TelephonyCredentialGetTokenMaterialResponse) RawJSON() string { return r.JSON.raw }
+func (r *TelephonyCredentialGetTokenMaterialResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

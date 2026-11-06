@@ -14,6 +14,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/internal/apiquery"
 	"github.com/team-telnyx/telnyx-go/v4/internal/requestconfig"
 	"github.com/team-telnyx/telnyx-go/v4/option"
+	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
 )
@@ -54,11 +55,40 @@ func NewEmailEventService(opts ...option.RequestOption) (r EmailEventService) {
 // polling and webhook delivery. Legacy names are derived from stored rows; an
 // AdminBounce row stored as failed renders email.failed in polling while its
 // webhook retains email.bounced, both with canonical email.failed.
-func (r *EmailEventService) List(ctx context.Context, query EmailEventListParams, opts ...option.RequestOption) (res *EmailEventListResponse, err error) {
+func (r *EmailEventService) List(ctx context.Context, query EmailEventListParams, opts ...option.RequestOption) (res *pagination.EmailEventsCursorPagination[EmailEventListResponse], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "email_events"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Lists account-level email events sorted oldest first by
+// `occurred_at asc, id asc`. Each row contains a legacy email.-prefixed event_type
+// and an additive canonical_event_type. Gateway rejection renders email.failed
+// with canonical email.gw_reject; ambiguous injection timeout renders
+// email.injection_timeout in both; MTA expiration renders email.bounced with
+// canonical email.expired. Message-scoped queued, sending, sandbox, cancelled, and
+// daily_limit_exceeded rows fan out per durable recipient with stable derived IDs
+// matching webhook delivery. Scheduled is the cardinality exception: account
+// polling retains one message-scoped scheduled row with its stored event ID, while
+// scheduled webhook publication fans out per recipient with derived IDs; reconcile
+// scheduled events by message ID, event type, and occurrence time rather than
+// event UUID. Recipient-scoped stored rows retain their stored UUIDs across
+// polling and webhook delivery. Legacy names are derived from stored rows; an
+// AdminBounce row stored as failed renders email.failed in polling while its
+// webhook retains email.bounced, both with canonical email.failed.
+func (r *EmailEventService) ListAutoPaging(ctx context.Context, query EmailEventListParams, opts ...option.RequestOption) *pagination.EmailEventsCursorPaginationAutoPager[EmailEventListResponse] {
+	return pagination.NewEmailEventsCursorPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Returns counts and rates for email events over a time range. The default start
@@ -154,30 +184,12 @@ func (r *TimeRange) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type EmailEventListResponse struct {
-	Data []EmailEventListResponseData `json:"data" api:"required"`
-	Meta EmailEventListResponseMeta   `json:"meta" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Meta        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r EmailEventListResponse) RawJSON() string { return r.JSON.raw }
-func (r *EmailEventListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // An account-polling event. The envelope is webhook-shaped, but polling preserves
 // stored-event cardinality: queued, sending, sandbox, cancelled, and
 // daily_limit_exceeded message events fan out per recipient; scheduled remains one
 // message-scoped row. Payload fields vary among recipient-scoped, message-scoped,
 // and minimal fallback rows.
-type EmailEventListResponseData struct {
+type EmailEventListResponse struct {
 	// Event UUID.
 	ID string `json:"id" api:"required" format:"uuid"`
 	// Additive canonical outcome name, prefixed with `email.`. Gateway rejection is
@@ -199,7 +211,7 @@ type EmailEventListResponseData struct {
 	// related message or recipient cannot be loaded, the minimal fallback can omit
 	// from, subject, and recipient fields. Additional persisted public evidence can be
 	// present.
-	Payload EmailEventListResponseDataPayload `json:"payload" api:"required"`
+	Payload EmailEventListResponsePayload `json:"payload" api:"required"`
 	// Durable email recipient UUID. Present for recipient-scoped events, including
 	// each queued, sending, sandbox, cancelled, and daily_limit_exceeded fan-out
 	// event.
@@ -218,8 +230,8 @@ type EmailEventListResponseData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r EmailEventListResponseData) RawJSON() string { return r.JSON.raw }
-func (r *EmailEventListResponseData) UnmarshalJSON(data []byte) error {
+func (r EmailEventListResponse) RawJSON() string { return r.JSON.raw }
+func (r *EmailEventListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -231,7 +243,7 @@ func (r *EmailEventListResponseData) UnmarshalJSON(data []byte) error {
 // related message or recipient cannot be loaded, the minimal fallback can omit
 // from, subject, and recipient fields. Additional persisted public evidence can be
 // present.
-type EmailEventListResponseDataPayload struct {
+type EmailEventListResponsePayload struct {
 	// Email message UUID.
 	ID         string    `json:"id" api:"required" format:"uuid"`
 	OccurredAt time.Time `json:"occurred_at" api:"required" format:"date-time"`
@@ -248,19 +260,19 @@ type EmailEventListResponseDataPayload struct {
 	// "scan_deferred", "quarantined", "quarantine_released",
 	// "quarantine_release_dispatched", "quarantine_rejected", "quarantine_expired",
 	// "gw_reject", "injection_timeout", "expired".
-	Status string                                    `json:"status" api:"required"`
-	Bcc    EmailEventListResponseDataPayloadBccUnion `json:"bcc"`
+	Status string                                `json:"status" api:"required"`
+	Bcc    EmailEventListResponsePayloadBccUnion `json:"bcc"`
 	// Legacy message-scoped address, or an empty string when absent.
-	Cc EmailEventListResponseDataPayloadCcUnion `json:"cc"`
+	Cc EmailEventListResponsePayloadCcUnion `json:"cc"`
 	// Sender projection in account event polling. The display name is explicitly null
 	// when the message has no sender name.
-	From EmailEventListResponseDataPayloadFrom `json:"from"`
+	From EmailEventListResponsePayloadFrom `json:"from"`
 	// Durable email recipient UUID. Present for recipient-scoped events.
 	RecipientID string `json:"recipient_id" format:"uuid"`
 	Subject     string `json:"subject"`
 	// Legacy message-scoped address, or an empty string when absent.
-	To          EmailEventListResponseDataPayloadToUnion `json:"to"`
-	ExtraFields map[string]any                           `json:"" api:"extrafields"`
+	To          EmailEventListResponsePayloadToUnion `json:"to"`
+	ExtraFields map[string]any                       `json:"" api:"extrafields"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -278,21 +290,21 @@ type EmailEventListResponseDataPayload struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r EmailEventListResponseDataPayload) RawJSON() string { return r.JSON.raw }
-func (r *EmailEventListResponseDataPayload) UnmarshalJSON(data []byte) error {
+func (r EmailEventListResponsePayload) RawJSON() string { return r.JSON.raw }
+func (r *EmailEventListResponsePayload) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// EmailEventListResponseDataPayloadBccUnion contains all possible properties and
+// EmailEventListResponsePayloadBccUnion contains all possible properties and
 // values from [EmailWebhookRecipient], [string].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 //
 // If the underlying value is not a json object, one of the following properties
-// will be valid: OfEmailEventListResponseDataPayloadBccString]
-type EmailEventListResponseDataPayloadBccUnion struct {
+// will be valid: OfEmailEventListResponsePayloadBccString]
+type EmailEventListResponsePayloadBccUnion struct {
 	// This field will be present if the value is a [string] instead of an object.
-	OfEmailEventListResponseDataPayloadBccString string `json:",inline"`
+	OfEmailEventListResponsePayloadBccString string `json:",inline"`
 	// This field is from variant [EmailWebhookRecipient].
 	Email string `json:"email"`
 	// This field is from variant [EmailWebhookRecipient].
@@ -300,45 +312,45 @@ type EmailEventListResponseDataPayloadBccUnion struct {
 	// This field is from variant [EmailWebhookRecipient].
 	Name string `json:"name"`
 	JSON struct {
-		OfEmailEventListResponseDataPayloadBccString respjson.Field
-		Email                                        respjson.Field
-		Kind                                         respjson.Field
-		Name                                         respjson.Field
-		raw                                          string
+		OfEmailEventListResponsePayloadBccString respjson.Field
+		Email                                    respjson.Field
+		Kind                                     respjson.Field
+		Name                                     respjson.Field
+		raw                                      string
 	} `json:"-"`
 }
 
-func (u EmailEventListResponseDataPayloadBccUnion) AsEmailWebhookRecipient() (v EmailWebhookRecipient) {
+func (u EmailEventListResponsePayloadBccUnion) AsEmailWebhookRecipient() (v EmailWebhookRecipient) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u EmailEventListResponseDataPayloadBccUnion) AsEmailEventListResponseDataPayloadBccString() (v string) {
+func (u EmailEventListResponsePayloadBccUnion) AsEmailEventListResponsePayloadBccString() (v string) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
 // Returns the unmodified JSON received from the API
-func (u EmailEventListResponseDataPayloadBccUnion) RawJSON() string { return u.JSON.raw }
+func (u EmailEventListResponsePayloadBccUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *EmailEventListResponseDataPayloadBccUnion) UnmarshalJSON(data []byte) error {
+func (r *EmailEventListResponsePayloadBccUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type EmailEventListResponseDataPayloadBccString string
+type EmailEventListResponsePayloadBccString string
 
 const (
-	EmailEventListResponseDataPayloadBccStringRedacted EmailEventListResponseDataPayloadBccString = "redacted"
+	EmailEventListResponsePayloadBccStringRedacted EmailEventListResponsePayloadBccString = "redacted"
 )
 
-// EmailEventListResponseDataPayloadCcUnion contains all possible properties and
-// values from [EmailWebhookRecipient], [string].
+// EmailEventListResponsePayloadCcUnion contains all possible properties and values
+// from [EmailWebhookRecipient], [string].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 //
 // If the underlying value is not a json object, one of the following properties
 // will be valid: OfString]
-type EmailEventListResponseDataPayloadCcUnion struct {
+type EmailEventListResponsePayloadCcUnion struct {
 	// This field will be present if the value is a [string] instead of an object.
 	OfString string `json:",inline"`
 	// This field is from variant [EmailWebhookRecipient].
@@ -356,26 +368,26 @@ type EmailEventListResponseDataPayloadCcUnion struct {
 	} `json:"-"`
 }
 
-func (u EmailEventListResponseDataPayloadCcUnion) AsEmailWebhookRecipient() (v EmailWebhookRecipient) {
+func (u EmailEventListResponsePayloadCcUnion) AsEmailWebhookRecipient() (v EmailWebhookRecipient) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u EmailEventListResponseDataPayloadCcUnion) AsString() (v string) {
+func (u EmailEventListResponsePayloadCcUnion) AsString() (v string) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
 // Returns the unmodified JSON received from the API
-func (u EmailEventListResponseDataPayloadCcUnion) RawJSON() string { return u.JSON.raw }
+func (u EmailEventListResponsePayloadCcUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *EmailEventListResponseDataPayloadCcUnion) UnmarshalJSON(data []byte) error {
+func (r *EmailEventListResponsePayloadCcUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Sender projection in account event polling. The display name is explicitly null
 // when the message has no sender name.
-type EmailEventListResponseDataPayloadFrom struct {
+type EmailEventListResponsePayloadFrom struct {
 	Email string `json:"email" api:"required" format:"email"`
 	Name  string `json:"name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -388,19 +400,19 @@ type EmailEventListResponseDataPayloadFrom struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r EmailEventListResponseDataPayloadFrom) RawJSON() string { return r.JSON.raw }
-func (r *EmailEventListResponseDataPayloadFrom) UnmarshalJSON(data []byte) error {
+func (r EmailEventListResponsePayloadFrom) RawJSON() string { return r.JSON.raw }
+func (r *EmailEventListResponsePayloadFrom) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// EmailEventListResponseDataPayloadToUnion contains all possible properties and
-// values from [EmailWebhookRecipient], [string].
+// EmailEventListResponsePayloadToUnion contains all possible properties and values
+// from [EmailWebhookRecipient], [string].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 //
 // If the underlying value is not a json object, one of the following properties
 // will be valid: OfString]
-type EmailEventListResponseDataPayloadToUnion struct {
+type EmailEventListResponsePayloadToUnion struct {
 	// This field will be present if the value is a [string] instead of an object.
 	OfString string `json:",inline"`
 	// This field is from variant [EmailWebhookRecipient].
@@ -418,41 +430,20 @@ type EmailEventListResponseDataPayloadToUnion struct {
 	} `json:"-"`
 }
 
-func (u EmailEventListResponseDataPayloadToUnion) AsEmailWebhookRecipient() (v EmailWebhookRecipient) {
+func (u EmailEventListResponsePayloadToUnion) AsEmailWebhookRecipient() (v EmailWebhookRecipient) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u EmailEventListResponseDataPayloadToUnion) AsString() (v string) {
+func (u EmailEventListResponsePayloadToUnion) AsString() (v string) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
 // Returns the unmodified JSON received from the API
-func (u EmailEventListResponseDataPayloadToUnion) RawJSON() string { return u.JSON.raw }
+func (u EmailEventListResponsePayloadToUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *EmailEventListResponseDataPayloadToUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type EmailEventListResponseMeta struct {
-	PageSize  int64     `json:"page_size" api:"required"`
-	TimeRange TimeRange `json:"time_range" api:"required"`
-	// Cursor for the next page, when more results are available.
-	PageCursor string `json:"page_cursor"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		PageSize    respjson.Field
-		TimeRange   respjson.Field
-		PageCursor  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r EmailEventListResponseMeta) RawJSON() string { return r.JSON.raw }
-func (r *EmailEventListResponseMeta) UnmarshalJSON(data []byte) error {
+func (r *EmailEventListResponsePayloadToUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

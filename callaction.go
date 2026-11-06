@@ -833,6 +833,30 @@ const (
 	AIAssistantJoinParticipantOnHangupEndConversation      AIAssistantJoinParticipantOnHangup = "end_conversation"
 )
 
+// The property Type is required.
+type AssemblyAIVoiceSettingsParam struct {
+	// Voice settings provider type
+	//
+	// Any of "assemblyai".
+	Type AssemblyAIVoiceSettingsType `json:"type,omitzero" api:"required"`
+	paramObj
+}
+
+func (r AssemblyAIVoiceSettingsParam) MarshalJSON() (data []byte, err error) {
+	type shadow AssemblyAIVoiceSettingsParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AssemblyAIVoiceSettingsParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Voice settings provider type
+type AssemblyAIVoiceSettingsType string
+
+const (
+	AssemblyAIVoiceSettingsTypeAssemblyai AssemblyAIVoiceSettingsType = "assemblyai"
+)
+
 // Messages sent by the model in response to user messages.
 //
 // The property Role is required.
@@ -4711,6 +4735,7 @@ type CallActionGatherUsingAIParamsVoiceSettingsUnion struct {
 	OfResemble   *shared.ResembleVoiceSettingsParam `json:",omitzero,inline"`
 	OfXai        *shared.XaiVoiceSettingsParam      `json:",omitzero,inline"`
 	OfSoniox     *SonioxVoiceSettingsParam          `json:",omitzero,inline"`
+	OfAssemblyai *AssemblyAIVoiceSettingsParam      `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -4721,7 +4746,8 @@ func (u CallActionGatherUsingAIParamsVoiceSettingsUnion) MarshalJSON() ([]byte, 
 		u.OfAzure,
 		u.OfResemble,
 		u.OfXai,
-		u.OfSoniox)
+		u.OfSoniox,
+		u.OfAssemblyai)
 }
 func (u *CallActionGatherUsingAIParamsVoiceSettingsUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -4742,6 +4768,8 @@ func (u *CallActionGatherUsingAIParamsVoiceSettingsUnion) asAny() any {
 		return u.OfXai
 	} else if !param.IsOmitted(u.OfSoniox) {
 		return u.OfSoniox
+	} else if !param.IsOmitted(u.OfAssemblyai) {
+		return u.OfAssemblyai
 	}
 	return nil
 }
@@ -4850,6 +4878,8 @@ func (u CallActionGatherUsingAIParamsVoiceSettingsUnion) GetType() *string {
 		return (*string)(&vt.Type)
 	} else if vt := u.OfSoniox; vt != nil {
 		return (*string)(&vt.Type)
+	} else if vt := u.OfAssemblyai; vt != nil {
+		return (*string)(&vt.Type)
 	}
 	return nil
 }
@@ -4874,6 +4904,7 @@ func init() {
 		apijson.Discriminator[shared.ResembleVoiceSettingsParam]("resemble"),
 		apijson.Discriminator[shared.XaiVoiceSettingsParam]("xai"),
 		apijson.Discriminator[SonioxVoiceSettingsParam]("soniox"),
+		apijson.Discriminator[AssemblyAIVoiceSettingsParam]("assemblyai"),
 	)
 }
 
@@ -5124,6 +5155,7 @@ type CallActionGatherUsingSpeakParamsVoiceSettingsUnion struct {
 	OfInworld    *shared.InworldVoiceSettingsParam  `json:",omitzero,inline"`
 	OfXai        *shared.XaiVoiceSettingsParam      `json:",omitzero,inline"`
 	OfSoniox     *SonioxVoiceSettingsParam          `json:",omitzero,inline"`
+	OfAssemblyai *AssemblyAIVoiceSettingsParam      `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -5136,7 +5168,8 @@ func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) MarshalJSON() ([]byt
 		u.OfResemble,
 		u.OfInworld,
 		u.OfXai,
-		u.OfSoniox)
+		u.OfSoniox,
+		u.OfAssemblyai)
 }
 func (u *CallActionGatherUsingSpeakParamsVoiceSettingsUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -5161,6 +5194,8 @@ func (u *CallActionGatherUsingSpeakParamsVoiceSettingsUnion) asAny() any {
 		return u.OfXai
 	} else if !param.IsOmitted(u.OfSoniox) {
 		return u.OfSoniox
+	} else if !param.IsOmitted(u.OfAssemblyai) {
+		return u.OfAssemblyai
 	}
 	return nil
 }
@@ -5297,6 +5332,8 @@ func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetType() *string {
 		return (*string)(&vt.Type)
 	} else if vt := u.OfSoniox; vt != nil {
 		return (*string)(&vt.Type)
+	} else if vt := u.OfAssemblyai; vt != nil {
+		return (*string)(&vt.Type)
 	}
 	return nil
 }
@@ -5333,6 +5370,7 @@ func init() {
 		apijson.Discriminator[shared.InworldVoiceSettingsParam]("inworld"),
 		apijson.Discriminator[shared.XaiVoiceSettingsParam]("xai"),
 		apijson.Discriminator[SonioxVoiceSettingsParam]("soniox"),
+		apijson.Discriminator[AssemblyAIVoiceSettingsParam]("assemblyai"),
 	)
 }
 
@@ -5905,6 +5943,7 @@ type CallActionSpeakParamsVoiceSettingsUnion struct {
 	OfInworld    *shared.InworldVoiceSettingsParam  `json:",omitzero,inline"`
 	OfXai        *shared.XaiVoiceSettingsParam      `json:",omitzero,inline"`
 	OfSoniox     *SonioxVoiceSettingsParam          `json:",omitzero,inline"`
+	OfAssemblyai *AssemblyAIVoiceSettingsParam      `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -5917,7 +5956,8 @@ func (u CallActionSpeakParamsVoiceSettingsUnion) MarshalJSON() ([]byte, error) {
 		u.OfResemble,
 		u.OfInworld,
 		u.OfXai,
-		u.OfSoniox)
+		u.OfSoniox,
+		u.OfAssemblyai)
 }
 func (u *CallActionSpeakParamsVoiceSettingsUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -5942,6 +5982,8 @@ func (u *CallActionSpeakParamsVoiceSettingsUnion) asAny() any {
 		return u.OfXai
 	} else if !param.IsOmitted(u.OfSoniox) {
 		return u.OfSoniox
+	} else if !param.IsOmitted(u.OfAssemblyai) {
+		return u.OfAssemblyai
 	}
 	return nil
 }
@@ -6078,6 +6120,8 @@ func (u CallActionSpeakParamsVoiceSettingsUnion) GetType() *string {
 		return (*string)(&vt.Type)
 	} else if vt := u.OfSoniox; vt != nil {
 		return (*string)(&vt.Type)
+	} else if vt := u.OfAssemblyai; vt != nil {
+		return (*string)(&vt.Type)
 	}
 	return nil
 }
@@ -6114,6 +6158,7 @@ func init() {
 		apijson.Discriminator[shared.InworldVoiceSettingsParam]("inworld"),
 		apijson.Discriminator[shared.XaiVoiceSettingsParam]("xai"),
 		apijson.Discriminator[SonioxVoiceSettingsParam]("soniox"),
+		apijson.Discriminator[AssemblyAIVoiceSettingsParam]("assemblyai"),
 	)
 }
 
@@ -6492,6 +6537,7 @@ type CallActionStartConversationRelayParamsVoiceSettingsUnion struct {
 	OfInworld    *shared.InworldVoiceSettingsParam  `json:",omitzero,inline"`
 	OfXai        *shared.XaiVoiceSettingsParam      `json:",omitzero,inline"`
 	OfSoniox     *SonioxVoiceSettingsParam          `json:",omitzero,inline"`
+	OfAssemblyai *AssemblyAIVoiceSettingsParam      `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -6504,7 +6550,8 @@ func (u CallActionStartConversationRelayParamsVoiceSettingsUnion) MarshalJSON() 
 		u.OfResemble,
 		u.OfInworld,
 		u.OfXai,
-		u.OfSoniox)
+		u.OfSoniox,
+		u.OfAssemblyai)
 }
 func (u *CallActionStartConversationRelayParamsVoiceSettingsUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -6529,6 +6576,8 @@ func (u *CallActionStartConversationRelayParamsVoiceSettingsUnion) asAny() any {
 		return u.OfXai
 	} else if !param.IsOmitted(u.OfSoniox) {
 		return u.OfSoniox
+	} else if !param.IsOmitted(u.OfAssemblyai) {
+		return u.OfAssemblyai
 	}
 	return nil
 }
@@ -6665,6 +6714,8 @@ func (u CallActionStartConversationRelayParamsVoiceSettingsUnion) GetType() *str
 		return (*string)(&vt.Type)
 	} else if vt := u.OfSoniox; vt != nil {
 		return (*string)(&vt.Type)
+	} else if vt := u.OfAssemblyai; vt != nil {
+		return (*string)(&vt.Type)
 	}
 	return nil
 }
@@ -6701,6 +6752,7 @@ func init() {
 		apijson.Discriminator[shared.InworldVoiceSettingsParam]("inworld"),
 		apijson.Discriminator[shared.XaiVoiceSettingsParam]("xai"),
 		apijson.Discriminator[SonioxVoiceSettingsParam]("soniox"),
+		apijson.Discriminator[AssemblyAIVoiceSettingsParam]("assemblyai"),
 	)
 }
 

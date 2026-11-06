@@ -205,7 +205,7 @@ func (r *AIMemoryNamespaceProfileService) GetSummary(ctx context.Context, profil
 // A page is a snapshot: the counts it reports and the order it is drawn in both
 // move as writes land, so paging through a busy namespace can repeat or miss an
 // entry at a page boundary.
-type PageMeta struct {
+type AgentMemoryPageMeta struct {
 	// The page returned, counting from 1.
 	PageNumber int64 `json:"page_number" api:"required"`
 	// How many results a page holds.
@@ -216,6 +216,32 @@ type PageMeta struct {
 	// so on a very large listing it covers fewer results than `total_results`.
 	TotalPages int64 `json:"total_pages" api:"required"`
 	// Results the request matched, including any past the deepest page.
+	TotalResults int64 `json:"total_results" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PageNumber   respjson.Field
+		PageSize     respjson.Field
+		TotalPages   respjson.Field
+		TotalResults respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AgentMemoryPageMeta) RawJSON() string { return r.JSON.raw }
+func (r *AgentMemoryPageMeta) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type PageMeta struct {
+	// The page returned, counting from 1.
+	PageNumber int64 `json:"page_number" api:"required"`
+	// Results per page.
+	PageSize int64 `json:"page_size" api:"required"`
+	// Pages that can be requested; 0 when nothing matched.
+	TotalPages int64 `json:"total_pages" api:"required"`
+	// Results across every page.
 	TotalResults int64 `json:"total_results" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -524,7 +550,7 @@ type AIMemoryNamespaceProfileIngestParams struct {
 	//
 
 	// This field is a request body variant, only one variant field can be set.
-	OfAnyMap map[string]any `json:",inline"`
+	OfIngestPayloadObject map[string]any `json:",inline"`
 	// This field is a request body variant, only one variant field can be set.
 	Of *AIMemoryNamespaceProfileIngestParamsBodyUnionMember1Union `json:",inline"`
 
@@ -536,7 +562,7 @@ type AIMemoryNamespaceProfileIngestParams struct {
 }
 
 func (u AIMemoryNamespaceProfileIngestParams) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfAnyMap, u.Of)
+	return param.MarshalUnion(u, u.OfIngestPayloadObject, u.Of)
 }
 func (r *AIMemoryNamespaceProfileIngestParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
@@ -555,23 +581,23 @@ func (r AIMemoryNamespaceProfileIngestParams) URLQuery() (v url.Values, err erro
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type AIMemoryNamespaceProfileIngestParamsBodyUnionMember1Union struct {
-	OfAnyArray []any              `json:",omitzero,inline"`
-	OfString   param.Opt[string]  `json:",omitzero,inline"`
-	OfFloat    param.Opt[float64] `json:",omitzero,inline"`
-	OfBool     param.Opt[bool]    `json:",omitzero,inline"`
+	OfIngestPayloadValue []any              `json:",omitzero,inline"`
+	OfString             param.Opt[string]  `json:",omitzero,inline"`
+	OfFloat              param.Opt[float64] `json:",omitzero,inline"`
+	OfBool               param.Opt[bool]    `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u AIMemoryNamespaceProfileIngestParamsBodyUnionMember1Union) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfAnyArray, u.OfString, u.OfFloat, u.OfBool)
+	return param.MarshalUnion(u, u.OfIngestPayloadValue, u.OfString, u.OfFloat, u.OfBool)
 }
 func (u *AIMemoryNamespaceProfileIngestParamsBodyUnionMember1Union) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *AIMemoryNamespaceProfileIngestParamsBodyUnionMember1Union) asAny() any {
-	if !param.IsOmitted(u.OfAnyArray) {
-		return &u.OfAnyArray
+	if !param.IsOmitted(u.OfIngestPayloadValue) {
+		return &u.OfIngestPayloadValue
 	} else if !param.IsOmitted(u.OfString) {
 		return &u.OfString.Value
 	} else if !param.IsOmitted(u.OfFloat) {

@@ -261,6 +261,9 @@ type ModelMetadata struct {
 	// Base model the fine-tuned model was trained from. Only set for fine-tuned
 	// models.
 	BaseModel string `json:"base_model" api:"nullable"`
+	// Whether the model is in beta. New Telnyx-hosted models launch with `beta: true`;
+	// the label is removed once the model is established.
+	Beta bool `json:"beta"`
 	// Short, human-readable summary of what the model is best suited for.
 	Description string `json:"description" api:"nullable"`
 	// Whether the model can be used as a base for a fine-tuning job via
@@ -315,6 +318,7 @@ type ModelMetadata struct {
 		Parameters               respjson.Field
 		Tier                     respjson.Field
 		BaseModel                respjson.Field
+		Beta                     respjson.Field
 		Description              respjson.Field
 		IsFineTunable            respjson.Field
 		IsVisionSupported        respjson.Field
