@@ -775,26 +775,26 @@ const (
 )
 
 // MessagingInboundMessagePayloadToUnion contains all possible properties and
-// values from [[]MessagingInboundMessagePayloadToArrayItem], [string].
+// values from [[]MessagingInboundMessagePayloadToUnionMember0Item], [string].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 //
 // If the underlying value is not a json object, one of the following properties
-// will be valid: OfMessagingInboundMessagePayloadToArray OfString]
+// will be valid: OfUnionMember0 OfString]
 type MessagingInboundMessagePayloadToUnion struct {
 	// This field will be present if the value is a
-	// [[]MessagingInboundMessagePayloadToArrayItem] instead of an object.
-	OfMessagingInboundMessagePayloadToArray []MessagingInboundMessagePayloadToArrayItem `json:",inline"`
+	// [[]MessagingInboundMessagePayloadToUnionMember0Item] instead of an object.
+	OfUnionMember0 []MessagingInboundMessagePayloadToUnionMember0Item `json:",inline"`
 	// This field will be present if the value is a [string] instead of an object.
 	OfString string `json:",inline"`
 	JSON     struct {
-		OfMessagingInboundMessagePayloadToArray respjson.Field
-		OfString                                respjson.Field
-		raw                                     string
+		OfUnionMember0 respjson.Field
+		OfString       respjson.Field
+		raw            string
 	} `json:"-"`
 }
 
-func (u MessagingInboundMessagePayloadToUnion) AsMessagingInboundMessagePayloadToArray() (v []MessagingInboundMessagePayloadToArrayItem) {
+func (u MessagingInboundMessagePayloadToUnion) AsUnionMember0() (v []MessagingInboundMessagePayloadToUnionMember0Item) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -811,7 +811,7 @@ func (r *MessagingInboundMessagePayloadToUnion) UnmarshalJSON(data []byte) error
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type MessagingInboundMessagePayloadToArrayItem struct {
+type MessagingInboundMessagePayloadToUnionMember0Item struct {
 	// RCS agent identifier.
 	AgentID string `json:"agent_id"`
 	// RCS agent name.
@@ -841,8 +841,8 @@ type MessagingInboundMessagePayloadToArrayItem struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r MessagingInboundMessagePayloadToArrayItem) RawJSON() string { return r.JSON.raw }
-func (r *MessagingInboundMessagePayloadToArrayItem) UnmarshalJSON(data []byte) error {
+func (r MessagingInboundMessagePayloadToUnionMember0Item) RawJSON() string { return r.JSON.raw }
+func (r *MessagingInboundMessagePayloadToUnionMember0Item) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -863,6 +863,10 @@ type OutboundMessagePayload struct {
 	// WhatsApp messages contain the `whatsapp_message` object from the send request.
 	Body OutboundMessagePayloadBody `json:"body"`
 	Cc   []OutboundMessagePayloadCc `json:"cc"`
+	// Identifies the next chunk when server-side SMS chunking
+	// (`auto_chunk_long_messages` on the messaging profile) split this message. Always
+	// present; null on non-chunked messages and on the final chunk.
+	ChildMessageID string `json:"child_message_id" api:"nullable" format:"uuid"`
 	// ISO 8601 formatted date indicating when the message was finalized.
 	CompletedAt time.Time                  `json:"completed_at" api:"nullable" format:"date-time"`
 	Cost        OutboundMessagePayloadCost `json:"cost" api:"nullable"`
@@ -886,6 +890,11 @@ type OutboundMessagePayload struct {
 	NumChars int64 `json:"num_chars"`
 	// The id of the organization the messaging profile belongs to.
 	OrganizationID string `json:"organization_id" format:"uuid"`
+	// Identifies the original request's message when server-side SMS chunking
+	// (`auto_chunk_long_messages` on the messaging profile) split it into chunks. The
+	// first chunk's ID is the original request's message ID. Always present; null when
+	// this message is not part of a chunked send.
+	ParentMessageID string `json:"parent_message_id" api:"nullable" format:"uuid"`
 	// Number of parts into which the message's body must be split.
 	Parts int64 `json:"parts"`
 	// ISO 8601 formatted date indicating when the message request was received.
@@ -943,6 +952,7 @@ type OutboundMessagePayload struct {
 		ID                    respjson.Field
 		Body                  respjson.Field
 		Cc                    respjson.Field
+		ChildMessageID        respjson.Field
 		CompletedAt           respjson.Field
 		Cost                  respjson.Field
 		CostBreakdown         respjson.Field
@@ -954,6 +964,7 @@ type OutboundMessagePayload struct {
 		MessagingProfileID    respjson.Field
 		NumChars              respjson.Field
 		OrganizationID        respjson.Field
+		ParentMessageID       respjson.Field
 		Parts                 respjson.Field
 		ReceivedAt            respjson.Field
 		RecordType            respjson.Field
@@ -2877,8 +2888,10 @@ type MessageGetResponseDataUnion struct {
 	Body MessageGetResponseDataUnionBody `json:"body"`
 	// This field is a union of [[]OutboundMessagePayloadCc],
 	// [[]MessagingInboundMessagePayloadCc]
-	Cc          MessageGetResponseDataUnionCc `json:"cc"`
-	CompletedAt time.Time                     `json:"completed_at"`
+	Cc MessageGetResponseDataUnionCc `json:"cc"`
+	// This field is from variant [OutboundMessagePayload].
+	ChildMessageID string    `json:"child_message_id"`
+	CompletedAt    time.Time `json:"completed_at"`
 	// This field is a union of [OutboundMessagePayloadCost],
 	// [MessagingInboundMessagePayloadCost]
 	Cost MessageGetResponseDataUnionCost `json:"cost"`
@@ -2898,10 +2911,12 @@ type MessageGetResponseDataUnion struct {
 	MessagingProfileID string                           `json:"messaging_profile_id"`
 	NumChars           int64                            `json:"num_chars"`
 	OrganizationID     string                           `json:"organization_id"`
-	Parts              int64                            `json:"parts"`
-	ReceivedAt         time.Time                        `json:"received_at"`
-	RecordType         string                           `json:"record_type"`
-	SentAt             time.Time                        `json:"sent_at"`
+	// This field is from variant [OutboundMessagePayload].
+	ParentMessageID string    `json:"parent_message_id"`
+	Parts           int64     `json:"parts"`
+	ReceivedAt      time.Time `json:"received_at"`
+	RecordType      string    `json:"record_type"`
+	SentAt          time.Time `json:"sent_at"`
 	// This field is from variant [OutboundMessagePayload].
 	SmartEncodingApplied  bool     `json:"smart_encoding_applied"`
 	Subject               string   `json:"subject"`
@@ -2929,6 +2944,7 @@ type MessageGetResponseDataUnion struct {
 		ID                    respjson.Field
 		Body                  respjson.Field
 		Cc                    respjson.Field
+		ChildMessageID        respjson.Field
 		CompletedAt           respjson.Field
 		Cost                  respjson.Field
 		CostBreakdown         respjson.Field
@@ -2940,6 +2956,7 @@ type MessageGetResponseDataUnion struct {
 		MessagingProfileID    respjson.Field
 		NumChars              respjson.Field
 		OrganizationID        respjson.Field
+		ParentMessageID       respjson.Field
 		Parts                 respjson.Field
 		ReceivedAt            respjson.Field
 		RecordType            respjson.Field
@@ -3266,22 +3283,21 @@ func (r *MessageGetResponseDataUnionMedia) UnmarshalJSON(data []byte) error {
 // [MessageGetResponseDataUnion].
 //
 // If the underlying value is not a json object, one of the following properties
-// will be valid: OfOutboundMessagePayloadToArray
-// OfMessagingInboundMessagePayloadToArray OfString]
+// will be valid: OfOutboundMessagePayloadToArray OfUnionMember0 OfString]
 type MessageGetResponseDataUnionTo struct {
 	// This field will be present if the value is a [[]OutboundMessagePayloadTo]
 	// instead of an object.
 	OfOutboundMessagePayloadToArray []OutboundMessagePayloadTo `json:",inline"`
 	// This field will be present if the value is a
-	// [[]MessagingInboundMessagePayloadToArrayItem] instead of an object.
-	OfMessagingInboundMessagePayloadToArray []MessagingInboundMessagePayloadToArrayItem `json:",inline"`
+	// [[]MessagingInboundMessagePayloadToUnionMember0Item] instead of an object.
+	OfUnionMember0 []MessagingInboundMessagePayloadToUnionMember0Item `json:",inline"`
 	// This field will be present if the value is a [string] instead of an object.
 	OfString string `json:",inline"`
 	JSON     struct {
-		OfOutboundMessagePayloadToArray         respjson.Field
-		OfMessagingInboundMessagePayloadToArray respjson.Field
-		OfString                                respjson.Field
-		raw                                     string
+		OfOutboundMessagePayloadToArray respjson.Field
+		OfUnionMember0                  respjson.Field
+		OfString                        respjson.Field
+		raw                             string
 	} `json:"-"`
 }
 
@@ -4648,7 +4664,7 @@ type MessageWhatsappParamsWhatsappMessageInteractiveActionParametersFlowActionPa
 	// ID of the first screen to show
 	Screen param.Opt[string] `json:"screen,omitzero"`
 	// input data for the first screen. Must be a non-empty object when provided
-	Data any `json:"data,omitzero"`
+	Data map[string]any `json:"data,omitzero"`
 	paramObj
 }
 
@@ -4845,7 +4861,7 @@ type MessageWhatsappParamsWhatsappMessageTemplateComponentsParametersAction stru
 	// response for correlation
 	FlowToken param.Opt[string] `json:"flow_token,omitzero"`
 	// input data for the first screen of the flow
-	FlowActionData any `json:"flow_action_data,omitzero"`
+	FlowActionData map[string]any `json:"flow_action_data,omitzero"`
 	paramObj
 }
 

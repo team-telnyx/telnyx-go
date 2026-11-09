@@ -61,9 +61,12 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 						Model:                "model",
 						AuthenticationMethod: telnyx.AuthenticationMethodToken,
 						CertificateRef:       telnyx.String("certificate_ref"),
-						ForwardMetadata:      telnyx.Bool(true),
-						LlmAPIKeyRef:         telnyx.String("llm_api_key_ref"),
-						TokenRetrievalURL:    telnyx.String("token_retrieval_url"),
+						ExtraHeaders: map[string]string{
+							"foo": ">Q0]",
+						},
+						ForwardMetadata:   telnyx.Bool(true),
+						LlmAPIKeyRef:      telnyx.String("llm_api_key_ref"),
+						TokenRetrievalURL: telnyx.String("token_retrieval_url"),
 					},
 					InstructionsMode: telnyx.FlowNodeReqInstructionsModeReplace,
 					LlmAPIKeyRef:     telnyx.String("my-key-ref"),
@@ -77,10 +80,10 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 					ToolsMode:     telnyx.FlowNodeReqToolsModeReplace,
 					Transcription: telnyx.TranscriptionSettingsParam{
 						APIKeyRef: telnyx.String("api_key_ref"),
-						Challenger: telnyx.TranscriptionSettingsChallengerParam{
-							Model:    "deepgram/nova-3",
+						Challenger: telnyx.TranscriptionChallengerParam{
+							Model:    telnyx.TranscriptionChallengerModelDeepgramNova3,
 							Language: telnyx.String("en"),
-							Rule:     "best_turn",
+							Rule:     telnyx.TranscriptionChallengerRuleBestTurn,
 							Settings: telnyx.TranscriptionSettingsConfigParam{
 								Context:                      telnyx.String("context"),
 								EagerEotThreshold:            telnyx.Float(0.3),
@@ -100,8 +103,8 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 								SmartFormat:                  telnyx.Bool(true),
 							},
 						},
-						FallbackModels: []telnyx.TranscriptionSettingsFallbackModelParam{{
-							Model:    "deepgram/nova-3",
+						FallbackModels: []telnyx.TranscriptionFallbackModelParam{{
+							Model:    telnyx.TranscriptionFallbackModelModelDeepgramNova3,
 							Language: telnyx.String("en"),
 							Settings: telnyx.TranscriptionSettingsConfigParam{
 								Context:                      telnyx.String("context"),
@@ -122,7 +125,7 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 								SmartFormat:                  telnyx.Bool(true),
 							},
 						}, {
-							Model:    "soniox/stt-rt-v5",
+							Model:    telnyx.TranscriptionFallbackModelModelSonioxSttRtV5,
 							Language: telnyx.String("en"),
 							Settings: telnyx.TranscriptionSettingsConfigParam{
 								Context:                      telnyx.String("Telnyx,VoIP,SIP"),
@@ -170,20 +173,21 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 						Voice:     "voice",
 						APIKeyRef: telnyx.String("api_key_ref"),
 						BackgroundAudio: telnyx.InferenceEmbeddingVoiceSettingsBackgroundAudioUnionParam{
-							OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0: &telnyx.InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0Param{
+							OfUnionMember0: &telnyx.InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0Param{
 								Type:   "predefined_media",
 								Value:  "silence",
 								Volume: telnyx.Float(0.1),
 							},
 						},
 						ExpressiveMode:  telnyx.Bool(true),
+						Language:        telnyx.String("language"),
 						LanguageBoost:   telnyx.InferenceEmbeddingVoiceSettingsLanguageBoostAuto,
 						SimilarityBoost: telnyx.Float(0),
 						Speed:           telnyx.Float(0),
 						Style:           telnyx.Float(0),
 						Temperature:     telnyx.Float(0),
 						ToolCallAudio: telnyx.InferenceEmbeddingVoiceSettingsToolCallAudioUnionParam{
-							OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0: &telnyx.InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0Param{
+							OfUnionMember0: &telnyx.InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0Param{
 								Type:   "predefined_media",
 								Value:  "typing",
 								Volume: telnyx.Float(0.5),
@@ -202,9 +206,12 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 						Model:                "model",
 						AuthenticationMethod: telnyx.AuthenticationMethodToken,
 						CertificateRef:       telnyx.String("certificate_ref"),
-						ForwardMetadata:      telnyx.Bool(true),
-						LlmAPIKeyRef:         telnyx.String("llm_api_key_ref"),
-						TokenRetrievalURL:    telnyx.String("token_retrieval_url"),
+						ExtraHeaders: map[string]string{
+							"foo": ">Q0]",
+						},
+						ForwardMetadata:   telnyx.Bool(true),
+						LlmAPIKeyRef:      telnyx.String("llm_api_key_ref"),
+						TokenRetrievalURL: telnyx.String("token_retrieval_url"),
 					},
 					InstructionsMode: telnyx.FlowNodeReqInstructionsModeAppend,
 					LlmAPIKeyRef:     telnyx.String("my-key-ref"),
@@ -218,10 +225,10 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 					ToolsMode:     telnyx.FlowNodeReqToolsModeAppend,
 					Transcription: telnyx.TranscriptionSettingsParam{
 						APIKeyRef: telnyx.String("api_key_ref"),
-						Challenger: telnyx.TranscriptionSettingsChallengerParam{
-							Model:    "deepgram/nova-3",
+						Challenger: telnyx.TranscriptionChallengerParam{
+							Model:    telnyx.TranscriptionChallengerModelDeepgramNova3,
 							Language: telnyx.String("en"),
-							Rule:     "best_turn",
+							Rule:     telnyx.TranscriptionChallengerRuleBestTurn,
 							Settings: telnyx.TranscriptionSettingsConfigParam{
 								Context:                      telnyx.String("context"),
 								EagerEotThreshold:            telnyx.Float(0.3),
@@ -241,8 +248,8 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 								SmartFormat:                  telnyx.Bool(true),
 							},
 						},
-						FallbackModels: []telnyx.TranscriptionSettingsFallbackModelParam{{
-							Model:    "deepgram/nova-3",
+						FallbackModels: []telnyx.TranscriptionFallbackModelParam{{
+							Model:    telnyx.TranscriptionFallbackModelModelDeepgramNova3,
 							Language: telnyx.String("en"),
 							Settings: telnyx.TranscriptionSettingsConfigParam{
 								Context:                      telnyx.String("context"),
@@ -263,7 +270,7 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 								SmartFormat:                  telnyx.Bool(true),
 							},
 						}, {
-							Model:    "soniox/stt-rt-v5",
+							Model:    telnyx.TranscriptionFallbackModelModelSonioxSttRtV5,
 							Language: telnyx.String("en"),
 							Settings: telnyx.TranscriptionSettingsConfigParam{
 								Context:                      telnyx.String("Telnyx,VoIP,SIP"),
@@ -311,20 +318,21 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 						Voice:     "voice",
 						APIKeyRef: telnyx.String("api_key_ref"),
 						BackgroundAudio: telnyx.InferenceEmbeddingVoiceSettingsBackgroundAudioUnionParam{
-							OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0: &telnyx.InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0Param{
+							OfUnionMember0: &telnyx.InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0Param{
 								Type:   "predefined_media",
 								Value:  "silence",
 								Volume: telnyx.Float(0.1),
 							},
 						},
 						ExpressiveMode:  telnyx.Bool(true),
+						Language:        telnyx.String("language"),
 						LanguageBoost:   telnyx.InferenceEmbeddingVoiceSettingsLanguageBoostAuto,
 						SimilarityBoost: telnyx.Float(0),
 						Speed:           telnyx.Float(0),
 						Style:           telnyx.Float(0),
 						Temperature:     telnyx.Float(0),
 						ToolCallAudio: telnyx.InferenceEmbeddingVoiceSettingsToolCallAudioUnionParam{
-							OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0: &telnyx.InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0Param{
+							OfUnionMember0: &telnyx.InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0Param{
 								Type:   "predefined_media",
 								Value:  "typing",
 								Volume: telnyx.Float(0.5),
@@ -376,9 +384,12 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 				Model:                "model",
 				AuthenticationMethod: telnyx.AuthenticationMethodToken,
 				CertificateRef:       telnyx.String("certificate_ref"),
-				ForwardMetadata:      telnyx.Bool(true),
-				LlmAPIKeyRef:         telnyx.String("llm_api_key_ref"),
-				TokenRetrievalURL:    telnyx.String("token_retrieval_url"),
+				ExtraHeaders: map[string]string{
+					"foo": ">Q0]",
+				},
+				ForwardMetadata:   telnyx.Bool(true),
+				LlmAPIKeyRef:      telnyx.String("llm_api_key_ref"),
+				TokenRetrievalURL: telnyx.String("token_retrieval_url"),
 			},
 			Instructions: telnyx.String("instructions"),
 			LlmAPIKeyRef: telnyx.String("llm_api_key_ref"),
@@ -398,9 +409,12 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 			Model:                "model",
 			AuthenticationMethod: telnyx.AuthenticationMethodToken,
 			CertificateRef:       telnyx.String("certificate_ref"),
-			ForwardMetadata:      telnyx.Bool(true),
-			LlmAPIKeyRef:         telnyx.String("llm_api_key_ref"),
-			TokenRetrievalURL:    telnyx.String("token_retrieval_url"),
+			ExtraHeaders: map[string]string{
+				"foo": ">Q0]",
+			},
+			ForwardMetadata:   telnyx.Bool(true),
+			LlmAPIKeyRef:      telnyx.String("llm_api_key_ref"),
+			TokenRetrievalURL: telnyx.String("token_retrieval_url"),
 		},
 		FallbackConfig: telnyx.FallbackConfigReqParam{
 			ExternalLlm: telnyx.ExternalLlmReqParam{
@@ -408,9 +422,12 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 				Model:                "model",
 				AuthenticationMethod: telnyx.AuthenticationMethodToken,
 				CertificateRef:       telnyx.String("certificate_ref"),
-				ForwardMetadata:      telnyx.Bool(true),
-				LlmAPIKeyRef:         telnyx.String("llm_api_key_ref"),
-				TokenRetrievalURL:    telnyx.String("token_retrieval_url"),
+				ExtraHeaders: map[string]string{
+					"foo": ">Q0]",
+				},
+				ForwardMetadata:   telnyx.Bool(true),
+				LlmAPIKeyRef:      telnyx.String("llm_api_key_ref"),
+				TokenRetrievalURL: telnyx.String("token_retrieval_url"),
 			},
 			LlmAPIKeyRef: telnyx.String("llm_api_key_ref"),
 			Model:        telnyx.String("model"),
@@ -472,6 +489,7 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 			DefaultTexmlAppID:            telnyx.String("default_texml_app_id"),
 			DisableDtmf:                  telnyx.Bool(true),
 			FallbackDestination:          telnyx.String("fallback_destination"),
+			GreetingDelayMs:              telnyx.Int(0),
 			NoiseSuppression:             telnyx.TelephonySettingsNoiseSuppressionAicoustics,
 			NoiseSuppressionConfig: telnyx.TelephonySettingsNoiseSuppressionConfigParam{
 				AttenuationLimit: telnyx.Int(0),
@@ -516,10 +534,10 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 		}},
 		Transcription: telnyx.TranscriptionSettingsParam{
 			APIKeyRef: telnyx.String("api_key_ref"),
-			Challenger: telnyx.TranscriptionSettingsChallengerParam{
-				Model:    "deepgram/nova-3",
+			Challenger: telnyx.TranscriptionChallengerParam{
+				Model:    telnyx.TranscriptionChallengerModelDeepgramNova3,
 				Language: telnyx.String("en"),
-				Rule:     "best_turn",
+				Rule:     telnyx.TranscriptionChallengerRuleBestTurn,
 				Settings: telnyx.TranscriptionSettingsConfigParam{
 					Context:                      telnyx.String("context"),
 					EagerEotThreshold:            telnyx.Float(0.3),
@@ -539,8 +557,8 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 					SmartFormat:                  telnyx.Bool(true),
 				},
 			},
-			FallbackModels: []telnyx.TranscriptionSettingsFallbackModelParam{{
-				Model:    "deepgram/nova-3",
+			FallbackModels: []telnyx.TranscriptionFallbackModelParam{{
+				Model:    telnyx.TranscriptionFallbackModelModelDeepgramNova3,
 				Language: telnyx.String("en"),
 				Settings: telnyx.TranscriptionSettingsConfigParam{
 					Context:                      telnyx.String("context"),
@@ -561,7 +579,7 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 					SmartFormat:                  telnyx.Bool(true),
 				},
 			}, {
-				Model:    "soniox/stt-rt-v5",
+				Model:    telnyx.TranscriptionFallbackModelModelSonioxSttRtV5,
 				Language: telnyx.String("en"),
 				Settings: telnyx.TranscriptionSettingsConfigParam{
 					Context:                      telnyx.String("Telnyx,VoIP,SIP"),
@@ -608,20 +626,21 @@ func TestAIAssistantNewWithOptionalParams(t *testing.T) {
 			Voice:     "voice",
 			APIKeyRef: telnyx.String("api_key_ref"),
 			BackgroundAudio: telnyx.InferenceEmbeddingVoiceSettingsBackgroundAudioUnionParam{
-				OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0: &telnyx.InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0Param{
+				OfUnionMember0: &telnyx.InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0Param{
 					Type:   "predefined_media",
 					Value:  "silence",
 					Volume: telnyx.Float(0.1),
 				},
 			},
 			ExpressiveMode:  telnyx.Bool(true),
+			Language:        telnyx.String("language"),
 			LanguageBoost:   telnyx.InferenceEmbeddingVoiceSettingsLanguageBoostAuto,
 			SimilarityBoost: telnyx.Float(0),
 			Speed:           telnyx.Float(0),
 			Style:           telnyx.Float(0),
 			Temperature:     telnyx.Float(0),
 			ToolCallAudio: telnyx.InferenceEmbeddingVoiceSettingsToolCallAudioUnionParam{
-				OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0: &telnyx.InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0Param{
+				OfUnionMember0: &telnyx.InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0Param{
 					Type:   "predefined_media",
 					Value:  "typing",
 					Volume: telnyx.Float(0.5),
@@ -743,9 +762,12 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 							Model:                "model",
 							AuthenticationMethod: telnyx.AuthenticationMethodToken,
 							CertificateRef:       telnyx.String("certificate_ref"),
-							ForwardMetadata:      telnyx.Bool(true),
-							LlmAPIKeyRef:         telnyx.String("llm_api_key_ref"),
-							TokenRetrievalURL:    telnyx.String("token_retrieval_url"),
+							ExtraHeaders: map[string]string{
+								"foo": ">Q0]",
+							},
+							ForwardMetadata:   telnyx.Bool(true),
+							LlmAPIKeyRef:      telnyx.String("llm_api_key_ref"),
+							TokenRetrievalURL: telnyx.String("token_retrieval_url"),
 						},
 						InstructionsMode: telnyx.FlowNodeReqInstructionsModeReplace,
 						LlmAPIKeyRef:     telnyx.String("my-key-ref"),
@@ -759,10 +781,10 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 						ToolsMode:     telnyx.FlowNodeReqToolsModeReplace,
 						Transcription: telnyx.TranscriptionSettingsParam{
 							APIKeyRef: telnyx.String("api_key_ref"),
-							Challenger: telnyx.TranscriptionSettingsChallengerParam{
-								Model:    "deepgram/nova-3",
+							Challenger: telnyx.TranscriptionChallengerParam{
+								Model:    telnyx.TranscriptionChallengerModelDeepgramNova3,
 								Language: telnyx.String("en"),
-								Rule:     "best_turn",
+								Rule:     telnyx.TranscriptionChallengerRuleBestTurn,
 								Settings: telnyx.TranscriptionSettingsConfigParam{
 									Context:                      telnyx.String("context"),
 									EagerEotThreshold:            telnyx.Float(0.3),
@@ -782,8 +804,8 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 									SmartFormat:                  telnyx.Bool(true),
 								},
 							},
-							FallbackModels: []telnyx.TranscriptionSettingsFallbackModelParam{{
-								Model:    "deepgram/nova-3",
+							FallbackModels: []telnyx.TranscriptionFallbackModelParam{{
+								Model:    telnyx.TranscriptionFallbackModelModelDeepgramNova3,
 								Language: telnyx.String("en"),
 								Settings: telnyx.TranscriptionSettingsConfigParam{
 									Context:                      telnyx.String("context"),
@@ -804,7 +826,7 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 									SmartFormat:                  telnyx.Bool(true),
 								},
 							}, {
-								Model:    "soniox/stt-rt-v5",
+								Model:    telnyx.TranscriptionFallbackModelModelSonioxSttRtV5,
 								Language: telnyx.String("en"),
 								Settings: telnyx.TranscriptionSettingsConfigParam{
 									Context:                      telnyx.String("Telnyx,VoIP,SIP"),
@@ -852,20 +874,21 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 							Voice:     "voice",
 							APIKeyRef: telnyx.String("api_key_ref"),
 							BackgroundAudio: telnyx.InferenceEmbeddingVoiceSettingsBackgroundAudioUnionParam{
-								OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0: &telnyx.InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0Param{
+								OfUnionMember0: &telnyx.InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0Param{
 									Type:   "predefined_media",
 									Value:  "silence",
 									Volume: telnyx.Float(0.1),
 								},
 							},
 							ExpressiveMode:  telnyx.Bool(true),
+							Language:        telnyx.String("language"),
 							LanguageBoost:   telnyx.InferenceEmbeddingVoiceSettingsLanguageBoostAuto,
 							SimilarityBoost: telnyx.Float(0),
 							Speed:           telnyx.Float(0),
 							Style:           telnyx.Float(0),
 							Temperature:     telnyx.Float(0),
 							ToolCallAudio: telnyx.InferenceEmbeddingVoiceSettingsToolCallAudioUnionParam{
-								OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0: &telnyx.InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0Param{
+								OfUnionMember0: &telnyx.InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0Param{
 									Type:   "predefined_media",
 									Value:  "typing",
 									Volume: telnyx.Float(0.5),
@@ -884,9 +907,12 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 							Model:                "model",
 							AuthenticationMethod: telnyx.AuthenticationMethodToken,
 							CertificateRef:       telnyx.String("certificate_ref"),
-							ForwardMetadata:      telnyx.Bool(true),
-							LlmAPIKeyRef:         telnyx.String("llm_api_key_ref"),
-							TokenRetrievalURL:    telnyx.String("token_retrieval_url"),
+							ExtraHeaders: map[string]string{
+								"foo": ">Q0]",
+							},
+							ForwardMetadata:   telnyx.Bool(true),
+							LlmAPIKeyRef:      telnyx.String("llm_api_key_ref"),
+							TokenRetrievalURL: telnyx.String("token_retrieval_url"),
 						},
 						InstructionsMode: telnyx.FlowNodeReqInstructionsModeAppend,
 						LlmAPIKeyRef:     telnyx.String("my-key-ref"),
@@ -900,10 +926,10 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 						ToolsMode:     telnyx.FlowNodeReqToolsModeAppend,
 						Transcription: telnyx.TranscriptionSettingsParam{
 							APIKeyRef: telnyx.String("api_key_ref"),
-							Challenger: telnyx.TranscriptionSettingsChallengerParam{
-								Model:    "deepgram/nova-3",
+							Challenger: telnyx.TranscriptionChallengerParam{
+								Model:    telnyx.TranscriptionChallengerModelDeepgramNova3,
 								Language: telnyx.String("en"),
-								Rule:     "best_turn",
+								Rule:     telnyx.TranscriptionChallengerRuleBestTurn,
 								Settings: telnyx.TranscriptionSettingsConfigParam{
 									Context:                      telnyx.String("context"),
 									EagerEotThreshold:            telnyx.Float(0.3),
@@ -923,8 +949,8 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 									SmartFormat:                  telnyx.Bool(true),
 								},
 							},
-							FallbackModels: []telnyx.TranscriptionSettingsFallbackModelParam{{
-								Model:    "deepgram/nova-3",
+							FallbackModels: []telnyx.TranscriptionFallbackModelParam{{
+								Model:    telnyx.TranscriptionFallbackModelModelDeepgramNova3,
 								Language: telnyx.String("en"),
 								Settings: telnyx.TranscriptionSettingsConfigParam{
 									Context:                      telnyx.String("context"),
@@ -945,7 +971,7 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 									SmartFormat:                  telnyx.Bool(true),
 								},
 							}, {
-								Model:    "soniox/stt-rt-v5",
+								Model:    telnyx.TranscriptionFallbackModelModelSonioxSttRtV5,
 								Language: telnyx.String("en"),
 								Settings: telnyx.TranscriptionSettingsConfigParam{
 									Context:                      telnyx.String("Telnyx,VoIP,SIP"),
@@ -993,20 +1019,21 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 							Voice:     "voice",
 							APIKeyRef: telnyx.String("api_key_ref"),
 							BackgroundAudio: telnyx.InferenceEmbeddingVoiceSettingsBackgroundAudioUnionParam{
-								OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0: &telnyx.InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0Param{
+								OfUnionMember0: &telnyx.InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0Param{
 									Type:   "predefined_media",
 									Value:  "silence",
 									Volume: telnyx.Float(0.1),
 								},
 							},
 							ExpressiveMode:  telnyx.Bool(true),
+							Language:        telnyx.String("language"),
 							LanguageBoost:   telnyx.InferenceEmbeddingVoiceSettingsLanguageBoostAuto,
 							SimilarityBoost: telnyx.Float(0),
 							Speed:           telnyx.Float(0),
 							Style:           telnyx.Float(0),
 							Temperature:     telnyx.Float(0),
 							ToolCallAudio: telnyx.InferenceEmbeddingVoiceSettingsToolCallAudioUnionParam{
-								OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0: &telnyx.InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0Param{
+								OfUnionMember0: &telnyx.InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0Param{
 									Type:   "predefined_media",
 									Value:  "typing",
 									Volume: telnyx.Float(0.5),
@@ -1058,9 +1085,12 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 					Model:                "model",
 					AuthenticationMethod: telnyx.AuthenticationMethodToken,
 					CertificateRef:       telnyx.String("certificate_ref"),
-					ForwardMetadata:      telnyx.Bool(true),
-					LlmAPIKeyRef:         telnyx.String("llm_api_key_ref"),
-					TokenRetrievalURL:    telnyx.String("token_retrieval_url"),
+					ExtraHeaders: map[string]string{
+						"foo": ">Q0]",
+					},
+					ForwardMetadata:   telnyx.Bool(true),
+					LlmAPIKeyRef:      telnyx.String("llm_api_key_ref"),
+					TokenRetrievalURL: telnyx.String("token_retrieval_url"),
 				},
 				Instructions: telnyx.String("instructions"),
 				LlmAPIKeyRef: telnyx.String("llm_api_key_ref"),
@@ -1080,9 +1110,12 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 				Model:                "model",
 				AuthenticationMethod: telnyx.AuthenticationMethodToken,
 				CertificateRef:       telnyx.String("certificate_ref"),
-				ForwardMetadata:      telnyx.Bool(true),
-				LlmAPIKeyRef:         telnyx.String("llm_api_key_ref"),
-				TokenRetrievalURL:    telnyx.String("token_retrieval_url"),
+				ExtraHeaders: map[string]string{
+					"foo": ">Q0]",
+				},
+				ForwardMetadata:   telnyx.Bool(true),
+				LlmAPIKeyRef:      telnyx.String("llm_api_key_ref"),
+				TokenRetrievalURL: telnyx.String("token_retrieval_url"),
 			},
 			FallbackConfig: telnyx.FallbackConfigReqParam{
 				ExternalLlm: telnyx.ExternalLlmReqParam{
@@ -1090,9 +1123,12 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 					Model:                "model",
 					AuthenticationMethod: telnyx.AuthenticationMethodToken,
 					CertificateRef:       telnyx.String("certificate_ref"),
-					ForwardMetadata:      telnyx.Bool(true),
-					LlmAPIKeyRef:         telnyx.String("llm_api_key_ref"),
-					TokenRetrievalURL:    telnyx.String("token_retrieval_url"),
+					ExtraHeaders: map[string]string{
+						"foo": ">Q0]",
+					},
+					ForwardMetadata:   telnyx.Bool(true),
+					LlmAPIKeyRef:      telnyx.String("llm_api_key_ref"),
+					TokenRetrievalURL: telnyx.String("token_retrieval_url"),
 				},
 				LlmAPIKeyRef: telnyx.String("llm_api_key_ref"),
 				Model:        telnyx.String("model"),
@@ -1157,6 +1193,7 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 				DefaultTexmlAppID:            telnyx.String("default_texml_app_id"),
 				DisableDtmf:                  telnyx.Bool(true),
 				FallbackDestination:          telnyx.String("fallback_destination"),
+				GreetingDelayMs:              telnyx.Int(0),
 				NoiseSuppression:             telnyx.TelephonySettingsNoiseSuppressionAicoustics,
 				NoiseSuppressionConfig: telnyx.TelephonySettingsNoiseSuppressionConfigParam{
 					AttenuationLimit: telnyx.Int(0),
@@ -1201,10 +1238,10 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 			}},
 			Transcription: telnyx.TranscriptionSettingsParam{
 				APIKeyRef: telnyx.String("api_key_ref"),
-				Challenger: telnyx.TranscriptionSettingsChallengerParam{
-					Model:    "deepgram/nova-3",
+				Challenger: telnyx.TranscriptionChallengerParam{
+					Model:    telnyx.TranscriptionChallengerModelDeepgramNova3,
 					Language: telnyx.String("en"),
-					Rule:     "best_turn",
+					Rule:     telnyx.TranscriptionChallengerRuleBestTurn,
 					Settings: telnyx.TranscriptionSettingsConfigParam{
 						Context:                      telnyx.String("context"),
 						EagerEotThreshold:            telnyx.Float(0.3),
@@ -1224,8 +1261,8 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 						SmartFormat:                  telnyx.Bool(true),
 					},
 				},
-				FallbackModels: []telnyx.TranscriptionSettingsFallbackModelParam{{
-					Model:    "deepgram/nova-3",
+				FallbackModels: []telnyx.TranscriptionFallbackModelParam{{
+					Model:    telnyx.TranscriptionFallbackModelModelDeepgramNova3,
 					Language: telnyx.String("en"),
 					Settings: telnyx.TranscriptionSettingsConfigParam{
 						Context:                      telnyx.String("context"),
@@ -1246,7 +1283,7 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 						SmartFormat:                  telnyx.Bool(true),
 					},
 				}, {
-					Model:    "soniox/stt-rt-v5",
+					Model:    telnyx.TranscriptionFallbackModelModelSonioxSttRtV5,
 					Language: telnyx.String("en"),
 					Settings: telnyx.TranscriptionSettingsConfigParam{
 						Context:                      telnyx.String("Telnyx,VoIP,SIP"),
@@ -1294,20 +1331,21 @@ func TestAIAssistantUpdateWithOptionalParams(t *testing.T) {
 				Voice:     "voice",
 				APIKeyRef: telnyx.String("api_key_ref"),
 				BackgroundAudio: telnyx.InferenceEmbeddingVoiceSettingsBackgroundAudioUnionParam{
-					OfInferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0: &telnyx.InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0Param{
+					OfUnionMember0: &telnyx.InferenceEmbeddingVoiceSettingsBackgroundAudioUnionMember0Param{
 						Type:   "predefined_media",
 						Value:  "silence",
 						Volume: telnyx.Float(0.1),
 					},
 				},
 				ExpressiveMode:  telnyx.Bool(true),
+				Language:        telnyx.String("language"),
 				LanguageBoost:   telnyx.InferenceEmbeddingVoiceSettingsLanguageBoostAuto,
 				SimilarityBoost: telnyx.Float(0),
 				Speed:           telnyx.Float(0),
 				Style:           telnyx.Float(0),
 				Temperature:     telnyx.Float(0),
 				ToolCallAudio: telnyx.InferenceEmbeddingVoiceSettingsToolCallAudioUnionParam{
-					OfInferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0: &telnyx.InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0Param{
+					OfUnionMember0: &telnyx.InferenceEmbeddingVoiceSettingsToolCallAudioUnionMember0Param{
 						Type:   "predefined_media",
 						Value:  "typing",
 						Volume: telnyx.Float(0.5),

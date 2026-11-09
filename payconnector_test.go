@@ -29,11 +29,11 @@ func TestPayConnectorNewWithOptionalParams(t *testing.T) {
 	_, err := client.PayConnectors.New(context.TODO(), telnyx.PayConnectorNewParams{
 		Config: telnyx.GenericPayConnectorConfigUnionParam{
 			OfNoProcessorAuthentication: &telnyx.GenericPayConnectorConfigNoProcessorAuthenticationParam{
-				Token:       map[string]any{},
+				Token:       telnyx.String("token"),
 				EndpointURL: telnyx.String("https://processor.example.com/pay"),
-				Password:    map[string]any{},
+				Password:    telnyx.String("password"),
 				Timeout:     telnyx.Int(1),
-				Username:    map[string]any{},
+				Username:    telnyx.String("username"),
 			},
 		},
 		Name: "my-payment-connector",
@@ -93,7 +93,7 @@ func TestPayConnectorUpdateWithOptionalParams(t *testing.T) {
 				OfBasicAuthenticationAlsoTheValidationDefault: &telnyx.GenericPayConnectorConfigBasicAuthenticationAlsoTheValidationDefaultParam{
 					Password:    "P",
 					Username:    "P",
-					Token:       map[string]any{},
+					Token:       telnyx.String("token"),
 					AuthType:    "basic",
 					EndpointURL: telnyx.String("https://processor.example.com/pay"),
 					Timeout:     telnyx.Int(1),

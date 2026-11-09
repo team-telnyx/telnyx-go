@@ -1230,6 +1230,7 @@ type ConferenceActionSpeakParamsVoiceSettingsUnion struct {
 	OfInworld    *shared.InworldVoiceSettingsParam  `json:",omitzero,inline"`
 	OfXai        *shared.XaiVoiceSettingsParam      `json:",omitzero,inline"`
 	OfSoniox     *SonioxVoiceSettingsParam          `json:",omitzero,inline"`
+	OfAssemblyai *AssemblyAIVoiceSettingsParam      `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -1242,7 +1243,8 @@ func (u ConferenceActionSpeakParamsVoiceSettingsUnion) MarshalJSON() ([]byte, er
 		u.OfResemble,
 		u.OfInworld,
 		u.OfXai,
-		u.OfSoniox)
+		u.OfSoniox,
+		u.OfAssemblyai)
 }
 func (u *ConferenceActionSpeakParamsVoiceSettingsUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -1267,6 +1269,8 @@ func (u *ConferenceActionSpeakParamsVoiceSettingsUnion) asAny() any {
 		return u.OfXai
 	} else if !param.IsOmitted(u.OfSoniox) {
 		return u.OfSoniox
+	} else if !param.IsOmitted(u.OfAssemblyai) {
+		return u.OfAssemblyai
 	}
 	return nil
 }
@@ -1403,6 +1407,8 @@ func (u ConferenceActionSpeakParamsVoiceSettingsUnion) GetType() *string {
 		return (*string)(&vt.Type)
 	} else if vt := u.OfSoniox; vt != nil {
 		return (*string)(&vt.Type)
+	} else if vt := u.OfAssemblyai; vt != nil {
+		return (*string)(&vt.Type)
 	}
 	return nil
 }
@@ -1439,6 +1445,7 @@ func init() {
 		apijson.Discriminator[shared.InworldVoiceSettingsParam]("inworld"),
 		apijson.Discriminator[shared.XaiVoiceSettingsParam]("xai"),
 		apijson.Discriminator[SonioxVoiceSettingsParam]("soniox"),
+		apijson.Discriminator[AssemblyAIVoiceSettingsParam]("assemblyai"),
 	)
 }
 
