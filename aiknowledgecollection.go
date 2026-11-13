@@ -112,7 +112,7 @@ type AIKnowledgeCollectionGetDocumentsResponseData struct {
 	RecordCreatedAt time.Time      `json:"record_created_at" format:"date-time"`
 	RecordID        string         `json:"record_id"`
 	// The source record kind this chunk came from (e.g. `voice`, `meeting_bot`,
-	// `message`).
+	// `message`, `email`, `whatsapp`).
 	RecordType string `json:"record_type"`
 	Region     string `json:"region"`
 	// Relevance score (higher = more relevant) for ranked search. `0.0` for plain

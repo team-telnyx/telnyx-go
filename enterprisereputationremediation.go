@@ -114,10 +114,24 @@ func (r *EnterpriseReputationRemediationService) ListAutoPaging(ctx context.Cont
 // Empty lists are kept (not omitted) so consumers can iterate without
 // null-checking each key.
 type RemediationPerNumberResults struct {
-	Ineligible     []string `json:"ineligible"`
-	NotFlagged     []string `json:"not_flagged"`
-	Refused        []string `json:"refused"`
-	Remediated     []string `json:"remediated"`
+	// Numbers the reputation partner did not re-review because it had already reviewed
+	// them within the previous 60 days (already reviewed). The cooldown is measured
+	// from the partner's most recent review, not the API submission date. This array
+	// identifies the numbers but does not include their last-review or re-eligibility
+	// dates.
+	Ineligible []string `json:"ineligible"`
+	// The reputation partner reported no prior spam label for the number (no prior
+	// spam label).
+	NotFlagged []string `json:"not_flagged"`
+	// The reputation partner reviewed the number and declined the redress request
+	// (redress declined); the number remains flagged.
+	Refused []string `json:"refused"`
+	// The reputation partner approved redress (redress approved) or reported that the
+	// number had already been redressed recently (already recently redressed). This
+	// does not guarantee removal from every spam list.
+	Remediated []string `json:"remediated"`
+	// The number needs further review, or the partner response did not match a
+	// recognized outcome.
 	RequiresReview []string `json:"requires_review"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -145,7 +159,8 @@ type RemediationRequest struct {
 	// Total phone numbers in this batch, including any later cancelled. May exceed the
 	// sum of the per-category result buckets, which omit cancelled numbers.
 	PhoneNumbersCount int64 `json:"phone_numbers_count" api:"required"`
-	// Numbers rejected before submission (e.g. cooldown).
+	// Number of phone numbers the reputation partner did not re-review because it had
+	// reviewed them within the previous 60 days.
 	PhoneNumbersIneligible int64 `json:"phone_numbers_ineligible" api:"required"`
 	// Numbers accepted for remediation, i.e. not rejected as ineligible. Counts
 	// numbers still queued (pending) as well as processed ones.

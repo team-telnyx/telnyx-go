@@ -17,6 +17,7 @@ import (
 	"github.com/team-telnyx/telnyx-go/v4/packages/pagination"
 	"github.com/team-telnyx/telnyx-go/v4/packages/param"
 	"github.com/team-telnyx/telnyx-go/v4/packages/respjson"
+	"github.com/tidwall/gjson"
 )
 
 // TeXML Applications operations
@@ -628,18 +629,95 @@ func (r TexmlApplicationListParams) URLQuery() (v url.Values, err error) {
 // Consolidated filter parameter (deepObject style). Originally:
 // filter[outbound_voice_profile_id], filter[friendly_name]
 type TexmlApplicationListParamsFilter struct {
-	// If present, applications with <code>friendly_name</code> containing the given
-	// value will be returned. Matching is not case-sensitive. Requires at least three
-	// characters.
-	FriendlyName param.Opt[string] `query:"friendly_name,omitzero" json:"-"`
-	// Identifies the associated outbound voice profile.
-	OutboundVoiceProfileID param.Opt[string] `query:"outbound_voice_profile_id,omitzero" json:"-"`
+	// If present, applications with <code>friendly_name</code> exactly matching the
+	// given value will be returned. Matching is case-sensitive.
+	FriendlyName TexmlApplicationListParamsFilterFriendlyNameUnion `query:"friendly_name,omitzero" json:"-"`
+	// If present, only applications associated with the given outbound voice profile
+	// will be returned. Matching is exact.
+	OutboundVoiceProfileID TexmlApplicationListParamsFilterOutboundVoiceProfileIDUnion `query:"outbound_voice_profile_id,omitzero" json:"-"`
 	paramObj
 }
 
 // URLQuery serializes [TexmlApplicationListParamsFilter]'s query parameters as
 // `url.Values`.
 func (r TexmlApplicationListParamsFilter) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type TexmlApplicationListParamsFilterFriendlyNameUnion struct {
+	OfString                                              param.Opt[string]                                         `query:",omitzero,inline"`
+	OfTexmlApplicationListsFilterFriendlyNameUnionMember1 *TexmlApplicationListParamsFilterFriendlyNameUnionMember1 `query:",omitzero,inline"`
+	paramUnion
+}
+
+func (u *TexmlApplicationListParamsFilterFriendlyNameUnion) asAny() any {
+	if !param.IsOmitted(u.OfString) {
+		return &u.OfString.Value
+	} else if !param.IsOmitted(u.OfTexmlApplicationListsFilterFriendlyNameUnionMember1) {
+		return u.OfTexmlApplicationListsFilterFriendlyNameUnionMember1
+	}
+	return nil
+}
+
+func init() {
+	apijson.RegisterUnion[TexmlApplicationListParamsFilterFriendlyNameUnion]("", apijson.Variant[TexmlApplicationListParamsFilterFriendlyNameUnionMember1](gjson.JSON))
+}
+
+type TexmlApplicationListParamsFilterFriendlyNameUnionMember1 struct {
+	// If present, applications with <code>friendly_name</code> containing the given
+	// value will be returned. Matching is not case-sensitive.
+	Contains param.Opt[string] `query:"contains,omitzero" json:"-"`
+	// Exact match for friendly_name. Matching is case-sensitive.
+	Eq param.Opt[string] `query:"eq,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [TexmlApplicationListParamsFilterFriendlyNameUnionMember1]'s
+// query parameters as `url.Values`.
+func (r TexmlApplicationListParamsFilterFriendlyNameUnionMember1) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type TexmlApplicationListParamsFilterOutboundVoiceProfileIDUnion struct {
+	OfString                                              param.Opt[string]                                         `query:",omitzero,inline"`
+	OfTexmlApplicationListsFilterOutboundVoiceProfileIDEq *TexmlApplicationListParamsFilterOutboundVoiceProfileIDEq `query:",omitzero,inline"`
+	paramUnion
+}
+
+func (u *TexmlApplicationListParamsFilterOutboundVoiceProfileIDUnion) asAny() any {
+	if !param.IsOmitted(u.OfString) {
+		return &u.OfString.Value
+	} else if !param.IsOmitted(u.OfTexmlApplicationListsFilterOutboundVoiceProfileIDEq) {
+		return u.OfTexmlApplicationListsFilterOutboundVoiceProfileIDEq
+	}
+	return nil
+}
+
+func init() {
+	apijson.RegisterUnion[TexmlApplicationListParamsFilterOutboundVoiceProfileIDUnion]("", apijson.Variant[TexmlApplicationListParamsFilterOutboundVoiceProfileIDEq](gjson.JSON))
+}
+
+type TexmlApplicationListParamsFilterOutboundVoiceProfileIDEq struct {
+	// Exact match for the associated outbound voice profile.
+	Eq param.Opt[string] `query:"eq,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [TexmlApplicationListParamsFilterOutboundVoiceProfileIDEq]'s
+// query parameters as `url.Values`.
+func (r TexmlApplicationListParamsFilterOutboundVoiceProfileIDEq) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

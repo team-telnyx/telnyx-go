@@ -296,8 +296,9 @@ type SpeechToTextGetTranscriptionParams struct {
 	// "latest_short", "command_and_search", "phone_call", "video", "default",
 	// "medical_conversation", "medical_dictation", "openai/whisper-tiny",
 	// "openai/whisper-large-v3-turbo", "xai/grok-stt", "speechmatics/standard",
-	// "speechmatics/linden-1", "soniox/stt-rt-v4", "nvidia/parakeet-v3",
-	// "omi-health/omi-med-stt-v1", "humain/realtime", "reson8/turns", "cohere/ar-stt".
+	// "speechmatics/linden-1", "soniox/stt-rt-v4", "soniox/stt-rt-v6",
+	// "nvidia/parakeet-v3", "omi-health/omi-med-stt-v1", "humain/realtime",
+	// "reson8/turns", "cohere/ar-stt".
 	Model SpeechToTextGetTranscriptionParamsModel `query:"model,omitzero" json:"-"`
 	paramObj
 }
@@ -359,6 +360,7 @@ const (
 	SpeechToTextGetTranscriptionParamsModelSpeechmaticsStandard      SpeechToTextGetTranscriptionParamsModel = "speechmatics/standard"
 	SpeechToTextGetTranscriptionParamsModelSpeechmaticsLinden1       SpeechToTextGetTranscriptionParamsModel = "speechmatics/linden-1"
 	SpeechToTextGetTranscriptionParamsModelSonioxSttRtV4             SpeechToTextGetTranscriptionParamsModel = "soniox/stt-rt-v4"
+	SpeechToTextGetTranscriptionParamsModelSonioxSttRtV6             SpeechToTextGetTranscriptionParamsModel = "soniox/stt-rt-v6"
 	SpeechToTextGetTranscriptionParamsModelNvidiaParakeetV3          SpeechToTextGetTranscriptionParamsModel = "nvidia/parakeet-v3"
 	SpeechToTextGetTranscriptionParamsModelOmiHealthOmiMedSttV1      SpeechToTextGetTranscriptionParamsModel = "omi-health/omi-med-stt-v1"
 	SpeechToTextGetTranscriptionParamsModelHumainRealtime            SpeechToTextGetTranscriptionParamsModel = "humain/realtime"

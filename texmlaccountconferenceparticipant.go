@@ -396,6 +396,13 @@ type TexmlAccountConferenceParticipantParticipantsParams struct {
 	// Whether the participant is coaching another call. When `true`, `CallSidToCoach`
 	// has to be given.
 	Coaching param.Opt[bool] `json:"Coaching,omitzero"`
+	// Silences spoken details of the given kinds in the recording: one or more of
+	// `pci` (card number, expiry date, security code), `pii` (personal details such as
+	// names, phone numbers, addresses and other identifying numbers) and `phi` (health
+	// details such as medications, doses and conditions), separated by commas, for
+	// example `pci,pii`. Redaction works on English speech only. Redacted recordings
+	// are charged at the Deepgram speech-to-text rate.
+	ConferenceRecordingRedaction param.Opt[string] `json:"ConferenceRecordingRedaction,omitzero"`
 	// The URL the conference recording callbacks will be sent to.
 	ConferenceRecordingStatusCallback param.Opt[string] `json:"ConferenceRecordingStatusCallback,omitzero"`
 	// The changes to the conference recording's state that should generate a call to
