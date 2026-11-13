@@ -40,7 +40,6 @@ type AIService struct {
 	Conversations AIConversationService
 	// Embed documents and perform text searches
 	Embeddings   AIEmbeddingService
-	FineTuning   AIFineTuningService
 	Integrations AIIntegrationService
 	McpServers   AIMcpServerService
 	Missions     AIMissionService
@@ -69,7 +68,6 @@ func NewAIService(opts ...option.RequestOption) (r AIService) {
 	r.Collections = NewAICollectionService(opts...)
 	r.Conversations = NewAIConversationService(opts...)
 	r.Embeddings = NewAIEmbeddingService(opts...)
-	r.FineTuning = NewAIFineTuningService(opts...)
 	r.Integrations = NewAIIntegrationService(opts...)
 	r.McpServers = NewAIMcpServerService(opts...)
 	r.Missions = NewAIMissionService(opts...)
@@ -266,8 +264,8 @@ type ModelMetadata struct {
 	Beta bool `json:"beta"`
 	// Short, human-readable summary of what the model is best suited for.
 	Description string `json:"description" api:"nullable"`
-	// Whether the model can be used as a base for a fine-tuning job via
-	// `POST /v2/ai/fine_tuning/jobs`.
+	// Whether the model can be used as a base for fine-tuning. Fine-tuning jobs are no
+	// longer served by the Telnyx API.
 	IsFineTunable bool `json:"is_fine_tunable"`
 	// Whether the model accepts image inputs in chat completions (multimodal vision
 	// support).

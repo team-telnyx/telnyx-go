@@ -515,6 +515,15 @@ type PhoneNumbersJobPhoneNumber = shared.PhoneNumbersJobPhoneNumber
 // This is an alias to an internal type.
 type PortingOrderStatus = shared.PortingOrderStatus
 
+// This is an alias to an internal type.
+type PortingOrderStatusDetail = shared.PortingOrderStatusDetail
+
+// Structured remediation steps so an agent can map the exception to a fix via the
+// API alone
+//
+// This is an alias to an internal type.
+type PortingOrderStatusDetailsRemediation = shared.PortingOrderStatusDetailsRemediation
+
 // The current status of the porting order
 //
 // This is an alias to an internal type.
@@ -555,11 +564,23 @@ type PortingOrdersExceptionTypeCode = shared.PortingOrdersExceptionTypeCode
 // Equals "ACCOUNT_NUMBER_MISMATCH"
 const PortingOrdersExceptionTypeCodeAccountNumberMismatch = shared.PortingOrdersExceptionTypeCodeAccountNumberMismatch
 
+// Equals "ACCOUNT_NUMBER_MISMATCH_OR_MISSING"
+const PortingOrdersExceptionTypeCodeAccountNumberMismatchOrMissing = shared.PortingOrdersExceptionTypeCodeAccountNumberMismatchOrMissing
+
+// Equals "ACCOUNT_NUMBER_REQUIRED"
+const PortingOrdersExceptionTypeCodeAccountNumberRequired = shared.PortingOrdersExceptionTypeCodeAccountNumberRequired
+
+// Equals "ALL_DATA_MISMATCH"
+const PortingOrdersExceptionTypeCodeAllDataMismatch = shared.PortingOrdersExceptionTypeCodeAllDataMismatch
+
 // Equals "AUTH_PERSON_MISMATCH"
 const PortingOrdersExceptionTypeCodeAuthPersonMismatch = shared.PortingOrdersExceptionTypeCodeAuthPersonMismatch
 
 // Equals "BTN_ATN_MISMATCH"
 const PortingOrdersExceptionTypeCodeBtnAtnMismatch = shared.PortingOrdersExceptionTypeCodeBtnAtnMismatch
+
+// Equals "DOCUMENT_BLOCKED"
+const PortingOrdersExceptionTypeCodeDocumentBlocked = shared.PortingOrdersExceptionTypeCodeDocumentBlocked
 
 // Equals "ENTITY_NAME_MISMATCH"
 const PortingOrdersExceptionTypeCodeEntityNameMismatch = shared.PortingOrdersExceptionTypeCodeEntityNameMismatch
@@ -570,6 +591,27 @@ const PortingOrdersExceptionTypeCodeFocExpired = shared.PortingOrdersExceptionTy
 // Equals "FOC_REJECTED"
 const PortingOrdersExceptionTypeCodeFocRejected = shared.PortingOrdersExceptionTypeCodeFocRejected
 
+// Equals "INCORRECT_LOA_TEMPLATE"
+const PortingOrdersExceptionTypeCodeIncorrectLoaTemplate = shared.PortingOrdersExceptionTypeCodeIncorrectLoaTemplate
+
+// Equals "INCORRECT_LOSING_COMMUNICATION_PROVIDER"
+const PortingOrdersExceptionTypeCodeIncorrectLosingCommunicationProvider = shared.PortingOrdersExceptionTypeCodeIncorrectLosingCommunicationProvider
+
+// Equals "INCORRECT_PORT_TYPE"
+const PortingOrdersExceptionTypeCodeIncorrectPortType = shared.PortingOrdersExceptionTypeCodeIncorrectPortType
+
+// Equals "INVALID_OR_MISSING_INVOICE"
+const PortingOrdersExceptionTypeCodeInvalidOrMissingInvoice = shared.PortingOrdersExceptionTypeCodeInvalidOrMissingInvoice
+
+// Equals "INVALID_OR_MISSING_LOA"
+const PortingOrdersExceptionTypeCodeInvalidOrMissingLoa = shared.PortingOrdersExceptionTypeCodeInvalidOrMissingLoa
+
+// Equals "INVALID_SIGNATURE_ON_THE_LOA"
+const PortingOrdersExceptionTypeCodeInvalidSignatureOnTheLoa = shared.PortingOrdersExceptionTypeCodeInvalidSignatureOnTheLoa
+
+// Equals "J2_PASSCODE_PIN_INVALID"
+const PortingOrdersExceptionTypeCodeJ2PasscodePinInvalid = shared.PortingOrdersExceptionTypeCodeJ2PasscodePinInvalid
+
 // Equals "LOCATION_MISMATCH"
 const PortingOrdersExceptionTypeCodeLocationMismatch = shared.PortingOrdersExceptionTypeCodeLocationMismatch
 
@@ -578,6 +620,18 @@ const PortingOrdersExceptionTypeCodeLsrPending = shared.PortingOrdersExceptionTy
 
 // Equals "MAIN_BTN_PORTING"
 const PortingOrdersExceptionTypeCodeMainBtnPorting = shared.PortingOrdersExceptionTypeCodeMainBtnPorting
+
+// Equals "MISSING_MANDATORY_REQUIREMENT"
+const PortingOrdersExceptionTypeCodeMissingMandatoryRequirement = shared.PortingOrdersExceptionTypeCodeMissingMandatoryRequirement
+
+// Equals "MISSING_NUMBER_DETAILS"
+const PortingOrdersExceptionTypeCodeMissingNumberDetails = shared.PortingOrdersExceptionTypeCodeMissingNumberDetails
+
+// Equals "NUMBER_HAS_ASSOCIATED_SERVICES"
+const PortingOrdersExceptionTypeCodeNumberHasAssociatedServices = shared.PortingOrdersExceptionTypeCodeNumberHasAssociatedServices
+
+// Equals "ORDER_REFLOW"
+const PortingOrdersExceptionTypeCodeOrderReflow = shared.PortingOrdersExceptionTypeCodeOrderReflow
 
 // Equals "OSP_IRRESPONSIVE"
 const PortingOrdersExceptionTypeCodeOspIrresponsive = shared.PortingOrdersExceptionTypeCodeOspIrresponsive
@@ -588,20 +642,11 @@ const PortingOrdersExceptionTypeCodeOther = shared.PortingOrdersExceptionTypeCod
 // Equals "PASSCODE_PIN_INVALID"
 const PortingOrdersExceptionTypeCodePasscodePinInvalid = shared.PortingOrdersExceptionTypeCodePasscodePinInvalid
 
-// Equals "PHONE_NUMBER_HAS_SPECIAL_FEATURE"
-const PortingOrdersExceptionTypeCodePhoneNumberHasSpecialFeature = shared.PortingOrdersExceptionTypeCodePhoneNumberHasSpecialFeature
-
 // Equals "PHONE_NUMBER_MISMATCH"
 const PortingOrdersExceptionTypeCodePhoneNumberMismatch = shared.PortingOrdersExceptionTypeCodePhoneNumberMismatch
 
 // Equals "PHONE_NUMBER_NOT_PORTABLE"
 const PortingOrdersExceptionTypeCodePhoneNumberNotPortable = shared.PortingOrdersExceptionTypeCodePhoneNumberNotPortable
-
-// Equals "PORT_TYPE_INCORRECT"
-const PortingOrdersExceptionTypeCodePortTypeIncorrect = shared.PortingOrdersExceptionTypeCodePortTypeIncorrect
-
-// Equals "PORTING_ORDER_SPLIT_REQUIRED"
-const PortingOrdersExceptionTypeCodePortingOrderSplitRequired = shared.PortingOrdersExceptionTypeCodePortingOrderSplitRequired
 
 // Equals "POSTAL_CODE_MISMATCH"
 const PortingOrdersExceptionTypeCodePostalCodeMismatch = shared.PortingOrdersExceptionTypeCodePostalCodeMismatch
@@ -609,11 +654,35 @@ const PortingOrdersExceptionTypeCodePostalCodeMismatch = shared.PortingOrdersExc
 // Equals "RATE_CENTER_NOT_PORTABLE"
 const PortingOrdersExceptionTypeCodeRateCenterNotPortable = shared.PortingOrdersExceptionTypeCodeRateCenterNotPortable
 
+// Equals "RESELLER_INVALID"
+const PortingOrdersExceptionTypeCodeResellerInvalid = shared.PortingOrdersExceptionTypeCodeResellerInvalid
+
+// Equals "STRANDED_SERVICES_NEED_NEW_BTN"
+const PortingOrdersExceptionTypeCodeStrandedServicesNeedNewBtn = shared.PortingOrdersExceptionTypeCodeStrandedServicesNeedNewBtn
+
 // Equals "SV_CONFLICT"
 const PortingOrdersExceptionTypeCodeSvConflict = shared.PortingOrdersExceptionTypeCodeSvConflict
 
 // Equals "SV_UNKNOWN_FAILURE"
 const PortingOrdersExceptionTypeCodeSvUnknownFailure = shared.PortingOrdersExceptionTypeCodeSvUnknownFailure
+
+// Equals "TNS_ON_MULTIPLE_ACCOUNTS"
+const PortingOrdersExceptionTypeCodeTnsOnMultipleAccounts = shared.PortingOrdersExceptionTypeCodeTnsOnMultipleAccounts
+
+// Equals "TN_BUILD_CONFLICT"
+const PortingOrdersExceptionTypeCodeTnBuildConflict = shared.PortingOrdersExceptionTypeCodeTnBuildConflict
+
+// Equals "TN_DISCONNECTED"
+const PortingOrdersExceptionTypeCodeTnDisconnected = shared.PortingOrdersExceptionTypeCodeTnDisconnected
+
+// Equals "UNAUTHORIZED_PERSON_SIGNATURE"
+const PortingOrdersExceptionTypeCodeUnauthorizedPersonSignature = shared.PortingOrdersExceptionTypeCodeUnauthorizedPersonSignature
+
+// Structured remediation steps so an agent can map the exception to a fix via the
+// API alone
+//
+// This is an alias to an internal type.
+type PortingOrdersExceptionTypeRemediation = shared.PortingOrdersExceptionTypeRemediation
 
 // This is an alias to an internal type.
 type RegionInformation = shared.RegionInformation

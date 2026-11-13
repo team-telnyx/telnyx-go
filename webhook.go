@@ -2338,7 +2338,8 @@ type CallRecordingErrorPayload struct {
 	// Indication that there was a problem recording the call.
 	//
 	// Any of "Failed to authorize with storage using custom credentials", "Invalid
-	// credentials json", "Unsupported backend", "Internal server error".
+	// credentials json", "Unsupported backend", "Internal server error", "Recording
+	// redaction failed, so the recording was not saved.".
 	Reason string `json:"reason"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {

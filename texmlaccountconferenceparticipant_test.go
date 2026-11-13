@@ -142,6 +142,7 @@ func TestTexmlAccountConferenceParticipantParticipantsWithOptionalParams(t *test
 			CancelPlaybackOnMachineDetection:        telnyx.Bool(false),
 			Coaching:                                telnyx.Bool(false),
 			ConferenceRecord:                        telnyx.TexmlAccountConferenceParticipantParticipantsParamsConferenceRecordRecordFromStart,
+			ConferenceRecordingRedaction:            telnyx.String("pci,pii"),
 			ConferenceRecordingStatusCallback:       telnyx.String("https://example.com/conference_recording_status_callback"),
 			ConferenceRecordingStatusCallbackEvent:  telnyx.String("in-progress completed failed absent"),
 			ConferenceRecordingStatusCallbackMethod: telnyx.TexmlAccountConferenceParticipantParticipantsParamsConferenceRecordingStatusCallbackMethodGet,

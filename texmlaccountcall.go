@@ -598,6 +598,13 @@ type TexmlAccountCallCallsParamsBodyWithURL struct {
 	PreferredCodecs param.Opt[string] `json:"PreferredCodecs,omitzero"`
 	// Whether to record the entire participant's call leg. Defaults to `false`.
 	Record param.Opt[bool] `json:"Record,omitzero"`
+	// Silences spoken details of the given kinds in the recording: one or more of
+	// `pci` (card number, expiry date, security code), `pii` (personal details such as
+	// names, phone numbers, addresses and other identifying numbers) and `phi` (health
+	// details such as medications, doses and conditions), separated by commas, for
+	// example `pci,pii`. Redaction works on English speech only. Redacted recordings
+	// are charged at the Deepgram speech-to-text rate.
+	RecordingRedaction param.Opt[string] `json:"RecordingRedaction,omitzero"`
 	// The URL the recording callbacks will be sent to.
 	RecordingStatusCallback param.Opt[string] `json:"RecordingStatusCallback,omitzero"`
 	// The changes to the recording's state that should generate a call to
@@ -620,6 +627,21 @@ type TexmlAccountCallCallsParamsBodyWithURL struct {
 	// The call events for which Telnyx should send a webhook. Multiple events can be
 	// defined when separated by a space.
 	StatusCallbackEvent param.Opt[string] `json:"StatusCallbackEvent,omitzero"`
+	// An authentication token for the WebSocket server. It is sent as the
+	// `x-telnyx-streaming-auth-token` header of the WebSocket handshake and repeated
+	// as `connected.x-telnyx-streaming-auth-token` in the `connected` event. Maximum
+	// length is 4000 characters. Requires `StreamUrl`.
+	StreamAuthToken param.Opt[string] `json:"StreamAuthToken,omitzero"`
+	// Establishes the WebSocket connection before the destination is dialed, so no
+	// audio is missed while the connection is set up. If the WebSocket connection
+	// can't be established, the call is not placed and the request fails with a `422`
+	// error. `StreamUrl` is required when this is `true`.
+	StreamEstablishBeforeCallOriginate param.Opt[bool] `json:"StreamEstablishBeforeCallOriginate,omitzero"`
+	// The destination WebSocket address where the call's media stream is delivered,
+	// for example `wss://www.example.com/websocket`. When set, a media stream is
+	// started on the outbound call. Required when any other `Stream*` parameter is
+	// set. Can't be combined with `SuperviseCallSid`.
+	StreamURL param.Opt[string] `json:"StreamUrl,omitzero"`
 	// The call control ID of the existing call to supervise. When provided, the
 	// created leg will be added to the specified call in supervising mode. Status
 	// callbacks and action callbacks will NOT be sent for the supervising leg.
@@ -696,6 +718,30 @@ type TexmlAccountCallCallsParamsBodyWithURL struct {
 	//
 	// Any of "GET", "POST".
 	StatusCallbackMethod string `json:"StatusCallbackMethod,omitzero"`
+	// Indicates the codec for bidirectional streaming RTP payloads. Used only with
+	// `StreamBidirectionalMode=rtp`. Case sensitive. Requires `StreamUrl`.
+	//
+	// Any of "PCMU", "PCMA", "G722", "OPUS", "AMR-WB", "L16".
+	StreamBidirectionalCodec string `json:"StreamBidirectionalCodec,omitzero"`
+	// Configures the method of bidirectional streaming: `mp3` or `rtp`. Requires
+	// `StreamUrl`.
+	//
+	// Any of "mp3", "rtp".
+	StreamBidirectionalMode string `json:"StreamBidirectionalMode,omitzero"`
+	// Audio sampling rate for bidirectional streaming, in Hz. Requires `StreamUrl`.
+	//
+	// Any of 8000, 16000, 22050, 24000, 48000.
+	StreamBidirectionalSamplingRate int64 `json:"StreamBidirectionalSamplingRate,omitzero"`
+	// Specifies the codec to be used for the streamed audio. When set to `default` or
+	// when transcoding is not possible, the codec from the call will be used. Requires
+	// `StreamUrl`.
+	//
+	// Any of "PCMU", "PCMA", "G722", "OPUS", "AMR-WB", "L16", "default".
+	StreamCodec string `json:"StreamCodec,omitzero"`
+	// Specifies which track should be streamed. Requires `StreamUrl`.
+	//
+	// Any of "inbound_track", "outbound_track", "both_tracks".
+	StreamTrack string `json:"StreamTrack,omitzero"`
 	// The supervising role for the new leg. Determines the audio behavior: barge (hear
 	// both sides), whisper (only hear supervisor), monitor (hear both sides but
 	// supervisor muted). Default: barge
@@ -759,6 +805,21 @@ func init() {
 	)
 	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithURL](
 		"StatusCallbackMethod", "GET", "POST",
+	)
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithURL](
+		"StreamBidirectionalCodec", "PCMU", "PCMA", "G722", "OPUS", "AMR-WB", "L16",
+	)
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithURL](
+		"StreamBidirectionalMode", "mp3", "rtp",
+	)
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithURL](
+		"StreamBidirectionalSamplingRate", 8000, 16000, 22050, 24000, 48000,
+	)
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithURL](
+		"StreamCodec", "PCMU", "PCMA", "G722", "OPUS", "AMR-WB", "L16", "default",
+	)
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithURL](
+		"StreamTrack", "inbound_track", "outbound_track", "both_tracks",
 	)
 	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithURL](
 		"SupervisingRole", "barge", "whisper", "monitor",
@@ -868,6 +929,13 @@ type TexmlAccountCallCallsParamsBodyWithTeXml struct {
 	PreferredCodecs param.Opt[string] `json:"PreferredCodecs,omitzero"`
 	// Whether to record the entire participant's call leg. Defaults to `false`.
 	Record param.Opt[bool] `json:"Record,omitzero"`
+	// Silences spoken details of the given kinds in the recording: one or more of
+	// `pci` (card number, expiry date, security code), `pii` (personal details such as
+	// names, phone numbers, addresses and other identifying numbers) and `phi` (health
+	// details such as medications, doses and conditions), separated by commas, for
+	// example `pci,pii`. Redaction works on English speech only. Redacted recordings
+	// are charged at the Deepgram speech-to-text rate.
+	RecordingRedaction param.Opt[string] `json:"RecordingRedaction,omitzero"`
 	// The URL the recording callbacks will be sent to.
 	RecordingStatusCallback param.Opt[string] `json:"RecordingStatusCallback,omitzero"`
 	// The changes to the recording's state that should generate a call to
@@ -890,6 +958,21 @@ type TexmlAccountCallCallsParamsBodyWithTeXml struct {
 	// The call events for which Telnyx should send a webhook. Multiple events can be
 	// defined when separated by a space.
 	StatusCallbackEvent param.Opt[string] `json:"StatusCallbackEvent,omitzero"`
+	// An authentication token for the WebSocket server. It is sent as the
+	// `x-telnyx-streaming-auth-token` header of the WebSocket handshake and repeated
+	// as `connected.x-telnyx-streaming-auth-token` in the `connected` event. Maximum
+	// length is 4000 characters. Requires `StreamUrl`.
+	StreamAuthToken param.Opt[string] `json:"StreamAuthToken,omitzero"`
+	// Establishes the WebSocket connection before the destination is dialed, so no
+	// audio is missed while the connection is set up. If the WebSocket connection
+	// can't be established, the call is not placed and the request fails with a `422`
+	// error. `StreamUrl` is required when this is `true`.
+	StreamEstablishBeforeCallOriginate param.Opt[bool] `json:"StreamEstablishBeforeCallOriginate,omitzero"`
+	// The destination WebSocket address where the call's media stream is delivered,
+	// for example `wss://www.example.com/websocket`. When set, a media stream is
+	// started on the outbound call. Required when any other `Stream*` parameter is
+	// set. Can't be combined with `SuperviseCallSid`.
+	StreamURL param.Opt[string] `json:"StreamUrl,omitzero"`
 	// The call control ID of the existing call to supervise. When provided, the
 	// created leg will be added to the specified call in supervising mode. Status
 	// callbacks and action callbacks will NOT be sent for the supervising leg.
@@ -966,6 +1049,30 @@ type TexmlAccountCallCallsParamsBodyWithTeXml struct {
 	//
 	// Any of "GET", "POST".
 	StatusCallbackMethod string `json:"StatusCallbackMethod,omitzero"`
+	// Indicates the codec for bidirectional streaming RTP payloads. Used only with
+	// `StreamBidirectionalMode=rtp`. Case sensitive. Requires `StreamUrl`.
+	//
+	// Any of "PCMU", "PCMA", "G722", "OPUS", "AMR-WB", "L16".
+	StreamBidirectionalCodec string `json:"StreamBidirectionalCodec,omitzero"`
+	// Configures the method of bidirectional streaming: `mp3` or `rtp`. Requires
+	// `StreamUrl`.
+	//
+	// Any of "mp3", "rtp".
+	StreamBidirectionalMode string `json:"StreamBidirectionalMode,omitzero"`
+	// Audio sampling rate for bidirectional streaming, in Hz. Requires `StreamUrl`.
+	//
+	// Any of 8000, 16000, 22050, 24000, 48000.
+	StreamBidirectionalSamplingRate int64 `json:"StreamBidirectionalSamplingRate,omitzero"`
+	// Specifies the codec to be used for the streamed audio. When set to `default` or
+	// when transcoding is not possible, the codec from the call will be used. Requires
+	// `StreamUrl`.
+	//
+	// Any of "PCMU", "PCMA", "G722", "OPUS", "AMR-WB", "L16", "default".
+	StreamCodec string `json:"StreamCodec,omitzero"`
+	// Specifies which track should be streamed. Requires `StreamUrl`.
+	//
+	// Any of "inbound_track", "outbound_track", "both_tracks".
+	StreamTrack string `json:"StreamTrack,omitzero"`
 	// The supervising role for the new leg. Determines the audio behavior: barge (hear
 	// both sides), whisper (only hear supervisor), monitor (hear both sides but
 	// supervisor muted). Default: barge
@@ -1029,6 +1136,21 @@ func init() {
 	)
 	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithTeXml](
 		"StatusCallbackMethod", "GET", "POST",
+	)
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithTeXml](
+		"StreamBidirectionalCodec", "PCMU", "PCMA", "G722", "OPUS", "AMR-WB", "L16",
+	)
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithTeXml](
+		"StreamBidirectionalMode", "mp3", "rtp",
+	)
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithTeXml](
+		"StreamBidirectionalSamplingRate", 8000, 16000, 22050, 24000, 48000,
+	)
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithTeXml](
+		"StreamCodec", "PCMU", "PCMA", "G722", "OPUS", "AMR-WB", "L16", "default",
+	)
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithTeXml](
+		"StreamTrack", "inbound_track", "outbound_track", "both_tracks",
 	)
 	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyWithTeXml](
 		"SupervisingRole", "barge", "whisper", "monitor",
@@ -1135,6 +1257,13 @@ type TexmlAccountCallCallsParamsBodyApplicationDefault struct {
 	PreferredCodecs param.Opt[string] `json:"PreferredCodecs,omitzero"`
 	// Whether to record the entire participant's call leg. Defaults to `false`.
 	Record param.Opt[bool] `json:"Record,omitzero"`
+	// Silences spoken details of the given kinds in the recording: one or more of
+	// `pci` (card number, expiry date, security code), `pii` (personal details such as
+	// names, phone numbers, addresses and other identifying numbers) and `phi` (health
+	// details such as medications, doses and conditions), separated by commas, for
+	// example `pci,pii`. Redaction works on English speech only. Redacted recordings
+	// are charged at the Deepgram speech-to-text rate.
+	RecordingRedaction param.Opt[string] `json:"RecordingRedaction,omitzero"`
 	// The URL the recording callbacks will be sent to.
 	RecordingStatusCallback param.Opt[string] `json:"RecordingStatusCallback,omitzero"`
 	// The changes to the recording's state that should generate a call to
@@ -1157,6 +1286,21 @@ type TexmlAccountCallCallsParamsBodyApplicationDefault struct {
 	// The call events for which Telnyx should send a webhook. Multiple events can be
 	// defined when separated by a space.
 	StatusCallbackEvent param.Opt[string] `json:"StatusCallbackEvent,omitzero"`
+	// An authentication token for the WebSocket server. It is sent as the
+	// `x-telnyx-streaming-auth-token` header of the WebSocket handshake and repeated
+	// as `connected.x-telnyx-streaming-auth-token` in the `connected` event. Maximum
+	// length is 4000 characters. Requires `StreamUrl`.
+	StreamAuthToken param.Opt[string] `json:"StreamAuthToken,omitzero"`
+	// Establishes the WebSocket connection before the destination is dialed, so no
+	// audio is missed while the connection is set up. If the WebSocket connection
+	// can't be established, the call is not placed and the request fails with a `422`
+	// error. `StreamUrl` is required when this is `true`.
+	StreamEstablishBeforeCallOriginate param.Opt[bool] `json:"StreamEstablishBeforeCallOriginate,omitzero"`
+	// The destination WebSocket address where the call's media stream is delivered,
+	// for example `wss://www.example.com/websocket`. When set, a media stream is
+	// started on the outbound call. Required when any other `Stream*` parameter is
+	// set. Can't be combined with `SuperviseCallSid`.
+	StreamURL param.Opt[string] `json:"StreamUrl,omitzero"`
 	// The call control ID of the existing call to supervise. When provided, the
 	// created leg will be added to the specified call in supervising mode. Status
 	// callbacks and action callbacks will NOT be sent for the supervising leg.
@@ -1233,6 +1377,30 @@ type TexmlAccountCallCallsParamsBodyApplicationDefault struct {
 	//
 	// Any of "GET", "POST".
 	StatusCallbackMethod string `json:"StatusCallbackMethod,omitzero"`
+	// Indicates the codec for bidirectional streaming RTP payloads. Used only with
+	// `StreamBidirectionalMode=rtp`. Case sensitive. Requires `StreamUrl`.
+	//
+	// Any of "PCMU", "PCMA", "G722", "OPUS", "AMR-WB", "L16".
+	StreamBidirectionalCodec string `json:"StreamBidirectionalCodec,omitzero"`
+	// Configures the method of bidirectional streaming: `mp3` or `rtp`. Requires
+	// `StreamUrl`.
+	//
+	// Any of "mp3", "rtp".
+	StreamBidirectionalMode string `json:"StreamBidirectionalMode,omitzero"`
+	// Audio sampling rate for bidirectional streaming, in Hz. Requires `StreamUrl`.
+	//
+	// Any of 8000, 16000, 22050, 24000, 48000.
+	StreamBidirectionalSamplingRate int64 `json:"StreamBidirectionalSamplingRate,omitzero"`
+	// Specifies the codec to be used for the streamed audio. When set to `default` or
+	// when transcoding is not possible, the codec from the call will be used. Requires
+	// `StreamUrl`.
+	//
+	// Any of "PCMU", "PCMA", "G722", "OPUS", "AMR-WB", "L16", "default".
+	StreamCodec string `json:"StreamCodec,omitzero"`
+	// Specifies which track should be streamed. Requires `StreamUrl`.
+	//
+	// Any of "inbound_track", "outbound_track", "both_tracks".
+	StreamTrack string `json:"StreamTrack,omitzero"`
 	// The supervising role for the new leg. Determines the audio behavior: barge (hear
 	// both sides), whisper (only hear supervisor), monitor (hear both sides but
 	// supervisor muted). Default: barge
@@ -1296,6 +1464,21 @@ func init() {
 	)
 	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyApplicationDefault](
 		"StatusCallbackMethod", "GET", "POST",
+	)
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyApplicationDefault](
+		"StreamBidirectionalCodec", "PCMU", "PCMA", "G722", "OPUS", "AMR-WB", "L16",
+	)
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyApplicationDefault](
+		"StreamBidirectionalMode", "mp3", "rtp",
+	)
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyApplicationDefault](
+		"StreamBidirectionalSamplingRate", 8000, 16000, 22050, 24000, 48000,
+	)
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyApplicationDefault](
+		"StreamCodec", "PCMU", "PCMA", "G722", "OPUS", "AMR-WB", "L16", "default",
+	)
+	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyApplicationDefault](
+		"StreamTrack", "inbound_track", "outbound_track", "both_tracks",
 	)
 	apijson.RegisterFieldValidator[TexmlAccountCallCallsParamsBodyApplicationDefault](
 		"SupervisingRole", "barge", "whisper", "monitor",

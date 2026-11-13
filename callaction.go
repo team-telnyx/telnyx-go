@@ -833,30 +833,6 @@ const (
 	AIAssistantJoinParticipantOnHangupEndConversation      AIAssistantJoinParticipantOnHangup = "end_conversation"
 )
 
-// The property Type is required.
-type AssemblyAIVoiceSettingsParam struct {
-	// Voice settings provider type
-	//
-	// Any of "assemblyai".
-	Type AssemblyAIVoiceSettingsType `json:"type,omitzero" api:"required"`
-	paramObj
-}
-
-func (r AssemblyAIVoiceSettingsParam) MarshalJSON() (data []byte, err error) {
-	type shadow AssemblyAIVoiceSettingsParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *AssemblyAIVoiceSettingsParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Voice settings provider type
-type AssemblyAIVoiceSettingsType string
-
-const (
-	AssemblyAIVoiceSettingsTypeAssemblyai AssemblyAIVoiceSettingsType = "assemblyai"
-)
-
 // Messages sent by the model in response to user messages.
 //
 // The property Role is required.
@@ -1725,9 +1701,9 @@ type TranscriptionConfigParam struct {
 	// `deepgram/flux`, supported values are: `auto` (Telnyx language detection
 	// controls the language hint), `multi` (no language hint), and language-specific
 	// hints `en`, `es`, `fr`, `de`, `hi`, `ru`, `pt`, `ja`, `it`, and `nl`. For
-	// `soniox/stt-rt-v4`, `auto` omits the language hint and lets Soniox auto-detect;
-	// ISO 639-1 codes (e.g. `en`, `es`) bias detection toward that language. For
-	// `assemblyai/universal-3-6-pro` (and its legacy aliases
+	// `soniox/stt-rt-v4` and `soniox/stt-rt-v6`, `auto` omits the language hint and
+	// lets Soniox auto-detect; ISO 639-1 codes (e.g. `en`, `es`) bias detection toward
+	// that language. For `assemblyai/universal-3-6-pro` (and its legacy aliases
 	// `assemblyai/universal-3-5-pro` and `assemblyai/universal-streaming`), `auto` (or
 	// unset) enables native multilingual code-switching; language codes (`en`, `es`,
 	// `de`, `fr`, `pt`, `it`, `tr`, `nl`, `sv`, `no`, `da`, `fi`, `hi`, `vi`, `ar`,
@@ -1762,8 +1738,8 @@ type TranscriptionConfigParam struct {
 	//     `assemblyai/universal-streaming` are still accepted and run the same
 	//     Universal-3.6 Pro model.
 	//   - `xai/grok-stt` for live streaming transcription.
-	//   - `soniox/stt-rt-v4` for live streaming multilingual transcription with
-	//     automatic language detection.
+	//   - `soniox/stt-rt-v4` and `soniox/stt-rt-v6` for live streaming multilingual
+	//     transcription with automatic language detection.
 	//   - `nvidia/parakeet-v3` for multilingual transcription with automatic language
 	//     detection.
 	//   - `omi-health/omi-med-stt-v1` for English-only medical transcription
@@ -1785,9 +1761,9 @@ type TranscriptionConfigParam struct {
 	// "speechmatics/standard", "speechmatics/enhanced", "speechmatics/linden-1",
 	// "assemblyai/universal-3-6-pro", "assemblyai/universal-3-5-pro",
 	// "assemblyai/universal-streaming", "xai/grok-stt", "soniox/stt-rt-v4",
-	// "nvidia/parakeet-v3", "omi-health/omi-med-stt-v1", "humain/realtime",
-	// "reson8/turns", "cohere/ar-stt", "azure/fast", "azure/realtime",
-	// "google/latest_long", "distil-whisper/distil-large-v2",
+	// "soniox/stt-rt-v6", "nvidia/parakeet-v3", "omi-health/omi-med-stt-v1",
+	// "humain/realtime", "reson8/turns", "cohere/ar-stt", "azure/fast",
+	// "azure/realtime", "google/latest_long", "distil-whisper/distil-large-v2",
 	// "openai/whisper-large-v3-turbo".
 	Model TranscriptionConfigModel `json:"model,omitzero"`
 	paramObj
@@ -1816,8 +1792,8 @@ func (r *TranscriptionConfigParam) UnmarshalJSON(data []byte) error {
 //     `assemblyai/universal-streaming` are still accepted and run the same
 //     Universal-3.6 Pro model.
 //   - `xai/grok-stt` for live streaming transcription.
-//   - `soniox/stt-rt-v4` for live streaming multilingual transcription with
-//     automatic language detection.
+//   - `soniox/stt-rt-v4` and `soniox/stt-rt-v6` for live streaming multilingual
+//     transcription with automatic language detection.
 //   - `nvidia/parakeet-v3` for multilingual transcription with automatic language
 //     detection.
 //   - `omi-health/omi-med-stt-v1` for English-only medical transcription
@@ -1849,6 +1825,7 @@ const (
 	TranscriptionConfigModelAssemblyaiUniversalStreaming TranscriptionConfigModel = "assemblyai/universal-streaming"
 	TranscriptionConfigModelXaiGrokStt                   TranscriptionConfigModel = "xai/grok-stt"
 	TranscriptionConfigModelSonioxSttRtV4                TranscriptionConfigModel = "soniox/stt-rt-v4"
+	TranscriptionConfigModelSonioxSttRtV6                TranscriptionConfigModel = "soniox/stt-rt-v6"
 	TranscriptionConfigModelNvidiaParakeetV3             TranscriptionConfigModel = "nvidia/parakeet-v3"
 	TranscriptionConfigModelOmiHealthOmiMedSttV1         TranscriptionConfigModel = "omi-health/omi-med-stt-v1"
 	TranscriptionConfigModelHumainRealtime               TranscriptionConfigModel = "humain/realtime"
@@ -2470,7 +2447,7 @@ type TranscriptionEngineSonioxConfigParam struct {
 	MaxEndpointDelayMs param.Opt[int64] `json:"max_endpoint_delay_ms,omitzero"`
 	// The model to use for transcription.
 	//
-	// Any of "soniox/stt-rt-v4".
+	// Any of "soniox/stt-rt-v4", "soniox/stt-rt-v6".
 	TranscriptionModel TranscriptionEngineSonioxConfigTranscriptionModel `json:"transcription_model,omitzero"`
 	paramObj
 }
@@ -2495,6 +2472,7 @@ type TranscriptionEngineSonioxConfigTranscriptionModel string
 
 const (
 	TranscriptionEngineSonioxConfigTranscriptionModelSonioxSttRtV4 TranscriptionEngineSonioxConfigTranscriptionModel = "soniox/stt-rt-v4"
+	TranscriptionEngineSonioxConfigTranscriptionModelSonioxSttRtV6 TranscriptionEngineSonioxConfigTranscriptionModel = "soniox/stt-rt-v6"
 )
 
 type TranscriptionEngineSpeechmaticsConfigParam struct {
@@ -3943,7 +3921,19 @@ type CallActionAddAIAssistantMessagesParams struct {
 	CommandID param.Opt[string] `json:"command_id,omitzero"`
 	// When `true`, the injected messages immediately trigger an assistant
 	// response/turn instead of waiting for the next natural turn or idle timeout. This
-	// may interrupt a user who is still speaking.
+	// may interrupt a user who is still speaking. How the turn starts depends on the
+	// last message in `messages`: if it is a `user` message, the assistant responds to
+	// that message as if the caller had said it, whether or not `trigger_response` is
+	// set. Any other last role (`system`, `developer`, `assistant`, `tool`) starts a
+	// turn with no new user input, as after a long silence. When `trigger_response` is
+	// not set, a payload that does not end in a `user` message is context only and
+	// does not start a turn. GPT Live models (`openai/gpt-live-*`) do not support a
+	// forced mid-session turn: injected `system`, `developer`, and `assistant` content
+	// is appended to the Live session's instructions and the model brings it into its
+	// next turn on its own; an injected `tool` record is not forwarded to the Live
+	// session, so it stays context only and never reaches the Live model. Any of
+	// `user`, `system`, `developer`, or `assistant` is the supported way to get
+	// content into the Live session.
 	TriggerResponse param.Opt[bool] `json:"trigger_response,omitzero"`
 	// The messages to add to the conversation.
 	Messages []CallActionAddAIAssistantMessagesParamsMessageUnion `json:"messages,omitzero"`
@@ -4143,6 +4133,15 @@ type CallActionAnswerParams struct {
 	//
 	// Any of "wav", "mp3".
 	RecordFormat CallActionAnswerParamsRecordFormat `json:"record_format,omitzero"`
+	// Applies to the recording started with `record`. Silences spoken details of the
+	// given kinds in the recording: `pci` (card number, expiry date, security code),
+	// `pii` (personal details such as names, phone numbers, addresses and other
+	// identifying numbers) and `phi` (health details such as medications, doses and
+	// conditions). Redaction works on English speech only. Redacted recordings are
+	// charged at the Deepgram speech-to-text rate.
+	//
+	// Any of "pci", "pii", "phi".
+	RecordRedaction []string `json:"record_redaction,omitzero"`
 	// The audio track to be recorded. Can be either `both`, `inbound` or `outbound`.
 	// If only single track is specified (`inbound`, `outbound`), `channels`
 	// configuration is ignored and it will be recorded as mono (single channel).
@@ -4394,6 +4393,15 @@ type CallActionBridgeParams struct {
 	//
 	// Any of "wav", "mp3".
 	RecordFormat CallActionBridgeParamsRecordFormat `json:"record_format,omitzero"`
+	// Applies to the recording started with `record`. Silences spoken details of the
+	// given kinds in the recording: `pci` (card number, expiry date, security code),
+	// `pii` (personal details such as names, phone numbers, addresses and other
+	// identifying numbers) and `phi` (health details such as medications, doses and
+	// conditions). Redaction works on English speech only. Redacted recordings are
+	// charged at the Deepgram speech-to-text rate.
+	//
+	// Any of "pci", "pii", "phi".
+	RecordRedaction []string `json:"record_redaction,omitzero"`
 	// The audio track to be recorded. Can be either `both`, `inbound` or `outbound`.
 	// If only single track is specified (`inbound`, `outbound`), `channels`
 	// configuration is ignored and it will be recorded as mono (single channel).
@@ -4735,7 +4743,6 @@ type CallActionGatherUsingAIParamsVoiceSettingsUnion struct {
 	OfResemble   *shared.ResembleVoiceSettingsParam `json:",omitzero,inline"`
 	OfXai        *shared.XaiVoiceSettingsParam      `json:",omitzero,inline"`
 	OfSoniox     *SonioxVoiceSettingsParam          `json:",omitzero,inline"`
-	OfAssemblyai *AssemblyAIVoiceSettingsParam      `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -4746,8 +4753,7 @@ func (u CallActionGatherUsingAIParamsVoiceSettingsUnion) MarshalJSON() ([]byte, 
 		u.OfAzure,
 		u.OfResemble,
 		u.OfXai,
-		u.OfSoniox,
-		u.OfAssemblyai)
+		u.OfSoniox)
 }
 func (u *CallActionGatherUsingAIParamsVoiceSettingsUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -4768,8 +4774,6 @@ func (u *CallActionGatherUsingAIParamsVoiceSettingsUnion) asAny() any {
 		return u.OfXai
 	} else if !param.IsOmitted(u.OfSoniox) {
 		return u.OfSoniox
-	} else if !param.IsOmitted(u.OfAssemblyai) {
-		return u.OfAssemblyai
 	}
 	return nil
 }
@@ -4878,8 +4882,6 @@ func (u CallActionGatherUsingAIParamsVoiceSettingsUnion) GetType() *string {
 		return (*string)(&vt.Type)
 	} else if vt := u.OfSoniox; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfAssemblyai; vt != nil {
-		return (*string)(&vt.Type)
 	}
 	return nil
 }
@@ -4904,7 +4906,6 @@ func init() {
 		apijson.Discriminator[shared.ResembleVoiceSettingsParam]("resemble"),
 		apijson.Discriminator[shared.XaiVoiceSettingsParam]("xai"),
 		apijson.Discriminator[SonioxVoiceSettingsParam]("soniox"),
-		apijson.Discriminator[AssemblyAIVoiceSettingsParam]("assemblyai"),
 	)
 }
 
@@ -5155,7 +5156,6 @@ type CallActionGatherUsingSpeakParamsVoiceSettingsUnion struct {
 	OfInworld    *shared.InworldVoiceSettingsParam  `json:",omitzero,inline"`
 	OfXai        *shared.XaiVoiceSettingsParam      `json:",omitzero,inline"`
 	OfSoniox     *SonioxVoiceSettingsParam          `json:",omitzero,inline"`
-	OfAssemblyai *AssemblyAIVoiceSettingsParam      `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -5168,8 +5168,7 @@ func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) MarshalJSON() ([]byt
 		u.OfResemble,
 		u.OfInworld,
 		u.OfXai,
-		u.OfSoniox,
-		u.OfAssemblyai)
+		u.OfSoniox)
 }
 func (u *CallActionGatherUsingSpeakParamsVoiceSettingsUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -5194,8 +5193,6 @@ func (u *CallActionGatherUsingSpeakParamsVoiceSettingsUnion) asAny() any {
 		return u.OfXai
 	} else if !param.IsOmitted(u.OfSoniox) {
 		return u.OfSoniox
-	} else if !param.IsOmitted(u.OfAssemblyai) {
-		return u.OfAssemblyai
 	}
 	return nil
 }
@@ -5332,8 +5329,6 @@ func (u CallActionGatherUsingSpeakParamsVoiceSettingsUnion) GetType() *string {
 		return (*string)(&vt.Type)
 	} else if vt := u.OfSoniox; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfAssemblyai; vt != nil {
-		return (*string)(&vt.Type)
 	}
 	return nil
 }
@@ -5370,7 +5365,6 @@ func init() {
 		apijson.Discriminator[shared.InworldVoiceSettingsParam]("inworld"),
 		apijson.Discriminator[shared.XaiVoiceSettingsParam]("xai"),
 		apijson.Discriminator[SonioxVoiceSettingsParam]("soniox"),
-		apijson.Discriminator[AssemblyAIVoiceSettingsParam]("assemblyai"),
 	)
 }
 
@@ -5943,7 +5937,6 @@ type CallActionSpeakParamsVoiceSettingsUnion struct {
 	OfInworld    *shared.InworldVoiceSettingsParam  `json:",omitzero,inline"`
 	OfXai        *shared.XaiVoiceSettingsParam      `json:",omitzero,inline"`
 	OfSoniox     *SonioxVoiceSettingsParam          `json:",omitzero,inline"`
-	OfAssemblyai *AssemblyAIVoiceSettingsParam      `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -5956,8 +5949,7 @@ func (u CallActionSpeakParamsVoiceSettingsUnion) MarshalJSON() ([]byte, error) {
 		u.OfResemble,
 		u.OfInworld,
 		u.OfXai,
-		u.OfSoniox,
-		u.OfAssemblyai)
+		u.OfSoniox)
 }
 func (u *CallActionSpeakParamsVoiceSettingsUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -5982,8 +5974,6 @@ func (u *CallActionSpeakParamsVoiceSettingsUnion) asAny() any {
 		return u.OfXai
 	} else if !param.IsOmitted(u.OfSoniox) {
 		return u.OfSoniox
-	} else if !param.IsOmitted(u.OfAssemblyai) {
-		return u.OfAssemblyai
 	}
 	return nil
 }
@@ -6120,8 +6110,6 @@ func (u CallActionSpeakParamsVoiceSettingsUnion) GetType() *string {
 		return (*string)(&vt.Type)
 	} else if vt := u.OfSoniox; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfAssemblyai; vt != nil {
-		return (*string)(&vt.Type)
 	}
 	return nil
 }
@@ -6158,7 +6146,6 @@ func init() {
 		apijson.Discriminator[shared.InworldVoiceSettingsParam]("inworld"),
 		apijson.Discriminator[shared.XaiVoiceSettingsParam]("xai"),
 		apijson.Discriminator[SonioxVoiceSettingsParam]("soniox"),
-		apijson.Discriminator[AssemblyAIVoiceSettingsParam]("assemblyai"),
 	)
 }
 
@@ -6537,7 +6524,6 @@ type CallActionStartConversationRelayParamsVoiceSettingsUnion struct {
 	OfInworld    *shared.InworldVoiceSettingsParam  `json:",omitzero,inline"`
 	OfXai        *shared.XaiVoiceSettingsParam      `json:",omitzero,inline"`
 	OfSoniox     *SonioxVoiceSettingsParam          `json:",omitzero,inline"`
-	OfAssemblyai *AssemblyAIVoiceSettingsParam      `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -6550,8 +6536,7 @@ func (u CallActionStartConversationRelayParamsVoiceSettingsUnion) MarshalJSON() 
 		u.OfResemble,
 		u.OfInworld,
 		u.OfXai,
-		u.OfSoniox,
-		u.OfAssemblyai)
+		u.OfSoniox)
 }
 func (u *CallActionStartConversationRelayParamsVoiceSettingsUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -6576,8 +6561,6 @@ func (u *CallActionStartConversationRelayParamsVoiceSettingsUnion) asAny() any {
 		return u.OfXai
 	} else if !param.IsOmitted(u.OfSoniox) {
 		return u.OfSoniox
-	} else if !param.IsOmitted(u.OfAssemblyai) {
-		return u.OfAssemblyai
 	}
 	return nil
 }
@@ -6714,8 +6697,6 @@ func (u CallActionStartConversationRelayParamsVoiceSettingsUnion) GetType() *str
 		return (*string)(&vt.Type)
 	} else if vt := u.OfSoniox; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfAssemblyai; vt != nil {
-		return (*string)(&vt.Type)
 	}
 	return nil
 }
@@ -6752,7 +6733,6 @@ func init() {
 		apijson.Discriminator[shared.InworldVoiceSettingsParam]("inworld"),
 		apijson.Discriminator[shared.XaiVoiceSettingsParam]("xai"),
 		apijson.Discriminator[SonioxVoiceSettingsParam]("soniox"),
-		apijson.Discriminator[AssemblyAIVoiceSettingsParam]("assemblyai"),
 	)
 }
 
@@ -7022,9 +7002,18 @@ type CallActionStartRecordingParams struct {
 	//
 	// Any of "both", "inbound", "outbound".
 	RecordingTrack CallActionStartRecordingParamsRecordingTrack `json:"recording_track,omitzero"`
+	// Silences spoken details of the given kinds in the recording: `pci` (card number,
+	// expiry date, security code), `pii` (personal details such as names, phone
+	// numbers, addresses and other identifying numbers) and `phi` (health details such
+	// as medications, doses and conditions). Redaction works on English speech only.
+	// Redacted recordings are charged at the Deepgram speech-to-text rate.
+	//
+	// Any of "pci", "pii", "phi".
+	Redaction []string `json:"redaction,omitzero"`
 	// Engine to use for speech recognition. `A` - `Google`, `B` - `Telnyx`,
 	// `deepgram/nova-3` - `Deepgram Nova-3`. Note: `deepgram/nova-3` supports only
-	// `en` and `en-{Region}` languages.
+	// `en` and `en-{Region}` languages. When `redaction` is set, leave this out or set
+	// a Deepgram engine.
 	//
 	// Any of "A", "B", "deepgram/nova-3".
 	TranscriptionEngine CallActionStartRecordingParamsTranscriptionEngine `json:"transcription_engine,omitzero"`
@@ -7105,7 +7094,8 @@ const (
 
 // Engine to use for speech recognition. `A` - `Google`, `B` - `Telnyx`,
 // `deepgram/nova-3` - `Deepgram Nova-3`. Note: `deepgram/nova-3` supports only
-// `en` and `en-{Region}` languages.
+// `en` and `en-{Region}` languages. When `redaction` is set, leave this out or set
+// a Deepgram engine.
 type CallActionStartRecordingParamsTranscriptionEngine string
 
 const (
@@ -7911,6 +7901,15 @@ type CallActionTransferParams struct {
 	//
 	// Any of "wav", "mp3".
 	RecordFormat CallActionTransferParamsRecordFormat `json:"record_format,omitzero"`
+	// Applies to the recording started with `record`. Silences spoken details of the
+	// given kinds in the recording: `pci` (card number, expiry date, security code),
+	// `pii` (personal details such as names, phone numbers, addresses and other
+	// identifying numbers) and `phi` (health details such as medications, doses and
+	// conditions). Redaction works on English speech only. Redacted recordings are
+	// charged at the Deepgram speech-to-text rate.
+	//
+	// Any of "pci", "pii", "phi".
+	RecordRedaction []string `json:"record_redaction,omitzero"`
 	// The audio track to be recorded. Can be either `both`, `inbound` or `outbound`.
 	// If only single track is specified (`inbound`, `outbound`), `channels`
 	// configuration is ignored and it will be recorded as mono (single channel).

@@ -149,8 +149,12 @@ func TestTexmlApplicationListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.TexmlApplications.List(context.TODO(), telnyx.TexmlApplicationListParams{
 		Filter: telnyx.TexmlApplicationListParamsFilter{
-			FriendlyName:           telnyx.String("friendly_name"),
-			OutboundVoiceProfileID: telnyx.String("1293384261075731499"),
+			FriendlyName: telnyx.TexmlApplicationListParamsFilterFriendlyNameUnion{
+				OfString: telnyx.String("string"),
+			},
+			OutboundVoiceProfileID: telnyx.TexmlApplicationListParamsFilterOutboundVoiceProfileIDUnion{
+				OfString: telnyx.String("1293384261075731499"),
+			},
 		},
 		PageNumber: telnyx.Int(0),
 		PageSize:   telnyx.Int(0),

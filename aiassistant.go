@@ -5708,10 +5708,8 @@ type InferenceEmbeddingVoiceSettings struct {
 	// nuance. Only supported for Telnyx Ultra voices.
 	ExpressiveMode bool `json:"expressive_mode"`
 	// Two-letter ISO 639-1 code of the language the voice speaks, for example `es`.
-	// Only applicable to Soniox and AssemblyAI voices, which speak every language of
-	// their model. AssemblyAI accepts `en`, `es`, `de`, `fr`, `it`, and `pt`, as a
-	// literal code: a dynamic variable is rejected. When unset, the voice speaks
-	// English.
+	// Only applicable to Soniox voices, which speak every language of their model.
+	// When unset, the voice speaks English.
 	Language string `json:"language" api:"nullable"`
 	// Enhances recognition for specific languages and dialects during MiniMax TTS
 	// synthesis. Default is null (no boost). Set to 'auto' for automatic language
@@ -6064,10 +6062,8 @@ type InferenceEmbeddingVoiceSettingsParam struct {
 	// select the voice dynamically per call.
 	Voice string `json:"voice" api:"required"`
 	// Two-letter ISO 639-1 code of the language the voice speaks, for example `es`.
-	// Only applicable to Soniox and AssemblyAI voices, which speak every language of
-	// their model. AssemblyAI accepts `en`, `es`, `de`, `fr`, `it`, and `pt`, as a
-	// literal code: a dynamic variable is rejected. When unset, the voice speaks
-	// English.
+	// Only applicable to Soniox voices, which speak every language of their model.
+	// When unset, the voice speaks English.
 	Language param.Opt[string] `json:"language,omitzero"`
 	// The `identifier` for an integration secret
 	// [/v2/integration_secrets](https://developers.telnyx.com/api-reference/integration-secrets/create-a-secret)
@@ -8594,18 +8590,20 @@ type TranscriptionChallenger struct {
 	// `transcription.model`: both streaming (`deepgram/flux`, `deepgram/nova-3`,
 	// `deepgram/nova-2`, `assemblyai/universal-3-6-pro` or its legacy aliases
 	// `assemblyai/universal-3-5-pro` and `assemblyai/universal-streaming`,
-	// `xai/grok-stt`, `soniox/stt-rt-v4`, `soniox/stt-rt-v5`, `humain/realtime`,
-	// `reson8/turns`) or both non-streaming (`azure/fast`, `nvidia/parakeet-v3`,
-	// `omi-health/omi-med-stt-v1`, `cohere/ar-stt`, `distil-whisper/distil-large-v2`,
-	// `openai/whisper-large-v3-turbo`, `telnyx/basira`). It can be the same model as
-	// `transcription.model` on a different `language`.
+	// `xai/grok-stt`, `soniox/stt-rt-v4`, `soniox/stt-rt-v5`, `soniox/stt-rt-v6`,
+	// `humain/realtime`, `reson8/turns`) or both non-streaming (`azure/fast`,
+	// `nvidia/parakeet-v3`, `omi-health/omi-med-stt-v1`, `cohere/ar-stt`,
+	// `distil-whisper/distil-large-v2`, `openai/whisper-large-v3-turbo`,
+	// `telnyx/basira`). It can be the same model as `transcription.model` on a
+	// different `language`.
 	//
 	// Any of "deepgram/flux", "deepgram/nova-3", "deepgram/nova-2", "azure/fast",
 	// "assemblyai/universal-3-6-pro", "assemblyai/universal-3-5-pro",
 	// "assemblyai/universal-streaming", "xai/grok-stt", "soniox/stt-rt-v4",
-	// "soniox/stt-rt-v5", "nvidia/parakeet-v3", "omi-health/omi-med-stt-v1",
-	// "humain/realtime", "reson8/turns", "cohere/ar-stt", "telnyx/basira",
-	// "distil-whisper/distil-large-v2", "openai/whisper-large-v3-turbo".
+	// "soniox/stt-rt-v5", "soniox/stt-rt-v6", "nvidia/parakeet-v3",
+	// "omi-health/omi-med-stt-v1", "humain/realtime", "reson8/turns", "cohere/ar-stt",
+	// "telnyx/basira", "distil-whisper/distil-large-v2",
+	// "openai/whisper-large-v3-turbo".
 	Model TranscriptionChallengerModel `json:"model" api:"required"`
 	// The language this model transcribes. Omit it or set it to `null` to use the
 	// language of `transcription.model`. The request is rejected when this model
@@ -8669,11 +8667,12 @@ func (r TranscriptionChallenger) ToParam() TranscriptionChallengerParam {
 // `transcription.model`: both streaming (`deepgram/flux`, `deepgram/nova-3`,
 // `deepgram/nova-2`, `assemblyai/universal-3-6-pro` or its legacy aliases
 // `assemblyai/universal-3-5-pro` and `assemblyai/universal-streaming`,
-// `xai/grok-stt`, `soniox/stt-rt-v4`, `soniox/stt-rt-v5`, `humain/realtime`,
-// `reson8/turns`) or both non-streaming (`azure/fast`, `nvidia/parakeet-v3`,
-// `omi-health/omi-med-stt-v1`, `cohere/ar-stt`, `distil-whisper/distil-large-v2`,
-// `openai/whisper-large-v3-turbo`, `telnyx/basira`). It can be the same model as
-// `transcription.model` on a different `language`.
+// `xai/grok-stt`, `soniox/stt-rt-v4`, `soniox/stt-rt-v5`, `soniox/stt-rt-v6`,
+// `humain/realtime`, `reson8/turns`) or both non-streaming (`azure/fast`,
+// `nvidia/parakeet-v3`, `omi-health/omi-med-stt-v1`, `cohere/ar-stt`,
+// `distil-whisper/distil-large-v2`, `openai/whisper-large-v3-turbo`,
+// `telnyx/basira`). It can be the same model as `transcription.model` on a
+// different `language`.
 type TranscriptionChallengerModel string
 
 const (
@@ -8687,6 +8686,7 @@ const (
 	TranscriptionChallengerModelXaiGrokStt                   TranscriptionChallengerModel = "xai/grok-stt"
 	TranscriptionChallengerModelSonioxSttRtV4                TranscriptionChallengerModel = "soniox/stt-rt-v4"
 	TranscriptionChallengerModelSonioxSttRtV5                TranscriptionChallengerModel = "soniox/stt-rt-v5"
+	TranscriptionChallengerModelSonioxSttRtV6                TranscriptionChallengerModel = "soniox/stt-rt-v6"
 	TranscriptionChallengerModelNvidiaParakeetV3             TranscriptionChallengerModel = "nvidia/parakeet-v3"
 	TranscriptionChallengerModelOmiHealthOmiMedSttV1         TranscriptionChallengerModel = "omi-health/omi-med-stt-v1"
 	TranscriptionChallengerModelHumainRealtime               TranscriptionChallengerModel = "humain/realtime"
@@ -8732,18 +8732,20 @@ type TranscriptionChallengerParam struct {
 	// `transcription.model`: both streaming (`deepgram/flux`, `deepgram/nova-3`,
 	// `deepgram/nova-2`, `assemblyai/universal-3-6-pro` or its legacy aliases
 	// `assemblyai/universal-3-5-pro` and `assemblyai/universal-streaming`,
-	// `xai/grok-stt`, `soniox/stt-rt-v4`, `soniox/stt-rt-v5`, `humain/realtime`,
-	// `reson8/turns`) or both non-streaming (`azure/fast`, `nvidia/parakeet-v3`,
-	// `omi-health/omi-med-stt-v1`, `cohere/ar-stt`, `distil-whisper/distil-large-v2`,
-	// `openai/whisper-large-v3-turbo`, `telnyx/basira`). It can be the same model as
-	// `transcription.model` on a different `language`.
+	// `xai/grok-stt`, `soniox/stt-rt-v4`, `soniox/stt-rt-v5`, `soniox/stt-rt-v6`,
+	// `humain/realtime`, `reson8/turns`) or both non-streaming (`azure/fast`,
+	// `nvidia/parakeet-v3`, `omi-health/omi-med-stt-v1`, `cohere/ar-stt`,
+	// `distil-whisper/distil-large-v2`, `openai/whisper-large-v3-turbo`,
+	// `telnyx/basira`). It can be the same model as `transcription.model` on a
+	// different `language`.
 	//
 	// Any of "deepgram/flux", "deepgram/nova-3", "deepgram/nova-2", "azure/fast",
 	// "assemblyai/universal-3-6-pro", "assemblyai/universal-3-5-pro",
 	// "assemblyai/universal-streaming", "xai/grok-stt", "soniox/stt-rt-v4",
-	// "soniox/stt-rt-v5", "nvidia/parakeet-v3", "omi-health/omi-med-stt-v1",
-	// "humain/realtime", "reson8/turns", "cohere/ar-stt", "telnyx/basira",
-	// "distil-whisper/distil-large-v2", "openai/whisper-large-v3-turbo".
+	// "soniox/stt-rt-v5", "soniox/stt-rt-v6", "nvidia/parakeet-v3",
+	// "omi-health/omi-med-stt-v1", "humain/realtime", "reson8/turns", "cohere/ar-stt",
+	// "telnyx/basira", "distil-whisper/distil-large-v2",
+	// "openai/whisper-large-v3-turbo".
 	Model TranscriptionChallengerModel `json:"model,omitzero" api:"required"`
 	// The language this model transcribes. Omit it or set it to `null` to use the
 	// language of `transcription.model`. The request is rejected when this model
@@ -8863,12 +8865,12 @@ type TranscriptionFallbackModel struct {
 	// `deepgram/nova-3`, `deepgram/nova-2`, `assemblyai/universal-3-6-pro` (or its
 	// legacy aliases `assemblyai/universal-3-5-pro` and
 	// `assemblyai/universal-streaming`), `xai/grok-stt`, `soniox/stt-rt-v4`,
-	// `soniox/stt-rt-v5`, `humain/realtime`, or `reson8/turns`.
+	// `soniox/stt-rt-v5`, `soniox/stt-rt-v6`, `humain/realtime`, or `reson8/turns`.
 	//
 	// Any of "deepgram/flux", "deepgram/nova-3", "deepgram/nova-2",
 	// "assemblyai/universal-3-6-pro", "assemblyai/universal-3-5-pro",
 	// "assemblyai/universal-streaming", "xai/grok-stt", "soniox/stt-rt-v4",
-	// "soniox/stt-rt-v5", "humain/realtime", "reson8/turns".
+	// "soniox/stt-rt-v5", "soniox/stt-rt-v6", "humain/realtime", "reson8/turns".
 	Model TranscriptionFallbackModelModel `json:"model" api:"required"`
 	// The language the fallback transcribes. Omit it or set it to `null` to use the
 	// language of `transcription.model`. The request is rejected when the fallback
@@ -8911,7 +8913,7 @@ func (r TranscriptionFallbackModel) ToParam() TranscriptionFallbackModelParam {
 // `deepgram/nova-3`, `deepgram/nova-2`, `assemblyai/universal-3-6-pro` (or its
 // legacy aliases `assemblyai/universal-3-5-pro` and
 // `assemblyai/universal-streaming`), `xai/grok-stt`, `soniox/stt-rt-v4`,
-// `soniox/stt-rt-v5`, `humain/realtime`, or `reson8/turns`.
+// `soniox/stt-rt-v5`, `soniox/stt-rt-v6`, `humain/realtime`, or `reson8/turns`.
 type TranscriptionFallbackModelModel string
 
 const (
@@ -8924,6 +8926,7 @@ const (
 	TranscriptionFallbackModelModelXaiGrokStt                   TranscriptionFallbackModelModel = "xai/grok-stt"
 	TranscriptionFallbackModelModelSonioxSttRtV4                TranscriptionFallbackModelModel = "soniox/stt-rt-v4"
 	TranscriptionFallbackModelModelSonioxSttRtV5                TranscriptionFallbackModelModel = "soniox/stt-rt-v5"
+	TranscriptionFallbackModelModelSonioxSttRtV6                TranscriptionFallbackModelModel = "soniox/stt-rt-v6"
 	TranscriptionFallbackModelModelHumainRealtime               TranscriptionFallbackModelModel = "humain/realtime"
 	TranscriptionFallbackModelModelReson8Turns                  TranscriptionFallbackModelModel = "reson8/turns"
 )
@@ -8938,12 +8941,12 @@ type TranscriptionFallbackModelParam struct {
 	// `deepgram/nova-3`, `deepgram/nova-2`, `assemblyai/universal-3-6-pro` (or its
 	// legacy aliases `assemblyai/universal-3-5-pro` and
 	// `assemblyai/universal-streaming`), `xai/grok-stt`, `soniox/stt-rt-v4`,
-	// `soniox/stt-rt-v5`, `humain/realtime`, or `reson8/turns`.
+	// `soniox/stt-rt-v5`, `soniox/stt-rt-v6`, `humain/realtime`, or `reson8/turns`.
 	//
 	// Any of "deepgram/flux", "deepgram/nova-3", "deepgram/nova-2",
 	// "assemblyai/universal-3-6-pro", "assemblyai/universal-3-5-pro",
 	// "assemblyai/universal-streaming", "xai/grok-stt", "soniox/stt-rt-v4",
-	// "soniox/stt-rt-v5", "humain/realtime", "reson8/turns".
+	// "soniox/stt-rt-v5", "soniox/stt-rt-v6", "humain/realtime", "reson8/turns".
 	Model TranscriptionFallbackModelModel `json:"model,omitzero" api:"required"`
 	// The language the fallback transcribes. Omit it or set it to `null` to use the
 	// language of `transcription.model`. The request is rejected when the fallback
@@ -8986,24 +8989,25 @@ type TranscriptionSettings struct {
 	// supported models will automatically detect the language. For `deepgram/flux`,
 	// supported values are: `auto` (Telnyx language detection controls the language
 	// hint), `multi` (no language hint), and language-specific hints `en`, `es`, `fr`,
-	// `de`, `hi`, `ru`, `pt`, `ja`, `it`, and `nl`. For `soniox/stt-rt-v4` and
-	// `soniox/stt-rt-v5`, `auto` omits the language hint and lets Soniox auto-detect;
-	// ISO 639-1 codes (e.g. `en`, `es`) bias detection toward that language;
-	// `settings.language_hints` can pin multiple languages at once instead. For
-	// `humain/realtime`, supported values are `ar`, `en`, `codeswitch` (Arabic/English
-	// code-switching), and `auto` (resolves server-side to code-switching). Unlike
-	// other models, `humain/realtime` does not fall back to `auto` when `language` is
-	// omitted — omitting it applies `en` instead. For `reson8/turns`, supported values
-	// are `auto` (or unset) for automatic language detection, and the language codes
-	// `nl`, `en`, `fr`, `fy`, `de`, `it`, `pl`, `pt`, `es`, and `sv` to fix the
-	// transcription language. For `cohere/ar-stt`, supported values are `ar` and `en`;
-	// unlike other models, this model does not auto-detect and defaults to `ar` when
-	// `language` is omitted. For `speechmatics/linden-1`, there is no auto-detect; set
-	// a code from Speechmatics' Realtime language list (67 language codes, including
-	// `es-bilingual-en` for Spanish and English bilingual, and the spelling and script
-	// variants `en-US`, `en-GB`, `en-AU`, `cmn-Hans`, and `cmn-Hant`; `en` alone uses
-	// the default spelling); unset defaults to `en`, while an explicit `auto`,
-	// `auto_beta`, or `multi` is rejected with a 400.
+	// `de`, `hi`, `ru`, `pt`, `ja`, `it`, and `nl`. For `soniox/stt-rt-v4`,
+	// `soniox/stt-rt-v5`, and `soniox/stt-rt-v6`, `auto` omits the language hint and
+	// lets Soniox auto-detect; ISO 639-1 codes (e.g. `en`, `es`) bias detection toward
+	// that language; `settings.language_hints` can pin multiple languages at once
+	// instead. For `humain/realtime`, supported values are `ar`, `en`, `codeswitch`
+	// (Arabic/English code-switching), and `auto` (resolves server-side to
+	// code-switching). Unlike other models, `humain/realtime` does not fall back to
+	// `auto` when `language` is omitted — omitting it applies `en` instead. For
+	// `reson8/turns`, supported values are `auto` (or unset) for automatic language
+	// detection, and the language codes `nl`, `en`, `fr`, `fy`, `de`, `it`, `pl`,
+	// `pt`, `es`, and `sv` to fix the transcription language. For `cohere/ar-stt`,
+	// supported values are `ar` and `en`; unlike other models, this model does not
+	// auto-detect and defaults to `ar` when `language` is omitted. For
+	// `speechmatics/linden-1`, there is no auto-detect; set a code from Speechmatics'
+	// Realtime language list (67 language codes, including `es-bilingual-en` for
+	// Spanish and English bilingual, and the spelling and script variants `en-US`,
+	// `en-GB`, `en-AU`, `cmn-Hans`, and `cmn-Hant`; `en` alone uses the default
+	// spelling); unset defaults to `en`, while an explicit `auto`, `auto_beta`, or
+	// `multi` is rejected with a 400.
 	Language string `json:"language"`
 	// The speech to text model to be used by the voice assistant. All Deepgram models
 	// are run on-premise.
@@ -9023,9 +9027,9 @@ type TranscriptionSettings struct {
 	//     aliases `assemblyai/universal-3-5-pro` and `assemblyai/universal-streaming`
 	//     are still accepted and run the same model.
 	//   - `xai/grok-stt` is a multilingual Grok STT model.
-	//   - `soniox/stt-rt-v4` and `soniox/stt-rt-v5` are multilingual streaming models
-	//     with automatic language detection, configurable endpointing, term biasing
-	//     (`context`), and `language_hints`.
+	//   - `soniox/stt-rt-v4`, `soniox/stt-rt-v5`, and `soniox/stt-rt-v6` are
+	//     multilingual streaming models with automatic language detection, configurable
+	//     endpointing, term biasing (`context`), and `language_hints`.
 	//   - `nvidia/parakeet-v3` is a multilingual transcription model with automatic
 	//     language detection.
 	//   - `omi-health/omi-med-stt-v1` is an English-only medical transcription model
@@ -9041,9 +9045,10 @@ type TranscriptionSettings struct {
 	// "speechmatics/standard", "speechmatics/linden-1", "azure/fast",
 	// "assemblyai/universal-3-6-pro", "assemblyai/universal-3-5-pro",
 	// "assemblyai/universal-streaming", "xai/grok-stt", "soniox/stt-rt-v4",
-	// "soniox/stt-rt-v5", "nvidia/parakeet-v3", "omi-health/omi-med-stt-v1",
-	// "humain/realtime", "reson8/turns", "cohere/ar-stt", "telnyx/basira",
-	// "distil-whisper/distil-large-v2", "openai/whisper-large-v3-turbo".
+	// "soniox/stt-rt-v5", "soniox/stt-rt-v6", "nvidia/parakeet-v3",
+	// "omi-health/omi-med-stt-v1", "humain/realtime", "reson8/turns", "cohere/ar-stt",
+	// "telnyx/basira", "distil-whisper/distil-large-v2",
+	// "openai/whisper-large-v3-turbo".
 	Model TranscriptionSettingsModel `json:"model"`
 	// Region on third party cloud providers (currently Azure) if using one of their
 	// models. Some regions require `api_key_ref`.
@@ -9096,9 +9101,9 @@ func (r TranscriptionSettings) ToParam() TranscriptionSettingsParam {
 //     aliases `assemblyai/universal-3-5-pro` and `assemblyai/universal-streaming`
 //     are still accepted and run the same model.
 //   - `xai/grok-stt` is a multilingual Grok STT model.
-//   - `soniox/stt-rt-v4` and `soniox/stt-rt-v5` are multilingual streaming models
-//     with automatic language detection, configurable endpointing, term biasing
-//     (`context`), and `language_hints`.
+//   - `soniox/stt-rt-v4`, `soniox/stt-rt-v5`, and `soniox/stt-rt-v6` are
+//     multilingual streaming models with automatic language detection, configurable
+//     endpointing, term biasing (`context`), and `language_hints`.
 //   - `nvidia/parakeet-v3` is a multilingual transcription model with automatic
 //     language detection.
 //   - `omi-health/omi-med-stt-v1` is an English-only medical transcription model
@@ -9124,6 +9129,7 @@ const (
 	TranscriptionSettingsModelXaiGrokStt                   TranscriptionSettingsModel = "xai/grok-stt"
 	TranscriptionSettingsModelSonioxSttRtV4                TranscriptionSettingsModel = "soniox/stt-rt-v4"
 	TranscriptionSettingsModelSonioxSttRtV5                TranscriptionSettingsModel = "soniox/stt-rt-v5"
+	TranscriptionSettingsModelSonioxSttRtV6                TranscriptionSettingsModel = "soniox/stt-rt-v6"
 	TranscriptionSettingsModelNvidiaParakeetV3             TranscriptionSettingsModel = "nvidia/parakeet-v3"
 	TranscriptionSettingsModelOmiHealthOmiMedSttV1         TranscriptionSettingsModel = "omi-health/omi-med-stt-v1"
 	TranscriptionSettingsModelHumainRealtime               TranscriptionSettingsModel = "humain/realtime"
@@ -9142,24 +9148,25 @@ type TranscriptionSettingsParam struct {
 	// supported models will automatically detect the language. For `deepgram/flux`,
 	// supported values are: `auto` (Telnyx language detection controls the language
 	// hint), `multi` (no language hint), and language-specific hints `en`, `es`, `fr`,
-	// `de`, `hi`, `ru`, `pt`, `ja`, `it`, and `nl`. For `soniox/stt-rt-v4` and
-	// `soniox/stt-rt-v5`, `auto` omits the language hint and lets Soniox auto-detect;
-	// ISO 639-1 codes (e.g. `en`, `es`) bias detection toward that language;
-	// `settings.language_hints` can pin multiple languages at once instead. For
-	// `humain/realtime`, supported values are `ar`, `en`, `codeswitch` (Arabic/English
-	// code-switching), and `auto` (resolves server-side to code-switching). Unlike
-	// other models, `humain/realtime` does not fall back to `auto` when `language` is
-	// omitted — omitting it applies `en` instead. For `reson8/turns`, supported values
-	// are `auto` (or unset) for automatic language detection, and the language codes
-	// `nl`, `en`, `fr`, `fy`, `de`, `it`, `pl`, `pt`, `es`, and `sv` to fix the
-	// transcription language. For `cohere/ar-stt`, supported values are `ar` and `en`;
-	// unlike other models, this model does not auto-detect and defaults to `ar` when
-	// `language` is omitted. For `speechmatics/linden-1`, there is no auto-detect; set
-	// a code from Speechmatics' Realtime language list (67 language codes, including
-	// `es-bilingual-en` for Spanish and English bilingual, and the spelling and script
-	// variants `en-US`, `en-GB`, `en-AU`, `cmn-Hans`, and `cmn-Hant`; `en` alone uses
-	// the default spelling); unset defaults to `en`, while an explicit `auto`,
-	// `auto_beta`, or `multi` is rejected with a 400.
+	// `de`, `hi`, `ru`, `pt`, `ja`, `it`, and `nl`. For `soniox/stt-rt-v4`,
+	// `soniox/stt-rt-v5`, and `soniox/stt-rt-v6`, `auto` omits the language hint and
+	// lets Soniox auto-detect; ISO 639-1 codes (e.g. `en`, `es`) bias detection toward
+	// that language; `settings.language_hints` can pin multiple languages at once
+	// instead. For `humain/realtime`, supported values are `ar`, `en`, `codeswitch`
+	// (Arabic/English code-switching), and `auto` (resolves server-side to
+	// code-switching). Unlike other models, `humain/realtime` does not fall back to
+	// `auto` when `language` is omitted — omitting it applies `en` instead. For
+	// `reson8/turns`, supported values are `auto` (or unset) for automatic language
+	// detection, and the language codes `nl`, `en`, `fr`, `fy`, `de`, `it`, `pl`,
+	// `pt`, `es`, and `sv` to fix the transcription language. For `cohere/ar-stt`,
+	// supported values are `ar` and `en`; unlike other models, this model does not
+	// auto-detect and defaults to `ar` when `language` is omitted. For
+	// `speechmatics/linden-1`, there is no auto-detect; set a code from Speechmatics'
+	// Realtime language list (67 language codes, including `es-bilingual-en` for
+	// Spanish and English bilingual, and the spelling and script variants `en-US`,
+	// `en-GB`, `en-AU`, `cmn-Hans`, and `cmn-Hant`; `en` alone uses the default
+	// spelling); unset defaults to `en`, while an explicit `auto`, `auto_beta`, or
+	// `multi` is rejected with a 400.
 	Language param.Opt[string] `json:"language,omitzero"`
 	// Region on third party cloud providers (currently Azure) if using one of their
 	// models. Some regions require `api_key_ref`.
@@ -9194,9 +9201,9 @@ type TranscriptionSettingsParam struct {
 	//     aliases `assemblyai/universal-3-5-pro` and `assemblyai/universal-streaming`
 	//     are still accepted and run the same model.
 	//   - `xai/grok-stt` is a multilingual Grok STT model.
-	//   - `soniox/stt-rt-v4` and `soniox/stt-rt-v5` are multilingual streaming models
-	//     with automatic language detection, configurable endpointing, term biasing
-	//     (`context`), and `language_hints`.
+	//   - `soniox/stt-rt-v4`, `soniox/stt-rt-v5`, and `soniox/stt-rt-v6` are
+	//     multilingual streaming models with automatic language detection, configurable
+	//     endpointing, term biasing (`context`), and `language_hints`.
 	//   - `nvidia/parakeet-v3` is a multilingual transcription model with automatic
 	//     language detection.
 	//   - `omi-health/omi-med-stt-v1` is an English-only medical transcription model
@@ -9212,9 +9219,10 @@ type TranscriptionSettingsParam struct {
 	// "speechmatics/standard", "speechmatics/linden-1", "azure/fast",
 	// "assemblyai/universal-3-6-pro", "assemblyai/universal-3-5-pro",
 	// "assemblyai/universal-streaming", "xai/grok-stt", "soniox/stt-rt-v4",
-	// "soniox/stt-rt-v5", "nvidia/parakeet-v3", "omi-health/omi-med-stt-v1",
-	// "humain/realtime", "reson8/turns", "cohere/ar-stt", "telnyx/basira",
-	// "distil-whisper/distil-large-v2", "openai/whisper-large-v3-turbo".
+	// "soniox/stt-rt-v5", "soniox/stt-rt-v6", "nvidia/parakeet-v3",
+	// "omi-health/omi-med-stt-v1", "humain/realtime", "reson8/turns", "cohere/ar-stt",
+	// "telnyx/basira", "distil-whisper/distil-large-v2",
+	// "openai/whisper-large-v3-turbo".
 	Model    TranscriptionSettingsModel       `json:"model,omitzero"`
 	Settings TranscriptionSettingsConfigParam `json:"settings,omitzero"`
 	paramObj
@@ -9229,10 +9237,10 @@ func (r *TranscriptionSettingsParam) UnmarshalJSON(data []byte) error {
 }
 
 type TranscriptionSettingsConfig struct {
-	// Available only for soniox/stt-rt-v4 and soniox/stt-rt-v5. A comma-separated list
-	// of terms to boost for recognition during transcription, for staff names,
-	// building names, or other domain-specific vocabulary. This field may be templated
-	// with
+	// Available only for soniox/stt-rt-v4, soniox/stt-rt-v5, and soniox/stt-rt-v6. A
+	// comma-separated list of terms to boost for recognition during transcription, for
+	// staff names, building names, or other domain-specific vocabulary. This field may
+	// be templated with
 	// [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables)
 	// using mustache syntax (e.g. `Telnyx,{{customer_name}},VoIP`). Variables are
 	// resolved at call time before the value is sent to Soniox.
@@ -9241,8 +9249,8 @@ type TranscriptionSettingsConfig struct {
 	// detection. Must be lower than or equal to eot_threshold. Setting this equal to
 	// eot_threshold effectively disables eager end of turn.
 	EagerEotThreshold float64 `json:"eager_eot_threshold"`
-	// Available only for soniox/stt-rt-v4 and soniox/stt-rt-v5. When true, Soniox
-	// emits end-of-utterance events at the cadence configured by
+	// Available only for soniox/stt-rt-v4, soniox/stt-rt-v5, and soniox/stt-rt-v6.
+	// When true, Soniox emits end-of-utterance events at the cadence configured by
 	// `max_endpoint_delay_ms`.
 	EnableEndpointDetection bool `json:"enable_endpoint_detection"`
 	// Deprecated and ignored. Accepted for backwards compatibility. AssemblyAI turn
@@ -9257,8 +9265,9 @@ type TranscriptionSettingsConfig struct {
 	// Available only for deepgram/flux. Maximum milliseconds of silence before forcing
 	// an end of turn, regardless of confidence.
 	EotTimeoutMs int64 `json:"eot_timeout_ms"`
-	// Available only for soniox/stt-rt-v4 and soniox/stt-rt-v5. When true, Soniox
-	// streams interim (non-final) results in addition to finalized transcripts.
+	// Available only for soniox/stt-rt-v4, soniox/stt-rt-v5, and soniox/stt-rt-v6.
+	// When true, Soniox streams interim (non-final) results in addition to finalized
+	// transcripts.
 	InterimResults bool `json:"interim_results"`
 	// A comma-separated list of key terms to boost for recognition during
 	// transcription, used by Deepgram, Reson8, Speechmatics Linden 1 and AssemblyAI
@@ -9271,13 +9280,13 @@ type TranscriptionSettingsConfig struct {
 	// using mustache syntax (e.g. `Telnyx,{{customer_name}},VoIP`). Variables are
 	// resolved at call time before the value is sent to the speech-to-text engine.
 	Keyterm string `json:"keyterm"`
-	// Available only for soniox/stt-rt-v4 and soniox/stt-rt-v5. A list of ISO 639-1
-	// language codes (e.g. `["nl", "fr"]`) to pin recognition to multiple languages at
-	// once, overriding the single hint derived from `language`.
+	// Available only for soniox/stt-rt-v4, soniox/stt-rt-v5, and soniox/stt-rt-v6. A
+	// list of ISO 639-1 language codes (e.g. `["nl", "fr"]`) to pin recognition to
+	// multiple languages at once, overriding the single hint derived from `language`.
 	LanguageHints []string `json:"language_hints"`
-	// Available only for soniox/stt-rt-v4 and soniox/stt-rt-v5. Maximum silence (in
-	// milliseconds) before Soniox emits an end-of-utterance event. Only honored when
-	// `enable_endpoint_detection` is true.
+	// Available only for soniox/stt-rt-v4, soniox/stt-rt-v5, and soniox/stt-rt-v6.
+	// Maximum silence (in milliseconds) before Soniox emits an end-of-utterance event.
+	// Only honored when `enable_endpoint_detection` is true.
 	MaxEndpointDelayMs int64 `json:"max_endpoint_delay_ms"`
 	// Available only for assemblyai/universal-3-6-pro (and its legacy aliases
 	// assemblyai/universal-3-5-pro and assemblyai/universal-streaming). Maximum
@@ -9343,10 +9352,10 @@ func (r TranscriptionSettingsConfig) ToParam() TranscriptionSettingsConfigParam 
 }
 
 type TranscriptionSettingsConfigParam struct {
-	// Available only for soniox/stt-rt-v4 and soniox/stt-rt-v5. A comma-separated list
-	// of terms to boost for recognition during transcription, for staff names,
-	// building names, or other domain-specific vocabulary. This field may be templated
-	// with
+	// Available only for soniox/stt-rt-v4, soniox/stt-rt-v5, and soniox/stt-rt-v6. A
+	// comma-separated list of terms to boost for recognition during transcription, for
+	// staff names, building names, or other domain-specific vocabulary. This field may
+	// be templated with
 	// [dynamic variables](https://developers.telnyx.com/docs/inference/ai-assistants/dynamic-variables)
 	// using mustache syntax (e.g. `Telnyx,{{customer_name}},VoIP`). Variables are
 	// resolved at call time before the value is sent to Soniox.
@@ -9355,8 +9364,8 @@ type TranscriptionSettingsConfigParam struct {
 	// detection. Must be lower than or equal to eot_threshold. Setting this equal to
 	// eot_threshold effectively disables eager end of turn.
 	EagerEotThreshold param.Opt[float64] `json:"eager_eot_threshold,omitzero"`
-	// Available only for soniox/stt-rt-v4 and soniox/stt-rt-v5. When true, Soniox
-	// emits end-of-utterance events at the cadence configured by
+	// Available only for soniox/stt-rt-v4, soniox/stt-rt-v5, and soniox/stt-rt-v6.
+	// When true, Soniox emits end-of-utterance events at the cadence configured by
 	// `max_endpoint_delay_ms`.
 	EnableEndpointDetection param.Opt[bool] `json:"enable_endpoint_detection,omitzero"`
 	// Deprecated and ignored. Accepted for backwards compatibility. AssemblyAI turn
@@ -9371,8 +9380,9 @@ type TranscriptionSettingsConfigParam struct {
 	// Available only for deepgram/flux. Maximum milliseconds of silence before forcing
 	// an end of turn, regardless of confidence.
 	EotTimeoutMs param.Opt[int64] `json:"eot_timeout_ms,omitzero"`
-	// Available only for soniox/stt-rt-v4 and soniox/stt-rt-v5. When true, Soniox
-	// streams interim (non-final) results in addition to finalized transcripts.
+	// Available only for soniox/stt-rt-v4, soniox/stt-rt-v5, and soniox/stt-rt-v6.
+	// When true, Soniox streams interim (non-final) results in addition to finalized
+	// transcripts.
 	InterimResults param.Opt[bool] `json:"interim_results,omitzero"`
 	// A comma-separated list of key terms to boost for recognition during
 	// transcription, used by Deepgram, Reson8, Speechmatics Linden 1 and AssemblyAI
@@ -9385,9 +9395,9 @@ type TranscriptionSettingsConfigParam struct {
 	// using mustache syntax (e.g. `Telnyx,{{customer_name}},VoIP`). Variables are
 	// resolved at call time before the value is sent to the speech-to-text engine.
 	Keyterm param.Opt[string] `json:"keyterm,omitzero"`
-	// Available only for soniox/stt-rt-v4 and soniox/stt-rt-v5. Maximum silence (in
-	// milliseconds) before Soniox emits an end-of-utterance event. Only honored when
-	// `enable_endpoint_detection` is true.
+	// Available only for soniox/stt-rt-v4, soniox/stt-rt-v5, and soniox/stt-rt-v6.
+	// Maximum silence (in milliseconds) before Soniox emits an end-of-utterance event.
+	// Only honored when `enable_endpoint_detection` is true.
 	MaxEndpointDelayMs param.Opt[int64] `json:"max_endpoint_delay_ms,omitzero"`
 	// Available only for assemblyai/universal-3-6-pro (and its legacy aliases
 	// assemblyai/universal-3-5-pro and assemblyai/universal-streaming). Maximum
@@ -9413,9 +9423,9 @@ type TranscriptionSettingsConfigParam struct {
 	// languages, filler words remain in the transcript.
 	RemoveDisfluencies param.Opt[bool] `json:"remove_disfluencies,omitzero"`
 	SmartFormat        param.Opt[bool] `json:"smart_format,omitzero"`
-	// Available only for soniox/stt-rt-v4 and soniox/stt-rt-v5. A list of ISO 639-1
-	// language codes (e.g. `["nl", "fr"]`) to pin recognition to multiple languages at
-	// once, overriding the single hint derived from `language`.
+	// Available only for soniox/stt-rt-v4, soniox/stt-rt-v5, and soniox/stt-rt-v6. A
+	// list of ISO 639-1 language codes (e.g. `["nl", "fr"]`) to pin recognition to
+	// multiple languages at once, overriding the single hint derived from `language`.
 	LanguageHints []string `json:"language_hints,omitzero"`
 	paramObj
 }
