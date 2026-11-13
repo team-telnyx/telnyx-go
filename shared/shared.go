@@ -1058,7 +1058,7 @@ func (r *PhoneNumbersJobPhoneNumber) UnmarshalJSON(data []byte) error {
 // Porting order status
 type PortingOrderStatus struct {
 	// A list of 0 or more details about this porting order's status
-	Details []PortingOrdersExceptionType `json:"details"`
+	Details []PortingOrderStatusDetail `json:"details"`
 	// The current status of the porting order
 	//
 	// Any of "draft", "in-process", "submitted", "exception", "foc-date-confirmed",
@@ -1079,6 +1079,81 @@ func (r *PortingOrderStatus) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type PortingOrderStatusDetail struct {
+	// Identifier of the exception. Includes legacy codes persisted on older orders
+	//
+	// Any of "ACCOUNT_NUMBER_MISMATCH", "ACCOUNT_NUMBER_MISMATCH_OR_MISSING",
+	// "ACCOUNT_NUMBER_REQUIRED", "ALL_DATA_MISMATCH", "AUTH_PERSON_MISMATCH",
+	// "BTN_ATN_MISMATCH", "DOCUMENT_BLOCKED", "ENTITY_NAME_MISMATCH", "FOC_EXPIRED",
+	// "FOC_REJECTED", "INCORRECT_LOA_TEMPLATE",
+	// "INCORRECT_LOSING_COMMUNICATION_PROVIDER", "INCORRECT_PORT_TYPE",
+	// "INVALID_OR_MISSING_INVOICE", "INVALID_OR_MISSING_LOA",
+	// "INVALID_SIGNATURE_ON_THE_LOA", "J2_PASSCODE_PIN_INVALID", "LOA_ILLEGIBLE",
+	// "LOCATION_MISMATCH", "LOSING_CARRIER_OUTAGE", "LSR_PENDING", "MAIN_BTN_PORTING",
+	// "MISSING_MANDATORY_REQUIREMENT", "MISSING_NUMBER_DETAILS",
+	// "NUMBER_HAS_ASSOCIATED_SERVICES", "ORDER_REFLOW", "OSP_IRRESPONSIVE", "OTHER",
+	// "PASSCODE_PIN_INVALID", "PHONE_NUMBER_HAS_SPECIAL_FEATURE",
+	// "PHONE_NUMBER_MISMATCH", "PHONE_NUMBER_NOT_PORTABLE",
+	// "PORTING_ORDER_SPLIT_REQUIRED", "PORT_TYPE_INCORRECT", "POSTAL_CODE_MISMATCH",
+	// "RATE_CENTER_NOT_PORTABLE", "RESELLER_INVALID",
+	// "STRANDED_SERVICES_NEED_NEW_BTN", "SV_CONFLICT", "SV_UNKNOWN_FAILURE",
+	// "TNS_ON_MULTIPLE_ACCOUNTS", "TN_BUILD_CONFLICT", "TN_DISCONNECTED",
+	// "UNAUTHORIZED_PERSON_SIGNATURE".
+	Code string `json:"code" api:"required"`
+	// Description of the exception
+	Description string `json:"description" api:"required"`
+	// Structured remediation steps so an agent can map the exception to a fix via the
+	// API alone
+	Remediation PortingOrderStatusDetailsRemediation `json:"remediation" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Code        respjson.Field
+		Description respjson.Field
+		Remediation respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PortingOrderStatusDetail) RawJSON() string { return r.JSON.raw }
+func (r *PortingOrderStatusDetail) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Structured remediation steps so an agent can map the exception to a fix via the
+// API alone
+type PortingOrderStatusDetailsRemediation struct {
+	// The type of remediation action to take
+	//
+	// Any of "update_order_fields", "upload_document", "create_orders",
+	// "assign_foc_datetime", "wait", "external_action", "contact_support".
+	Action string `json:"action" api:"required"`
+	// Patchable field paths to correct, empty when no field update applies
+	Fields []string `json:"fields" api:"required"`
+	// The document to (re)upload, when applicable
+	//
+	// Any of "loa", "invoice", "null".
+	RequiredDocument string `json:"required_document" api:"required"`
+	// Whether resubmission or polling alone can unblock the order
+	Retryable bool `json:"retryable" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Action           respjson.Field
+		Fields           respjson.Field
+		RequiredDocument respjson.Field
+		Retryable        respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PortingOrderStatusDetailsRemediation) RawJSON() string { return r.JSON.raw }
+func (r *PortingOrderStatusDetailsRemediation) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // The current status of the porting order
 type PortingOrderStatusValue string
 
@@ -1096,20 +1171,31 @@ const (
 type PortingOrdersExceptionType struct {
 	// Identifier of an exception type
 	//
-	// Any of "ACCOUNT_NUMBER_MISMATCH", "AUTH_PERSON_MISMATCH", "BTN_ATN_MISMATCH",
-	// "ENTITY_NAME_MISMATCH", "FOC_EXPIRED", "FOC_REJECTED", "LOCATION_MISMATCH",
-	// "LSR_PENDING", "MAIN_BTN_PORTING", "OSP_IRRESPONSIVE", "OTHER",
-	// "PASSCODE_PIN_INVALID", "PHONE_NUMBER_HAS_SPECIAL_FEATURE",
-	// "PHONE_NUMBER_MISMATCH", "PHONE_NUMBER_NOT_PORTABLE", "PORT_TYPE_INCORRECT",
-	// "PORTING_ORDER_SPLIT_REQUIRED", "POSTAL_CODE_MISMATCH",
-	// "RATE_CENTER_NOT_PORTABLE", "SV_CONFLICT", "SV_UNKNOWN_FAILURE".
-	Code PortingOrdersExceptionTypeCode `json:"code"`
+	// Any of "ACCOUNT_NUMBER_MISMATCH", "ACCOUNT_NUMBER_MISMATCH_OR_MISSING",
+	// "ACCOUNT_NUMBER_REQUIRED", "ALL_DATA_MISMATCH", "AUTH_PERSON_MISMATCH",
+	// "BTN_ATN_MISMATCH", "DOCUMENT_BLOCKED", "ENTITY_NAME_MISMATCH", "FOC_EXPIRED",
+	// "FOC_REJECTED", "INCORRECT_LOA_TEMPLATE",
+	// "INCORRECT_LOSING_COMMUNICATION_PROVIDER", "INCORRECT_PORT_TYPE",
+	// "INVALID_OR_MISSING_INVOICE", "INVALID_OR_MISSING_LOA",
+	// "INVALID_SIGNATURE_ON_THE_LOA", "J2_PASSCODE_PIN_INVALID", "LOCATION_MISMATCH",
+	// "LSR_PENDING", "MAIN_BTN_PORTING", "MISSING_MANDATORY_REQUIREMENT",
+	// "MISSING_NUMBER_DETAILS", "NUMBER_HAS_ASSOCIATED_SERVICES", "ORDER_REFLOW",
+	// "OSP_IRRESPONSIVE", "OTHER", "PASSCODE_PIN_INVALID", "PHONE_NUMBER_MISMATCH",
+	// "PHONE_NUMBER_NOT_PORTABLE", "POSTAL_CODE_MISMATCH", "RATE_CENTER_NOT_PORTABLE",
+	// "RESELLER_INVALID", "STRANDED_SERVICES_NEED_NEW_BTN", "SV_CONFLICT",
+	// "SV_UNKNOWN_FAILURE", "TNS_ON_MULTIPLE_ACCOUNTS", "TN_BUILD_CONFLICT",
+	// "TN_DISCONNECTED", "UNAUTHORIZED_PERSON_SIGNATURE".
+	Code PortingOrdersExceptionTypeCode `json:"code" api:"required"`
 	// Description of an exception type
-	Description string `json:"description"`
+	Description string `json:"description" api:"required"`
+	// Structured remediation steps so an agent can map the exception to a fix via the
+	// API alone
+	Remediation PortingOrdersExceptionTypeRemediation `json:"remediation" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Code        respjson.Field
 		Description respjson.Field
+		Remediation respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -1125,28 +1211,79 @@ func (r *PortingOrdersExceptionType) UnmarshalJSON(data []byte) error {
 type PortingOrdersExceptionTypeCode string
 
 const (
-	PortingOrdersExceptionTypeCodeAccountNumberMismatch        PortingOrdersExceptionTypeCode = "ACCOUNT_NUMBER_MISMATCH"
-	PortingOrdersExceptionTypeCodeAuthPersonMismatch           PortingOrdersExceptionTypeCode = "AUTH_PERSON_MISMATCH"
-	PortingOrdersExceptionTypeCodeBtnAtnMismatch               PortingOrdersExceptionTypeCode = "BTN_ATN_MISMATCH"
-	PortingOrdersExceptionTypeCodeEntityNameMismatch           PortingOrdersExceptionTypeCode = "ENTITY_NAME_MISMATCH"
-	PortingOrdersExceptionTypeCodeFocExpired                   PortingOrdersExceptionTypeCode = "FOC_EXPIRED"
-	PortingOrdersExceptionTypeCodeFocRejected                  PortingOrdersExceptionTypeCode = "FOC_REJECTED"
-	PortingOrdersExceptionTypeCodeLocationMismatch             PortingOrdersExceptionTypeCode = "LOCATION_MISMATCH"
-	PortingOrdersExceptionTypeCodeLsrPending                   PortingOrdersExceptionTypeCode = "LSR_PENDING"
-	PortingOrdersExceptionTypeCodeMainBtnPorting               PortingOrdersExceptionTypeCode = "MAIN_BTN_PORTING"
-	PortingOrdersExceptionTypeCodeOspIrresponsive              PortingOrdersExceptionTypeCode = "OSP_IRRESPONSIVE"
-	PortingOrdersExceptionTypeCodeOther                        PortingOrdersExceptionTypeCode = "OTHER"
-	PortingOrdersExceptionTypeCodePasscodePinInvalid           PortingOrdersExceptionTypeCode = "PASSCODE_PIN_INVALID"
-	PortingOrdersExceptionTypeCodePhoneNumberHasSpecialFeature PortingOrdersExceptionTypeCode = "PHONE_NUMBER_HAS_SPECIAL_FEATURE"
-	PortingOrdersExceptionTypeCodePhoneNumberMismatch          PortingOrdersExceptionTypeCode = "PHONE_NUMBER_MISMATCH"
-	PortingOrdersExceptionTypeCodePhoneNumberNotPortable       PortingOrdersExceptionTypeCode = "PHONE_NUMBER_NOT_PORTABLE"
-	PortingOrdersExceptionTypeCodePortTypeIncorrect            PortingOrdersExceptionTypeCode = "PORT_TYPE_INCORRECT"
-	PortingOrdersExceptionTypeCodePortingOrderSplitRequired    PortingOrdersExceptionTypeCode = "PORTING_ORDER_SPLIT_REQUIRED"
-	PortingOrdersExceptionTypeCodePostalCodeMismatch           PortingOrdersExceptionTypeCode = "POSTAL_CODE_MISMATCH"
-	PortingOrdersExceptionTypeCodeRateCenterNotPortable        PortingOrdersExceptionTypeCode = "RATE_CENTER_NOT_PORTABLE"
-	PortingOrdersExceptionTypeCodeSvConflict                   PortingOrdersExceptionTypeCode = "SV_CONFLICT"
-	PortingOrdersExceptionTypeCodeSvUnknownFailure             PortingOrdersExceptionTypeCode = "SV_UNKNOWN_FAILURE"
+	PortingOrdersExceptionTypeCodeAccountNumberMismatch                PortingOrdersExceptionTypeCode = "ACCOUNT_NUMBER_MISMATCH"
+	PortingOrdersExceptionTypeCodeAccountNumberMismatchOrMissing       PortingOrdersExceptionTypeCode = "ACCOUNT_NUMBER_MISMATCH_OR_MISSING"
+	PortingOrdersExceptionTypeCodeAccountNumberRequired                PortingOrdersExceptionTypeCode = "ACCOUNT_NUMBER_REQUIRED"
+	PortingOrdersExceptionTypeCodeAllDataMismatch                      PortingOrdersExceptionTypeCode = "ALL_DATA_MISMATCH"
+	PortingOrdersExceptionTypeCodeAuthPersonMismatch                   PortingOrdersExceptionTypeCode = "AUTH_PERSON_MISMATCH"
+	PortingOrdersExceptionTypeCodeBtnAtnMismatch                       PortingOrdersExceptionTypeCode = "BTN_ATN_MISMATCH"
+	PortingOrdersExceptionTypeCodeDocumentBlocked                      PortingOrdersExceptionTypeCode = "DOCUMENT_BLOCKED"
+	PortingOrdersExceptionTypeCodeEntityNameMismatch                   PortingOrdersExceptionTypeCode = "ENTITY_NAME_MISMATCH"
+	PortingOrdersExceptionTypeCodeFocExpired                           PortingOrdersExceptionTypeCode = "FOC_EXPIRED"
+	PortingOrdersExceptionTypeCodeFocRejected                          PortingOrdersExceptionTypeCode = "FOC_REJECTED"
+	PortingOrdersExceptionTypeCodeIncorrectLoaTemplate                 PortingOrdersExceptionTypeCode = "INCORRECT_LOA_TEMPLATE"
+	PortingOrdersExceptionTypeCodeIncorrectLosingCommunicationProvider PortingOrdersExceptionTypeCode = "INCORRECT_LOSING_COMMUNICATION_PROVIDER"
+	PortingOrdersExceptionTypeCodeIncorrectPortType                    PortingOrdersExceptionTypeCode = "INCORRECT_PORT_TYPE"
+	PortingOrdersExceptionTypeCodeInvalidOrMissingInvoice              PortingOrdersExceptionTypeCode = "INVALID_OR_MISSING_INVOICE"
+	PortingOrdersExceptionTypeCodeInvalidOrMissingLoa                  PortingOrdersExceptionTypeCode = "INVALID_OR_MISSING_LOA"
+	PortingOrdersExceptionTypeCodeInvalidSignatureOnTheLoa             PortingOrdersExceptionTypeCode = "INVALID_SIGNATURE_ON_THE_LOA"
+	PortingOrdersExceptionTypeCodeJ2PasscodePinInvalid                 PortingOrdersExceptionTypeCode = "J2_PASSCODE_PIN_INVALID"
+	PortingOrdersExceptionTypeCodeLocationMismatch                     PortingOrdersExceptionTypeCode = "LOCATION_MISMATCH"
+	PortingOrdersExceptionTypeCodeLsrPending                           PortingOrdersExceptionTypeCode = "LSR_PENDING"
+	PortingOrdersExceptionTypeCodeMainBtnPorting                       PortingOrdersExceptionTypeCode = "MAIN_BTN_PORTING"
+	PortingOrdersExceptionTypeCodeMissingMandatoryRequirement          PortingOrdersExceptionTypeCode = "MISSING_MANDATORY_REQUIREMENT"
+	PortingOrdersExceptionTypeCodeMissingNumberDetails                 PortingOrdersExceptionTypeCode = "MISSING_NUMBER_DETAILS"
+	PortingOrdersExceptionTypeCodeNumberHasAssociatedServices          PortingOrdersExceptionTypeCode = "NUMBER_HAS_ASSOCIATED_SERVICES"
+	PortingOrdersExceptionTypeCodeOrderReflow                          PortingOrdersExceptionTypeCode = "ORDER_REFLOW"
+	PortingOrdersExceptionTypeCodeOspIrresponsive                      PortingOrdersExceptionTypeCode = "OSP_IRRESPONSIVE"
+	PortingOrdersExceptionTypeCodeOther                                PortingOrdersExceptionTypeCode = "OTHER"
+	PortingOrdersExceptionTypeCodePasscodePinInvalid                   PortingOrdersExceptionTypeCode = "PASSCODE_PIN_INVALID"
+	PortingOrdersExceptionTypeCodePhoneNumberMismatch                  PortingOrdersExceptionTypeCode = "PHONE_NUMBER_MISMATCH"
+	PortingOrdersExceptionTypeCodePhoneNumberNotPortable               PortingOrdersExceptionTypeCode = "PHONE_NUMBER_NOT_PORTABLE"
+	PortingOrdersExceptionTypeCodePostalCodeMismatch                   PortingOrdersExceptionTypeCode = "POSTAL_CODE_MISMATCH"
+	PortingOrdersExceptionTypeCodeRateCenterNotPortable                PortingOrdersExceptionTypeCode = "RATE_CENTER_NOT_PORTABLE"
+	PortingOrdersExceptionTypeCodeResellerInvalid                      PortingOrdersExceptionTypeCode = "RESELLER_INVALID"
+	PortingOrdersExceptionTypeCodeStrandedServicesNeedNewBtn           PortingOrdersExceptionTypeCode = "STRANDED_SERVICES_NEED_NEW_BTN"
+	PortingOrdersExceptionTypeCodeSvConflict                           PortingOrdersExceptionTypeCode = "SV_CONFLICT"
+	PortingOrdersExceptionTypeCodeSvUnknownFailure                     PortingOrdersExceptionTypeCode = "SV_UNKNOWN_FAILURE"
+	PortingOrdersExceptionTypeCodeTnsOnMultipleAccounts                PortingOrdersExceptionTypeCode = "TNS_ON_MULTIPLE_ACCOUNTS"
+	PortingOrdersExceptionTypeCodeTnBuildConflict                      PortingOrdersExceptionTypeCode = "TN_BUILD_CONFLICT"
+	PortingOrdersExceptionTypeCodeTnDisconnected                       PortingOrdersExceptionTypeCode = "TN_DISCONNECTED"
+	PortingOrdersExceptionTypeCodeUnauthorizedPersonSignature          PortingOrdersExceptionTypeCode = "UNAUTHORIZED_PERSON_SIGNATURE"
 )
+
+// Structured remediation steps so an agent can map the exception to a fix via the
+// API alone
+type PortingOrdersExceptionTypeRemediation struct {
+	// The type of remediation action to take
+	//
+	// Any of "update_order_fields", "upload_document", "create_orders",
+	// "assign_foc_datetime", "wait", "external_action", "contact_support".
+	Action string `json:"action" api:"required"`
+	// Patchable field paths to correct, empty when no field update applies
+	Fields []string `json:"fields" api:"required"`
+	// The document to (re)upload, when applicable
+	//
+	// Any of "loa", "invoice", "null".
+	RequiredDocument string `json:"required_document" api:"required"`
+	// Whether resubmission or polling alone can unblock the order
+	Retryable bool `json:"retryable" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Action           respjson.Field
+		Fields           respjson.Field
+		RequiredDocument respjson.Field
+		Retryable        respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PortingOrdersExceptionTypeRemediation) RawJSON() string { return r.JSON.raw }
+func (r *PortingOrdersExceptionTypeRemediation) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type RegionInformation struct {
 	RegionName string `json:"region_name"`

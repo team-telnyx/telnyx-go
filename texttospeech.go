@@ -50,7 +50,7 @@ func NewTextToSpeechService(opts ...option.RequestOption) (r TextToSpeechService
 // parameters.
 //
 // Supported providers: `aws`, `telnyx`, `azure`, `elevenlabs`, `minimax`,
-// `resemble`, `xai`, `humain`, `soniox`, `assemblyai`.
+// `resemble`, `xai`, `humain`, `soniox`.
 //
 // The Telnyx `Ultra` model supports 44 languages with emotion control, speed
 // adjustment, and volume control. Use the `telnyx` provider-specific parameters to
@@ -80,7 +80,7 @@ func (r *TextToSpeechService) ListVoices(ctx context.Context, query TextToSpeech
 // synthesize; receive JSON frames containing base64-encoded audio chunks.
 //
 // Supported providers: `aws`, `telnyx`, `azure`, `minimax`, `resemble`,
-// `elevenlabs`, `xai`, `humain`, `soniox`, `assemblyai`.
+// `elevenlabs`, `xai`, `humain`, `soniox`.
 //
 // **Connection flow:**
 //
@@ -188,9 +188,6 @@ type TextToSpeechGenerateSpeechParams struct {
 	// `voice_id` are extracted automatically and take precedence over individual
 	// parameters.
 	Voice param.Opt[string] `json:"voice,omitzero"`
-	// AssemblyAI provider-specific parameters. Every voice speaks all six supported
-	// languages; set `language` to the language of the text.
-	Assemblyai TextToSpeechGenerateSpeechParamsAssemblyai `json:"assemblyai,omitzero"`
 	// AWS Polly provider-specific parameters.
 	Aws TextToSpeechGenerateSpeechParamsAws `json:"aws,omitzero"`
 	// Azure Cognitive Services provider-specific parameters.
@@ -211,7 +208,7 @@ type TextToSpeechGenerateSpeechParams struct {
 	// TTS provider. Required unless `voice` is provided.
 	//
 	// Any of "aws", "telnyx", "azure", "elevenlabs", "minimax", "resemble", "xai",
-	// "humain", "soniox", "assemblyai".
+	// "humain", "soniox".
 	Provider TextToSpeechGenerateSpeechParamsProvider `json:"provider,omitzero"`
 	// Resemble AI provider-specific parameters.
 	Resemble TextToSpeechGenerateSpeechParamsResemble `json:"resemble,omitzero"`
@@ -244,58 +241,6 @@ func (r TextToSpeechGenerateSpeechParams) MarshalJSON() (data []byte, err error)
 }
 func (r *TextToSpeechGenerateSpeechParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-// AssemblyAI provider-specific parameters. Every voice speaks all six supported
-// languages; set `language` to the language of the text.
-//
-// The property VoiceID is required.
-type TextToSpeechGenerateSpeechParamsAssemblyai struct {
-	// AssemblyAI voice from the
-	// [voices listing](https://developers.telnyx.com/api-reference/text-to-speech-commands/list-available-voices),
-	// for example `aai-jane`.
-	VoiceID string `json:"voice_id" api:"required"`
-	// Audio output format.
-	//
-	// Any of "mp3", "wav", "pcm_s16le", "pcm_mulaw", "pcm_alaw".
-	AudioFormat string `json:"audio_format,omitzero"`
-	// Two-letter ISO 639-1 code of the text. AssemblyAI does not detect the language.
-	//
-	// Any of "en", "es", "de", "fr", "it", "pt".
-	Language string `json:"language,omitzero"`
-	// AssemblyAI model.
-	//
-	// Any of "assemblyai-tts-1".
-	ModelID string `json:"model_id,omitzero"`
-	// Audio sample rate in Hz. Defaults to 24000, or 8000 for `pcm_mulaw` and
-	// `pcm_alaw`.
-	//
-	// Any of 8000, 16000, 22050, 24000, 44100, 48000.
-	SampleRate int64 `json:"sample_rate,omitzero"`
-	paramObj
-}
-
-func (r TextToSpeechGenerateSpeechParamsAssemblyai) MarshalJSON() (data []byte, err error) {
-	type shadow TextToSpeechGenerateSpeechParamsAssemblyai
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *TextToSpeechGenerateSpeechParamsAssemblyai) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[TextToSpeechGenerateSpeechParamsAssemblyai](
-		"audio_format", "mp3", "wav", "pcm_s16le", "pcm_mulaw", "pcm_alaw",
-	)
-	apijson.RegisterFieldValidator[TextToSpeechGenerateSpeechParamsAssemblyai](
-		"language", "en", "es", "de", "fr", "it", "pt",
-	)
-	apijson.RegisterFieldValidator[TextToSpeechGenerateSpeechParamsAssemblyai](
-		"model_id", "assemblyai-tts-1",
-	)
-	apijson.RegisterFieldValidator[TextToSpeechGenerateSpeechParamsAssemblyai](
-		"sample_rate", 8000, 16000, 22050, 24000, 44100, 48000,
-	)
 }
 
 // AWS Polly provider-specific parameters.
@@ -460,7 +405,6 @@ const (
 	TextToSpeechGenerateSpeechParamsProviderXai        TextToSpeechGenerateSpeechParamsProvider = "xai"
 	TextToSpeechGenerateSpeechParamsProviderHumain     TextToSpeechGenerateSpeechParamsProvider = "humain"
 	TextToSpeechGenerateSpeechParamsProviderSoniox     TextToSpeechGenerateSpeechParamsProvider = "soniox"
-	TextToSpeechGenerateSpeechParamsProviderAssemblyai TextToSpeechGenerateSpeechParamsProvider = "assemblyai"
 )
 
 // Resemble AI provider-specific parameters.
@@ -635,7 +579,7 @@ type TextToSpeechListVoicesParams struct {
 	// Filter voices by provider. If omitted, voices from all providers are returned.
 	//
 	// Any of "aws", "telnyx", "azure", "elevenlabs", "minimax", "resemble", "xai",
-	// "humain", "soniox", "assemblyai".
+	// "humain", "soniox".
 	Provider TextToSpeechListVoicesParamsProvider `query:"provider,omitzero" json:"-"`
 	paramObj
 }
@@ -662,7 +606,6 @@ const (
 	TextToSpeechListVoicesParamsProviderXai        TextToSpeechListVoicesParamsProvider = "xai"
 	TextToSpeechListVoicesParamsProviderHumain     TextToSpeechListVoicesParamsProvider = "humain"
 	TextToSpeechListVoicesParamsProviderSoniox     TextToSpeechListVoicesParamsProvider = "soniox"
-	TextToSpeechListVoicesParamsProviderAssemblyai TextToSpeechListVoicesParamsProvider = "assemblyai"
 )
 
 type TextToSpeechGetSpeechParams struct {
@@ -692,7 +635,7 @@ type TextToSpeechGetSpeechParams struct {
 	// provided.
 	//
 	// Any of "aws", "telnyx", "azure", "elevenlabs", "minimax", "resemble", "xai",
-	// "humain", "soniox", "assemblyai".
+	// "humain", "soniox".
 	Provider TextToSpeechGetSpeechParamsProvider `query:"provider,omitzero" json:"-"`
 	paramObj
 }
@@ -730,5 +673,4 @@ const (
 	TextToSpeechGetSpeechParamsProviderXai        TextToSpeechGetSpeechParamsProvider = "xai"
 	TextToSpeechGetSpeechParamsProviderHumain     TextToSpeechGetSpeechParamsProvider = "humain"
 	TextToSpeechGetSpeechParamsProviderSoniox     TextToSpeechGetSpeechParamsProvider = "soniox"
-	TextToSpeechGetSpeechParamsProviderAssemblyai TextToSpeechGetSpeechParamsProvider = "assemblyai"
 )

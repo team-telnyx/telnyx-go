@@ -42,7 +42,9 @@ func NewNetworkRouteService(opts ...option.RequestOption) (r NetworkRouteService
 
 // Adds a route to a Network. Traffic on the Network to an address in `cidr` goes
 // via `next_hop`. With a tunnel as the next hop, functions on the Network reach
-// the CIDR through the tunnel without a redeploy. A Network holds each CIDR once.
+// the CIDR through the tunnel without a redeploy. With a WireGuard peer as the
+// next hop, the peer routes the CIDR as a subnet router. A Network holds each CIDR
+// once.
 func (r *NetworkRouteService) New(ctx context.Context, body NetworkRouteNewParams, opts ...option.RequestOption) (res *NetworkRouteNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "network_routes"
@@ -276,11 +278,11 @@ func (r *NetworkRouteListResponse) UnmarshalJSON(data []byte) error {
 }
 
 type NetworkRouteNewParams struct {
-	// The IPv4 subnet to route, such as a subnet behind the tunnel. It must be a
-	// canonical CIDR. Default, loopback, link-local, multicast, and shared address
-	// space (`100.64.0.0/10`) ranges are rejected. So are ranges that overlap the
-	// Tailscale Subnet Router ranges, `172.27.254.0/24` and `198.18.0.0/20`, or a
-	// subnet already on the Network.
+	// The IPv4 subnet to route, such as a subnet behind a tunnel or a WireGuard peer.
+	// It must be a canonical CIDR. Default, loopback, link-local, multicast, and
+	// shared address space (`100.64.0.0/10`) ranges are rejected. So are ranges that
+	// overlap the Tailscale Subnet Router ranges, `172.27.254.0/24` and
+	// `198.18.0.0/20`, or a subnet already on the Network.
 	Cidr string `json:"cidr" api:"required"`
 	// The id of the Network to add the route to.
 	NetworkID string `json:"network_id" api:"required" format:"uuid"`
@@ -301,11 +303,12 @@ func (r *NetworkRouteNewParams) UnmarshalJSON(data []byte) error {
 //
 // The properties ID, Type are required.
 type NetworkRouteNewParamsNextHop struct {
-	// The id of the tunnel.
+	// The id of the tunnel, or of a WireGuard peer on the Network's WireGuard
+	// Interface.
 	ID string `json:"id" api:"required" format:"uuid"`
 	// The type of the next hop.
 	//
-	// Any of "tunnel".
+	// Any of "tunnel", "wireguard_peer".
 	Type string `json:"type,omitzero" api:"required"`
 	paramObj
 }
@@ -320,7 +323,7 @@ func (r *NetworkRouteNewParamsNextHop) UnmarshalJSON(data []byte) error {
 
 func init() {
 	apijson.RegisterFieldValidator[NetworkRouteNewParamsNextHop](
-		"type", "tunnel",
+		"type", "tunnel", "wireguard_peer",
 	)
 }
 

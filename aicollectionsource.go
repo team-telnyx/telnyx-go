@@ -104,10 +104,10 @@ type CollectionsSource struct {
 	// Identifies the record type. Always `ai_collection_source`.
 	RecordType string `json:"record_type"`
 	// The type of Telnyx data attached as a source. `bucket` requires an additional
-	// `bucket_id`. Only `voice` is searchable today; `meeting_bot`, `message`, and
-	// `bucket` attach but are not yet searchable (Coming soon).
+	// `bucket_id`. `voice`, `meeting_bot`, `message`, `email`, and `whatsapp` are
+	// searchable today; `bucket` attaches but is not yet searchable (Coming soon).
 	//
-	// Any of "voice", "meeting_bot", "message", "bucket".
+	// Any of "voice", "meeting_bot", "message", "bucket", "email", "whatsapp".
 	SourceType SourceType `json:"source_type"`
 	Status     string     `json:"status"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -164,10 +164,10 @@ func (r *Source) UnmarshalJSON(data []byte) error {
 // The property SourceType is required.
 type SourceRequestParam struct {
 	// The type of Telnyx data attached as a source. `bucket` requires an additional
-	// `bucket_id`. Only `voice` is searchable today; `meeting_bot`, `message`, and
-	// `bucket` attach but are not yet searchable (Coming soon).
+	// `bucket_id`. `voice`, `meeting_bot`, `message`, `email`, and `whatsapp` are
+	// searchable today; `bucket` attaches but is not yet searchable (Coming soon).
 	//
-	// Any of "voice", "meeting_bot", "message", "bucket".
+	// Any of "voice", "meeting_bot", "message", "bucket", "email", "whatsapp".
 	SourceType SourceType `json:"source_type,omitzero" api:"required"`
 	// The Telnyx Storage bucket name. Required when `source_type` is `bucket`; ignored
 	// otherwise.
@@ -184,8 +184,8 @@ func (r *SourceRequestParam) UnmarshalJSON(data []byte) error {
 }
 
 // The type of Telnyx data attached as a source. `bucket` requires an additional
-// `bucket_id`. Only `voice` is searchable today; `meeting_bot`, `message`, and
-// `bucket` attach but are not yet searchable (Coming soon).
+// `bucket_id`. `voice`, `meeting_bot`, `message`, `email`, and `whatsapp` are
+// searchable today; `bucket` attaches but is not yet searchable (Coming soon).
 type SourceType string
 
 const (
@@ -193,6 +193,8 @@ const (
 	SourceTypeMeetingBot SourceType = "meeting_bot"
 	SourceTypeMessage    SourceType = "message"
 	SourceTypeBucket     SourceType = "bucket"
+	SourceTypeEmail      SourceType = "email"
+	SourceTypeWhatsapp   SourceType = "whatsapp"
 )
 
 // Envelope containing a single collection source.

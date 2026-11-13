@@ -576,7 +576,6 @@ type ConversationRelayEmbeddedConfigVoiceSettingsUnionParam struct {
 	OfInworld    *shared.InworldVoiceSettingsParam  `json:",omitzero,inline"`
 	OfXai        *shared.XaiVoiceSettingsParam      `json:",omitzero,inline"`
 	OfSoniox     *SonioxVoiceSettingsParam          `json:",omitzero,inline"`
-	OfAssemblyai *AssemblyAIVoiceSettingsParam      `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -589,8 +588,7 @@ func (u ConversationRelayEmbeddedConfigVoiceSettingsUnionParam) MarshalJSON() ([
 		u.OfResemble,
 		u.OfInworld,
 		u.OfXai,
-		u.OfSoniox,
-		u.OfAssemblyai)
+		u.OfSoniox)
 }
 func (u *ConversationRelayEmbeddedConfigVoiceSettingsUnionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -615,8 +613,6 @@ func (u *ConversationRelayEmbeddedConfigVoiceSettingsUnionParam) asAny() any {
 		return u.OfXai
 	} else if !param.IsOmitted(u.OfSoniox) {
 		return u.OfSoniox
-	} else if !param.IsOmitted(u.OfAssemblyai) {
-		return u.OfAssemblyai
 	}
 	return nil
 }
@@ -753,8 +749,6 @@ func (u ConversationRelayEmbeddedConfigVoiceSettingsUnionParam) GetType() *strin
 		return (*string)(&vt.Type)
 	} else if vt := u.OfSoniox; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfAssemblyai; vt != nil {
-		return (*string)(&vt.Type)
 	}
 	return nil
 }
@@ -791,7 +785,6 @@ func init() {
 		apijson.Discriminator[shared.InworldVoiceSettingsParam]("inworld"),
 		apijson.Discriminator[shared.XaiVoiceSettingsParam]("xai"),
 		apijson.Discriminator[SonioxVoiceSettingsParam]("soniox"),
-		apijson.Discriminator[AssemblyAIVoiceSettingsParam]("assemblyai"),
 	)
 }
 
@@ -908,7 +901,6 @@ type ConversationRelayLanguageVoiceSettingsUnionParam struct {
 	OfInworld    *shared.InworldVoiceSettingsParam  `json:",omitzero,inline"`
 	OfXai        *shared.XaiVoiceSettingsParam      `json:",omitzero,inline"`
 	OfSoniox     *SonioxVoiceSettingsParam          `json:",omitzero,inline"`
-	OfAssemblyai *AssemblyAIVoiceSettingsParam      `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -921,8 +913,7 @@ func (u ConversationRelayLanguageVoiceSettingsUnionParam) MarshalJSON() ([]byte,
 		u.OfResemble,
 		u.OfInworld,
 		u.OfXai,
-		u.OfSoniox,
-		u.OfAssemblyai)
+		u.OfSoniox)
 }
 func (u *ConversationRelayLanguageVoiceSettingsUnionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -947,8 +938,6 @@ func (u *ConversationRelayLanguageVoiceSettingsUnionParam) asAny() any {
 		return u.OfXai
 	} else if !param.IsOmitted(u.OfSoniox) {
 		return u.OfSoniox
-	} else if !param.IsOmitted(u.OfAssemblyai) {
-		return u.OfAssemblyai
 	}
 	return nil
 }
@@ -1085,8 +1074,6 @@ func (u ConversationRelayLanguageVoiceSettingsUnionParam) GetType() *string {
 		return (*string)(&vt.Type)
 	} else if vt := u.OfSoniox; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfAssemblyai; vt != nil {
-		return (*string)(&vt.Type)
 	}
 	return nil
 }
@@ -1123,7 +1110,6 @@ func init() {
 		apijson.Discriminator[shared.InworldVoiceSettingsParam]("inworld"),
 		apijson.Discriminator[shared.XaiVoiceSettingsParam]("xai"),
 		apijson.Discriminator[SonioxVoiceSettingsParam]("soniox"),
-		apijson.Discriminator[AssemblyAIVoiceSettingsParam]("assemblyai"),
 	)
 }
 
