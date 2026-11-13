@@ -33,6 +33,7 @@ func TestTexmlAccountCallRecordingsJsonRecordingsJsonWithOptionalParams(t *testi
 			AccountSid:                    "f5586561-8ff0-4291-a51b-c7dfe4139ff9",
 			PlayBeep:                      telnyx.Bool(false),
 			RecordingChannels:             telnyx.TexmlAccountCallRecordingsJsonRecordingsJsonParamsRecordingChannelsSingle,
+			RecordingRedaction:            telnyx.String("pci,pii"),
 			RecordingStatusCallback:       telnyx.String("http://webhook.com/callback"),
 			RecordingStatusCallbackEvent:  telnyx.String("in-progress completed absent"),
 			RecordingStatusCallbackMethod: telnyx.TexmlAccountCallRecordingsJsonRecordingsJsonParamsRecordingStatusCallbackMethodGet,

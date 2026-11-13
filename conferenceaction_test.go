@@ -376,6 +376,7 @@ func TestConferenceActionRecordStartWithOptionalParams(t *testing.T) {
 			CommandID:      telnyx.String("891510ac-f3e4-11e8-af5b-de00688a4901"),
 			CustomFileName: telnyx.String("my_recording_file_name"),
 			PlayBeep:       telnyx.Bool(true),
+			Redaction:      []string{"pci", "pii"},
 			Region:         telnyx.ConferenceRegionUs,
 			Trim:           telnyx.ConferenceActionRecordStartParamsTrimTrimSilence,
 		},

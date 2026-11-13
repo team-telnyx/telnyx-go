@@ -241,6 +241,7 @@ func TestCallDialWithOptionalParams(t *testing.T) {
 		RecordCustomFileName: telnyx.String("my_recording_file_name"),
 		RecordFormat:         telnyx.CallDialParamsRecordFormatWav,
 		RecordMaxLength:      telnyx.Int(1000),
+		RecordRedaction:      []string{"pci", "pii"},
 		RecordTimeoutSecs:    telnyx.Int(100),
 		RecordTrack:          telnyx.CallDialParamsRecordTrackOutbound,
 		RecordTrim:           telnyx.CallDialParamsRecordTrimTrimSilence,

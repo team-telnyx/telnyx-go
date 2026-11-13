@@ -4133,6 +4133,15 @@ type CallActionAnswerParams struct {
 	//
 	// Any of "wav", "mp3".
 	RecordFormat CallActionAnswerParamsRecordFormat `json:"record_format,omitzero"`
+	// Applies to the recording started with `record`. Silences spoken details of the
+	// given kinds in the recording: `pci` (card number, expiry date, security code),
+	// `pii` (personal details such as names, phone numbers, addresses and other
+	// identifying numbers) and `phi` (health details such as medications, doses and
+	// conditions). Redaction works on English speech only. Redacted recordings are
+	// charged at the Deepgram speech-to-text rate.
+	//
+	// Any of "pci", "pii", "phi".
+	RecordRedaction []string `json:"record_redaction,omitzero"`
 	// The audio track to be recorded. Can be either `both`, `inbound` or `outbound`.
 	// If only single track is specified (`inbound`, `outbound`), `channels`
 	// configuration is ignored and it will be recorded as mono (single channel).
@@ -4384,6 +4393,15 @@ type CallActionBridgeParams struct {
 	//
 	// Any of "wav", "mp3".
 	RecordFormat CallActionBridgeParamsRecordFormat `json:"record_format,omitzero"`
+	// Applies to the recording started with `record`. Silences spoken details of the
+	// given kinds in the recording: `pci` (card number, expiry date, security code),
+	// `pii` (personal details such as names, phone numbers, addresses and other
+	// identifying numbers) and `phi` (health details such as medications, doses and
+	// conditions). Redaction works on English speech only. Redacted recordings are
+	// charged at the Deepgram speech-to-text rate.
+	//
+	// Any of "pci", "pii", "phi".
+	RecordRedaction []string `json:"record_redaction,omitzero"`
 	// The audio track to be recorded. Can be either `both`, `inbound` or `outbound`.
 	// If only single track is specified (`inbound`, `outbound`), `channels`
 	// configuration is ignored and it will be recorded as mono (single channel).
@@ -6984,9 +7002,18 @@ type CallActionStartRecordingParams struct {
 	//
 	// Any of "both", "inbound", "outbound".
 	RecordingTrack CallActionStartRecordingParamsRecordingTrack `json:"recording_track,omitzero"`
+	// Silences spoken details of the given kinds in the recording: `pci` (card number,
+	// expiry date, security code), `pii` (personal details such as names, phone
+	// numbers, addresses and other identifying numbers) and `phi` (health details such
+	// as medications, doses and conditions). Redaction works on English speech only.
+	// Redacted recordings are charged at the Deepgram speech-to-text rate.
+	//
+	// Any of "pci", "pii", "phi".
+	Redaction []string `json:"redaction,omitzero"`
 	// Engine to use for speech recognition. `A` - `Google`, `B` - `Telnyx`,
 	// `deepgram/nova-3` - `Deepgram Nova-3`. Note: `deepgram/nova-3` supports only
-	// `en` and `en-{Region}` languages.
+	// `en` and `en-{Region}` languages. When `redaction` is set, leave this out or set
+	// a Deepgram engine.
 	//
 	// Any of "A", "B", "deepgram/nova-3".
 	TranscriptionEngine CallActionStartRecordingParamsTranscriptionEngine `json:"transcription_engine,omitzero"`
@@ -7067,7 +7094,8 @@ const (
 
 // Engine to use for speech recognition. `A` - `Google`, `B` - `Telnyx`,
 // `deepgram/nova-3` - `Deepgram Nova-3`. Note: `deepgram/nova-3` supports only
-// `en` and `en-{Region}` languages.
+// `en` and `en-{Region}` languages. When `redaction` is set, leave this out or set
+// a Deepgram engine.
 type CallActionStartRecordingParamsTranscriptionEngine string
 
 const (
@@ -7873,6 +7901,15 @@ type CallActionTransferParams struct {
 	//
 	// Any of "wav", "mp3".
 	RecordFormat CallActionTransferParamsRecordFormat `json:"record_format,omitzero"`
+	// Applies to the recording started with `record`. Silences spoken details of the
+	// given kinds in the recording: `pci` (card number, expiry date, security code),
+	// `pii` (personal details such as names, phone numbers, addresses and other
+	// identifying numbers) and `phi` (health details such as medications, doses and
+	// conditions). Redaction works on English speech only. Redacted recordings are
+	// charged at the Deepgram speech-to-text rate.
+	//
+	// Any of "pci", "pii", "phi".
+	RecordRedaction []string `json:"record_redaction,omitzero"`
 	// The audio track to be recorded. Can be either `both`, `inbound` or `outbound`.
 	// If only single track is specified (`inbound`, `outbound`), `channels`
 	// configuration is ignored and it will be recorded as mono (single channel).

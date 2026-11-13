@@ -1629,6 +1629,15 @@ type CallDialParams struct {
 	//
 	// Any of "wav", "mp3".
 	RecordFormat CallDialParamsRecordFormat `json:"record_format,omitzero"`
+	// Applies to the recording started with `record`. Silences spoken details of the
+	// given kinds in the recording: `pci` (card number, expiry date, security code),
+	// `pii` (personal details such as names, phone numbers, addresses and other
+	// identifying numbers) and `phi` (health details such as medications, doses and
+	// conditions). Redaction works on English speech only. Redacted recordings are
+	// charged at the Deepgram speech-to-text rate.
+	//
+	// Any of "pci", "pii", "phi".
+	RecordRedaction []string `json:"record_redaction,omitzero"`
 	// The audio track to be recorded. Can be either `both`, `inbound` or `outbound`.
 	// If only single track is specified (`inbound`, `outbound`), `channels`
 	// configuration is ignored and it will be recorded as mono (single channel).

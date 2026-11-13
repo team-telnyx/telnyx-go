@@ -975,6 +975,14 @@ type ConferenceActionRecordStartParams struct {
 	//
 	// Any of "single", "dual".
 	Channels ConferenceActionRecordStartParamsChannels `json:"channels,omitzero"`
+	// Silences spoken details of the given kinds in the recording: `pci` (card number,
+	// expiry date, security code), `pii` (personal details such as names, phone
+	// numbers, addresses and other identifying numbers) and `phi` (health details such
+	// as medications, doses and conditions). Redaction works on English speech only.
+	// Redacted recordings are charged at the Deepgram speech-to-text rate.
+	//
+	// Any of "pci", "pii", "phi".
+	Redaction []string `json:"redaction,omitzero"`
 	// Region where the conference data is located. Defaults to the region defined in
 	// user's data locality settings (Europe or US).
 	//

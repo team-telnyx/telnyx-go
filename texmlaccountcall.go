@@ -598,6 +598,13 @@ type TexmlAccountCallCallsParamsBodyWithURL struct {
 	PreferredCodecs param.Opt[string] `json:"PreferredCodecs,omitzero"`
 	// Whether to record the entire participant's call leg. Defaults to `false`.
 	Record param.Opt[bool] `json:"Record,omitzero"`
+	// Silences spoken details of the given kinds in the recording: one or more of
+	// `pci` (card number, expiry date, security code), `pii` (personal details such as
+	// names, phone numbers, addresses and other identifying numbers) and `phi` (health
+	// details such as medications, doses and conditions), separated by commas, for
+	// example `pci,pii`. Redaction works on English speech only. Redacted recordings
+	// are charged at the Deepgram speech-to-text rate.
+	RecordingRedaction param.Opt[string] `json:"RecordingRedaction,omitzero"`
 	// The URL the recording callbacks will be sent to.
 	RecordingStatusCallback param.Opt[string] `json:"RecordingStatusCallback,omitzero"`
 	// The changes to the recording's state that should generate a call to
@@ -922,6 +929,13 @@ type TexmlAccountCallCallsParamsBodyWithTeXml struct {
 	PreferredCodecs param.Opt[string] `json:"PreferredCodecs,omitzero"`
 	// Whether to record the entire participant's call leg. Defaults to `false`.
 	Record param.Opt[bool] `json:"Record,omitzero"`
+	// Silences spoken details of the given kinds in the recording: one or more of
+	// `pci` (card number, expiry date, security code), `pii` (personal details such as
+	// names, phone numbers, addresses and other identifying numbers) and `phi` (health
+	// details such as medications, doses and conditions), separated by commas, for
+	// example `pci,pii`. Redaction works on English speech only. Redacted recordings
+	// are charged at the Deepgram speech-to-text rate.
+	RecordingRedaction param.Opt[string] `json:"RecordingRedaction,omitzero"`
 	// The URL the recording callbacks will be sent to.
 	RecordingStatusCallback param.Opt[string] `json:"RecordingStatusCallback,omitzero"`
 	// The changes to the recording's state that should generate a call to
@@ -1243,6 +1257,13 @@ type TexmlAccountCallCallsParamsBodyApplicationDefault struct {
 	PreferredCodecs param.Opt[string] `json:"PreferredCodecs,omitzero"`
 	// Whether to record the entire participant's call leg. Defaults to `false`.
 	Record param.Opt[bool] `json:"Record,omitzero"`
+	// Silences spoken details of the given kinds in the recording: one or more of
+	// `pci` (card number, expiry date, security code), `pii` (personal details such as
+	// names, phone numbers, addresses and other identifying numbers) and `phi` (health
+	// details such as medications, doses and conditions), separated by commas, for
+	// example `pci,pii`. Redaction works on English speech only. Redacted recordings
+	// are charged at the Deepgram speech-to-text rate.
+	RecordingRedaction param.Opt[string] `json:"RecordingRedaction,omitzero"`
 	// The URL the recording callbacks will be sent to.
 	RecordingStatusCallback param.Opt[string] `json:"RecordingStatusCallback,omitzero"`
 	// The changes to the recording's state that should generate a call to

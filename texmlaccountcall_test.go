@@ -135,6 +135,7 @@ func TestTexmlAccountCallCallsWithOptionalParams(t *testing.T) {
 				PreferredCodecs:                          telnyx.String("PCMA,PCMU"),
 				Record:                                   telnyx.Bool(false),
 				RecordingChannels:                        "dual",
+				RecordingRedaction:                       telnyx.String("pci,pii"),
 				RecordingStatusCallback:                  telnyx.String("https://example.com/recording_status_callback"),
 				RecordingStatusCallbackEvent:             telnyx.String("in-progress completed absent"),
 				RecordingStatusCallbackMethod:            "GET",
