@@ -43,7 +43,7 @@ func NewWhatsappTemplateService(opts ...option.RequestOption) (r WhatsappTemplat
 // messages.
 func (r *WhatsappTemplateService) New(ctx context.Context, body WhatsappTemplateNewParams, opts ...option.RequestOption) (res *WhatsappTemplateNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := "v2/whatsapp/message_templates"
+	path := "whatsapp/message_templates"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -54,7 +54,7 @@ func (r *WhatsappTemplateService) List(ctx context.Context, query WhatsappTempla
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	path := "v2/whatsapp/message_templates"
+	path := "whatsapp/message_templates"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
 		return nil, err
